@@ -1,0 +1,25 @@
+body {
+  background: url(/assets/img/binding_light.png) repeat;
+  padding-bottom: 0px !important;
+}
+
+footer {
+  background: black;
+  padding-top: 40px;
+  padding-bottom: 40px;
+/*  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+*/
+}
+
+.spacer {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.hero-img {
+  float: right;
+  border-radius: 4px;
+}
