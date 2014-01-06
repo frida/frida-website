@@ -1,145 +1,81 @@
+---
+layout: default
+title: Frida
+overview: true
+---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Frida Interactive Reverse-engineering Environment</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- Le styles -->
-    <link href="../assets/css/bootstrap.css" rel="stylesheet">
-    <link href="../assets/css/frida.css" rel="stylesheet">
-    <link href="../assets/css/rainbow.css" rel="stylesheet">
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet">
-
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
-    <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="../assets/js/html5shiv.js"></script>
-    <![endif]-->
-  </head>
-
-  <body>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">Frida</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#contact">Contact</a></li>
-              <li><a href="#contribute">Contribute</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="https://github.com/frida/frida-python/wiki/Tutorial:-Getting-Started">Getting Started</a></li>
-                  <li><a href="https://github.com/frida/frida-python/wiki/API-Reference">Python API Reference</a></li>
-                  <li><a href="https://github.com/frida/frida-gum/wiki/Reference:-Script">JavaScript API Reference</a></li>
-                  <li><a href="https://github.com/frida/frida-build-env/wiki/Hacking-Frida">Hacking Frida</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
+<section class="intro">
+  <div class="grid">
+    <div class="unit whole center-on-mobiles">
+      <p class="first">Inject JavaScript to explore native apps on Windows, Mac, Linux and iOS.</p>
+    </div>
+  </div>
+</section>
+<section class="features">
+  <div class="grid">
+    <div class="unit one-third">
+      <h2>Scriptable</h2>
+      <p>
+        Your own scripts get injected into black box processes to execute custom debugging logic.
+        Hook any function, spy on crypto APIs or trace private application code, no source code needed!
+      </p>
+    </div>
+    <div class="unit one-third">
+      <h2>Stalking</h2>
+      <p>
+        Stealthy code tracing without relying on software or hardware breakpoints.
+        Think <a href="http://en.wikipedia.org/wiki/DTrace">DTrace</a> in user-space,
+        based on dynamic recompilation, like <a href="http://www.dynamorio.org/">DynamoRIO</a>
+        and <a href="http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool">PIN</a>.
+      </p>
+    </div>
+    <div class="unit one-third">
+      <h2>Portable</h2>
+      <p>
+        Works on Windows, Mac, Linux, and iOS. Grab a Python package from <a href="https://pypi.python.org/pypi/frida">PyPI</a> or use Frida
+        through its <a href="http://ospy.org/frida/windows/x64-Release/bin/Frida.dll">.NET binding</a>,
+        <a href="http://ospy.org/frida/mac/lib/browser/plugins/libnpfrida.dylib">browser plugin</a> or
+        <a href="http://ospy.org/frida/ios/lib/libfrida-core-1.0.a">C API</a>.
+      </p>
+    </div>
+    <div class="clear"></div>
+  </div>
+</section>
+<section class="quickstart">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Get up and running <em>in&nbsp;seconds</em>.</h4>
+    </div>
+    <div class="unit golden-large code">
+      <p class="title">Quick-start Instructions</p>
+      <div class="shell">
+        <p class="line">
+          <span class="path">~</span>
+          <span class="prompt">$</span>
+          <span class="command">sudo easy_install frida</span>
+        </p>
+        <p class="line">
+          <span class="path">~</span>
+          <span class="prompt">$</span>
+          <span class="command">frida-trace -i 'recv*' Skype</span>
+        </p>
+        <p class="line">
+          <span class="output">recvfrom: Auto-generated handler: &hellip;/recvfrom.js</span>
+        </p>
+        <p class="line">
+          <span class="output">Started tracing 21 functions.</span>
+        </p>
+        <p class="line">
+          <span class="output">1442 ms&nbsp;&nbsp;&nbsp;&nbsp;recvfrom()</span>
+        </p>
+        <p class="line">
+          <span class="output"># Live-edit recvfrom.js and watch the magic!</span>
+        </p>
+        <p class="line">
+          <span class="output">5374 ms&nbsp;&nbsp;&nbsp;&nbsp;recvfrom(socket=67, buffer=0x252a618, length=65536, flags=0, address=0xb0420bd8, address_len=16)</span>
+        </p>
       </div>
     </div>
-
-    <div class="container">
-      <div class="hero-unit">
-        <h1>Everything in reverse, for free!</h1>
-        <br/>
-        <img class="hero-img" src="../assets/img/72032.png"/>
-        <p>&#x1F639; Frida is an open-source toolkit for interactive and scriptable &#x0183;&#x0075;&#x0131;&#x0279;&#x01DD;&#x01DD;&#x0075;&#x0131;&#x0183;&#x0075;&#x01DD; &#x01DD;&#x0073;&#x0279;&#x01DD;&#x028C;&#x01DD;&#x0279;.</p>
-        <p>&nbsp;</p>
-        <p>&#x1F639; You can inspect and manipulate processes running locally, over the network, or across platforms.</p>
-        <p>&nbsp;</p>
-        <p>&#x1F639; You can inject your own scripts into black box processes to execute custom debugging logic.</p>
-      </div>
-
-      <div class="row">
-        <div class="span4">
-          <h2><i class="icon-wrench"></i> Scriptable</h2>
-          <p>Build your own reverse-engineering tools in a few lines of Python</p>
-          <pre><code>import frida
-p = frida.attach("skype")
-for m in p.enumerate_modules():
-  print m.enumerate_exports()
-</code></pre>
-        </div>
-        <div class="span4">
-          <h2><i class="icon-stethoscope"></i> Stalking</h2>
-          <p>Stealthy code tracing without relying on software or hardware breakpoints. Think <a href="http://en.wikipedia.org/wiki/DTrace">DTrace</a> in user-space,
-based on dynamic recompilation, like <a href="http://www.dynamorio.org/">DynamoRIO</a> and <a href="http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool">PIN</a>.</p>
-       </div>
-        <div class="span4">
-          <h2><i class="icon-move"></i> Portable</h2>
-          <p>Works on Linux, Mac (32- and 64-bit), Windows (32- and 64-bit), iOS.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="container spacer">
-      <a name="contact"></a>
-      <h2><i class="icon-edit"></i> Contact</h2>
-      <p>Join our very inclusive channel on the amazing internet relay chat:</p>
-      <p><tt><code>irc.freenode.net/#frida</code></tt></p>
-      <p>If we had a mailing list, we'd encourage you to join that one, too!</p>
-    </div>
-
-  <div class="container spacer">
-      <a name="contribute"></a>
-      <h2><i class="icon-user-md"></i> Contribute</h2>
-      <p>Aunt Frida needs you!</p>
-      <p>You would make her very happy if you for example:</p>
-      <ul>
-        <li>Report bugs as you find them, including problems in our extremely friendly documentation</li>
-        <li>Write more and even better documentation</li>
-        <li>Make those awesome YouTube tutorial videos we've heard so much about in the news</li>
-        <li>Build some cool reverse engineering tools with Frida</li>
-        <li>Help out with some new, fancy schmanzy web pages that make us all look awesome</li>
-        <li>Contribute new features back into the Frida libraries</li>
-      </ul>
-    </div>
-
-    <footer>
-      <div class="container">
-        <p>&copy; Frida contributors 2013</p>
-      </div>
-    </footer>
-
-    <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/bootstrap-transition.js"></script>
-    <script src="../assets/js/bootstrap-alert.js"></script>
-    <script src="../assets/js/bootstrap-modal.js"></script>
-    <script src="../assets/js/bootstrap-dropdown.js"></script>
-    <script src="../assets/js/bootstrap-scrollspy.js"></script>
-    <script src="../assets/js/bootstrap-tab.js"></script>
-    <script src="../assets/js/bootstrap-tooltip.js"></script>
-    <script src="../assets/js/bootstrap-popover.js"></script>
-    <script src="../assets/js/bootstrap-button.js"></script>
-    <script src="../assets/js/bootstrap-collapse.js"></script>
-    <script src="../assets/js/bootstrap-carousel.js"></script>
-    <script src="../assets/js/bootstrap-typeahead.js"></script>
-    <script src="../assets/js/highlight.pack.js"></script>
-    <script>
-    hljs.initHighlightingOnLoad();
-    </script>
-
-  </body>
-</html>
-
+    <div class="clear"></div>
+  </div>
+</section>
