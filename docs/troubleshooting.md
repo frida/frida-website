@@ -11,6 +11,17 @@ that might be of help. If the problem you’re experiencing isn’t covered belo
 please [report an issue]({{ site.repository }}/frida-website/issues/new) so the
 Frida community can make everyone’s experience better.
 
+## No distributions at all found for frida
+
+Running ``pip install frida`` gives the error
+<pre>Could not find any downloads that satisfy the requirement frida</pre>
+
+This is a known issue. Frida is distributed as an `.egg`. You must use
+`easy_install` instead of `pip` to install Frida:
+ * System-wide: `sudo easy_install frida`.
+ * Current user only: `easy_install --user frida`.
+ * Or using [virtualenv](http://www.virtualenv.org/en/latest/) .
+
 ## ValueError: ambiguous name; it matches:
 
 This means the process name you specified in `frida.attach()` matches more than
