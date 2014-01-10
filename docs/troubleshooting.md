@@ -11,6 +11,22 @@ that might be of help. If the problem you’re experiencing isn’t covered belo
 please [report an issue]({{ site.repository }}/frida-website/issues/new) so the
 Frida community can make everyone’s experience better.
 
+## Could not find suitable distribution for Requirement.parse('frida')
+
+Installing Frida with `easy_install` results in:
+
+{% highlight text %}
+Searching for frida
+Reading https://pypi.python.org/simple/frida/
+No local packages or download links found for frida
+error: Could not find suitable distribution for Requirement.parse('frida')
+{% endhighlight %}
+
+This appears on some OSX systems where there are multiple versions of
+`easy_install` present. A workaround seems to be to force using the
+system-provided default, i.d. `sudo /usr/bin/easy_install frida` or
+`/usr/bin/easy_install --user frida`.
+
 ## No distributions at all found for frida
 
 Running ``pip install frida`` gives the error
