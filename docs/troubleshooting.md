@@ -2,7 +2,7 @@
 layout: docs
 title: Troubleshooting
 prev_section: messages
-next_section: contributing
+next_section: building
 permalink: /docs/troubleshooting/
 ---
 
