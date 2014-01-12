@@ -2,7 +2,7 @@
 layout: docs
 title: Messages
 prev_section: functions
-next_section: troubleshooting
+next_section: javascript-api
 permalink: /docs/messages/
 ---
 
