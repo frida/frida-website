@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Troubleshooting
-prev_section: messages
+prev_section: ios
 next_section: building
 permalink: /docs/troubleshooting/
 ---
