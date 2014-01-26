@@ -11,23 +11,25 @@ permalink: /docs/javascript-api/
 +   `ptr(s)`: short-hand for `new NativePointer(s)`
 
 +   `recv([type, ]callback)`: request `callback` to be called on the next
-    message received from your Frida-based application.  Optionally `type` may
+    message received from your Frida-based application. Optionally `type` may
     be specified to only receive a message where the `type` field is set to
-    `type`.  This will only give you one message, so you need to call `recv()`
-    again to receive the next one.
+    `type`.
+
+    This will only give you one message, so you need to call `recv()` again
+    to receive the next one.
 
 +   `send(message[, data])`: send the JavaScript object `message` to your
     Frida-based application (it must be serializable to JSON). `data` may be
     optionally passed to include a raw payload, like a buffer returned by
     `Memory#readByteArray`.
 
-+   `setTimeout(fn, delay)`: call `fn` after `delay` milliseconds, returns an
-    id that can be passed to `clearTimeout` to cancel it
++   `setTimeout(fn, delay)`: call `fn` after `delay` milliseconds. Returns an
+    id that can be passed to `clearTimeout` to cancel it.
 
 +   `clearTimeout(id)`: cancel id returned by call to `setTimeout`
 
-+   `setInterval(fn, delay)`: call `fn` every `delay` milliseconds, returns an
-    id that can be passed to `clearInterval` to cancel it
++   `setInterval(fn, delay)`: call `fn` every `delay` milliseconds. Returns an
+    id that can be passed to `clearInterval` to cancel it.
 
 +   `clearInterval(id)`: cancel id returned by call to `setInterval`
 
@@ -53,12 +55,12 @@ permalink: /docs/javascript-api/
 
     -   `onMatch: function onMatch(thread)`: called with `thread` object
         containing:
-        - `id`: OS-specific id
-        - `state`: string specifying either `running`, `stopped`, `waiting`,
-          `uninterruptible` or `halted`
-        - `registers`: object with the keys `pc` and `sp`, which are
-          NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
-          respectively, for ia32/x64/arm
+        -   `id`: OS-specific id
+        -   `state`: string specifying either `running`, `stopped`, `waiting`,
+            `uninterruptible` or `halted`
+        -   `registers`: object with the keys `pc` and `sp`, which are
+            NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
+            respectively, for ia32/x64/arm
 
         This function may return the string `stop` to cancel the enumeration
         early.
@@ -71,10 +73,10 @@ permalink: /docs/javascript-api/
 
     -   `onMatch: function onMatch(module)`: called with `module` object
         containing:
-        - `name`: canonical module name as a string
-        - `base`: base address as a NativePointer
-        - `size`: size in bytes
-        - `path`: full filesystem path as a string
+        -   `name`: canonical module name as a string
+        -   `base`: base address as a `NativePointer`
+        -   `size`: size in bytes
+        -   `path`: full filesystem path as a string
 
         This function may return the string `stop` to cancel the enumeration
         early.
@@ -89,9 +91,9 @@ permalink: /docs/javascript-api/
 
     -   `onMatch: function onMatch(range)`: called with `range` object
         containing:
-        - `base`: base address as a NativePointer
-        - `size`: size in bytes
-        - `protection`: protection string (see above)
+        -   `base`: base address as a `NativePointer`
+        -   `size`: size in bytes
+        -   `protection`: protection string (see above)
 
         This function may return the string `stop` to cancel the enumeration
         early.
@@ -103,13 +105,13 @@ permalink: /docs/javascript-api/
 ## Module
 
 +   `Module.enumerateExports(name, callbacks)`: enumerate exports of module with
-    the `name` as seen in Process#enumerateModules. `callbacks` is an object
+    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
     specifying:
 
     -   `onMatch: function onMatch(mod)`: called with `mod` object containing:
-        - `type`: string specifying either `function` or `variable`
-        - `name`: export name as a string
-        - `address`: absolute address as a NativePointer
+        -   `type`: string specifying either `function` or `variable`
+        -   `name`: export name as a string
+        -   `address`: absolute address as a `NativePointer`
 
         This function may return the string `stop` to cancel the enumeration
         early.
@@ -118,10 +120,11 @@ permalink: /docs/javascript-api/
         enumerated
 
 +   `Module.enumerateRanges(name, protection, callbacks)`: just like
-    Process#enumerateRanges, except it's scoped to the specified module `name`.
+    `Process#enumerateRanges`, except it's scoped to the specified module
+    `name`.
 
 +   `Module.findBaseAddress(name)`: returns the base address of the `name`
-    module, or `null` if module isn't loaded
+    module, or `null` if the module isn't loaded
 
 +   `Module.findExportByName(module, exp)`: returns the absolute address of the
     export named `exp` in `module`
@@ -136,153 +139,209 @@ permalink: /docs/javascript-api/
         0x37 followed by any byte followed by 0xff
 
     -   `callbacks` is an object with:
+
         -   `onMatch: function onMatch(address, size)`: called with `address`
-            containing address of occurence as a NativePointer and `size`
-            specifying the size as a JavaScript number.  This function may
-            return the string 'stop' to cancel the memory scanning early.
-        -   `onError`: function onError(reason): called with `reason` when
+            containing the address of the occurence as a `NativePointer` and
+            `size` specifying the size as a JavaScript number.
+
+            This function may return the string `stop` to cancel the memory
+            scanning early.
+
+        -   `onError: function onError(reason)`: called with `reason` when
             there was a memory access error while scanning
+
         -   `onComplete: function onComplete()`: called when the memory range
             has been fully scanned
 
-+ Memory.alloc(size): allocate `size` bytes of memory on the heap.  The returned
-object is a NativePointer and the heap memory will be released when all
-JavaScript handles to it are gone.  This means you need to keep a reference to
-it while the pointer is being used by code outside the JavaScript runtime.
-+ Memory.readPointer(address): read a pointer from `address` and return it as a
-NativePointer A JavaScript exception will be thrown if `address` is invalid (not
-readable).
-+ Memory.writePointer(address, ptr): write `ptr` to `address` A JavaScript
-exception will be thrown if `address` is invalid (not writable).
-+ Memory.readS8(address), Memory.readU8(address), Memory.readS16(address),
-Memory.readU16(address), Memory.readS32(address), Memory.readU32(address),
-Memory.readS64(address), Memory.readU64(address): read a signed or unsigned
-8/16/32/64 bit value from `address` and return it as a JavaScript number.  A
-JavaScript exception will be thrown if `address` is invalid (not readable).
-+ Memory.writeU8(address, value): write the JavaScript number `value` to the
-byte at `address`.  A JavaScript exception will be thrown if `address` is
-invalid (not writable).
-+ Memory.readByteArray(address, length): read `length` bytes from `address` and
-return it as a byte array.  This byte array may be efficiently transferred to
-the debugger by passing it as the second argument to send().  A JavaScript
-exception will be thrown if any of the `length` bytes read from `address` isn't
-readable.
-+ Memory.readUtf8String(address\[, size = -1\]), Memory.readUtf16String(
-address\[, size = -1\]), Memory.readAnsiString(address\[, size = -1\]): read
-the bytes at `address` as a UTF-8 string.  Supply the optional `size` if you
-know the size of the string in bytes, or omit it or specify -1 if the string
-is NUL-terminated.
-A JavaScript exception will be thrown if any of the `size` bytes read from
-`address` isn't readable.
-+ Memory.writeUtf8String(address, str): encode and write the JavaScript string
-to `address` (with NUL-terminator).  A JavaScript exception will be thrown if
-any of the bytes written to `address` isn't writable.
-+ Memory.allocUtf8String(str), Memory.allocUtf16String(str),
-Memory.allocAnsiString(str): allocate, encode and write out `str` as
-UTF-8/UTF-16/ANSI string on the heap.  The returned object is a NativePointer,
-see Memory#alloc for details about its lifetime.
++   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap. The
+    returned object is a `NativePointer` and the heap memory will be released
+    when all JavaScript handles to it are gone. This means you need to keep
+    a reference to it while the pointer is being used by code outside the
+    JavaScript runtime.
+
++   `Memory.readPointer(address)`: read a pointer from `address` and return
+    it as a `NativePointer`.
+
+    A JavaScript exception will be thrown if `address` isn't readable.
+
++   `Memory.writePointer(address, ptr)`: write `ptr` to `address`.
+
+    A JavaScript exception will be thrown if `address` isn't writable.
+
++   `Memory.readS8(address)`, `Memory.readU8(address)`,
+    `Memory.readS16(address)`, `Memory.readU16(address)`,
+    `Memory.readS32(address)`, `Memory.readU32(address)`,
+    `Memory.readS64(address)`, `Memory.readU64(address)`:
+    read a signed or unsigned 8/16/32/64-bit value from `address` and return it
+    as a JavaScript number.
+
+    A JavaScript exception will be thrown if `address` isn't readable.
+
++   `Memory.writeU8(address, value)`: write the JavaScript number `value` to the
+    byte at `address`.
+
+    A JavaScript exception will be thrown if `address` isn't writable.
+
++   `Memory.readByteArray(address, length)`: read `length` bytes from `address`
+    and return it as a byte array. This byte array may be efficiently
+    transferred to your Frida-based application by passing it as the second
+    argument to `send()`.
+
+    A JavaScript exception will be thrown if any of the `length` bytes read from
+    `address` isn't readable.
+
++   `Memory.readUtf8String(address[, size = -1])`,
+    `Memory.readUtf16String(address[, size = -1])`,
+    `Memory.readAnsiString(address[, size = -1])`:
+    read the bytes at `address` as a UTF-8, UTF-16 or ANSI string.  Supply the
+    optional `size` if you know the size of the string in bytes, or omit it or
+    specify -1 if the string is NUL-terminated.
+
+    A JavaScript exception will be thrown if any of the `size` bytes read from
+    `address` isn't readable.
+
++   `Memory.writeUtf8String(address, str)`: encode and write the JavaScript
+    string to `address` (with NUL-terminator).
+
+    A JavaScript exception will be thrown if any of the bytes written to
+    `address` isn't writable.
+
++   `Memory.allocUtf8String(str)`,
+    `Memory.allocUtf16String(str)`,
+    `Memory.allocAnsiString(str)`:
+    allocate, encode and write out `str` as a UTF-8/UTF-16/ANSI string on the
+    heap. The returned object is a `NativePointer`. See `Memory#alloc` for
+    details about its lifetime.
 
 
 ## Thread
-+ Thread.sleep(delay): suspend execution of the current thread for `delay`
-seconds specified as a JavaScript number. For example 0.05 to sleep for 50 ms.
+
++   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
+    seconds specified as a JavaScript number. For example 0.05 to sleep for
+    50 ms.
 
 
 ## NativePointer
-+ new NativePointer(s): create a new NativePointer from the string s containing
-a memory address in either decimal or hexadecimal if prefixed with "0x"
-- add(rhs): make a new NativePointer with this NativePointer plus rhs. rhs may
-  either be a JavaScript number or another NativePointer
-- sub(rhs): make a new NativePointer with this NativePointer minus rhs. rhs may
-  either be a JavaScript number or another NativePointer
-- toInt32(): cast this NativePointer to a signed 32-bit integer
-- toString(\[radix = 10\]): convert to a string of optional radix (defaults to
-10)
+
++   `new NativePointer(s)`: create a new NativePointer from the string `s`
+    containing a memory address in either decimal, or hexadecimal if prefixed
+    with "0x". You may use the `ptr(s)` short-hand for brevity.
+
+-   `add(rhs)`: make a new NativePointer with this NativePointer plus `rhs`.
+    `rhs` may either be a JavaScript number or another NativePointer.
+
+-   `sub(rhs)`: make a new NativePointer with this NativePointer minus `rhs`.
+    `rhs` may either be a JavaScript number or another NativePointer.
+
+-   `toInt32()`: cast this NativePointer to a signed 32-bit integer
+
+-   `toString([radix = 16])`: convert to a string of optional radix (defaults to
+    16)
 
 
 ## NativeFunction
-+ new NativeFunction(address, returnType, argTypes\[, abi\]): create a new
-NativeFunction from address specified with a NativePointer, return type and
-array of argument types, optionally also specifying the abi if not system
-default. For variadic functions, add a `'...'` entry to `argTypes` between
-the fixed arguments and the variadic ones.
 
-Supported types:
-- void
-- pointer
-- int
-- uint
-- long
-- ulong
-- char
-- uchar
-- float
-- double
-- int8
-- uint8
-- int16
-- uint16
-- int32
-- uint32
-- int64
-- uint64
++   `new NativeFunction(address, returnType, argTypes[, abi])`: create a new
+    NativeFunction to call the function at `address` (specified with a
+    `NativePointer`), where the `returnType` string specifies the return type,
+    and the `argTypes` array specifies the argument types. You may optionally
+    also specify `abi` if not system default. For variadic functions, add a
+    `'...'` entry to `argTypes` between the fixed arguments and the variadic
+    ones.
+    Note that the returned object is also a `NativePointer`, and can thus be
+    passed to `Interceptor#attach`.
 
-Supported ABIs:
- - default
+    Supported types:
 
- - Windows 32-bit:
-  - sysv
-  - stdcall
-  - thiscall
-  - fastcall
-  - mscdecl
+    -   void
+    -   pointer
+    -   int
+    -   uint
+    -   long
+    -   ulong
+    -   char
+    -   uchar
+    -   float
+    -   double
+    -   int8
+    -   uint8
+    -   int16
+    -   uint16
+    -   int32
+    -   uint32
+    -   int64
+    -   uint64
 
- - Windows 64-bit:
-  - win64
+    Supported ABIs:
 
- - UNIX x86:
-  - sysv
-  - unix64
+    -   default
 
- - UNIX ARM:
-  - sysv
-  - vfp
+    -   Windows 32-bit:
+        -   sysv
+        -   stdcall
+        -   thiscall
+        -   fastcall
+        -   mscdecl
+
+    - Windows 64-bit:
+        -   win64
+
+    - UNIX x86:
+        -   sysv
+        -   unix64
+
+    - UNIX ARM:
+        -   sysv
+        -   vfp
 
 
 ## NativeCallback
-+ `new NativeCallback(func, returnType, argTypes\[, abi\])`: create a new
-NativeCallback implemented by the JavaScript function `func`, return type and
-array of argument types, optionally also specifying the abi if not system
-default. See `NativeFunction` for details about supported types and abis. Note
-that the returned object inherits from `NativePointer`, and could be passed to
-`Interceptor#replace`.
+
++   `new NativeCallback(func, returnType, argTypes[, abi])`: create a new
+    NativeCallback implemented by the JavaScript function `func`, where the
+    `returnType` string specifies the return type, and the `argTypes` array
+    specifies the argument types. You may also specify the abi if not system
+    default. See `NativeFunction` for details about supported types and abis.
+    Note that the returned object is also a `NativePointer`, and can thus be
+    passed to `Interceptor#replace`.
 
 
 ## Socket
-+ Socket.type(handle): inspect the OS socket `handle` and return its type as a
-string which is either 'tcp', 'udp', 'tcp6', 'udp6', 'unix:stream',
-'unix:dgram', or `null` if invalid or unknown.
-+ Socket.localAddress(handle),
-  Socket.peerAddress(handle): inspect the OS socket `handle` and return its
-  local or peer address, or `null` if invalid or unknown.
-  The address object returned has the fields:
-    'ip' (IP sockets) The IP address as a string.
-    'port' (IP sockets) The port number as a JavaScript number.
-    'path' (UNIX sockets) The UNIX path as a string.
+
++   `Socket.type(handle)`: inspect the OS socket `handle` and return its type
+    as a string which is either `tcp`, `udp`, `tcp6`, `udp6`, `unix:stream`,
+    `unix:dgram`, or `null` if invalid or unknown.
+
++   `Socket.localAddress(handle)`,
+    `Socket.peerAddress(handle)`:
+    inspect the OS socket `handle` and return its local or peer address, or
+    `null` if invalid or unknown.
+
+    The object returned has the fields:
+    -   `ip`: (IP sockets) IP address as a string.
+    -   `port`: (IP sockets) Port number as a JavaScript number.
+    -   `path`: (UNIX sockets) UNIX path as a string.
 
 
 ## Interceptor
-+ Interceptor.attach(target, callbacks): Intercept calls to function at
-`target`, where `callbacks` is an object containing one or more of:
- - 'onEnter': function onEnter(args): callback function given one argument
-   `args` that can be used to read or write arguments as an array of
-   NativePointer objects.
- - 'onLeave': function onLeave(retval): callback function given one argument
-   `retval` that is a NativePointer containing the return value Note that these
-   functions will be invoked with `this` bound to a per-invocation
-   (thread-local) object where you can store arbitrary data, which is useful if
-   you want to read an argument `onEnter` and act on it in `onLeave`. For
-   example:
+
++   `Interceptor.attach(target, callbacks)`: intercept calls to function at
+    `target`, where `callbacks` is an object containing one or more of:
+
+    - `onEnter: function onEnter(args)`: callback function given one argument
+      `args` that can be used to read or write arguments as an array of
+      `NativePointer` objects.
+
+    - `onLeave: function onLeave(retval)`: callback function given one argument
+      `retval` that is a `NativePointer` containing the return value.
+
+    Note that these functions will be invoked with `this` bound to a
+    per-invocation (thread-local) object where you can store arbitrary data,
+    which is useful if you want to read an argument in `onEnter` and act on it
+    in `onLeave`.
+
+    For example:
+
 {% highlight js %}
 Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     onEnter: function onEnter(args) {
@@ -295,15 +354,20 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     }
 });
 {% endhighlight %}
-+ Interceptor.detachAll(): Detach all previously attached callbacks.
-+ Interceptor.replace(target, replacement): Replace function at `target` with
-implementation at `replacement`. This is typically used if you want to fully or
-partially replace an existing function's implementation. Use `NativeCallback` to
-implement a `replacement` in JavaScript. Note that `replacement` will be kept
-alive until `Interceptor#revert` is called. If you want to chain to the original
-implementation you can synchronously call `target` through a `NativeFunction`
-inside your implementation, which will bypass and go directly to the original
-implementation. Here's an example:
+
++   `Interceptor.detachAll()`: detach all previously attached callbacks.
+
++   `Interceptor.replace(target, replacement)`: replace function at `target`
+    with implementation at `replacement`. This is typically used if you want
+    to fully or partially replace an existing function's implementation. Use
+    `NativeCallback` to implement a `replacement` in JavaScript. Note that
+    `replacement` will be kept alive until `Interceptor#revert` is called.
+    If you want to chain to the original implementation you can synchronously
+    call `target` through a `NativeFunction` inside your implementation, which
+    will bypass and go directly to the original implementation.
+
+    Here's an example:
+
 {% highlight js %}
 var openPtr = Module.findExportByName("libc.so", "open");
 var open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
@@ -315,13 +379,18 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
     return fd;
 }, 'int', ['pointer', 'int']));
 {% endhighlight %}
-+ Interceptor.revert(target): Revert function at `target` to the previous
-implementation.
+
++   `Interceptor.revert(target)`: revert function at `target` to the previous
+    implementation.
+
 
 ## Stalker
-+ `Stalker.follow(\[threadId, options\])`: start stalking `threadId` (or the
-current thread if omitted), optionally with `options` for enabling events.
-For example:
+
++   `Stalker.follow([threadId, options])`: start stalking `threadId` (or the
+    current thread if omitted), optionally with `options` for enabling events.
+
+    For example:
+
 {% highlight js %}
 Stalker.follow(Process.getCurrentThreadId(), {
   events: {
@@ -342,21 +411,31 @@ Stalker.follow(Process.getCurrentThreadId(), {
   }
 });
 {% endhighlight %}
-+ `Stalker.unfollow(\[threadId\])`: stop stalking `threadId` (or the current
-thread if omitted).
-+ Stalker.garbageCollect(): free accumulated memory at a safe point after
-Stalker#unfollow.  This is needed to avoid race-conditions where the thread just
-unfollowed is executing its last instructions.
-+ Stalker.addCallProbe(address, callback): call `callback` (see
-Interceptor#attach#onEnter for signature) synchronously when a CALL is made to
-`address`.  Returns an id that can be passed to Stalker#removeCallProbe later.
-+ Stalker.removeCallProbe: Remove a call probe added by Stalker#addCallProbe.
-+ Stalker.trustThreshold: an integer specifying how many times a piece of code
-needs to be executed before it is assumed it can be trusted to not mutate.
-Specify -1 for no trust (slow), 0 to trust code from the get-go, and N to trust
-code after it has been executed N times. Defaults to 1.
-+ Stalker.queueCapacity: an integer specifying the capacity of the event queue
-in number of events. Defaults to 16384 events.
-+ Stalker.queueDrainInterval: an integer specifying the time in milliseconds
-between each time the event queue is drained. Defaults to 250 ms, which means
-that the event queue is drained four times per second.
+
++   `Stalker.unfollow([threadId])`: stop stalking `threadId` (or the current
+    thread if omitted).
+
++   `Stalker.garbageCollect()`: free accumulated memory at a safe point after
+    `Stalker#unfollow`. This is needed to avoid race-conditions where the
+    thread just unfollowed is executing its last instructions.
+
++   `Stalker.addCallProbe(address, callback)`: call `callback` (see
+    `Interceptor#attach#onEnter` for signature) synchronously when a CALL is
+    made to `address`. Returns an id that can be passed to
+    `Stalker#removeCallProbe` later.
+
++   Stalker.removeCallProbe: remove a call probe added by
+    `Stalker#addCallProbe`.
+
++   `Stalker.trustThreshold`: an integer specifying how many times a piece of
+    code needs to be executed before it is assumed it can be trusted to not
+    mutate.
+    Specify -1 for no trust (slow), 0 to trust code from the get-go, and N to
+    trust code after it has been executed N times. Defaults to 1.
+
++   `Stalker.queueCapacity`: an integer specifying the capacity of the event
+    queue in number of events. Defaults to 16384 events.
+
++   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
+    between each time the event queue is drained. Defaults to 250 ms, which
+    means that the event queue is drained four times per second.
