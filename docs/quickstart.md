@@ -40,7 +40,7 @@ Now, let's have a look at the generated `recvfrom.js`:
  * etc. (Pull-requests appreciated!)
  *
  * For full API reference, see:
- * https://github.com/frida/frida-gum/wiki/Reference:-Script
+ * http://www.frida.re/docs/javascript-api/
  */
 
 {
