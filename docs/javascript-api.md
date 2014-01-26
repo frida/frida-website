@@ -323,6 +323,22 @@ permalink: /docs/javascript-api/
     -   `path`: (UNIX sockets) UNIX path as a string.
 
 
+## File
+
++   `new File(filePath, mode)`: open or create the file at `filePath` with
+    the `mode` string specifying how it should be opened. For example `"wb"`
+    to open the file for writing in binary mode (this is the same format as
+    `fopen()` from the C standard library).
+
+-   `write(data)`: synchronously write `data` to the file, where `data` is
+    either a string or a buffer as returned by `Memory#readByteArray`
+
+-   `flush()`: flush any buffered data to the underlying file
+
+-   `close()`: close the file. You should call this function when you're done
+    with the file.
+
+
 ## Interceptor
 
 +   `Interceptor.attach(target, callbacks)`: intercept calls to function at
