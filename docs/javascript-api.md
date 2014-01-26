@@ -455,3 +455,84 @@ Stalker.follow(Process.getCurrentThreadId(), {
 +   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
     between each time the event queue is drained. Defaults to 250 ms, which
     means that the event queue is drained four times per second.
+
+
+## ObjC
+
++   `ObjC.available`: a boolean specifying whether the current process has an
+    Objective-C runtime loaded. Do not invoke any other `ObjC` properties or
+    methods unless this is the case.
+
++   `ObjC.classes`: an array of strings specifying the names of classes currently
+    registered. You may call `ObjC.use()` to further examine them, or
+    `ObjC.refreshClasses()` to ensure that the list is up-to-date.
+
++   `ObjC.mainQueue`: the GCD queue of the main thread
+
++   `ObjC.schedule(queue, work)`: schedule the JavaScript function `work` on
+    the GCD queue specified by `queue`. An `NSAutoreleasePool` is created just
+    before calling `work`, and cleaned up on return.
+
+{% highlight js %}
+var NSSound = ObjC.use('NSSound'); /* Mac */
+ObjC.schedule(ObjC.mainQueue, function () {
+    var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
+    sound.play();
+});
+{% endhighlight %}
+
++   `ObjC.use(className)`: dynamically get a JavaScript binding for `className`
+    by returning a class object.
+
+{% highlight js %}
+var UIAlertView = ObjC.use('UIAlertView'); /* iOS */
+var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
+    "Frida",
+    "Hello from Frida",
+    ptr("0"),
+    "OK",
+    ptr("0"));
+view.show();
+view.release();
+{% endhighlight %}
+
++   `ObjC.cast(handle, klass)`: create a JavaScript wrapper given the existing
+    instance at `handle` of given class `klass` (as returned from `ObjC.use()`).
+
+{% highlight js %}
+var NSSound = ObjC.use('NSSound'); /* Mac */
+var sound = ObjC.cast(ptr("0x1234"), NSSound);
+{% endhighlight %}
+
++   `ObjC.implement(method, fn)`: create a JavaScript implementation compatible
+    with the signature of `method`, where the JavaScript function `fn` is used
+    as the implementation. Returns a `NativeCallback` that you may assign to an
+    ObjC method's `implementation` property.
+
+{% highlight js %}
+var NSSound = ObjC.use('NSSound'); /* Mac */
+var oldImpl = NSSound.play.implementation;
+NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
+    return oldImpl(handle, selector);
+});
+{% endhighlight %}
+
+>   As the `implementation` property is a `NativeFunction` and thus also a
+>   `NativePointer`, you may also use `Interceptor` to hook functions:
+
+{% highlight js %}
+var NSSound = ObjC.use('NSSound'); /* Mac */
+Interceptor.attach(NSSound.play.implementation, {
+    onEnter: function onEnter() {
+        send("[NSSound play]");
+    }
+});
+{% endhighlight %}
+
++   `ObjC.refreshClasses()`: refresh the list of classes currently registered,
+    as reported by `ObjC.classes`
+
++   `ObjC.selector(name)`: convert the JavaScript string `name` to a selector
+
++   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
+    string
