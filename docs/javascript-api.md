@@ -344,12 +344,15 @@ permalink: /docs/javascript-api/
 +   `Interceptor.attach(target, callbacks)`: intercept calls to function at
     `target`, where `callbacks` is an object containing one or more of:
 
-    - `onEnter: function onEnter(args)`: callback function given one argument
-      `args` that can be used to read or write arguments as an array of
-      `NativePointer` objects.
+    -   `onEnter: function onEnter(args)`: callback function given one argument
+        `args` that can be used to read or write arguments as an array of
+        `NativePointer` objects.
 
-    - `onLeave: function onLeave(retval)`: callback function given one argument
-      `retval` that is a `NativePointer` containing the return value.
+    -   `onLeave: function onLeave(retval)`: callback function given one
+        argument `retval` that is a `NativePointer` containing the return
+        value. You may call `retval.replace(1337)` to replace the return value
+        with the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace
+        with a pointer.
 
     Note that these functions will be invoked with `this` bound to a
     per-invocation (thread-local) object where you can store arbitrary data,
@@ -370,6 +373,16 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     }
 });
 {% endhighlight %}
+
+    Additionally, the object contains some useful properties:
+
+    -   `errno`: (UNIX) current errno value (you may replace it)
+
+    -   `lastError`: (Windows) current OS error value (you may replace it)
+
+    -   `threadId`: OS thread ID
+
+    -   `depth`: call depth of relative to other invocations
 
 +   `Interceptor.detachAll()`: detach all previously attached callbacks.
 
