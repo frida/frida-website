@@ -2,7 +2,7 @@
 layout: docs
 title: iOS
 prev_section: messages
-next_section: javascript-api
+next_section: android
 permalink: /docs/ios/
 ---
 
