@@ -10,10 +10,10 @@ In this tutorial we show how to do function tracing on your Android device.
 
 ## Setting up your Android device
 
-Before you start, you will need to jailbreak your device in case you haven't
-done so already. You will also need the Android SDK so you can use the `adb`
-tool. This is a stop-gap solution and won't be necessary once Frida has an
-Android app (pull-request welcome!).
+Before you start, you will need to root your device in case you haven't done so
+already. You will also need the Android SDK so you can use the `adb` tool. This
+is a stop-gap solution and won't be necessary once Frida has an Android app
+(pull-request welcome!).
 
 First off, download the latest `frida-server` for Android:
 {% highlight bash %}
@@ -34,20 +34,23 @@ $ adb shell
 root@android:/ # /data/local/tmp/frida-server -t 0
 {% endhighlight %}
 
-While that's running, forward the local TCP port `27042` to your device:
+While that's running, forward some local TCP ports to your device:
 {% highlight bash %}
 adb forward tcp:27042 tcp:27042
+adb forward tcp:27043 tcp:27043
 {% endhighlight %}
+
+*27042* is the port used for communicating with `frida-server`, and each
+subsequent port is required for each of the next processes you inject into.
 
 Now, just to verify things are working:
 {% highlight bash %}
 $ frida-ps -R
 {% endhighlight %}
 
-You should see a process list along the lines of:
+Should give you a process list along the lines of:
 
 {% highlight bash %}
-oles-mbp:frida-python oleavr$ python src/frida/ps.py -R
   PID NAME
  1590 com.facebook.katana
 13194 com.facebook.katana:providers
@@ -58,13 +61,27 @@ oles-mbp:frida-python oleavr$ python src/frida/ps.py -R
 
 Great, we're good to go then!
 
-## Tracing crypto calls in Chrome
+## Tracing open() calls in Chrome
 
 Alright, let's have some fun. Fire up the Chrome app on your device and return
 to your desktop and run:
 
 {% highlight bash %}
-$ frida-trace -R -I libssl.so com.android.chrome
+$ frida-trace -R -i open com.android.chrome
+Uploading data...
+open: Auto-generated handler …/linker/open.js
+open: Auto-generated handler …/libc.so/open.js
+Started tracing 2 functions. Press ENTER to stop.
 {% endhighlight %}
 
-Boom! ...But that's all for now. More documentation to follow.
+Now just play around with the Chrome app and you should start seeing `open()`
+calls flying in:
+
+{% highlight bash %}
+  1392 ms	open()
+  1403 ms	open()
+  1420 ms	open()
+{% endhighlight %}
+
+You can now live-edit the aforementioned JavaScript files as you read
+`man open`, and start diving deeper and deeper into your Android apps.
