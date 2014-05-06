@@ -72,7 +72,7 @@ below.
 
 - Make sure you have:
   - 64-bit version of Windows (32-bit will work but may require some fiddling)
-  - Visual Studio 2010
+  - Visual Studio 2013
   - [Git](http://msysgit.github.com/)
   - [Python 2.7 and 3.3](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
@@ -101,7 +101,7 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 ```
 - Clone the `frida-ci` repository and build away:
 ```bash
-    $ git clone git@github.com:frida/frida-ci.git
+    $ git clone git://github.com/frida/frida-ci.git
     $ mkdir tmp
     $ cd tmp
     $ ../frida-ci/create-toolchain-and-sdk.sh
@@ -117,7 +117,7 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 ### Windows
 
 - Prepare your system
-  - Make sure that Visual Studio 2010 is installed.
+  - Make sure that Visual Studio 2013 is installed.
   - Install
   [hsbuild-0.2.msi](http://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
   You need [Git](http://msysgit.github.com/) and
@@ -142,28 +142,17 @@ autoCRLF = false
   Platform set to `x86`).
   - As Administrator, run `deploy.bat`, which will update the system-wide
   HSBuild installation.
-  - Download [Frida.props](http://dl.dropbox.com/u/169648/frida/Frida.props) and
-  put it alongside HSBuild's .targets/.props files, typically something like
-  `C:\Program Files (x86)\MSBuild\HSBuild`.
+  - Clone the `frida-ci` repository:
+```bash
+    $ git clone git://github.com/frida/frida-ci.git
+```
+  - Copy `frida-ci\Frida.props` next to HSBuild's .targets/.props
+  files, typically at `C:\Program Files (x86)\MSBuild\HSBuild`.
 - Build it
-  - Download [frida.modules](http://dl.dropbox.com/u/169648/frida/frida.modules)
-  and put it in a (preferably empty) directory somewhere.
-  - Open `cmd.exe` and navigate to that directory.
+  - Open `cmd.exe` and navigate to `frida-ci`.
   - Start the build process:
 ```bash
-    $ set FRIDAMODULES=glib libgee json-glib vala
-    $ hsbuild build -p x86_64 -c Debug -v %FRIDAMODULES%
-    $ hsbuild build -p x86_64 -c Release -v %FRIDAMODULES%
-    $ hsbuild build -p x86 -c Debug -v %FRIDAMODULES%
-    $ hsbuild build -p x86 -c Release -v %FRIDAMODULES%
-```
-- Package it
-  - Download
-  [makedist.py](https://dl.dropboxusercontent.com/u/169648/frida/makedist.py)
-  and put it next to `frida.modules`.
-  - Run makedist.py:
-```bash
-    $ makedist.py
+    $ build-deps-windows.py
 ```
 - Transfer the resulting toolchain and SDK to a web server somewhere:
 ```bash
