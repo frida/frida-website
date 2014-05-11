@@ -10,10 +10,10 @@ permalink: /docs/building/
 
 Frida has a rather complicated build system due to some design constraints:
 
-- **Short build time for new contributors.** frida-build-env downloads a
-prebuilt toolchain and SDK to save time. This requires a bit more fiddling to
-get the build environment just right, but it has the added benefit of providing
-a coherent build environment. For example we know we're being built with just
+- **Short build time for new contributors.** Frida downloads a prebuilt
+toolchain and SDK to save time. This requires a bit more fiddling to get the
+build environment just right, but it has the added benefit of providing a
+coherent build environment. For example we know we're being built with just
 one version of autotools whether we're on Mac or Linux.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
@@ -33,7 +33,7 @@ libraries. Because of this, these libraries are compiled as static libraries.
 processes, should not allocate any OS resources without releasing them when it
 is unloaded to avoid accumulating leaks in long-lived processes. Because Frida
 is mostly written in C and makes use of the excellent GLib library, which
-unfortunately doesn't provide any way to clean up statically allocated
+unfortunately doesn't provide any way to fully clean up statically allocated
 resources, we had to patch that library to add support for this. Upstream
 doesn't consider this a valid use-case, so unfortunately we need to maintain our
 fork of this library. This means we can't make use of a system-wide GLib on
@@ -51,20 +51,20 @@ below.
 ```bash
     $ sudo apt-get install build-essential
 ```
-- Clone `frida-build-env` and build it:
+- Clone `frida` and build it:
 ```bash
-    $ git clone git://github.com/frida/frida-build-env.git
-    $ cd frida-build-env
+    $ git clone git://github.com/frida/frida.git
+    $ cd frida
     $ make
 ```
 
 ### Mac
 
 - Make sure you have the latest Xcode with command-line tools installed.
-- Clone `frida-build-env` and build it:
+- Clone `frida` and build it:
 ```bash
-    $ git clone git://github.com/frida/frida-build-env.git
-    $ cd frida-build-env
+    $ git clone git://github.com/frida/frida.git
+    $ cd frida
     $ make
 ```
 
@@ -77,10 +77,10 @@ below.
   - [Python 2.7 and 3.3](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
   `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
-  - Clone `frida-build-env`:
+  - Clone `frida`:
 ```bash
-    $ git clone git://github.com/frida/frida-build-env.git
-    $ cd frida-build-env
+    $ git clone git://github.com/frida/frida.git
+    $ cd frida
     $ git submodule init
     $ git submodule update
 ```
@@ -111,8 +111,11 @@ following steps assume you have the OS-specific prerequisites mentioned above.
     $ scp build/toolchain-*.tar.bz2 your@own.server:
     $ scp build/sdk-*.tar.bz2 your@own.server:
 ```
-- Now you can clone `frida-build-env` like above and adjust the URLs in
-`setup-env.sh` (look for `download_command`) before running `make`.
+- Now you can clone `frida` like above and adjust the URLs in
+`releng/setup-env.sh` (look for `download_command`) before running `make`.
+
+(Note: the `frida` module now has integrated support for building the SDK.
+For example: `FRIDA_HOST=android-arm make -f Makefile.sdk.mk`)
 
 ### Windows
 
@@ -159,5 +162,6 @@ autoCRLF = false
     $ scp toolchain-windows-*.exe your@own.server:
     $ scp sdk-windows-*.exe your@own.server:
 ```
-- Now you can clone `frida-build-env` like above and adjust the URLs in
-`windows-toolchain.txt` and `windows-sdk.txt` before opening `frida.sln`.
+- Now you can clone `frida` like above and adjust the URLs in
+`releng\windows-toolchain.txt` and `releng\windows-sdk.txt` before opening
+`frida.sln`.
