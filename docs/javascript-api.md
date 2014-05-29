@@ -10,6 +10,8 @@ permalink: /docs/javascript-api/
 
 +   `ptr(s)`: short-hand for `new NativePointer(s)`
 
++   `NULL`: short-hand for `ptr("0")`
+
 +   `recv([type, ]callback)`: request `callback` to be called on the next
     message received from your Frida-based application. Optionally `type` may
     be specified to only receive a message where the `type` field is set to
@@ -46,6 +48,10 @@ permalink: /docs/javascript-api/
 
 +   `Process.platform`: read-only property containing the string `windows`,
     `darwin` or `linux`
+
++   `Process.pointerSize`: read-only property containing the size of a pointer
+    (in bytes) as a JavaScript number. This is used to make your scripts more
+    portable.
 
 +   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a
     JavaScript number
@@ -159,6 +165,11 @@ permalink: /docs/javascript-api/
     a reference to it while the pointer is being used by code outside the
     JavaScript runtime.
 
++   `Memory.copy(dst, src, n)`: just like memcpy.
+
++   `Memory.dup(mem, size)`: short-hand for `Memory.alloc()` followed by
+    `Memory.copy()`.
+
 +   `Memory.readPointer(address)`: read a pointer from `address` and return
     it as a `NativePointer`.
 
@@ -177,8 +188,12 @@ permalink: /docs/javascript-api/
 
     A JavaScript exception will be thrown if `address` isn't readable.
 
-+   `Memory.writeU8(address, value)`: write the JavaScript number `value` to the
-    byte at `address`.
++   `Memory.writeS8(address, value)`, `Memory.writeU8(address, value)`,
+    `Memory.writeS16(address, value)`, `Memory.writeU16(address, value)`,
+    `Memory.writeS32(address, value)`, `Memory.writeU32(address, value)`,
+    `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`:
+    write the JavaScript number `value` to the signed or unsigned 8/16/32/64-bit
+    value at `address`.
 
     A JavaScript exception will be thrown if `address` isn't writable.
 
@@ -190,6 +205,13 @@ permalink: /docs/javascript-api/
     A JavaScript exception will be thrown if any of the `length` bytes read from
     `address` isn't readable.
 
++   `Memory.writeByteArray(address, bytes)`: write the `bytes` byte array to
+    `address`. This is either an object returned from `Memory.readByteArray()`
+    or a JavaScript array-style object. For example: `[ 0x13, 0x37, 0x42 ]`.
+
+    A JavaScript exception will be thrown if any of the bytes written to
+    `address` isn't writable.
+
 +   `Memory.readUtf8String(address[, size = -1])`,
     `Memory.readUtf16String(address[, size = -1])`,
     `Memory.readAnsiString(address[, size = -1])`:
@@ -200,8 +222,10 @@ permalink: /docs/javascript-api/
     A JavaScript exception will be thrown if any of the `size` bytes read from
     `address` isn't readable.
 
-+   `Memory.writeUtf8String(address, str)`: encode and write the JavaScript
-    string to `address` (with NUL-terminator).
++   `Memory.writeUtf8String(address, str)`,
+    `Memory.writeUtf16String(address, str)`,
+    `Memory.writeAnsiString(address, str)`:
+    encode and write the JavaScript string to `address` (with NUL-terminator).
 
     A JavaScript exception will be thrown if any of the bytes written to
     `address` isn't writable.
@@ -226,6 +250,9 @@ permalink: /docs/javascript-api/
 +   `new NativePointer(s)`: create a new NativePointer from the string `s`
     containing a memory address in either decimal, or hexadecimal if prefixed
     with "0x". You may use the `ptr(s)` short-hand for brevity.
+
+-   `isNull()`: returns a boolean allowing you to conveniently check if a
+    pointer is NULL
 
 -   `add(rhs)`: make a new NativePointer with this NativePointer plus `rhs`.
     `rhs` may either be a JavaScript number or another NativePointer.
@@ -549,3 +576,63 @@ Interceptor.attach(NSSound.play.implementation, {
 
 +   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
     string
+
+
+## Dalvik
+
++   `Dalvik.available`: a boolean specifying whether the current process has the
+    Dalvik VM loaded. Do not invoke any other `Dalvik` properties or methods
+    unless this is the case.
+
++   `Dalvik.perform(fn)`: ensure that the current thread is attached to the VM
+    and call `fn`. (This isn't necessary in callbacks from Java.)
+
+{% highlight js %}
+Dalvik.perform(function () {
+    var Activity = Dalvik.use("android.app.Activity");
+    Activity.onResume.implementation = function () {
+        send("onResume() got called! Let's call the original implementation");
+        this.onResume();
+    };
+});
+{% endhighlight %}
+
++   `Dalvik.use(className)`: dynamically get a JavaScript wrapper for
+    `className` that you can instantiate objects from by calling `$new()` on
+    it to invoke a constructor. Call `$dispose()` to clean it up explicitly (or
+    wait for the JavaScript object to get garbage-collected, or script to
+    get unloaded). Static and non-static methods are available, and you can
+    even replace a method implementation and throw an exception from it:
+
+{% highlight js %}
+Dalvik.perform(function () {
+    var Activity = Dalvik.use("android.app.Activity");
+    var Exception = Dalvik.use("java.lang.Exception");
+    Activity.onResume.implementation = function () {
+        throw Exception.$new("Oh noes!");
+    };
+});
+{% endhighlight %}
+
++   `Dalvik.cast(handle, klass)`: create a JavaScript wrapper given the existing
+    instance at `handle` of given class `klass` (as returned from
+    `Dalvik.use()`).
+
+{% highlight js %}
+var Activity = Dalvik.use("android.app.Activity");
+var activity = Dalvik.cast(ptr("0x1234"), Activity);
+{% endhighlight %}
+
+
+## WeakRef
+
++   `WeakRef.bind(value, fn)`: monitor `value` and call the `fn` callback as
+    soon as `value` has been garbage-collected, or the script is about to get
+    unloaded. Returns an id that you can pass to `WeakRef.unbind()` for
+    explicit cleanup.
+
+    This API is useful if you're building a language-binding, where you need to
+    free native resources when a JS value is no longer needed.
+
++   `WeakRef.unbind(id)`: stop monitoring the value passed to
+    `WeakRef.bind(value, fn)`, and call the `fn` callback immediately.
