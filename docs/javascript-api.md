@@ -599,10 +599,11 @@ Dalvik.perform(function () {
 
 +   `Dalvik.use(className)`: dynamically get a JavaScript wrapper for
     `className` that you can instantiate objects from by calling `$new()` on
-    it to invoke a constructor. Call `$dispose()` to clean it up explicitly (or
-    wait for the JavaScript object to get garbage-collected, or script to
-    get unloaded). Static and non-static methods are available, and you can
-    even replace a method implementation and throw an exception from it:
+    it to invoke a constructor. Call `$dispose()` on an instance to clean it
+    up explicitly (or wait for the JavaScript object to get garbage-collected,
+    or script to get unloaded). Static and non-static methods are available,
+    and you can even replace a method implementation and throw an exception
+    from it:
 
 {% highlight js %}
 Dalvik.perform(function () {
