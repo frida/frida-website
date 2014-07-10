@@ -22,14 +22,14 @@ No local packages or download links found for frida
 error: Could not find suitable distribution for Requirement.parse('frida')
 {% endhighlight %}
 
-This appears on some OSX systems where there are multiple versions of
+This appears on some OS X systems where there are multiple versions of
 `easy_install` present. A workaround seems to be to force using the
 system-provided default, i.d. `sudo /usr/bin/easy_install frida` or
 `/usr/bin/easy_install --user frida`.
 
 ## No distributions at all found for frida
 
-Running ``pip install frida`` gives the error
+Running `pip install frida` gives the error
 <pre>Could not find any downloads that satisfy the requirement frida</pre>
 
 This is a known issue. Frida is distributed as an `.egg`. You must use
@@ -57,7 +57,8 @@ have forgotten to enable ptrace of non-child processes. Try:
 sudo sysctl kernel.yama.ptrace_scope=0
 {% endhighlight %}
 
-## SystemError: Error opening file /tmp/libfrida-agent.so: File exists
+## ImportError: dynamic module does not define init function (init_frida)
 
-This is a bug in the Linux backend of Frida. Just retry `frida.attach()` (or
-help us fix the bug :P).
+This or another similar error message is seen when trying to use `frida-python`
+compiled for python 2.x in python 3.x, or vice versa. Check which python
+interpreter you are running against which `PYTHONPATH` / `sys.path` is used.

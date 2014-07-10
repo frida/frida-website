@@ -369,7 +369,13 @@ permalink: /docs/javascript-api/
 ## Interceptor
 
 +   `Interceptor.attach(target, callbacks)`: intercept calls to function at
-    `target`, where `callbacks` is an object containing one or more of:
+    `target`. This is a `NativePointer` specifying the address of the function
+    you would like to intercept calls to. Note that on 32-bit ARM that address
+    must have its least significant bit set to 0 for ARM functions, and 1 for
+    Thumb functions. Frida takes care of this detail for you if you got the
+    address from a Frida API (for example `Module.findExportByName()`).
+
+    The `callbacks` argument is an object containing one or more of:
 
     -   `onEnter: function onEnter(args)`: callback function given one argument
         `args` that can be used to read or write arguments as an array of
