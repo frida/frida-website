@@ -503,6 +503,24 @@ Stalker.follow(Process.getCurrentThreadId(), {
     means that the event queue is drained four times per second.
 
 
+## Instruction
+
++   `Instruction.parse(target)`: parse the instruction at the `target` address
+    in memory, represented by a `NativePointer`.
+    Note that on 32-bit ARM this address must have its least significant bit
+    set to 0 for ARM functions, and 1 for Thumb functions. Frida takes care
+    of this detail for you if you get the address from a Frida API (for
+    example `Module.findExportByName()`).
+
+    The object returned has the fields:
+    -   `address`: Address (EIP) of this instruction, as a `NativePointer`.
+    -   `next`: Pointer to the next instruction, so you can `parse()` it.
+    -   `size`: Size of this instruction.
+    -   `mnemonic`: String representation of instruction mnemonic.
+    -   `opStr`: String representation of instruction operands.
+    -   `toString()`: Convert to a human-readable string.
+
+
 ## ObjC
 
 +   `ObjC.available`: a boolean specifying whether the current process has an
