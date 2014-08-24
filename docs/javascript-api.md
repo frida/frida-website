@@ -167,8 +167,18 @@ permalink: /docs/javascript-api/
 
 +   `Memory.copy(dst, src, n)`: just like memcpy.
 
-+   `Memory.dup(mem, size)`: short-hand for `Memory.alloc()` followed by
++   `Memory.dup(address, size)`: short-hand for `Memory.alloc()` followed by
     `Memory.copy()`.
+
++   `Memory.protect(address, size, protection)`: update protection on a region
+    of memory, where `protection` is a string of the same format as
+    `Process.enumerateRanges()`.
+
+    For example:
+
+{% highlight js %}
+Memory.protect(ptr("0x1234"), 4096, 'rw-');
+{% endhighlight %}
 
 +   `Memory.readPointer(address)`: read a pointer from `address` and return
     it as a `NativePointer`.
