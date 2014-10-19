@@ -7,7 +7,7 @@ version: 1.6.4
 categories: [release]
 ---
 
-It's time for a bug fix release!
+It's time for a bug-fix release!
 
 Stalker improvements:
 
