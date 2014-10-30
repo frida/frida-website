@@ -7,7 +7,7 @@ version: 1.6.5
 categories: [release]
 ---
 
-It's release o'clock, and time for some bugfixes:
+It's release o'clock, and time for some bug fixes:
 
 - iOS 8.1 is now supported, and the ARM64 support is better than ever.
 - The iOS USB transport no longer disconnects when sending a burst of data to
