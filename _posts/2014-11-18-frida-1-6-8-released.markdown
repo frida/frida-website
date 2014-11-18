@@ -7,5 +7,5 @@ version: 1.6.8
 categories: [release]
 ---
 
-Just a minor bugfix release to fix `spawn()` on Mac, and resolve some
+Just a minor bug-fix release to fix `spawn()` on Mac, and resolve some
 teardown issues. Enjoy!
