@@ -2,7 +2,7 @@
 layout: docs
 title: History
 permalink: "/docs/history/"
-prev_section: contributing
+prev_section: gsoc-ideas-2015
 ---
 
 Frida was born after [@oleavr][] and [@hsorbo][] had been casually
