@@ -147,58 +147,19 @@ although presumably much much simpler.
 **Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
-## Investigate possible integrations with radare
+## Expose backtracer and symbol resolving API to JavaScript
 
-**Brief explanation:** Radare has a strong focus on static analysis, whilst
-Frida is primarily focused on the dynamic end of the spectrum. It would be
-great to figure out whether we could make it easier for users to get the best
-of both worlds, either by integrating technology from Radare, or by making sure
-that tools leveraging Frida and Radare can do so with minimal friction.
+**Brief explanation:** There's currently a [Backtracer](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumbacktracer.h)
+and a [symbol resolving](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumsymbolutil.h)
+API in frida-gum that are not yet exposed to the JS runtime.
 
-**Expected results:** Arrive at a conclusion with 0 or more development goals.
+The symbol resolving API is however not just a matter of exposing this API,
+as the underlying implementations will need some adjustments to work well
+when injected into another process. The Windows implementation currently
+relies on DbgHelp.dll being loaded, which might not be an acceptable constraint.
 
-**Knowledge Prerequisite:** Frida, Radare
-
-**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
-
-
-## Expose Backtracer API to JavaScript
-
-**Brief explanation:** There's currently a [Backtracer API in frida-gum](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumbacktracer.h)
-that is not yet exposed to the JS runtime.
-
-**Expected results:** Backtracer API available in the JavaScript runtime.
+**Expected results:** Backtracer and symbol resolving API available in the JavaScript runtime.
 
 **Knowledge Prerequisite:** JavaScript, C
-
-**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
-
-
-## Expose symbol resolving API to JavaScript
-
-**Brief explanation:** There's currently a [symbol resolving API in frida-gum](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumsymbolutil.h)
-that is not yet exposed to the JS runtime.
-
-This is however not just a matter of exposing this API, as the
-underlying implementations will need some adjustments to work well
-when injected into another process. The Windows implementation
-currently relies on DbgHelp.dll being loaded, which might not be an
-acceptable constraint.
-
-**Expected results:** Symbol resolving API available in the JavaScript runtime.
-
-**Knowledge Prerequisite:** JavaScript, C
-
-**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
-
-
-## Document Frida's internal architecture
-
-**Brief explanation:** We need to make it easier for future contributors to
-dive into Frida's code-base.
-
-**Expected results:** Frida architecture documentation on Frida's website.
-
-**Knowledge Prerequisite:** Vala, C
 
 **Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
