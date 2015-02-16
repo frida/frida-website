@@ -32,7 +32,7 @@ forwarding.
 
 **Knowledge Prerequisite:** Vala, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Add support for Android apps running in the ART VM
@@ -49,7 +49,7 @@ deprecated alias kept around until the next major Frida release.
 
 **Knowledge Prerequisite:** JavaScript, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Port Stalker to ARM
@@ -65,7 +65,7 @@ Want to know more about how it's implemented for x86? Read more [here](https://m
 
 **Knowledge Prerequisite:** C, Assembly
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Port Stalker to ARM64
@@ -81,7 +81,7 @@ Want to know more about how it's implemented for x86? Read more [here](https://m
 
 **Knowledge Prerequisite:** C, Assembly
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Add JS API for installing a global exception handler
@@ -93,7 +93,7 @@ JavaScript would be very helpful for building fuzzer tools on top of Frida.
 
 **Knowledge Prerequisite:** C, JavaScript
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Add support for spawning apps on Android: instrument from the first instruction
@@ -107,7 +107,7 @@ forks itself to run an app.
 
 **Knowledge Prerequisite:** Vala, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Package for major distributions
@@ -121,7 +121,7 @@ by Frida's buildbot.
 
 **Knowledge Prerequisite:** python
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Port Frida to Windows Phone
@@ -144,7 +144,7 @@ although presumably much much simpler.
 
 **Knowledge Prerequisite:** JavaScript, C, CLR
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Investigate possible integrations with radare
@@ -159,7 +159,7 @@ that tools leveraging Frida and Radare can do so with minimal friction.
 
 **Knowledge Prerequisite:** Frida, Radare
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Expose Backtracer API to JavaScript
@@ -171,7 +171,7 @@ that is not yet exposed to the JS runtime.
 
 **Knowledge Prerequisite:** JavaScript, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Expose symbol resolving API to JavaScript
@@ -189,7 +189,7 @@ acceptable constraint.
 
 **Knowledge Prerequisite:** JavaScript, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
 ## Document Frida's internal architecture
@@ -201,4 +201,4 @@ dive into Frida's code-base.
 
 **Knowledge Prerequisite:** Vala, C
 
-**Mentor:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;
+**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
