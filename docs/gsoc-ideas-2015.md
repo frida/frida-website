@@ -84,18 +84,6 @@ Want to know more about how it's implemented for x86? Read more [here](https://m
 **Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
 
 
-## Add JS API for installing a global exception handler
-
-**Brief explanation:** Being able to install a global exception handler from
-JavaScript would be very helpful for building fuzzer tools on top of Frida.
-
-**Expected results:** Global exception handler API available in the JavaScript runtime.
-
-**Knowledge Prerequisite:** C, JavaScript
-
-**Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
-
-
 ## Add support for spawning apps on Android: instrument from the first instruction
 
 **Brief explanation:** Not to be confused with support for spawning processes,
