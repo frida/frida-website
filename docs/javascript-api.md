@@ -74,7 +74,8 @@ permalink: /docs/javascript-api/
             `uninterruptible` or `halted`
         -   `registers`: object with the keys `pc` and `sp`, which are
             NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
-            respectively, for ia32/x64/arm
+            respectively, for ia32/x64/arm. Other processor-specific keys
+            are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
 
         This function may return the string `stop` to cancel the enumeration
         early.
