@@ -58,6 +58,9 @@ permalink: /docs/javascript-api/
     (in bytes) as a JavaScript number. This is used to make your scripts more
     portable.
 
++   `Process.isDebuggerAttached()`: returns a boolean indicating whether a
+    debugger is currently attached
+
 +   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a
     JavaScript number
 
