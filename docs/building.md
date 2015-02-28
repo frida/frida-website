@@ -46,27 +46,27 @@ below.
 ### Linux
 
 - Make sure you have a:
-  - Modern x86 64-bit system (Frida's Linux backend is not yet ported to 32-bit).
-  - Compiler:
-```bash
-    $ sudo apt-get install build-essential
-```
+  - Modern x86 64-bit system (32-bit may work but is untested)
+  - Development toolchain:
+{% highlight bash %}
+$ sudo apt-get install build-essential git python-dev python3-dev zlib1g-dev
+{% endhighlight %}
 - Clone `frida` and build it:
-```bash
-    $ git clone git://github.com/frida/frida.git
-    $ cd frida
-    $ make
-```
+{% highlight bash %}
+$ git clone git://github.com/frida/frida.git
+$ cd frida
+$ make
+{% endhighlight %}
 
 ### Mac
 
 - Make sure you have the latest Xcode with command-line tools installed.
 - Clone `frida` and build it:
-```bash
-    $ git clone git://github.com/frida/frida.git
-    $ cd frida
-    $ make
-```
+{% highlight bash %}
+$ git clone git://github.com/frida/frida.git
+$ cd frida
+$ make
+{% endhighlight %}
 
 ### Windows
 
@@ -74,16 +74,16 @@ below.
   - 64-bit version of Windows (32-bit will work but may require some fiddling)
   - Visual Studio 2013
   - [Git](http://msysgit.github.com/)
-  - [Python 2.7 and 3.3](http://python.org/). You want both the 32- and the
+  - [Python 2.7 and 3.4](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
   `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
   - Clone `frida`:
-```bash
-    $ git clone git://github.com/frida/frida.git
-    $ cd frida
-    $ git submodule init
-    $ git submodule update
-```
+{% highlight bash %}
+$ git clone git://github.com/frida/frida.git
+$ cd frida
+$ git submodule init
+$ git submodule update
+{% endhighlight %}
 - Open `frida.sln` and build it.
 
 
@@ -95,27 +95,27 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 ### UNIX
 
 - Make sure your system has the following goodies:
-```bash
-    $ sudo apt-get install build-essential gcc git sudo flex \
-      bison libglib2.0-dev
-```
+{% highlight bash %}
+$ sudo apt-get install build-essential gcc git sudo flex \
+    bison libglib2.0-dev
+{% endhighlight %}
 - Clone the `frida-ci` repository and build away:
-```bash
-    $ git clone git://github.com/frida/frida-ci.git
-    $ mkdir tmp
-    $ cd tmp
-    $ ../frida-ci/create-toolchain-and-sdk.sh
-```
+{% highlight bash %}
+$ git clone git://github.com/frida/frida-ci.git
+$ mkdir tmp
+$ cd tmp
+$ ../frida-ci/create-toolchain-and-sdk.sh
+{% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
-```bash
-    $ scp build/toolchain-*.tar.bz2 your@own.server:
-    $ scp build/sdk-*.tar.bz2 your@own.server:
-```
+{% highlight bash %}
+$ scp build/toolchain-*.tar.bz2 your@own.server:
+$ scp build/sdk-*.tar.bz2 your@own.server:
+{% endhighlight %}
 - Now you can clone `frida` like above and adjust the URLs in
 `releng/setup-env.sh` (look for `download_command`) before running `make`.
 
 (Note: the `frida` module now has integrated support for building the SDK.
-For example: `FRIDA_HOST=android-arm make -f Makefile.sdk.mk`)
+For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
 
 ### Windows
 
@@ -137,31 +137,31 @@ autoCRLF = false
   defined (might have happened if you installed `msys` or `cygwin`).
   - Use [bazaar](http://bazaar.canonical.com/) to check out our slightly
   modified HSBuild:
-```bash
-    $ bzr branch lp:~oleavr/hsbuild/tweaks hsbuild
-```
+{% highlight bash %}
+$ bzr branch lp:~oleavr/hsbuild/tweaks hsbuild
+{% endhighlight %}
   - Open `msbuild\tasks\HSBuildTasks.sln` and build it in `Release` configuration.
   - Open `hsbuild\hsbuild.sln` and build it in `Release` configuration (with
   Platform set to `x86`).
   - As Administrator, run `deploy.bat`, which will update the system-wide
   HSBuild installation.
   - Clone the `frida-ci` repository:
-```bash
-    $ git clone git://github.com/frida/frida-ci.git
-```
+{% highlight bash %}
+$ git clone git://github.com/frida/frida-ci.git
+{% endhighlight %}
   - Copy `frida-ci\Frida.props` next to HSBuild's .targets/.props
   files, typically at `C:\Program Files (x86)\MSBuild\HSBuild`.
 - Build it
   - Open `cmd.exe` and navigate to `frida-ci`.
   - Start the build process:
-```bash
-    $ build-deps-windows.py
-```
+{% highlight bash %}
+$ build-deps-windows.py
+{% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
-```bash
-    $ scp toolchain-windows-*.exe your@own.server:
-    $ scp sdk-windows-*.exe your@own.server:
-```
+{% highlight bash %}
+$ scp toolchain-windows-*.exe your@own.server:
+$ scp sdk-windows-*.exe your@own.server:
+{% endhighlight %}
 - Now you can clone `frida` like above and adjust the URLs in
 `releng\windows-toolchain.txt` and `releng\windows-sdk.txt` before opening
 `frida.sln`.
