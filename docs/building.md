@@ -17,12 +17,12 @@ coherent build environment. For example we know we're being built with just
 one version of autotools whether we're on Mac or Linux.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
-Frida's run-time components, like frida-fruitjector-helper, frida-agent, etc.
-will at some point need to be present on the filesystem. These binaries are
-serialized and linked into the Frida library (for example `_frida.so` in the
-case of frida-python), which means it's portable without relying on external
-moving parts. At runtime these are written out to a temporary directory and
-later cleaned up.
+Frida's run-time components, like frida-helper, frida-agent, etc. will at some
+point need to be present on the filesystem. These binaries are serialized and
+linked into the Frida library (for example `_frida.so` in the case of
+frida-python), which means it's portable without relying on external moving
+parts. At runtime these are written out to a temporary directory and later
+cleaned up.
 
 - **No runtime conflicts.** frida-agent, the shared library injected into target
 processes, must have all of its dependencies (GLib, Gee, etc.) linked in to
