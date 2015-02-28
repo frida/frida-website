@@ -428,6 +428,11 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 
     Additionally, the object contains some useful properties:
 
+    -   `registers`: object with the keys `pc` and `sp`, which are
+        NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
+        respectively, for ia32/x64/arm. Other processor-specific keys
+        are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
+
     -   `errno`: (UNIX) current errno value (you may replace it)
 
     -   `lastError`: (Windows) current OS error value (you may replace it)
