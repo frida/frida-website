@@ -48,3 +48,6 @@ Want to help out? Have a look at our [GSoC 2015 Ideas Page](http://www.frida.re/
 to get an overview of where we'd like to go next.
 
 Enjoy!
+
+**Update: Frida 2.0.1 has now been released to remedy an iOS issue that slipped
+through the final testing.**
