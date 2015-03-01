@@ -49,5 +49,9 @@ to get an overview of where we'd like to go next.
 
 Enjoy!
 
-**Update: Frida 2.0.1 has now been released to remedy an iOS issue that slipped
-through the final testing.**
+**Update 2am:** An iOS issue slipped through the final testing, so we
+just pushed 2.0.1 to remedy this.
+
+**Update 11pm:** Thanks to your excellent feedback we found a critical
+bug when using Frida on Windows with certain iOS device configurations.
+Please upgrade to 2.0.2 and let us know if you run into any issues.
