@@ -78,9 +78,9 @@ Now just play around with the Chrome app and you should start seeing `open()`
 calls flying in:
 
 {% highlight bash %}
-  1392 ms	open()
-  1403 ms	open()
-  1420 ms	open()
+1392 ms	open()
+1403 ms	open()
+1420 ms	open()
 {% endhighlight %}
 
 You can now live-edit the aforementioned JavaScript files as you read

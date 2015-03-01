@@ -72,10 +72,10 @@ Reload your Twitter feed or exercise the UI in some way that results in network
 traffic, and you should see some output like the following:
 
 {% highlight bash %}
-  3979 ms	CCCryptorCreate()
-  3982 ms	CCCryptorCreateWithMode()
-  3983 ms	CCCryptorCreate()
-  3983 ms	CCCryptorCreateWithMode()
+3979 ms	CCCryptorCreate()
+3982 ms	CCCryptorCreateWithMode()
+3983 ms	CCCryptorCreate()
+3983 ms	CCCryptorCreateWithMode()
 {% endhighlight %}
 
 You can now live-edit the aforementioned JavaScript files as you read
