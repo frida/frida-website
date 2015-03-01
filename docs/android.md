@@ -17,7 +17,7 @@ is a stop-gap solution and won't be necessary once Frida has an Android app
 
 First off, download the latest `frida-server` for Android:
 {% highlight bash %}
-$ curl -O http://build.frida.re/frida/android/bin/frida-server
+$ curl -O http://build.frida.re/frida/android/arm/bin/frida-server
 $ chmod +x frida-server
 {% endhighlight %}
 
