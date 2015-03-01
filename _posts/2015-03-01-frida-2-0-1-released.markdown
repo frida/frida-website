@@ -7,5 +7,5 @@ version: 2.0.1
 categories: [release]
 ---
 
-Just a quick bug-fix release to remedy an iOS issue that slipped through while
-testing 2.0.0. Enjoy!
+Just a quick bug-fix release to remedy an iOS issue that slipped through the
+final testing of 2.0.0. Enjoy!
