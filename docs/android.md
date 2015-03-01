@@ -85,3 +85,12 @@ calls flying in:
 
 You can now live-edit the aforementioned JavaScript files as you read
 `man open`, and start diving deeper and deeper into your Android apps.
+
+## Building your own tool from scratch
+
+While the CLI tools like *frida-trace*, *frida-repl*, etc., are definitely
+quite useful, there might be times when you'd like to build your own tool
+harnessing the powerful [Frida APIs](/docs/javascript-api/). For that we would
+recommend reading the chapters on [Functions](/docs/functions) and
+[Messages](/docs/functions), and anywhere you see `frida.attach()` just
+substitute that with `frida.get_remote_device().attach()`.
