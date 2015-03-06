@@ -14,7 +14,7 @@ First off, you will need to jailbreak your device in case you haven't done so
 already. Also, we recommend using iOS 7.x as we haven't performed any recent
 regression tests on earlier versions.
 Next, start `Cydia` and add Frida's repository by going to `Manage` ->
-`Sources` -> `Edit` -> `Add` and enter `http://ospy.org`. You should now
+`Sources` -> `Edit` -> `Add` and enter `http://build.frida.re`. You should now
 be able to find and install the `Frida` package which lets Frida inject
 JavaScript into apps running on your iOS device. This happens over USB,
 so you will need to have your USB cable handy, though there's no need to

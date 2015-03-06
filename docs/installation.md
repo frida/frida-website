@@ -46,7 +46,7 @@ community can improve the experience for everyone.
 
 ## Install manually
 
-You can also grab pre-release binaries from [here](http://ospy.org/frida/).
+You can also grab pre-release binaries from [here](http://build.frida.re/frida/).
 
 ## Testing your installation
 

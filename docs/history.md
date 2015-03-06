@@ -41,7 +41,7 @@ for [python][], [.NET][], and even a [browser plugin][].
 [Stalker]: https://github.com/frida/frida-gum/blob/master/gum/backend-x86/gumstalker-x86.c
 [huge improvements]: http://blog.kalleberg.org/post/833101026/live-x86-code-instrumentation-with-frida
 [python]: https://pypi.python.org/pypi/frida
-[.NET]: http://ospy.org/frida/windows/x64-Release/bin/Frida.dll
-[browser plugin]: http://ospy.org/frida/mac/lib/browser/plugins/libnpfrida.dylib
+[.NET]: http://build.frida.re/frida/windows/x64-Release/bin/Frida.dll
+[browser plugin]: http://build.frida.re/frida/mac/lib/browser/plugins/libnpfrida.dylib
 [oSpy]: https://code.google.com/p/ospy/
 [V8]: https://code.google.com/p/v8/
