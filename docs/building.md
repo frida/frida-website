@@ -46,10 +46,11 @@ below.
 ### Linux
 
 - Make sure you have a:
-  - Modern x86 64-bit system (32-bit may work but is untested)
+  - Modern x86 system
   - Development toolchain:
 {% highlight bash %}
-$ sudo apt-get install build-essential git python-dev python3-dev zlib1g-dev
+$ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.9-dev \
+    lib32z1-dev python-dev python3-dev zlib1g-dev
 {% endhighlight %}
 - Clone `frida` and build it:
 {% highlight bash %}
@@ -96,8 +97,14 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
-$ sudo apt-get install build-essential gcc git sudo flex \
-    bison libglib2.0-dev
+$ sudo apt-get install bison build-essential flex gcc-multilib git \
+    lib32stdc++-4.9-dev lib32z1-dev libglib2.0-dev python-dev python3-dev \
+    zlib1g-dev
+{% endhighlight %}
+  Note that you may run into [this bug](https://bugs.launchpad.net/ubuntu/+source/zlib/+bug/1155307)
+  when building a 32-bit SDK on recent Ubuntu releases. The workaround is:
+{% highlight bash %}
+  $ sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include
 {% endhighlight %}
 - Clone the `frida-ci` repository and build away:
 {% highlight bash %}
