@@ -16,11 +16,11 @@ to dig deeper into the details.
 ## Enumerating Modules
 
 The `enumerate_modules()` method lists all modules (mostly shared/dynamic
-libraries) currently loaded in the target process `p`.
+libraries) currently loaded in the target process' session `s`.
 
 Running:
 {% highlight py %}
-print(p.enumerate_modules())
+print(s.enumerate_modules())
 {% endhighlight %}
 
 should give you something like:
@@ -34,12 +34,12 @@ where `base_address` is the base address of the module.
 ## Enumerating Memory Ranges
 
 The `enumerate_ranges(mask)` method lists all memory ranges currently mapped
-by the target process `p`.
+by the target process' session `s`.
 
 Running:
 
 {% highlight py %}
-print p.enumerate_ranges('rw-')
+print s.enumerate_ranges('rw-')
 {% endhighlight %}
 
 should give you something like:
@@ -55,13 +55,13 @@ mean any (wildcard).
 ## Reading/Writing Memory
 
 The `read_bytes(address, n)` method reads `n` bytes from `address` in the target
-process `p`. The `write_bytes(address, data)` method writes the bytes in data
-(a raw Python string) to `address`.
+process' session `s`. The `write_bytes(address, data)` method writes the bytes
+in data (a raw Python string) to `address`.
 
 Running:
 
 {% highlight py %}
-print p.read_bytes(49758817247232, 10).encode("hex")
+print s.read_bytes(49758817247232, 10).encode("hex")
 {% endhighlight %}
 
 should give you some binary data, e.g.:
@@ -73,7 +73,7 @@ should give you some binary data, e.g.:
 Running:
 
 {% highlight py %}
-p.write_bytes(49758817247232, "frida")
+s.write_bytes(49758817247232, "frida")
 {% endhighlight %}
 
 should return after it has updated the memory in the target process.

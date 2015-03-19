@@ -65,8 +65,8 @@ containing:
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("""
+session = frida.attach("hello")
+script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
     onEnter: function(args) {
         send(args[0].toInt32());
@@ -104,8 +104,8 @@ process. Create the file `modify.py` with the following contents:
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("""
+session = frida.attach("hello")
+script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
     onEnter: function(args) {
         args[0] = ptr("1337");
@@ -147,8 +147,8 @@ We can use Frida to call functions inside a target process. Create the file
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("""
+session = frida.attach("hello")
+script = session.create_script("""
 var f = new NativeFunction(ptr("%s"), 'void', ['int']);
 f(1911);
 f(1911);

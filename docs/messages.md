@@ -65,8 +65,8 @@ Create a file `send.py` containing:
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("send(1337);")
+session = frida.attach("hello")
+script = session.create_script("send(1337);")
 def on_message(message, data):
     print(message)
 script.on('message', on_message)
@@ -111,8 +111,8 @@ script. Create the file `pingpong.py`:
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("""
+session = frida.attach("hello")
+script = session.create_script("""
     recv('poke', function onMessage(pokeMessage) { send('pokeBack'); });
 """)
 def on_message(message, data):
@@ -153,8 +153,8 @@ JavaScript script. Create a script `rpc.py`:
 import frida
 import sys
 
-process = frida.attach("hello")
-script = process.session.create_script("""
+session = frida.attach("hello")
+script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
     onEnter: function(args) {
         send(args[0].toString());
