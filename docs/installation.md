@@ -63,8 +63,8 @@ In another terminal, make a file example.py with the following contents:
 
 {% highlight py %}
 import frida
-p = frida.attach("cat")
-print([x.name for x in p.enumerate_modules()])
+session = frida.attach("cat")
+print([x.name for x in session.enumerate_modules()])
 {% endhighlight %}
 
 If you are on Linux, issue:

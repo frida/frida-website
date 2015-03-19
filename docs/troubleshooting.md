@@ -44,7 +44,7 @@ This means the process name you specified in `frida.attach()` matches more than
 one process. You can use the PID instead:
 
 {% highlight py %}
-p = frida.attach(12345)
+session = frida.attach(12345)
 {% endhighlight %}
 
 ## SystemError: attach_to_process PTRACE_ATTACH failed: 1
