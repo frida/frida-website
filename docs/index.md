@@ -47,10 +47,12 @@ functions and even calling native functions inside the process. There's a
 bi-directional communication channel that is used to talk between your
 app (Python?) and the JS running inside the target process.
 
-On top of this C core there are multiple language bindings (Python, .NET
-and a browser plugin), and it is very easy to build further bindings for
-other languages and environments (Node.js could be a future binding if
-anyone's interested in helping out with that).
+On top of this C core there are multiple language bindings, e.g.
+[Python](https://github.com/frida/frida-python),
+[Node.js](https://github.com/frida/frida-node),
+[.NET](https://github.com/frida/frida-clr),
+[Qml](https://github.com/frida/frida-qml), etc., and it is very easy to build
+additional bindings for other languages and environments.
 
 ## ProTips™, Notes, and Warnings
 
