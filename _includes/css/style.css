@@ -132,15 +132,24 @@ nav li {
 /* Footer */
 
 body > footer {
-  background: #222;
+  background: #666;
   font-size: 16px;
   padding-bottom: 5px;
-  color: #888;
+  color: #ccc;
   margin-top: 40px;
 }
 
 body > footer a {
   color: #fff;
+  opacity: .8;
+  -webkit-transition: opacity .2s;
+  -moz-transition: opacity .2s;
+  transition: opacity .2s;
+}
+
+body > footer a:hover {
+  color: #fff;
+  opacity: 1;
 }
 
 body > footer .align-right p, body > footer img {
