@@ -11,7 +11,7 @@ body {
   font-size: 21px;
   font-weight: 300;
   color: black;
-  background: white;
+  background: #F3F3F4;
   border-top: 5px solid #FA7427;
 }
 
@@ -299,9 +299,8 @@ body > footer a:hover img {
 
 /* Article - Used for both docs and news */
 
-
 article {
-  background: #F3F3F4;
+  background: #fff;
   border-radius: 10px;
   padding: 20px;
   margin: 0 10px;
