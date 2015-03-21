@@ -11,7 +11,7 @@ You may have wondered:
 
 > Why a Python API, but JavaScript debugging logic?
 
-That, my friend, is a question to be asked no more:
+Well, you can now do this:
 
 {% highlight sh %}
 $ npm install frida
