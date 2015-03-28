@@ -6,6 +6,25 @@ next_section: troubleshooting
 permalink: /docs/javascript-api/
 ---
 
+## Table of contents
+  1. [Global](#global)
+  * [console](#console)
+  * [Process](#process)
+  * [Module](#module)
+  * [Memory](#memory)
+  * [Thread](#thread)
+  * [NativePointer](#nativepointer)
+  * [NativeFunction](#nativefunction)
+  * [NativeCallback](#nativecallback)
+  * [Socket](#socket)
+  * [File](#file)
+  * [Interceptor](#interceptor)
+  * [Stalker](#stalker)
+  * [Instruction](#instruction)
+  * [ObjC](#objc)
+  * [Dalvik](#dalvik)
+  * [WeakRef](#weakref)
+
 ## Global
 
 +   `ptr(s)`: short-hand for `new NativePointer(s)`
