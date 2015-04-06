@@ -31,7 +31,7 @@ $ adb push frida-server /data/local/tmp/
 In one terminal (on your desktop), run the server:
 {% highlight bash %}
 $ adb shell
-root@android:/ # /data/local/tmp/frida-server -t 0
+root@android:/ # /data/local/tmp/frida-server
 {% endhighlight %}
 
 While that's running, forward some local TCP ports to your device:
