@@ -92,5 +92,5 @@ While the CLI tools like *frida-trace*, *frida-repl*, etc., are definitely
 quite useful, there might be times when you'd like to build your own tools
 harnessing the powerful [Frida APIs](/docs/javascript-api/). For that we would
 recommend reading the chapters on [Functions](/docs/functions) and
-[Messages](/docs/functions), and anywhere you see `frida.attach()` just
+[Messages](/docs/messages), and anywhere you see `frida.attach()` just
 substitute that with `frida.get_remote_device().attach()`.
