@@ -596,9 +596,9 @@ var UIAlertView = ObjC.use('UIAlertView'); /* iOS */
 var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
     "Frida",
     "Hello from Frida",
-    ptr("0"),
+    NULL,
     "OK",
-    ptr("0"));
+    NULL);
 view.show();
 view.release();
 {% endhighlight %}
