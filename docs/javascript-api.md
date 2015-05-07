@@ -91,7 +91,7 @@ permalink: /docs/javascript-api/
         -   `id`: OS-specific id
         -   `state`: string specifying either `running`, `stopped`, `waiting`,
             `uninterruptible` or `halted`
-        -   `registers`: object with the keys `pc` and `sp`, which are
+        -   `context`: object with the keys `pc` and `sp`, which are
             NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
             respectively, for ia32/x64/arm. Other processor-specific keys
             are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
@@ -447,10 +447,11 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 
     Additionally, the object contains some useful properties:
 
-    -   `registers`: object with the keys `pc` and `sp`, which are
+    -   `context`: object with the keys `pc` and `sp`, which are
         NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
         respectively, for ia32/x64/arm. Other processor-specific keys
         are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
+        You may also update register values by assigning to these keys.
 
     -   `errno`: (UNIX) current errno value (you may replace it)
 
