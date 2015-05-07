@@ -107,6 +107,9 @@ permalink: /docs/javascript-api/
     -   `onComplete: function onComplete()`: called when all threads have been
         enumerated
 
++   `Process.enumerateThreadsSync()`: synchronous version of
+    `enumerateThreads()` that returns the threads in an array.
+
 +   `Process.enumerateModules(callbacks)`: enumerate modules loaded right now,
     where `callbacks` is an object specifying:
 
@@ -122,6 +125,9 @@ permalink: /docs/javascript-api/
 
     -   `onComplete: function onComplete()`: called when all modules have been
         enumerated
+
++   `Process.enumerateModulesSync()`: synchronous version of
+    `enumerateModules()` that returns the modules in an array.
 
 +   `Process.enumerateRanges(protection, callbacks)`: enumerate memory ranges
     satisfying `protection` given as a string of the form: `rwx`, where `rw-`
@@ -139,6 +145,9 @@ permalink: /docs/javascript-api/
 
     -   `onComplete: function onComplete()`: called when all memory ranges have
         been enumerated
+
++   `Process.enumerateRangesSync(protection)`: synchronous version of
+    `enumerateRanges()` that returns the ranges in an array.
 
 
 ## Module
@@ -158,9 +167,15 @@ permalink: /docs/javascript-api/
     -   `onComplete: function onComplete()`: called when all exports have been
         enumerated
 
++   `Module.enumerateExportsSync(name)`: synchronous version of
+    `enumerateExports()` that returns the exports in an array.
+
 +   `Module.enumerateRanges(name, protection, callbacks)`: just like
     `Process#enumerateRanges`, except it's scoped to the specified module
     `name`.
+
++   `Module.enumerateRangesSync(name, protection)`: synchronous version of
+    `enumerateRanges()` that returns the ranges in an array.
 
 +   `Module.findBaseAddress(name)`: returns the base address of the `name`
     module, or `null` if the module isn't loaded
