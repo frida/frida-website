@@ -72,13 +72,13 @@ permalink: /docs/javascript-api/
 
 ## Process
 
-+   `Process.arch`: read-only property containing the string `ia32`, `x64` or
-    `arm`
++   `Process.arch`: property containing the string `ia32`, `x64`, `arm`
+    or `arm64`
 
-+   `Process.platform`: read-only property containing the string `windows`,
-    `darwin` or `linux`
++   `Process.platform`: property containing the string `windows`,
+    `darwin`, `linux` or `qnx`
 
-+   `Process.pointerSize`: read-only property containing the size of a pointer
++   `Process.pointerSize`: property containing the size of a pointer
     (in bytes) as a JavaScript number. This is used to make your scripts more
     portable.
 
