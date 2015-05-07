@@ -9,6 +9,7 @@ permalink: /docs/javascript-api/
 ## Table of contents
   1. [Global](#global)
   * [console](#console)
+  * [Frida](#frida)
   * [Process](#process)
   * [Module](#module)
   * [Memory](#memory)
@@ -64,6 +65,10 @@ permalink: /docs/javascript-api/
     [frida-python](https://github.com/frida/frida-python),
     [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
+
+## Frida
+
++   `Frida.version`: property containing the current Frida version
 
 ## Process
 
