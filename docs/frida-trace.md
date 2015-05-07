@@ -6,8 +6,12 @@ next_section: frida-discover
 permalink: /docs/frida-trace/
 ---
 
-Herp derp derp
+frida-trace is a tool for dynamically tracing function calls.
 
-## Frida trace!
+{% highlight bash %}
+# Trace recv* and send* APIs in Safari
+~ $ frida-trace -i 'recv*' -i 'send*' Safari
 
-More derp
+# Trace ObjC method calls in Safari
+~ $ frida-trace -m '-[NSView drawRect:]' Safari
+{% endhighlight %}

@@ -1,13 +1,15 @@
 ---
 layout: docs
-title: Frida-ps
+title: frida-ps
 prev_section: frida-cli
 next_section: frida-trace
 permalink: /docs/frida-ps/
 ---
 
-Herp derp derp
+This is a command-line tool for listing processes, which is very useful
+when interacting with a remote system.
 
-## Frida PS!
-
-More derp
+{% highlight bash %}
+# Connect Frida to an iPad over USB and list processes running there
+~ $ frida-ps -U
+{% endhighlight %}
