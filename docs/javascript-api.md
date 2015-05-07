@@ -571,29 +571,11 @@ Stalker.follow(Process.getCurrentThreadId(), {
     Objective-C runtime loaded. Do not invoke any other `ObjC` properties or
     methods unless this is the case.
 
-+   `ObjC.classes`: an array of strings specifying the names of classes currently
-    registered. You may call `ObjC.use()` to further examine them, or
-    `ObjC.refreshClasses()` to ensure that the list is up-to-date.
-
-+   `ObjC.mainQueue`: the GCD queue of the main thread
-
-+   `ObjC.schedule(queue, work)`: schedule the JavaScript function `work` on
-    the GCD queue specified by `queue`. An `NSAutoreleasePool` is created just
-    before calling `work`, and cleaned up on return.
++   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
+    bindings for each of the currently registered classes.
 
 {% highlight js %}
-var NSSound = ObjC.use('NSSound'); /* Mac */
-ObjC.schedule(ObjC.mainQueue, function () {
-    var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
-    sound.play();
-});
-{% endhighlight %}
-
-+   `ObjC.use(className)`: dynamically get a JavaScript binding for `className`
-    by returning a class object.
-
-{% highlight js %}
-var UIAlertView = ObjC.use('UIAlertView'); /* iOS */
+var UIAlertView = ObjC.classes.UIAlertView; /* iOS */
 var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
     "Frida",
     "Hello from Frida",
@@ -604,12 +586,25 @@ view.show();
 view.release();
 {% endhighlight %}
 
-+   `ObjC.cast(handle, klass)`: create a JavaScript wrapper given the existing
-    instance at `handle` of given class `klass` (as returned from `ObjC.use()`).
++   `ObjC.mainQueue`: the GCD queue of the main thread
+
++   `ObjC.schedule(queue, work)`: schedule the JavaScript function `work` on
+    the GCD queue specified by `queue`. An `NSAutoreleasePool` is created just
+    before calling `work`, and cleaned up on return.
 
 {% highlight js %}
-var NSSound = ObjC.use('NSSound'); /* Mac */
-var sound = ObjC.cast(ptr("0x1234"), NSSound);
+var NSSound = ObjC.classes.NSSound; /* Mac */
+ObjC.schedule(ObjC.mainQueue, function () {
+    var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
+    sound.play();
+});
+{% endhighlight %}
+
++   `new ObjC.Object(handle)`: create a JavaScript binding given the existing
+    object at `handle` (a NativePointer).
+
+{% highlight js %}
+var sound = new ObjC.Object(ptr("0x1234"));
 {% endhighlight %}
 
 +   `ObjC.implement(method, fn)`: create a JavaScript implementation compatible
@@ -618,10 +613,17 @@ var sound = ObjC.cast(ptr("0x1234"), NSSound);
     ObjC method's `implementation` property.
 
 {% highlight js %}
-var NSSound = ObjC.use('NSSound'); /* Mac */
+var NSSound = ObjC.classes.NSSound; /* Mac */
 var oldImpl = NSSound.play.implementation;
 NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
     return oldImpl(handle, selector);
+});
+
+var NSView = ObjC.classes.NSView; /* Mac */
+var drawRect = NSView['- drawRect:'];
+var oldImpl = drawRect.implementation;
+drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
+    oldImpl(handle, selector);
 });
 {% endhighlight %}
 
@@ -629,16 +631,13 @@ NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, sel
 >   `NativePointer`, you may also use `Interceptor` to hook functions:
 
 {% highlight js %}
-var NSSound = ObjC.use('NSSound'); /* Mac */
+var NSSound = ObjC.classes.NSSound; /* Mac */
 Interceptor.attach(NSSound.play.implementation, {
     onEnter: function onEnter() {
         send("[NSSound play]");
     }
 });
 {% endhighlight %}
-
-+   `ObjC.refreshClasses()`: refresh the list of classes currently registered,
-    as reported by `ObjC.classes`
 
 +   `ObjC.selector(name)`: convert the JavaScript string `name` to a selector
 
