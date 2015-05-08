@@ -380,11 +380,11 @@ Interceptor.attach(f, {
 -   `isNull()`: returns a boolean allowing you to conveniently check if a
     pointer is NULL
 
--   `add(rhs)`: make a new NativePointer with this NativePointer plus `rhs`.
-    `rhs` may either be a JavaScript number or another NativePointer.
-
--   `sub(rhs)`: make a new NativePointer with this NativePointer minus `rhs`.
-    `rhs` may either be a JavaScript number or another NativePointer.
+-   `add(rhs)`, `sub(rhs)`,
+    `and(rhs)`, `or(rhs)`,
+    `xor(rhs)`:
+    make a new NativePointer with this NativePointer plus/minus/and/or/xor
+    `rhs`, which may either be a JavaScript number or another NativePointer.
 
 -   `toInt32()`: cast this NativePointer to a signed 32-bit integer
 
