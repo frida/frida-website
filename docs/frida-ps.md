@@ -11,5 +11,5 @@ when interacting with a remote system.
 
 {% highlight bash %}
 # Connect Frida to an iPad over USB and list running processes
-~ $ frida-ps -U
+$ frida-ps -U
 {% endhighlight %}
