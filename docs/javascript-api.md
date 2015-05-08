@@ -271,12 +271,13 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     A JavaScript exception will be thrown if any of the bytes written to
     `address` isn't writable.
 
-+   `Memory.readUtf8String(address[, size = -1])`,
++   `Memory.readCString(address[, size = -1])`,
+    `Memory.readUtf8String(address[, size = -1])`,
     `Memory.readUtf16String(address[, size = -1])`,
     `Memory.readAnsiString(address[, size = -1])`:
-    read the bytes at `address` as a UTF-8, UTF-16 or ANSI string.  Supply the
-    optional `size` if you know the size of the string in bytes, or omit it or
-    specify -1 if the string is NUL-terminated.
+    read the bytes at `address` as an ASCII, UTF-8, UTF-16 or ANSI string.
+    Supply the optional `size` argument if you know the size of the string
+    in bytes, or omit it or specify -1 if the string is NUL-terminated.
 
     A JavaScript exception will be thrown if any of the `size` bytes read from
     `address` isn't readable.
