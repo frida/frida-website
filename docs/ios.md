@@ -29,6 +29,15 @@ are working. Run:
 $ frida-ps -U
 {% endhighlight %}
 
+<div class="note info">
+  <h5>Using Linux?</h5>
+  <p>
+    There's not yet any usbmuxd integration, so in the meantime you can use
+    WiFi and set up an SSH tunnel between localhost:27042 in both ends, and
+    then use -R instead of -U (just like on Android).
+  </p>
+</div>
+
 Unless you already plugged in your device, you should see the following
 message:
 
