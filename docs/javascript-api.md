@@ -92,8 +92,7 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateThreads(callbacks)`: enumerate threads alive right now,
     where `callbacks` is an object specifying:
 
-    -   `onMatch: function onMatch(thread)`: called with `thread` object
-        containing:
+    -   `onMatch: function (thread)`: called with `thread` object containing:
         -   `id`: OS-specific id
         -   `state`: string specifying either `running`, `stopped`, `waiting`,
             `uninterruptible` or `halted`
@@ -105,8 +104,7 @@ permalink: /docs/javascript-api/
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function onComplete()`: called when all threads have been
-        enumerated
+    -   `onComplete: function ()`: called when all threads have been enumerated
 
 +   `Process.enumerateThreadsSync()`: synchronous version of
     `enumerateThreads()` that returns the threads in an array.
@@ -114,8 +112,7 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateModules(callbacks)`: enumerate modules loaded right now,
     where `callbacks` is an object specifying:
 
-    -   `onMatch: function onMatch(module)`: called with `module` object
-        containing:
+    -   `onMatch: function (module)`: called with `module` object containing:
         -   `name`: canonical module name as a string
         -   `base`: base address as a `NativePointer`
         -   `size`: size in bytes
@@ -124,8 +121,7 @@ permalink: /docs/javascript-api/
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function onComplete()`: called when all modules have been
-        enumerated
+    -   `onComplete: function ()`: called when all modules have been enumerated
 
 +   `Process.enumerateModulesSync()`: synchronous version of
     `enumerateModules()` that returns the modules in an array.
@@ -135,8 +131,7 @@ permalink: /docs/javascript-api/
     means "must be at least readable and writable". `callbacks` is an object
     specifying:
 
-    -   `onMatch: function onMatch(range)`: called with `range` object
-        containing:
+    -   `onMatch: function (range)`: called with `range` object containing:
         -   `base`: base address as a `NativePointer`
         -   `size`: size in bytes
         -   `protection`: protection string (see above)
@@ -144,8 +139,8 @@ permalink: /docs/javascript-api/
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function onComplete()`: called when all memory ranges have
-        been enumerated
+    -   `onComplete: function ()`: called when all memory ranges have been
+        enumerated
 
 +   `Process.enumerateRangesSync(protection)`: synchronous version of
     `enumerateRanges()` that returns the ranges in an array.
@@ -157,7 +152,7 @@ permalink: /docs/javascript-api/
     the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
     specifying:
 
-    -   `onMatch: function onMatch(mod)`: called with `mod` object containing:
+    -   `onMatch: function (mod)`: called with `mod` object containing:
         -   `type`: string specifying either `function` or `variable`
         -   `name`: export name as a string
         -   `address`: absolute address as a `NativePointer`
@@ -165,7 +160,7 @@ permalink: /docs/javascript-api/
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function onComplete()`: called when all exports have been
+    -   `onComplete: function ()`: called when all exports have been
         enumerated
 
 +   `Module.enumerateExportsSync(name)`: synchronous version of
@@ -195,18 +190,18 @@ permalink: /docs/javascript-api/
 
     -   `callbacks` is an object with:
 
-        -   `onMatch: function onMatch(address, size)`: called with `address`
+        -   `onMatch: function (address, size)`: called with `address`
             containing the address of the occurence as a `NativePointer` and
             `size` specifying the size as a JavaScript number.
 
             This function may return the string `stop` to cancel the memory
             scanning early.
 
-        -   `onError: function onError(reason)`: called with `reason` when
-            there was a memory access error while scanning
+        -   `onError: function (reason)`: called with `reason` when there was a
+            memory access error while scanning
 
-        -   `onComplete: function onComplete()`: called when the memory range
-            has been fully scanned
+        -   `onComplete: function ()`: called when the memory range has been
+            fully scanned
 
 +   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap. The
     returned object is a `NativePointer` and the heap memory will be released
@@ -322,8 +317,8 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 
     `callbacks` is an object specifying:
 
-    -   `onAccess: function onAccess(details)`: called synchronously with
-        `details` object containing:
+    -   `onAccess: function (details)`: called synchronously with `details`
+        object containing:
         -   `operation`: the kind of operation that triggered the access, as a
             string specifying either `read`, `write` or `execute`
         -   `from`: address of instruction performing the access as a
@@ -508,15 +503,15 @@ Interceptor.attach(f, {
 
     The `callbacks` argument is an object containing one or more of:
 
-    -   `onEnter: function onEnter(args)`: callback function given one argument
+    -   `onEnter: function (args)`: callback function given one argument
         `args` that can be used to read or write arguments as an array of
         `NativePointer` objects.
 
-    -   `onLeave: function onLeave(retval)`: callback function given one
-        argument `retval` that is a `NativePointer` containing the return
-        value. You may call `retval.replace(1337)` to replace the return value
-        with the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace
-        with a pointer.
+    -   `onLeave: function (retval)`: callback function given one argument
+        `retval` that is a `NativePointer` containing the return value.
+        You may call `retval.replace(1337)` to replace the return value with
+        the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace with
+        a pointer.
 
     Note that these functions will be invoked with `this` bound to a
     per-invocation (thread-local) object where you can store arbitrary data,
@@ -527,10 +522,10 @@ Interceptor.attach(f, {
 
 {% highlight js %}
 Interceptor.attach(Module.findExportByName("libc.so", "read"), {
-    onEnter: function onEnter(args) {
+    onEnter: function (args) {
         this.fileDescriptor = args[0].toInt32();
     },
-    onLeave: function onLeave(retval) {
+    onLeave: function (retval) {
         if (retval.toInt32() > 0) {
             /* do something with this.fileDescriptor */
         }
@@ -597,13 +592,13 @@ Stalker.follow(Process.getCurrentThreadId(), {
     ret: false, // RET instructions: no thanks
     exec: false // all instructions: no thanks
   },
-  onReceive: function onReceive(events) {
+  onReceive: function (events) {
     // Called with `events` containing a binary blob which is one or more
     // GumEvent structs.  See `gumevent.h` for the format. This is obviously a
     // terrible API that is subject to change once a better trade-off between
     // ease-of-use and performance has been found.
   },
-  onCallSummary: function onCallSummary(summary) {
+  onCallSummary: function (summary) {
     // Called with `summary` being a key-value mapping of call target to number
     // of calls, in the current time window. You would typically implement this
     // instead of `onReceive` for efficiency.
@@ -726,7 +721,7 @@ drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
 {% highlight js %}
 var NSSound = ObjC.classes.NSSound; /* Mac */
 Interceptor.attach(NSSound.play.implementation, {
-    onEnter: function onEnter() {
+    onEnter: function () {
         send("[NSSound play]");
     }
 });
