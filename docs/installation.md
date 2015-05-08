@@ -20,14 +20,6 @@ you’ll need to make sure your system has before you start.
 - [setuptools](https://pypi.python.org/pypi/setuptools)
 - Windows, Mac OS X or Linux
 
-<div class="note info">
-  <h5>Running Frida on Linux</h5>
-  <p>
-    While Frida's Linux support is still beta quality, it should work well
-    as long as you don't need support for injecting into 32-bit processes.
-  </p>
-</div>
-
 ## Install with easy_install
 
 The best way to install Frida is via
