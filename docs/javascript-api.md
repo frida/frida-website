@@ -343,6 +343,34 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 
 ## Thread
 
++   `Thread.backtrace([context, backtracer])`: generate a backtrace for the
+    current thread, returned as an array of `NativePointer` objects.
+
+    If you call this from Interceptor's `onEnter` or `onLeave` callbacks you
+    should provide `this.context` for the optional `context` argument, as it
+    will give you a more accurate backtrace. Omitting `context` means the
+    backtrace will be generated from the current stack location, which may
+    not give you a very good backtrace due to V8's stack frames.
+    The optional `backtracer` argument specifies the kind of backtracer to use,
+    and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
+    latter is the default if not specified. The accurate kind of backtracers
+    rely on debugger-friendly binaries or presence of debug information to do a
+    good job, whereas the fuzzy backtracers perform forensics on the stack in
+    order to guess the return addresses, which means you will get false
+    positives, but it will work on any binary.
+
+{% highlight js %}
+var f = Module.findExportByName("libcommonCrypto.dylib",
+    "CCCryptorCreate");
+Interceptor.attach(f, {
+    onEnter: function (args) {
+        console.log("CCCryptorCreate called from:\n" +
+            Thread.backtrace(this.context, Backtracer.ACCURATE)
+            .map(DebugSymbol.fromAddress).join("\n") + "\n");
+    }
+});
+{% endhighlight %}
+
 +   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
     seconds specified as a JavaScript number. For example 0.05 to sleep for
     50 ms.
