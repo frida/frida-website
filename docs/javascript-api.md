@@ -13,6 +13,7 @@ permalink: /docs/javascript-api/
   * [Process](#process)
   * [Module](#module)
   * [Memory](#memory)
+  * [MemoryAccessMonitor](#memoryaccessmonitor)
   * [Thread](#thread)
   * [NativePointer](#nativepointer)
   * [NativeFunction](#nativefunction)
@@ -294,6 +295,45 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     allocate, encode and write out `str` as a UTF-8/UTF-16/ANSI string on the
     heap. The returned object is a `NativePointer`. See `Memory#alloc` for
     details about its lifetime.
+
+
+## MemoryAccessMonitor
+
+<div class="note info">
+  <h5>MemoryAccessMonitor is only available on Windows for now</h5>
+  <p>
+    We would love to support this on the other platforms too, so if you find
+    this useful and would like to help out, please get in touch.
+  </p>
+</div>
+
++   `MemoryAccessMonitor.enable(ranges, callbacks)`: monitor one or more memory
+    ranges for access, and notify on the first access of each contained memory
+    page. `ranges` is either a single range object or an array of such objects,
+    each of which contains:
+
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
+
+    `callbacks` is an object specifying:
+
+    -   `onAccess: function onAccess(details)`: called synchronously with
+        `details` object containing:
+        -   `operation`: the kind of operation that triggered the access, as a
+            string specifying either `read`, `write` or `execute`
+        -   `from`: address of instruction performing the access as a
+            `NativePointer`
+        -   `address`: address being accessed as a `NativePointer`
+        -   `rangeIndex`: index of the accessed range in the ranges provided to
+            `MemoryAccessMonitor.enable()`
+        -   `pageIndex`: index of the accessed memory page inside the specified
+            range
+        -   `pagesCompleted`: overall number of pages which have been accessed
+            so far (and are no longer being monitored)
+        -   `pagesTotal`: overall number of pages that were initially monitored
+
++   `MemoryAccessMonitor.disable()`: stop monitoring the remaining memory ranges
+    passed to `MemoryAccessMonitor.enable()`
 
 
 ## Thread
