@@ -34,14 +34,10 @@ $ adb shell
 root@android:/ # /data/local/tmp/frida-server
 {% endhighlight %}
 
-While that's running, forward some local TCP ports to your device:
+While that's running, forward one local TCP port to your device:
 {% highlight bash %}
 adb forward tcp:27042 tcp:27042
-adb forward tcp:27043 tcp:27043
 {% endhighlight %}
-
-*27042* is the port used for communicating with `frida-server`, and each
-subsequent port is required for each of the next processes you inject into.
 
 Now, just to verify things are working:
 {% highlight bash %}
