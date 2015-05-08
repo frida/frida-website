@@ -22,6 +22,7 @@ permalink: /docs/javascript-api/
   * [File](#file)
   * [Interceptor](#interceptor)
   * [Stalker](#stalker)
+  * [DebugSymbol](#debugsymbol)
   * [Instruction](#instruction)
   * [ObjC](#objc)
   * [Dalvik](#dalvik)
@@ -633,6 +634,44 @@ Stalker.follow(Process.getCurrentThreadId(), {
 +   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
     between each time the event queue is drained. Defaults to 250 ms, which
     means that the event queue is drained four times per second.
+
+
+## DebugSymbol
+
++   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromAddress(name)`:
+    look up debug information for `address`/`name` and return it as an object
+    containing:
+
+    -   `address`: Address that this symbol is for, as a `NativePointer`.
+    -   `name`: Name of the symbol, as a string.
+    -   `moduleName`: Module name owning this symbol, as a string.
+    -   `fileName`: File name owning this symbol, as a string.
+    -   `lineNumber`: Line number in `fileName`, as a JavaScript number.
+
+    You may also call `toString()` on it, which is very useful when combined
+    with `Thread.backtrace()`:
+
+{% highlight js %}
+var f = Module.findExportByName("libcommonCrypto.dylib",
+    "CCCryptorCreate");
+Interceptor.attach(f, {
+    onEnter: function (args) {
+        console.log("CCCryptorCreate called from:\n" +
+            Thread.backtrace(this.context, Backtracer.ACCURATE)
+            .map(DebugSymbol.fromAddress).join("\n") + "\n");
+    }
+});
+{% endhighlight %}
+
++   `DebugSymbol.getFunctionByName(name)`: resolves a function name and
+    returns its address as a `NativePointer`. Returns the first if more than
+    one function is found. Throws an exception if the name cannot be resolved.
+
++   `DebugSymbol.findFunctionsNamed(name)`: resolves a function name and returns
+    its addresses as an array of `NativePointer` objects.
+
++   `DebugSymbol.findFunctionsMatching(glob)`: resolves function names matching
+    `glob` and returns their addresses as an array of `NativePointer` objects.
 
 
 ## Instruction
