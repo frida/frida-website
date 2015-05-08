@@ -282,6 +282,8 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     A JavaScript exception will be thrown if any of the `size` bytes read from
     `address` isn't readable.
 
+    Note that `readAnsiString()` is only available (and relevant) on Windows.
+
 +   `Memory.writeUtf8String(address, str)`,
     `Memory.writeUtf16String(address, str)`,
     `Memory.writeAnsiString(address, str)`:
@@ -289,6 +291,8 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 
     A JavaScript exception will be thrown if any of the bytes written to
     `address` isn't writable.
+
+    Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
 +   `Memory.allocUtf8String(str)`,
     `Memory.allocUtf16String(str)`,
