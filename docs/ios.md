@@ -83,7 +83,7 @@ You can now live-edit the aforementioned JavaScript files as you read
 
 ## Building your own tools
 
-While the CLI tools like *frida-trace*, *frida-repl*, etc., are definitely
+While the CLI tools like *frida*, *frida-trace*, etc., are definitely
 quite useful, there might be times when you'd like to build your own tools
 harnessing the powerful [Frida APIs](/docs/javascript-api/). For that we would
 recommend reading the chapters on [Functions](/docs/functions) and
