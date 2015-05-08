@@ -472,6 +472,7 @@ Interceptor.attach(f, {
     `null` if invalid or unknown.
 
     The object returned has the fields:
+
     -   `ip`: (IP sockets) IP address as a string.
     -   `port`: (IP sockets) Port number as a JavaScript number.
     -   `path`: (UNIX sockets) UNIX path as a string.
@@ -684,6 +685,7 @@ Interceptor.attach(f, {
     example `Module.findExportByName()`).
 
     The object returned has the fields:
+
     -   `address`: Address (EIP) of this instruction, as a `NativePointer`.
     -   `next`: Pointer to the next instruction, so you can `parse()` it.
     -   `size`: Size of this instruction.
