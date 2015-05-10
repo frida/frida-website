@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Functions
-prev_section: usage
+prev_section: presentations
 next_section: messages
 permalink: /docs/functions/
 ---

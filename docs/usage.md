@@ -2,7 +2,7 @@
 layout: docs
 title: Basic Usage
 prev_section: installation
-next_section: functions
+next_section: presentations
 permalink: /docs/usage/
 ---
 
