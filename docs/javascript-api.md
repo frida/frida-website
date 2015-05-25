@@ -535,7 +535,7 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 });
 {% endhighlight %}
 
-    Additionally, the object contains some useful properties:
++   Additionally, the object contains some useful properties:
 
     -   `context`: object with the keys `pc` and `sp`, which are
         NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
