@@ -146,6 +146,12 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateRangesSync(protection)`: synchronous version of
     `enumerateRanges()` that returns the ranges in an array.
 
++   `Process.enumerateMallocRanges(callbacks)`: just like `enumerateRanges()`,
+    but for individual memory allocations known to the system heap.
+
++   `Process.enumerateMallocRangesSync(protection)`: synchronous version of
+    `enumerateMallocRanges()` that returns the ranges in an array.
+
 
 ## Module
 
@@ -715,6 +721,9 @@ view.show();
 view.release();
 {% endhighlight %}
 
++   `ObjC.protocols`: an object mapping protocol names to `ObjC.Protocol`
+    JavaScript bindings for each of the currently registered protocols.
+
 +   `ObjC.mainQueue`: the GCD queue of the main thread
 
 +   `ObjC.schedule(queue, work)`: schedule the JavaScript function `work` on
@@ -735,6 +744,9 @@ ObjC.schedule(ObjC.mainQueue, function () {
 {% highlight js %}
 var sound = new ObjC.Object(ptr("0x1234"));
 {% endhighlight %}
+
++   `new ObjC.Protocol(handle)`: create a JavaScript binding given the existing
+    protocol at `handle` (a NativePointer).
 
 +   `ObjC.implement(method, fn)`: create a JavaScript implementation compatible
     with the signature of `method`, where the JavaScript function `fn` is used
@@ -768,6 +780,135 @@ Interceptor.attach(NSSound.play.implementation, {
 });
 {% endhighlight %}
 
++   `ObjC.registerProxy(properties)`: create a new class designed to act as a
+    proxy for a target object, where `properties` is an object specifying:
+
+    -   `protocols`: (optional) Array of protocols this class conforms to.
+    -   `methods`: (optional) Object specifying methods to implement.
+    -   `events`: (optional) Object specifying callbacks for getting notified
+        about events. For now there's just one event:
+        -   `forward: function (name)`: Called with `name` specifying the
+            method name that we're about to forward a call to. This might be
+            where you'd start out with a temporary callback that just logs the
+            names to help you decide which methods to override.
+
+{% highlight js %}
+const MyConnectionDelegateProxy = ObjC.registerProxy({
+  protocols: [ObjC.protocols.NSURLConnectionDataDelegate],
+  methods: {
+    '- connection:didReceiveResponse:': function (conn, resp) {
+      /* fancy logging code here */
+      /* this.data.foo === 1234 */
+      this.data.target
+          .connection_didReceiveResponse_(conn, resp);
+    },
+    '- connection:didReceiveData:': function (conn, data) {
+      /* other logging code here */
+      this.data.target
+          .connection_didReceiveData_(conn, data);
+    }
+  },
+  events: {
+    forward: function (name) {
+      console.log('*** forwarding: ' + name);
+    }
+  }
+});
+
+const method = ObjC.classes.NSURLConnection[
+    '- initWithRequest:delegate:startImmediately:'];
+Interceptor.attach(method.implementation, {
+  onEnter: function (args) {
+    args[3] = new MyConnectionDelegateProxy(args[3], {
+      foo: 1234
+    });
+  }
+});
+{% endhighlight %}
+
++   `ObjC.registerclass(properties)`: create a new Objective-C class, where
+    `properties` is an object specifying:
+
+    -   `name`: (optional) String specifying the name of the class; omit this
+        if you don't care about the globally visible name and would like the
+        runtime to auto-generate one for you.
+    -   `super`: (optional) Super-class, or *null* to create a new root class;
+        omit to inherit from *NSObject*.
+    -   `protocols`: (optional) Array of protocols this class conforms to.
+    -   `methods`: (optional) Object specifying methods to implement.
+
+{% highlight js %}
+const MyConnectionDelegateProxy = ObjC.registerClass({
+  name: 'MyConnectionDelegateProxy',
+  super: ObjC.classes.NSObject,
+  protocols: [ObjC.protocols.NSURLConnectionDataDelegate],
+  methods: {
+    '- init': function () {
+      const self = this.super.init();
+      if (self !== null) {
+        ObjC.bind(self, {
+          foo: 1234
+        });
+      }
+      return self;
+    },
+    '- dealloc': function () {
+      ObjC.unbind(this.self);
+      this.super.dealloc();
+    },
+    '- connection:didReceiveResponse:': function (conn, resp) {
+      /* this.data.foo === 1234 */
+    },
+    /*
+     * But those previous methods are declared assuming that
+     * either the super-class or a protocol we conform to has
+     * the same method so we can grab its type information.
+     * However, if that's not the case, you would write it
+     * like this:
+     */
+    '- connection:didReceiveResponse:': {
+      retType: 'void',
+      argTypes: ['object', 'object'],
+      implementation: function (conn, resp) {
+      }
+    },
+    /* Or grab it from an existing class: */
+    '- connection:didReceiveResponse:': {
+      types: ObjC.classes
+          .Foo['- connection:didReceiveResponse:'].types,
+      implementation: function (conn, resp) {
+      }
+    },
+    /* Or from an existing protocol: */
+    '- connection:didReceiveResponse:': {
+      types: ObjC.protocols.NSURLConnectionDataDelegate
+          .methods['- connection:didReceiveResponse:'].types,
+      implementation: function (conn, resp) {
+      }
+    },
+    /* Or write the signature by hand if you really want to: */
+    '- connection:didReceiveResponse:': {
+      types: 'v32@0:8@16@24',
+      implementation: function (conn, resp) {
+      }
+    }
+  }
+});
+
+const proxy = MyConnectionDelegateProxy.alloc().init();
+/* use `proxy`, and later: */
+proxy.release();
+{% endhighlight %}
+
++   `ObjC.bind(obj, data)`: bind some JavaScript data to an Objective-C
+    instance; see `ObjC.registerClass()` for an example.
+
++   `ObjC.unbind(obj)`: unbind previous associated JavaScript data from an
+    Objective-C instance; see `ObjC.registerClass()` for an example.
+
++   `ObjC.getBoundData(obj)`: look up previously bound data from an Objective-C
+    object.
+
 +   `ObjC.selector(name)`: convert the JavaScript string `name` to a selector
 
 +   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
@@ -779,6 +920,17 @@ Interceptor.attach(NSSound.play.implementation, {
 +   `Dalvik.available`: a boolean specifying whether the current process has the
     Dalvik VM loaded. Do not invoke any other `Dalvik` properties or methods
     unless this is the case.
+
++   `Dalvik.enumerateLoadedClasses(callbacks)`: enumerate classes loaded right
+    now, where `callbacks` is an object specifying:
+
+    -   `onMatch: function (className)`: called for each loaded class with
+        `className` that may be passed to `use()` to get a JavaScript wrapper.
+
+    -   `onComplete: function ()`: called when all classes have been enumerated.
+
++   `Dalvik.enumerateLoadedClassesSync()`: synchronous version of
+    `enumerateLoadedClasses()` that returns the class names in an array.
 
 +   `Dalvik.perform(fn)`: ensure that the current thread is attached to the VM
     and call `fn`. (This isn't necessary in callbacks from Java.)

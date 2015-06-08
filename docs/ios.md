@@ -71,7 +71,7 @@ CCCryptorCreate: Auto-generated handler …/CCCryptorCreate.js
 CCCryptorCreateFromData: Auto-generated handler …/CCCryptorCreateFromData.js
 CCCryptorCreateWithMode: Auto-generated handler …/CCCryptorCreateWithMode.js
 CCCryptorCreateFromDataWithMode: Auto-generated handler …/CCCryptorCreateFromDataWithMode.js
-Started tracing 4 functions. Press ENTER to stop.
+Started tracing 4 functions. Press Ctrl+C to stop.
 {% endhighlight %}
 
 Now, `CCryptorCreate` and friends are part of Apple's `libcommonCrypt.dylib`,

@@ -14,7 +14,7 @@ For the impatient, here's how to do function tracing with Frida:
 recv: Auto-generated handler: …/recv.js
 # (snip)
 recvfrom: Auto-generated handler: …/recvfrom.js
-Started tracing 21 functions. Press ENTER to stop.
+Started tracing 21 functions. Press Ctrl+C to stop.
     39 ms	recv()
    112 ms	recvfrom()
    128 ms	recvfrom()

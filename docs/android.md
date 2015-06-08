@@ -67,7 +67,7 @@ $ frida-trace -R -i open com.android.chrome
 Uploading data...
 open: Auto-generated handler …/linker/open.js
 open: Auto-generated handler …/libc.so/open.js
-Started tracing 2 functions. Press ENTER to stop.
+Started tracing 2 functions. Press Ctrl+C to stop.
 {% endhighlight %}
 
 Now just play around with the Chrome app and you should start seeing `open()`
