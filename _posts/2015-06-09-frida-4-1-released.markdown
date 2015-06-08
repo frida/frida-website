@@ -3,7 +3,7 @@ layout: news_item
 title: 'Frida 4.1 Released'
 date: 2015-06-09 09:00:00 +0100
 author: oleavr
-version: 4.1.0
+version: 4.1
 categories: [release]
 ---
 
