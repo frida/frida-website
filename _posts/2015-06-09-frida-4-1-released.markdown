@@ -275,3 +275,9 @@ Let's run through the remaining changes:
 4.1.7:
 
 - python: CLI tools stability improvements
+
+That's all for now. Please help spread the word by sharing this post across
+the inter-webs. We're still quite small as an open source project, so
+word-of-mouth marketing means a lot to us.
+
+Enjoy!
