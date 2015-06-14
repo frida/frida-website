@@ -110,6 +110,10 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateThreadsSync()`: synchronous version of
     `enumerateThreads()` that returns the threads in an array.
 
++   `Process.getModuleByName(name)`: returns an object with details about the
+    module whose name matches `name`. See `Process.enumerateModules()` for
+    documentation about which fields are included.
+
 +   `Process.enumerateModules(callbacks)`: enumerate modules loaded right now,
     where `callbacks` is an object specifying:
 
@@ -243,18 +247,24 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 +   `Memory.readS8(address)`, `Memory.readU8(address)`,
     `Memory.readS16(address)`, `Memory.readU16(address)`,
     `Memory.readS32(address)`, `Memory.readU32(address)`,
-    `Memory.readS64(address)`, `Memory.readU64(address)`:
-    read a signed or unsigned 8/16/32/64-bit value from `address` and return it
-    as a JavaScript number.
+    `Memory.readS64(address)`, `Memory.readU64(address)`,
+    `Memory.readShort(address)`, `Memory.readUShort(address)`,
+    `Memory.readInt(address)`, `Memory.readUInt(address)`,
+    `Memory.readLong(address)`, `Memory.readULong(address)`:
+    read a signed or unsigned 8/16/32/64-bit/etc. value from `address` and
+    return it as a JavaScript number.
 
     A JavaScript exception will be thrown if `address` isn't readable.
 
 +   `Memory.writeS8(address, value)`, `Memory.writeU8(address, value)`,
     `Memory.writeS16(address, value)`, `Memory.writeU16(address, value)`,
     `Memory.writeS32(address, value)`, `Memory.writeU32(address, value)`,
-    `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`:
-    write the JavaScript number `value` to the signed or unsigned 8/16/32/64-bit
-    value at `address`.
+    `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`,
+    `Memory.writeShort(address, value)`, `Memory.writeUShort(address, value)`,
+    `Memory.writeInt(address, value)`, `Memory.writeUInt(address, value)`,
+    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`:
+    write the JavaScript number `value` to the signed or unsigned
+    8/16/32/64-bit/etc. value at `address`.
 
     A JavaScript exception will be thrown if `address` isn't writable.
 
@@ -391,23 +401,34 @@ Interceptor.attach(f, {
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
     make a new NativePointer with this NativePointer plus/minus/and/or/xor
-    `rhs`, which may either be a JavaScript number or another NativePointer.
+    `rhs`, which may either be a JavaScript number or another NativePointer
+
+-   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
+    this one; i.e. it has the same pointer value
+
+-   `compare(rhs)`: returns an integer comparison result just like
+    String#localeCompare()
 
 -   `toInt32()`: cast this NativePointer to a signed 32-bit integer
 
 -   `toString([radix = 16])`: convert to a string of optional radix (defaults to
     16)
 
+-   `toMatchPattern()`: returns a string containing a `Memory.scan()`-compatible
+    match pattern for this pointer's raw value
+
 
 ## NativeFunction
 
 +   `new NativeFunction(address, returnType, argTypes[, abi])`: create a new
     NativeFunction to call the function at `address` (specified with a
-    `NativePointer`), where the `returnType` string specifies the return type,
-    and the `argTypes` array specifies the argument types. You may optionally
-    also specify `abi` if not system default. For variadic functions, add a
-    `'...'` entry to `argTypes` between the fixed arguments and the variadic
-    ones.
+    `NativePointer`), where `returnType` specifies the return type, and the
+    `argTypes` array specifies the argument types. You may optionally also
+    specify `abi` if not system default. For variadic functions, add a `'...'`
+    entry to `argTypes` between the fixed arguments and the variadic ones.
+    As for structs passed by value, instead of a string provide an array
+    containing the struct's field types following each other. You may nest
+    these as deep as desired for representing structs inside structs.
     Note that the returned object is also a `NativePointer`, and can thus be
     passed to `Interceptor#attach`.
 
@@ -458,10 +479,10 @@ Interceptor.attach(f, {
 ## NativeCallback
 
 +   `new NativeCallback(func, returnType, argTypes[, abi])`: create a new
-    NativeCallback implemented by the JavaScript function `func`, where the
-    `returnType` string specifies the return type, and the `argTypes` array
-    specifies the argument types. You may also specify the abi if not system
-    default. See `NativeFunction` for details about supported types and abis.
+    NativeCallback implemented by the JavaScript function `func`, where
+    `returnType` specifies the return type, and the `argTypes` array specifies
+    the argument types. You may also specify the abi if not system default.
+    See `NativeFunction` for details about supported types and abis.
     Note that the returned object is also a `NativePointer`, and can thus be
     passed to `Interceptor#replace`.
 
@@ -542,6 +563,8 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 {% endhighlight %}
 
 +   Additionally, the object contains some useful properties:
+
+    -   `returnAddress`: return address as a NativePointer
 
     -   `context`: object with the keys `pc` and `sp`, which are
         NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
@@ -738,12 +761,22 @@ ObjC.schedule(ObjC.mainQueue, function () {
 });
 {% endhighlight %}
 
-+   `new ObjC.Object(handle)`: create a JavaScript binding given the existing
-    object at `handle` (a NativePointer).
++   `new ObjC.Object(handle[, protocol])`: create a JavaScript binding given
+    the existing object at `handle` (a NativePointer). You may also specify
+    the `protocol` argument if you'd like to treat `handle` as an object
+    implementing a certain protocol only.
 
 {% highlight js %}
 var sound = new ObjC.Object(ptr("0x1234"));
 {% endhighlight %}
+
+>   This object has some special properties:
+>
+>   -   `$super`: super-class as an *ObjC.Object* instance
+>   -   `$class`: class of this object as an *ObjC.Object* instance
+>   -   `$className`: string containing the class name of this object
+>   -   `$protocols`: object mapping protocol name to `ObjC.Protocol` instance
+>       for each of the protocols that this object conforms to
 
 +   `new ObjC.Protocol(handle)`: create a JavaScript binding given the existing
     protocol at `handle` (a NativePointer).
@@ -909,6 +942,27 @@ proxy.release();
 +   `ObjC.getBoundData(obj)`: look up previously bound data from an Objective-C
     object.
 
++   `ObjC.choose(specifier, callbacks)`: enumerate live instances of classes
+    matching `specifier` by scanning the heap. `specifier` is either a class
+    selector or an object specifying a class selector and desired options.
+    The class selector is either a string containing the class-name,
+    an `ObjC.Object`, or a NativePointer with the raw class pointer.
+    When passing an object as the specifier you should provide the `class`
+    field with your class selector, and the `subclasses` field with a
+    boolean indicating whether you're also interested in subclasses matching the
+    given class selector. The default is to also include subclasses.
+    The `callbacks` argument is an object specifying:
+
+    -   `onMatch: function (instance)`: called once for each live instance found
+        with a ready-to-use `instance` just as if you would have called
+        `new ObjC.Object(ptr("0x1234"))` knowing that this particular
+        Objective-C instance lives at *0x1234*.
+
+        This function may return the string `stop` to cancel the enumeration
+        early.
+
+    -   `onComplete: function ()`: called when all instances have been enumerated
+
 +   `ObjC.selector(name)`: convert the JavaScript string `name` to a selector
 
 +   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
@@ -963,9 +1017,24 @@ Dalvik.perform(function () {
 });
 {% endhighlight %}
 
++   `Dalvik.choose(className, callbacks)`: enumerate live instances of the
+    `className` class by scanning the Dalvik heap, where `callbacks` is an
+    object specifying:
+
+    -   `onMatch: function (instance)`: called once for each live instance found
+        with a ready-to-use `instance` just as if you would have called
+        `Dalvik.cast()` with a raw handle to this particular instance.
+
+        This function may return the string `stop` to cancel the enumeration
+        early.
+
+    -   `onComplete: function ()`: called when all instances have been enumerated
+
 +   `Dalvik.cast(handle, klass)`: create a JavaScript wrapper given the existing
     instance at `handle` of given class `klass` (as returned from
-    `Dalvik.use()`).
+    `Dalvik.use()`). Such a wrapper also has a `class` property for getting a
+    wrapper for its class, and a `$className` property for getting a string
+    representation of its class-name.
 
 {% highlight js %}
 var Activity = Dalvik.use("android.app.Activity");
