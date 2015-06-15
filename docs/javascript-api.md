@@ -772,6 +772,7 @@ var sound = new ObjC.Object(ptr("0x1234"));
 
 >   This object has some special properties:
 >
+>   -   `$kind`: string specifying either `instance`, `class` or `meta-class`
 >   -   `$super`: super-class as an *ObjC.Object* instance
 >   -   `$class`: class of this object as an *ObjC.Object* instance
 >   -   `$className`: string containing the class name of this object
