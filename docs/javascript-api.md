@@ -945,8 +945,8 @@ proxy.release();
 +   `ObjC.choose(specifier, callbacks)`: enumerate live instances of classes
     matching `specifier` by scanning the heap. `specifier` is either a class
     selector or an object specifying a class selector and desired options.
-    The class selector is either a string containing the class-name,
-    an `ObjC.Object`, or a NativePointer with the raw class pointer.
+    The class selector is an *ObjC.Object* of a class, e.g.
+    *ObjC.classes.UIButton*.
     When passing an object as the specifier you should provide the `class`
     field with your class selector, and the `subclasses` field with a
     boolean indicating whether you're also interested in subclasses matching the
@@ -962,6 +962,9 @@ proxy.release();
         early.
 
     -   `onComplete: function ()`: called when all instances have been enumerated
+
++   `ObjC.chooseSync(specifier)`: synchronous version of `choose()` that returns
+    the instances in an array.
 
 +   `ObjC.selector(name)`: convert the JavaScript string `name` to a selector
 
