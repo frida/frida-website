@@ -729,6 +729,9 @@ Interceptor.attach(f, {
     Objective-C runtime loaded. Do not invoke any other `ObjC` properties or
     methods unless this is the case.
 
++   `ObjC.api`: an object mapping function names to `NativeFunction` instances
+    for direct access to a big portion of the Objective-C runtime API.
+
 +   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
     bindings for each of the currently registered classes.
 
@@ -773,11 +776,17 @@ var sound = new ObjC.Object(ptr("0x1234"));
 >   This object has some special properties:
 >
 >   -   `$kind`: string specifying either `instance`, `class` or `meta-class`
->   -   `$super`: super-class as an *ObjC.Object* instance
+>   -   `$super`: an *ObjC.Object* instance used for chaining up to super-class
+>       method implementations
+>   -   `$superClass`: super-class as an *ObjC.Object* instance
 >   -   `$class`: class of this object as an *ObjC.Object* instance
 >   -   `$className`: string containing the class name of this object
 >   -   `$protocols`: object mapping protocol name to `ObjC.Protocol` instance
 >       for each of the protocols that this object conforms to
+>   -   `$methods`: array containing native method names exposed by this object
+>
+>   There is also an `equals(other)` method for checking whether two instances
+>   refer to the same underlying object.
 
 +   `new ObjC.Protocol(handle)`: create a JavaScript binding given the existing
     protocol at `handle` (a NativePointer).
