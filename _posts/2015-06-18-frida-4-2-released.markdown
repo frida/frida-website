@@ -115,6 +115,30 @@ So let's run quickly through all the changes:
 - dalvik: fix handling of *java.lang.CharSequence*
 - frida-repl: add *%time* command for easy profiling
 
+4.2.3:
+
+- core: fix crash when handling exceptions without a message object
+- core: fix the life-time of CpuContext JS wrappers
+- core: expose the file mapping info to *Process.enumerateRanges()*
+- core: make it possible to coalesce neighboring ranges when enumerating
+- core: add convenience API for looking up modules and ranges
+- core: make the QNX mprotect read in a loop instead of just the once
+- dalvik: avoid crashing the process if a type conversion fails
+- dalvik: allow *null* as call parameter
+- objc: fix conversion of structs with simple field types
+- objc: speed up implicit string conversion by caching wrapper object
+
+4.2.4:
+
+- objc: fix crash when interacting with not-yet-realized classes
+
+4.2.5:
+
+- core: optimize Interceptor callback logic and make it twice as fast when
+        *onEnter* and *onLeave* aren't both specified
+- core: fix return-address seen by the invocation-context on arm64
+- core: add a fuzzy backtracer for arm64
+
 That's all for now. Please help spread the word by sharing this post across
 the inter-webs. We're still quite small as an open source project, so
 word-of-mouth marketing means a lot to us.
