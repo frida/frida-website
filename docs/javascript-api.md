@@ -47,6 +47,16 @@ permalink: /docs/javascript-api/
     optionally passed to include a raw payload, like a buffer returned by
     `Memory#readByteArray`.
 
+<div class="note">
+  <h5>Performance considerations</h5>
+  <p>
+    While <i>send()</i> is asynchronous, the total overhead of sending a single
+    message is not optimized for high frequencies, so that means Frida leaves
+    it up to you to batch multiple values into a single <i>send()</i>-call,
+    based on whether low delay or high throughput is desired.
+  </p>
+</div>
+
 +   `setTimeout(fn, delay)`: call `fn` after `delay` milliseconds. Returns an
     id that can be passed to `clearTimeout` to cancel it.
 
@@ -110,9 +120,15 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateThreadsSync()`: synchronous version of
     `enumerateThreads()` that returns the threads in an array.
 
-+   `Process.getModuleByName(name)`: returns an object with details about the
-    module whose name matches `name`. See `Process.enumerateModules()` for
-    documentation about which fields are included.
++   `Process.findModuleByAddress(address)`,
+    `Process.getModuleByAddress(address)`,
+    `Process.findModuleByName(name)`,
+    `Process.getModuleByName(name)`:
+    return an object with details about the module whose *address* or *name*
+    matches the one specified. In the event that no such module could be found,
+    the *find*-prefixed functions return *null* whilst the *get*-prefixed
+    functions throw an exception.  See `Process.enumerateModules()` for
+    details about which fields are included.
 
 +   `Process.enumerateModules(callbacks)`: enumerate modules loaded right now,
     where `callbacks` is an object specifying:
@@ -131,15 +147,29 @@ permalink: /docs/javascript-api/
 +   `Process.enumerateModulesSync()`: synchronous version of
     `enumerateModules()` that returns the modules in an array.
 
-+   `Process.enumerateRanges(protection, callbacks)`: enumerate memory ranges
-    satisfying `protection` given as a string of the form: `rwx`, where `rw-`
-    means "must be at least readable and writable". `callbacks` is an object
-    specifying:
++   `Process.findRangeByAddress(address)`, `getRangeByAddress(address)`:
+    return an object with details about the range containing *address*. In the
+    event that no such range could be found, *findRangeByAddress()* returns
+    *null* whilst *getRangeByAddress()* throws an exception.  See
+    `Process.enumerateRanges()` for details about which fields are included.
+
++   `Process.enumerateRanges(protection|specifier, callbacks)`: enumerate memory
+    ranges satisfying `protection` given as a string of the form: `rwx`, where
+    `rw-` means "must be at least readable and writable". Alternatively you may
+    provide a `specifier` object with a `protection` key whose value is as
+    aforementioned, and a `coalesce` key set to `true` if you'd like neighboring
+    ranges with the same protection to be coalesced (the default is `false`;
+    i.e. keeping the ranges separate). `callbacks` is an object specifying:
 
     -   `onMatch: function (range)`: called with `range` object containing:
         -   `base`: base address as a `NativePointer`
         -   `size`: size in bytes
         -   `protection`: protection string (see above)
+        -   `file`: (when available) file mapping details as an object
+            containing:
+
+            -   `path`: full filesystem path as a string
+            -   `offset`: offset in bytes
 
         This function may return the string `stop` to cancel the enumeration
         early.
@@ -147,7 +177,7 @@ permalink: /docs/javascript-api/
     -   `onComplete: function ()`: called when all memory ranges have been
         enumerated
 
-+   `Process.enumerateRangesSync(protection)`: synchronous version of
++   `Process.enumerateRangesSync(protection|specifier)`: synchronous version of
     `enumerateRanges()` that returns the ranges in an array.
 
 +   `Process.enumerateMallocRanges(callbacks)`: just like `enumerateRanges()`,
@@ -580,6 +610,32 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 
     -   `depth`: call depth of relative to other invocations
 
+<div class="note">
+  <h5>Performance considerations</h5>
+  <p>
+    The callbacks provided have a significant impact on performance. If you only
+    need to inspect arguments but do not care about the return value, or the
+    other way around, make sure you omit the callback that you don't need; i.e.
+    avoid putting your logic in <i>onEnter</i> and leaving <i>onLeave</i> in
+    there as an empty callback.
+  </p>
+  <br>
+  <p>
+    On an iPhone 6 the base overhead when providing just <i>onEnter</i> might be
+    something like 15 microseconds, and 25 microseconds with both <i>onEnter</i>
+    and <i>onLeave</i> provided.
+  </p>
+  <br>
+  <p>
+    Also be careful about intercepting calls to functions that are called a
+    bazillion times per second; while <i>send()</i> is asynchronous, the total
+    overhead of sending a single message is not optimized for high frequencies,
+    so that means Frida leaves it up to you to batch multiple values into a
+    single <i>send()</i>-call, based on whether low delay or high throughput
+    is desired.
+  </p>
+</div>
+
 +   `Interceptor.detachAll()`: detach all previously attached callbacks.
 
 +   `Interceptor.replace(target, replacement)`: replace function at `target`
@@ -636,6 +692,17 @@ Stalker.follow(Process.getCurrentThreadId(), {
   }
 });
 {% endhighlight %}
+
+<div class="note">
+  <h5>Performance considerations</h5>
+  <p>
+    The callbacks provided have a significant impact on performance. If you only
+    need periodic call summaries but do not care about the raw events, or the
+    other way around, make sure you omit the callback that you don't need; i.e.
+    avoid putting your logic in <i>onCallSummary</i> and leaving
+    <i>onReceive</i> in there as an empty callback.
+  </p>
+</div>
 
 +   `Stalker.unfollow([threadId])`: stop stalking `threadId` (or the current
     thread if omitted).
