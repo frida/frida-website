@@ -282,8 +282,8 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     `Memory.readInt(address)`, `Memory.readUInt(address)`,
     `Memory.readLong(address)`, `Memory.readULong(address)`,
     `Memory.readFloat(address)`, `Memory.readDouble(address)`:
-    read a signed or unsigned 8/16/32/64-bit/etc. or float/double value from `address` and
-    return it as a JavaScript number.
+    read a signed or unsigned 8/16/32/64-bit/etc. or float/double value from
+    `address` and return it as a JavaScript number.
 
     A JavaScript exception will be thrown if `address` isn't readable.
 
