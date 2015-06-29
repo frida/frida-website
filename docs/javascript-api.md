@@ -280,8 +280,9 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     `Memory.readS64(address)`, `Memory.readU64(address)`,
     `Memory.readShort(address)`, `Memory.readUShort(address)`,
     `Memory.readInt(address)`, `Memory.readUInt(address)`,
-    `Memory.readLong(address)`, `Memory.readULong(address)`:
-    read a signed or unsigned 8/16/32/64-bit/etc. value from `address` and
+    `Memory.readLong(address)`, `Memory.readULong(address)`,
+    `Memory.readFloat(address)`, `Memory.readDouble(address)`:
+    read a signed or unsigned 8/16/32/64-bit/etc. or float/double value from `address` and
     return it as a JavaScript number.
 
     A JavaScript exception will be thrown if `address` isn't readable.
@@ -292,9 +293,10 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`,
     `Memory.writeShort(address, value)`, `Memory.writeUShort(address, value)`,
     `Memory.writeInt(address, value)`, `Memory.writeUInt(address, value)`,
-    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`:
+    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`,
+    `Memory.writeFloat(address, value)`, `Memory.writeDouble(address, value)`:
     write the JavaScript number `value` to the signed or unsigned
-    8/16/32/64-bit/etc. value at `address`.
+    8/16/32/64-bit/etc. or float/double value at `address`.
 
     A JavaScript exception will be thrown if `address` isn't writable.
 
