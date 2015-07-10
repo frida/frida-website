@@ -2,7 +2,7 @@
 layout: docs
 title: Presentations
 next_section: functions
-prev_section: usage
+prev_section: hacking
 permalink: /docs/presentations/
 ---
 
