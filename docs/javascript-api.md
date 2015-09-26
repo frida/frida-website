@@ -93,6 +93,10 @@ permalink: /docs/javascript-api/
 +   `Process.platform`: property containing the string `windows`,
     `darwin`, `linux` or `qnx`
 
++   `Process.pageSize`: property containing the size of a virtual memory page
+    (in bytes) as a JavaScript number. This is used to make your scripts more
+    portable.
+
 +   `Process.pointerSize`: property containing the size of a pointer
     (in bytes) as a JavaScript number. This is used to make your scripts more
     portable.
