@@ -9,6 +9,7 @@ permalink: /docs/javascript-api/
 ## Table of contents
   1. [Global](#global)
   1. [console](#console)
+  1. [rpc](#rpc)
   1. [Frida](#frida)
   1. [Process](#process)
   1. [Module](#module)
@@ -81,9 +82,97 @@ permalink: /docs/javascript-api/
     [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
 
+
+## rpc
+
++   `rpc.exports`: empty object that you can either replace or insert into to
+    expose an RPC-style API to your application. The key specifies the method
+    name and the value is your exported function. This function may either
+    return a plain value for returning that to the caller immediately, or a
+    Promise for returning asynchronously.
+
+    For example:
+
+{% highlight js %}
+'use strict';
+
+rpc.exports = {
+    add(a, b) {
+        return a + b;
+    },
+    sub(a, b) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(a - b);
+            }, 100);
+        });
+    }
+};
+{% endhighlight %}
+
+    From an application using the Node.js bindings this API would be consumed
+    like this:
+
+{% highlight js %}
+'use strict';
+
+const co = require('co');
+const frida = require('frida');
+
+let session, script;
+co(function *() {
+    const source = yield frida.load(require.resolve('./agent.js'));
+    session = yield device.attach("iTunes");
+    script = yield session.createScript(source);
+    script.events.listen('message', onMessage);
+    yield script.load();
+    const api = yield script.getExports();
+    console.log(yield exports.add(2, 3));
+    console.log(yield exports.sub(5, 3));
+})
+.catch(onError);
+
+function onError(error) {
+    console.error(error.stack);
+}
+
+function onMessage(message, data) {
+    if (message.type === 'send') {
+        console.log(message.payload);
+    } else if (message.type === 'error') {
+        console.error(message.stack);
+    }
+}
+{% endhighlight %}
+
+    The Python version would be very similar:
+
+{% highlight py %}
+import codecs
+import frida
+
+def on_message(message, data):
+    if message['type'] == 'send':
+        print(message['payload'])
+    elif message['type'] == 'error':
+        print(message['stack'])
+
+session = frida.attach("iTunes")
+with codecs.open("./agent.js", "r", "utf-8") as f:
+    source = f.read()
+script = session.create_script(source)
+script.on('message', on_message)
+script.load()
+print(script.exports.add(2, 3))
+print(script.exports.sub(5, 3))
+session.detach()
+{% endhighlight %}
+
+
 ## Frida
 
 +   `Frida.version`: property containing the current Frida version
+
 
 ## Process
 
