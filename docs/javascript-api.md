@@ -122,7 +122,7 @@ const frida = require('frida');
 let session, script;
 co(function *() {
     const source = yield frida.load(require.resolve('./agent.js'));
-    session = yield device.attach("iTunes");
+    session = yield frida.attach("iTunes");
     script = yield session.createScript(source);
     script.events.listen('message', onMessage);
     yield script.load();
