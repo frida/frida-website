@@ -191,11 +191,33 @@ permalink: /docs/javascript-api/
 
 ## Module
 
++   `Module.enumerateImports(name, callbacks)`: enumerate imports of module with
+    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
+    specifying:
+
+    -   `onMatch: function (imp)`: called with `imp` object containing:
+        -   `type`: string specifying either `function` or `variable`
+        -   `name`: import name as a string
+        -   `module`: module name as a string
+        -   `address`: absolute address as a `NativePointer`
+
+        Only the `name` field is guaranteed to be present for all imports. The
+        platform-specific backend will do its best to resolve the other fields
+        even beyond what the native metadata provides, but there is no guarantee
+        that it will succeed.  This function may return the string `stop` to
+        cancel the enumeration early.
+
+    -   `onComplete: function ()`: called when all imports have been
+        enumerated
+
++   `Module.enumerateImportsSync(name)`: synchronous version of
+    `enumerateImports()` that returns the imports in an array.
+
 +   `Module.enumerateExports(name, callbacks)`: enumerate exports of module with
     the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
     specifying:
 
-    -   `onMatch: function (mod)`: called with `mod` object containing:
+    -   `onMatch: function (exp)`: called with `exp` object containing:
         -   `type`: string specifying either `function` or `variable`
         -   `name`: export name as a string
         -   `address`: absolute address as a `NativePointer`
