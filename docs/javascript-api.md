@@ -246,8 +246,10 @@ permalink: /docs/javascript-api/
 +   `Module.findBaseAddress(name)`: returns the base address of the `name`
     module, or `null` if the module isn't loaded
 
-+   `Module.findExportByName(module, exp)`: returns the absolute address of the
-    export named `exp` in `module`
++   `Module.findExportByName(module|null, exp)`: returns the absolute address of
+    the export named `exp` in `module`. If the module isn't known you may pass
+    `null` instead of its name, but this can be a costly search and should be
+    avoided.
 
 
 ## Memory
