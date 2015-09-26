@@ -91,7 +91,7 @@ permalink: /docs/javascript-api/
     return a plain value for returning that to the caller immediately, or a
     Promise for returning asynchronously.
 
-    For example:
+>   For example:
 
 {% highlight js %}
 'use strict';
@@ -110,8 +110,8 @@ rpc.exports = {
 };
 {% endhighlight %}
 
-    From an application using the Node.js bindings this API would be consumed
-    like this:
+>   From an application using the Node.js bindings this API would be consumed
+>   like this:
 
 {% highlight js %}
 'use strict';
@@ -145,7 +145,7 @@ function onMessage(message, data) {
 }
 {% endhighlight %}
 
-    The Python version would be very similar:
+>   The Python version would be very similar:
 
 {% highlight py %}
 import codecs
