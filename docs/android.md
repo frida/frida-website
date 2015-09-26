@@ -11,40 +11,42 @@ In this tutorial we show how to do function tracing on your Android device.
 ## Setting up your Android device
 
 Before you start, you will need to root your device in case you haven't done so
-already. You will also need the Android SDK so you can use the `adb` tool. This
-is a stop-gap solution and won't be necessary once Frida has an Android app
-(pull-request welcome!).
+already. Also note that most of our testing has involved Android 4.4, and while
+we do support 4.2 all the way through 6.0, there's for now limited support for
+ART and we would recommend that you start out with a Dalvik-powered ARM device
+or emulator for the time being.
 
-First off, download the latest `frida-server` for Android:
+You will also need the `adb` tool from the Android SDK.
+
+First off, download the latest `frida-server` for Android and get it running
+on your device:
+
 {% highlight bash %}
 $ curl -O http://build.frida.re/frida/android/arm/bin/frida-server
 $ chmod +x frida-server
-{% endhighlight %}
-
-Next, deploy `frida-server` on your device:
-{% highlight bash %}
 $ adb push frida-server /data/local/tmp/
+$ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}
 
-## Spin up Frida
+Next, make sure `adb` can see your device:
 
-In one terminal (on your desktop), run the server:
 {% highlight bash %}
-$ adb shell
-root@android:/ # /data/local/tmp/frida-server
+$ adb devices -l
 {% endhighlight %}
 
-While that's running, forward one local TCP port to your device:
+This will also ensure that the adb daemon is running on your desktop, which
+allows Frida to discover and communicate with your device regardless of whether
+you've got it hooked up through USB or WiFi.
+
+## A quick smoke-test
+
+Now, on your desktop it's time to make sure the basics are working. Run:
+
 {% highlight bash %}
-adb forward tcp:27042 tcp:27042
+$ frida-ps -U
 {% endhighlight %}
 
-Now, just to verify things are working:
-{% highlight bash %}
-$ frida-ps -R
-{% endhighlight %}
-
-Should give you a process list along the lines of:
+This should give you a process list along the lines of:
 
 {% highlight bash %}
   PID NAME
@@ -63,7 +65,7 @@ Alright, let's have some fun. Fire up the Chrome app on your device and return
 to your desktop and run:
 
 {% highlight bash %}
-$ frida-trace -R -i open com.android.chrome
+$ frida-trace -U -i open com.android.chrome
 Uploading data...
 open: Auto-generated handler …/linker/open.js
 open: Auto-generated handler …/libc.so/open.js
@@ -89,4 +91,4 @@ quite useful, there might be times when you'd like to build your own tools
 harnessing the powerful [Frida APIs](/docs/javascript-api/). For that we would
 recommend reading the chapters on [Functions](/docs/functions) and
 [Messages](/docs/messages), and anywhere you see `frida.attach()` just
-substitute that with `frida.get_remote_device().attach()`.
+substitute that with `frida.get_usb_device().attach()`.
