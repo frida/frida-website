@@ -72,11 +72,12 @@ permalink: /docs/javascript-api/
 
 ## console
 
-+   `console.log(line)`: write `line` to the console of your Frida-based
-    application. The exact behavior depends on where
-    [frida-core](https://github.com/frida/frida-core) is integrated.
-    For example, this output goes to *stdout* when using Frida through
-    [frida-python](https://github.com/frida/frida-python),
++   `console.log(line)`, `console.warn(line)`, `console.error(line)`:
+    write `line` to the console of your Frida-based application. The exact
+    behavior depends on where [frida-core](https://github.com/frida/frida-core)
+    is integrated.
+    For example, this output goes to *stdout* or *stderr* when using Frida
+    through [frida-python](https://github.com/frida/frida-python),
     [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
 
