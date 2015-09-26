@@ -43,9 +43,11 @@ permalink: /docs/javascript-api/
     to receive the next one.
 
 +   `send(message[, data])`: send the JavaScript object `message` to your
-    Frida-based application (it must be serializable to JSON). `data` may be
-    optionally passed to include a raw payload, like a buffer returned by
-    `Memory#readByteArray`.
+    Frida-based application (it must be serializable to JSON). If you also have
+    some raw binary data that you'd like to send along with it, e.g. you dumped
+    some memory using `Memory#readByteArray`, then you may pass this through the
+    optional `data` argument. This requires it to either be an ArrayBuffer or an
+    array of integers between 0 and 255.
 
 <div class="note">
   <h5>Performance considerations</h5>
@@ -301,16 +303,17 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
     A JavaScript exception will be thrown if `address` isn't writable.
 
 +   `Memory.readByteArray(address, length)`: read `length` bytes from `address`
-    and return it as a byte array. This byte array may be efficiently
-    transferred to your Frida-based application by passing it as the second
-    argument to `send()`.
+    and return it as an ArrayBuffer. This buffer may be efficiently transferred
+    to your Frida-based application by passing it as the second argument to
+    `send()`.
 
     A JavaScript exception will be thrown if any of the `length` bytes read from
     `address` isn't readable.
 
-+   `Memory.writeByteArray(address, bytes)`: write the `bytes` byte array to
-    `address`. This is either an object returned from `Memory.readByteArray()`
-    or a JavaScript array-style object. For example: `[ 0x13, 0x37, 0x42 ]`.
++   `Memory.writeByteArray(address, bytes)`: write `bytes` to `address`, where
+    the former is either an ArrayBuffer, typically returned from
+    `Memory.readByteArray()`, or an array of integers between 0 and 255. For
+    example: `[ 0x13, 0x37, 0x42 ]`.
 
     A JavaScript exception will be thrown if any of the bytes written to
     `address` isn't writable.
