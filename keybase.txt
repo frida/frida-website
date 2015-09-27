@@ -1,0 +1,74 @@
+==================================================================
+https://keybase.io/oleavr
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://www.frida.re
+  * I am oleavr (https://keybase.io/oleavr) on keybase.
+  * I have a public key with fingerprint 8831 9572 8E5A 6FA7 C4DE  2ADC D7F0 D062 8F33 186D
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101f190a87feecab749f37d65290134b8a0fcd47410c11f50b8b1bafd23a50d9fec0a",
+            "fingerprint": "883195728e5a6fa7c4de2adcd7f0d0628f33186d",
+            "host": "keybase.io",
+            "key_id": "d7f0d0628f33186d",
+            "kid": "0101f190a87feecab749f37d65290134b8a0fcd47410c11f50b8b1bafd23a50d9fec0a",
+            "uid": "cd6f703fb15dc8e9521f2d7bcfc69700",
+            "username": "oleavr"
+        },
+        "service": {
+            "hostname": "www.frida.re",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1443378679,
+    "expire_in": 157680000,
+    "prev": "d9d61072bc9d022fc0c703894685a9253f791a5875d01a3bb0dbd0445099a65a",
+    "seqno": 8,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.46
+Comment: https://keybase.io/crypto
+
+yMNAAnicrVJtUFRVGF5wxW0noDQGlWaKC8bo4HLu971LilETSDZMGggtw3LvPefu
+XljuLvsBIYrKDDv90AqzIYc+gCiBgVAEJSphoUFGgkgNYlCrsX44EjaOI7my1l3G
+/vWz8+fMed/nec7zPvN+G71KZ4yY/XNafIdcXx4xETju0+Ub6KUaTHTCasxcg5Wh
+lQs5IPJ4rWUKxMwYwAEu4zwQOFZGSBJEluJlkoUMTfAAJymRE4AsQYqlcCDhuEwD
+kRNxUZAhQQo0gLyMJCBgqZisqDbkdrkV1avJchyJ8zRLcIgWGFlgJQoiQoASZGUA
+AUNwMkniHAM1ot3pCTM0c6LgQSbFqdW0h3XF3n/g/2ffvhU5CTIyC0hZxGkocYin
+CVwmICtKssTwLABhoAe5VaEcaWinAwmVbuxAKqbVKhUJhWMNz/GoX1VVZZLdChRM
+bqQxXW6n1yk5HVrH7vW6zGGit9q1gkSi9ZGGVVRUqIWoESqR26M4VcyMa0jJq4RF
+cYoiSZZjWD4VQ2+6FDeyKmEEzTIc0E74G1QZjoyHDA5YQpR4CAhCloCkTcbxFMPR
+Ak/QpMzyuEBzLA0BLpCiCKAIAUXRgOcFhg5n4kEVqhMzc5pNwaZJehSbKnh92jAH
+RgJFel2EURe1OjK8XDrjY0/8u3Ivd8Q+NGUL3rGPTud96TDef6bQ31uXWHP896VL
+9c6ShX1YXUv37S2bUJ0vJzb9Sh8bqh2/d2fDS1/cyTl8/d5EwoQ/MZ+ZjSr8efLZ
+ug7LRHdut5oBTHGH1rd1qaG38redf2/26aXm7Jxhe6N9T1lB66A+/aQ/0DjwwoPm
+vPZrO9SzJw6975se7qz9I2bqbr+1msw19F2Zv7QuM/bHJH9m/buDWalo7ETptRuj
+WV3K4f039k/fPfJbAj7SOxCMvhzQO4LG55vG+/I3jedUmIoLZvqSjWmffxP/a96e
+vlDHurnYkdTQdz0tjUMlcQfnRseDrbZ9U8csSZ2WhOru9IU1yzvtp18tvthvjEk6
+14m3ZMTPM9hMQcnAg40GW9TMWGJVb88abnXap19/mGy42R7YezvtjfgLimGXZ/Lx
+qfLsro3DNbXsT02WZZV7ZeuWHuvm2rIF4u/zrS/uLk15aNn8QVN/d2uDb9lh+yz9
++y7yq9d0DbPshbVb7eBs+nxboZk7mXR5bOTWYCJe+hT2dlFngv7iD4ltmceKzPKq
+o58UBnMtZ/4yT28Hr09S/oM7S2L40YkNCVlnZGXx+seh7cX6Uw36yKGF0I4ja9Xh
+ofsp59oCp271LvqfTCmMuBqM7GLm85eCLow3xu2OO8rt3dXQ3Fuzre1qR/VNNaPC
+0D4ZPbcYrziSf3lOrf8He8O+vA==
+=PQZS
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/oleavr
+
+==================================================================
