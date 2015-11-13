@@ -11,6 +11,10 @@
 \*                */
 {% include css/gridism.css %}
 /*                *\
+ * $fonts.css   *
+\*                */
+{% include css/fonts.css %}
+/*                *\
  * $style.css     *
 \*                */
 {% include css/style.css %}
