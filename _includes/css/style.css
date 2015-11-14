@@ -330,6 +330,8 @@ article {
 /* Right-side nav - used by both docs and news */
 
 aside {
+  background-color: #5E4C5A;
+
   padding-top: 30px;
 }
 
@@ -345,6 +347,8 @@ aside h4 {
 
 aside ul {
   padding-left: 0;
+
+  background-color: #412D42;
 }
 
 aside ul:first-child {
@@ -356,20 +360,11 @@ aside li {
 }
 
 aside li a {
-  font-size: 16px;
-  position: relative
+  color: #999;
 }
 
-aside li.current a:before {
-  content: "";
-  border-color: transparent transparent transparent #D7D7D7;
-  border-style: solid;
-  border-width: 10px;
-  width: 0;
-  height: 0;
-  position: absolute;
-  top: 0;
-  left: -30px;
+aside li.current a {
+  color: #EF6456;
 }
 
 /* Documentation */
