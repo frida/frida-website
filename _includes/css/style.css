@@ -177,7 +177,7 @@ body > footer a:hover img {
 /* Intro */
 
 .intro .unit {
-  padding: 10px 0 40px;
+  padding: 40px 0 40px;
 }
 
 .intro p {
@@ -191,8 +191,9 @@ body > footer a:hover img {
 
 @media (min-width: 569px){
   .intro p {
-    font-size: 45pt;
-    line-height: 54pt;
+    font-family: 'montserratlight';
+    font-size: 60px;
+    line-height: 72px;
   }
 }
 
