@@ -8,8 +8,10 @@
 
 body {
   font-family: 'opensansregular';
-  font-size: 16pt;
-  background: #f1f1f1;
+  font-size: 16px;
+  line-height: 28px;
+  background-color: #f1f1f1;
+  color: #636363;
 }
 
 .clear {
@@ -56,17 +58,11 @@ nav li {
 }
 
 .main-nav {
-  margin-top: 52px;
-}
-
-.main-nav li {
-  margin-right: 10px;
+  margin-top: 22px;
 }
 
 .main-nav li a {
-  border-radius: 5px;
-  font-weight: 800;
-  font-size: 14px;
+  font-family: 'montserratlight';
   padding: 0.5em 1em;
   text-transform: uppercase;
 
@@ -130,10 +126,11 @@ nav li {
 /* Footer */
 
 body > footer {
-  background: #666;
   font-size: 16px;
   padding-bottom: 5px;
   margin-top: 40px;
+
+  background-color: #fff;
 }
 
 body > footer a {
@@ -309,7 +306,6 @@ article {
   padding: 20px;
   margin: 0 10px;
   box-shadow: 0 -1px 0 #F3F3F4;
-  font-size: 16px;
 }
 
 @media (max-width: 480px){
@@ -327,7 +323,6 @@ article {
 @media (min-width: 768px){
   article {
     padding: 40px 40px 30px;
-    font-size: 21px;
   }
 }
 
@@ -627,10 +622,6 @@ strong {
   font-weight: 700;
 }
 
-p {
-  line-height: 1.5em;
-}
-
 .left { float: left; }
 .right { float: right; }
 .align-right { text-align: right; }
@@ -657,7 +648,6 @@ article ul li p {
 }
 
 article ul li, article ol li {
-  line-height: 1.5em;
   margin-bottom: 0.5em;
 }
 
