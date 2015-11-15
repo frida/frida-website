@@ -545,36 +545,36 @@ h1, h2, h3, h4, h5, h6 {
   color: #5E4C5A;
 }
 h1 {
-  font-family: 'montserratregular';
-  font-size: 45pt;
-  line-height: 54pt;
+  font-family: 'montserratlight';
+  font-size: 45px;
+  line-height: 54px;
 }
 h2 {
-  font-family: 'montserratregular';
-  font-size: 22pt;
-  line-height: 26pt;
+  font-family: 'montserratlight';
+  font-size: 22px;
+  line-height: 26px;
 }
 h3 {
   font-family: 'montserratsemibold';
-  font-size: 17pt;
-  line-height: 21pt;
+  font-size: 17px;
+  line-height: 21px;
 }
 h4 {
   font-family: 'montserratlight';
-  font-size: 17pt;
-  line-height: 21pt;
+  font-size: 17px;
+  line-height: 21px;
   text-transform: uppercase;
 }
 h5 {
   font-family: 'montserratsemibold';
-  font-size: 15pt;
-  line-height: 22pt;
+  font-size: 15px;
+  line-height: 22px;
   text-transform: uppercase;
 }
 h6 {
   font-family: 'montserratsemibold';
-  font-size: 13pt;
-  line-height: 20pt;
+  font-size: 13px;
+  line-height: 20px;
 }
 
 a {
