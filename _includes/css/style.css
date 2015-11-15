@@ -256,11 +256,13 @@ nav li {
 
 /* Docs and News */
 
-.grid .docs-nav-desktop.unit, .grid .news-nav-desktop.unit {
-  padding-right: 0;
-}
-.grid .docs-articles.unit, .grid .news-articles.unit {
-  padding-left: 0;
+@media (min-width: 768px){
+  .grid .docs-nav-desktop.unit, .grid .news-nav-desktop.unit {
+    padding-right: 0;
+  }
+  .grid .docs-articles.unit, .grid .news-articles.unit {
+    padding-left: 0;
+  }
 }
 
 /* Article - Used for both docs and news */
