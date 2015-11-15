@@ -578,7 +578,7 @@ h6 {
 }
 
 a {
-  text-decoration: none;
+  color: #EF6456;
   transition: all .25s;
    -moz-transition: all .25s;
    -webkit-transition: all .25s;
