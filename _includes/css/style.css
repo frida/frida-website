@@ -36,11 +36,18 @@ body > header, body > section, body > footer {
 
 /* Header */
 
-body > header h1, body > header nav {
-  display: inline-block;
+.grid .logotype.unit {
+  margin-top: 52px;
+  margin-bottom: 32px;
+  padding-left: 22px;
 }
 
-body > header h1 span {
+.logotype a {
+  display: block;
+  line-height: 0;
+}
+
+.logotype span {
   display: none;
 }
 
@@ -54,11 +61,12 @@ nav li {
 }
 
 .main-nav {
-  margin-top: 22px;
+  margin-top: 52px;
 }
 
 .main-nav li a {
   font-family: 'montserratlight';
+  line-height: 39px;
   padding: 0.5em 1em;
   text-transform: uppercase;
 
@@ -119,61 +127,10 @@ nav li {
   }
 }
 
-/* Footer */
-
-body > footer {
-  font-size: 16px;
-  padding-bottom: 5px;
-  margin-top: 40px;
-
-  background-color: #fff;
-}
-
-body > footer a {
-  opacity: .8;
-  -webkit-transition: opacity .2s;
-  -moz-transition: opacity .2s;
-  transition: opacity .2s;
-}
-
-body > footer a:hover {
-  opacity: 1;
-}
-
-body > footer .align-right p, body > footer img {
-  display: inline-block;
-}
-
-body > footer img {
-  position: relative;
-  top: 8px;
-  margin-left: 5px;
-  width: 100px;
-  height: 30px;
-  opacity: .8;
-  padding: 1px;
-  -webkit-transition: opacity .2s;
-  -moz-transition: opacity .2s;
-  transition: opacity .2s;
-}
-
-body > footer a:hover img {
-  opacity: 1;
-}
-
-@media (max-width: 568px){
-  footer .one-third p {
-    margin-bottom: 0;
-  }
-  footer .two-thirds p {
-    margin-top: -20px;
-  }
-}
-
 /* Intro */
 
 .intro .unit {
-  padding: 40px 0 40px;
+  padding: 0 0 40px 0;
 }
 
 .intro p {
