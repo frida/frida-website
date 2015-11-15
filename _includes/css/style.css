@@ -330,36 +330,37 @@ article {
 /* Right-side nav - used by both docs and news */
 
 aside {
-  background-color: #5E4C5A;
+  text-align: center;
 
-  padding-top: 30px;
+  background-color: #5E4C5A;
 }
 
 aside h4 {
-  text-transform: uppercase;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 0 0 10px 30px;
-  margin-left: -30px;
   display: inline-block;
-  border-bottom: 1px solid #c00;
+  padding: 10px 0;
+  font-family: 'montserratregular';
+  font-size: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+
+  color: #F1F1F1;
 }
 
 aside ul {
-  padding-left: 0;
+  padding: 10px 0;
+  margin: 0;
 
   background-color: #412D42;
 }
 
-aside ul:first-child {
-  margin-top: 0;
-}
-
 aside li {
+  padding: 2px 0;
   list-style-type: none;
 }
 
 aside li a {
+  font-family: 'montserratlight';
+
   color: #999;
 }
 
