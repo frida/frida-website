@@ -537,7 +537,7 @@ h6 {
 }
 
 a {
-  color: #EF6456;
+  color: inherit;
   transition: all .25s;
    -moz-transition: all .25s;
    -webkit-transition: all .25s;
