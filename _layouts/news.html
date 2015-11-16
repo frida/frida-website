@@ -6,14 +6,11 @@ layout: default
     <div class="grid">
 
       {% include news_contents_mobile.html %}
-
-      <div class="unit four-fifths">
-        {{ content }}
-      </div>
-
       {% include news_contents.html %}
 
-      <div class="clear"></div>
+      <div class="news-articles unit three-quarters">
+        {{ content }}
+      </div>
 
     </div>
   </section>
