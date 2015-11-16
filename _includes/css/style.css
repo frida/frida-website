@@ -340,11 +340,9 @@ aside li.current a {
 }
 
 .section-nav {
-  text-align: center;
-  padding-top: 40px;
   position: relative;
-  background: url(../img/article-footer.png) top center no-repeat;
   margin: 40px -20px 10px;
+  text-align: center;
 }
 
 .section-nav > div {
@@ -352,41 +350,37 @@ aside li.current a {
 }
 
 .section-nav a, .section-nav span {
-  font-size: 16px;
   text-transform: uppercase;
-  font-weight: 700;
-  padding: 8px 12px 10px;
-  border-radius: 5px;
-  /*border: 1px solid #333;*/
-  box-shadow: 0 1px 3px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.5);
+  text-decoration: none;
 }
 
 .section-nav a:hover {
   color: #fff;
-  background: #888;
 }
 
 .section-nav .next, .section-nav .prev {
   position: relative;
+  padding: 10px 15px;
+  font-family: 'montserratregular';
+
+  background-color: #EF6456;
+  color: #F2F2F2;
 }
 
 .section-nav .next:after, .section-nav .prev:before {
-  font-size: 36px;
-  color: #222;
-  font-weight: 800;
-  text-shadow: 0 1px 0 rgba(255,255,255,.4);
   position: absolute;
-  top: -7px;
+  top: 4px;
+  font-size: 36px;
 }
 
 .section-nav .next:after {
-  content: "›";
   right: 10px;
+  content: "›";
 }
 
 .section-nav .prev:before {
-  content: "‹";
   left: 10px;
+  content: "‹";
 }
 
 .section-nav .prev, .section-nav .prev:hover {
@@ -400,8 +394,7 @@ aside li.current a {
 }
 
 .section-nav .disabled {
-  opacity: .5;
-  /*filter: alpha*/
+  background-color: #999;
   cursor: default;
 }
 
