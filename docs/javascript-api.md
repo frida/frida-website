@@ -742,13 +742,11 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     avoid putting your logic in <i>onEnter</i> and leaving <i>onLeave</i> in
     there as an empty callback.
   </p>
-  <br>
   <p>
     On an iPhone 6 the base overhead when providing just <i>onEnter</i> might be
     something like 15 microseconds, and 25 microseconds with both <i>onEnter</i>
     and <i>onLeave</i> provided.
   </p>
-  <br>
   <p>
     Also be careful about intercepting calls to functions that are called a
     bazillion times per second; while <i>send()</i> is asynchronous, the total

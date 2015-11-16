@@ -685,6 +685,7 @@ code.option, code.flag, code.filter, code.output {
 
 .note {
   position: relative;
+  padding-bottom: 22px;
   margin: 20px 0;
 
   background-color: #63B7A7;
@@ -702,7 +703,7 @@ code.option, code.flag, code.filter, code.output {
 }
 
 .note p {
-  padding: 22px 20px 22px 20px;
+  padding: 22px 20px 0 20px;
   margin: 0;
   font-size: 14px;
 }
