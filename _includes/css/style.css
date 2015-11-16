@@ -415,6 +415,15 @@ article h2:first-child {
   font-size: .8em;
 }
 
+.post-category {
+  padding: 4px 10px 4px 89px;
+  background-color: #ef6456;
+  font-family: 'montserratregular';
+  font-size: 15px;
+
+  color: #f2f2f2;
+}
+
 .label {
   float: left;
   text-transform: uppercase;
@@ -422,11 +431,11 @@ article h2:first-child {
 }
 
 .avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
-  display: inline-block;
-  vertical-align: middle;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
 }
 
 .post-meta {
@@ -437,6 +446,13 @@ article h2:first-child {
 .post-date,
 .post-author {
   margin-left: 10px;
+}
+
+.post-author {
+  display: inline-block;
+  position: relative;
+  padding-left: 40px;
+  line-height: 32px;
 }
 
 .news article + article {
