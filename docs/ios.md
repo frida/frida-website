@@ -100,11 +100,13 @@ You can now live-edit the aforementioned JavaScript files as you read
 
 ## Without Jailbreak
 
-In order to instrument an app with Frida you will need to link it with a .dylib
-provided by Frida.
+In order to instrument an app with Frida you will need to make it load a .dylib
+that we'll refer to as a "gadget".
 
 In this tutorial we will show you how to change your Xcode build configuration
-so you can start instrumenting your app with Frida.
+so you can start instrumenting your app with Frida. Note that it is also
+possible to perform this on an existing binary by using [insert_dylib](https://github.com/Tyilo/insert_dylib)
+or a similar tool.
 
 ### Customizing your Xcode project
 
@@ -122,6 +124,79 @@ drop `FridaGadget.dylib` into the "Link Binary With Libraries" section.
 Verify that the `Frameworks` directory with this .dylib also got added to
 the "Copy Bundle Resources" section.
 
+### A quick smoke-test
+
+Launch your app with Xcode, and you should see a message getting logged:
+
+{% highlight text %}
+Frida: Listening on TCP port 27042
+{% endhighlight %}
+
+Note that the app will appear to "hang" during startup. This is normal and
+caused by Frida waiting for you to instrument any APIs you're interested in,
+or just tell it to go ahead and finish launching the app.
+
+Now that Frida is waiting for us, and its gadget exposes the same interface
+as `frida-server`, we should be able to get a process listing:
+
+{% highlight bash %}
+$ frida-ps -U
+ PID NAME
+ 892 Gadget
+$
+{% endhighlight %}
+
+However unlike `frida-server`, there's only a single process we can attach to,
+which is the app itself.
+
+Let's also check which apps can be spawned:
+
+{% highlight bash %}
+$ frida-ps -Uai
+PID  Name    Identifier
+---  ------  ---------------
+892  Gadget  re.frida.Gadget
+$
+{% endhighlight %}
+
+Looking good. If we now `attach()` to this process it will cause the app
+to finish launching. However, if we first `spawn(["re.frida.Gadget"])` we will
+be able to `attach()` and apply our instrumentation, and the app will not carry
+on launching until we call `resume()`. This means we can `attach()` right away
+for late instrumentation, or we can `spawn()` to perform early instrumentation.
+
+### Tracing libc calls
+
+Assuming your app was just launched by Xcode and is waiting for you to let it
+finish launching, go ahead and try out some early instrumentation:
+
+{% highlight bash %}
+$ frida-trace -U -f re.frida.Gadget -i 'open*'
+Instrumenting functions...
+openlog: Auto-generated handler at …/openlog.js
+opendev: Auto-generated handler at …/opendev.js
+opendir: Auto-generated handler at …/opendir.js
+openpty: Auto-generated handler at …/openpty.js
+openx_np: Auto-generated handler at …/openx_np.js
+open: Auto-generated handler at …/open.js
+open$NOCANCEL: Auto-generated handler at …/open_NOCANCEL.js
+open_dprotected_np: Auto-generated handler at …/open_dprotected_np.js
+openat: Auto-generated handler at …/openat.js
+openat$NOCANCEL: Auto-generated handler at …/openat_NOCANCEL.js
+openbyid_np: Auto-generated handler at …/openbyid_np.js
+Started tracing 11 functions. Press Ctrl+C to stop.
+           /* TID 0xb07 */
+   193 ms  open(path=0x1988c4669, oflag=0x0, ...)
+   194 ms  open(path=0x16fdeebc6, oflag=0x0, ...)
+   195 ms  opendir()
+   195 ms     | open$NOCANCEL()
+   195 ms  opendir()
+   196 ms     | open$NOCANCEL()
+{% endhighlight %}
+
+You can now live-edit the aforementioned JavaScript files as you read
+`man open`, and start diving deeper and deeper into your iOS apps.
+
 ## Building your own tools
 
 While the CLI tools like *frida*, *frida-trace*, etc., are definitely
@@ -130,4 +205,3 @@ harnessing the powerful [Frida APIs](/docs/javascript-api/). For that we would
 recommend reading the chapters on [Functions](/docs/functions) and
 [Messages](/docs/functions), and anywhere you see `frida.attach()` just
 substitute that with `frida.get_usb_device().attach()`.
-
