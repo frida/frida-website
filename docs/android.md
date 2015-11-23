@@ -22,7 +22,7 @@ First off, download the latest `frida-server` for Android and get it running
 on your device:
 
 {% highlight bash %}
-$ curl -O http://build.frida.re/frida/android/arm/bin/frida-server
+$ curl -O https://build.frida.re/frida/android/arm/bin/frida-server
 $ chmod +x frida-server
 $ adb push frida-server /data/local/tmp/
 $ adb shell "/data/local/tmp/frida-server &"
