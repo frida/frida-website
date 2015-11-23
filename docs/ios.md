@@ -197,6 +197,12 @@ Started tracing 11 functions. Press Ctrl+C to stop.
 You can now live-edit the aforementioned JavaScript files as you read
 `man open`, and start diving deeper and deeper into your iOS apps.
 
+### Using the Simulator
+
+To instrument an app running in the Simulator simply replace `-U` with `-R`
+in the CLI examples above, and at the API level instead of `get_usb_device()`
+use `get_remote_device()`.
+
 ## Building your own tools
 
 While the CLI tools like *frida*, *frida-trace*, etc., are definitely
