@@ -67,3 +67,27 @@ material becomes available, we will try to put it here.
   code in JavaScript, and then dynamically insert these scripts into running
   processes. Hook any function, spy on crypto APIs or trace private application
   code. No source code, no permission needed!
+
+- [ZeroNights 2015](http://2015.zeronights.org/):
+  [Cross-platform reversing with Frida](http://2015.zeronights.org/workshops.html)
+  ([PDF](zeronights-2015-cross-platform-reversing-with-frida.pdf)
+  · [Demos](https://github.com/frida/frida-presentations/tree/master/ZeroNights2015))
+
+  Frida is a scriptable dynamic binary instrumentation toolkit aiming to
+  dramatically shorten the development cycle of dynamic analysis and
+  reverse-engineering tools. It also comes with some CLI tools built on top of
+  its APIs. Written in portable C, released under a commercially friendly OSS
+  license, with language bindings for Python, Node.js, and more, it's a tool of
+  trade to deal with dynamic instrumentation of binaries on all current
+  platforms (Windows, Mac, Linux, iOS, Android, and QNX).
+
+  This workshop is for attendees who would like to get up to speed on the
+  state-of-the-art in dynamic instrumentation on both desktop and mobile.
+  We will start out with an intro to Frida's APIs and CLI tools, and then walk
+  you through how to build a reversing tool from scratch.
+
+  Requirements for the workshop participants:
+  - 2-3 hours
+  - Knowledge of the English language
+  - It's great if you bring a laptop running Windows, Mac or Linux, and
+    optionally also a jailbroken/rooted iOS or Android device
