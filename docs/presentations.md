@@ -48,3 +48,22 @@ material becomes available, we will try to put it here.
   instrumentation by rewriting binary code, in memory, while the target process
   is running.
 
+- [NLUUG 2015](https://www.nluug.nl/activiteiten/events/nj15/index.html):
+  [Frida: Putting the open back into closed software](https://www.nluug.nl/activiteiten/events/nj15/abstracts/ab08.html)
+  ([Slides](http://slides.com/oleavr/nluug-2015-frida-putting-the-open-back-into-closed-software)
+  · [Demos](https://github.com/frida/frida-presentations/tree/master/NLUUG2015)
+  · [Recording](https://youtu.be/3lo1Y2oKkE4))
+
+  Have this black box process that you're just dying to peek inside of? Is
+  this process perhaps running on your cell phone, or on a closed-source OS,
+  and you just got to interoperate with it? Is the company behind this
+  proprietary software being less than forthcoming with APIs and docs?
+  Well, if you know a little JavaScript and have a little persistence,
+  perhaps we can help...
+
+  In this talk, we show what you can do with Frida, a scriptable dynamic
+  binary instrumentation toolkit for Windows, Mac, Linux, iOS, Android,
+  and QNX. We show by example how to write snippets of custom debugging
+  code in JavaScript, and then dynamically insert these scripts into running
+  processes. Hook any function, spy on crypto APIs or trace private application
+  code. No source code, no permission needed!
