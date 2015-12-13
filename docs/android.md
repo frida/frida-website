@@ -23,8 +23,8 @@ on your device:
 
 {% highlight bash %}
 $ curl -O https://build.frida.re/frida/android/arm/bin/frida-server
-$ chmod +x frida-server
 $ adb push frida-server /data/local/tmp/
+$ adb shell "chmod 755 /data/local/tmp/frida-server"
 $ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}
 
