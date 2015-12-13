@@ -13,7 +13,7 @@ material becomes available, we will try to put it here.
 
 - [OSDC 2015](http://act.osdc.no/osdc2015no/):
   [Putting the open back into closed software](http://act.osdc.no/osdc2015no/talk/6165)
-  ([PDF](osdc-2015-putting-the-open-back-into-closed-software.pdf))
+  ([PDF](osdc-2015-putting-the-open-back-into-closed-software.pdf) · [Recording](https://youtu.be/tmpjftTHzH8))
 
   Have this black box process that you’re just dying to peek inside of? Is
   this process perhaps running on your cell phone, or on a closed-source OS,
@@ -31,7 +31,7 @@ material becomes available, we will try to put it here.
 
 - [OSDC 2015](http://act.osdc.no/osdc2015no/):
   [The engineering behind the reverse engineering](http://act.osdc.no/osdc2015no/talk/6195)
-  ([PDF](osdc-2015-the-engineering-behind-the-reverse-engineering.pdf))
+  ([PDF](osdc-2015-the-engineering-behind-the-reverse-engineering.pdf) · [Recording](https://youtu.be/uc1mbN9EJKQ))
 
   Ever wondered how to build your own debugger? Did you complete that assembly
   tutorial as a teenager, but never found any real life use for low-level
