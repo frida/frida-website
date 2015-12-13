@@ -11,11 +11,10 @@ permalink: /docs/presentations/
 We have presented Frida at various conferences around the world. As presentation
 material becomes available, we will try to put it here.
 
-- <a href="http://act.osdc.no/osdc2015no/">OSDC 2015</a>:
-  <a href="http://act.osdc.no/osdc2015no/talk/6165">Putting the open back into
-  closed software</a>
-  (<a href="osdc-2015-putting-the-open-back-into-closed-software.pdf">PDF</a>)
-  <br>
+- [OSDC 2015](http://act.osdc.no/osdc2015no/):
+  [Putting the open back into closed software](http://act.osdc.no/osdc2015no/talk/6165)
+  ([PDF](osdc-2015-putting-the-open-back-into-closed-software.pdf))
+
   Have this black box process that you’re just dying to peek inside of? Is
   this process perhaps running on your cell phone, or on a closed-source OS,
   and you just got to interoperate with it? Is the company behind this
@@ -30,11 +29,10 @@ material becomes available, we will try to put it here.
   processes. Hook any function, spy on crypto APIs or trace private application
   code. No source code, no permission needed!
 
-- <a href="http://act.osdc.no/osdc2015no/">OSDC 2015</a>:
-  <a href="http://act.osdc.no/osdc2015no/talk/6195">The engineering behind
-  the reverse engineering<a/>
-  (<a href="osdc-2015-the-engineering-behind-the-reverse-engineering.pdf">PDF</a>)
-  <br>
+- [OSDC 2015](http://act.osdc.no/osdc2015no/):
+  [The engineering behind the reverse engineering](http://act.osdc.no/osdc2015no/talk/6195)
+  ([PDF](osdc-2015-the-engineering-behind-the-reverse-engineering.pdf))
+
   Ever wondered how to build your own debugger? Did you complete that assembly
   tutorial as a teenager, but never found any real life use for low-level
   programming? Need to learn more scary-sounding technical jargon to crank
