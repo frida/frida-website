@@ -28,17 +28,6 @@ find and install the `Frida` package which lets Frida inject JavaScript into
 apps running on your iOS device. This happens over USB, so you will need to have
 your USB cable handy, though there's no need to plug it in just yet.
 
-<div class="note info">
-  <h5>Using iOS 9?</h5>
-  <p>
-    Due to a known issue with Jetsam killing our daemon because it uses more
-    memory than the system-wide default limitation, you will need to ssh to
-    your device and launch frida-server as root. We did not yet have time to
-    look into this in detail, so please submit a pull-request or get in touch
-    if you happen to know an elegant solution to this.
-  </p>
-</div>
-
 ### A quick smoke-test
 
 Now, back on your Windows or Mac system it's time to make sure the basics
