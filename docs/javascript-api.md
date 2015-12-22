@@ -196,7 +196,7 @@ session.detach()
 +   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a
     JavaScript number
 
-+   `Process.enumerateThreads(callbacks)`: enumerate threads alive right now,
++   `Process.enumerateThreads(callbacks)`: enumerate all threads,
     where `callbacks` is an object specifying:
 
     -   `onMatch: function (thread)`: called with `thread` object containing:
