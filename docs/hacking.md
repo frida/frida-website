@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Hacking
-prev_section: usage
+prev_section: modes
 next_section: presentations
 permalink: /docs/hacking/
 ---

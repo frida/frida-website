@@ -2,7 +2,7 @@
 layout: docs
 title: Basic Usage
 prev_section: installation
-next_section: hacking
+next_section: modes
 permalink: /docs/usage/
 ---
 
