@@ -98,12 +98,22 @@ cat /etc/hosts
 Use *DYLD_INSERT_LIBRARIES* on Mac and iOS. Note that */bin/cat* won't work
 on El Capitan, as it ignores such attempts for system binaries.
 
+You may also add `FRIDA_GADGET_ENV=development` while developing your
+instrumentation logic, which will make *frida-gadget* watch your file for
+changes and automatically reload the script whenever it changes on disk. This
+will even work if your script hooks functions, like in this example above, as
+all hooks are reverted automatically when the old version of the script is
+unloaded.
+
 The reason we expose an `init()` method using [Frida's RPC feature](/docs/javascript-api/#rpc)
 is because *frida-gadget* will call it and wait for it to return until it lets
 the program continue executing its entrypoint. This means you can return a
-Promise if you need to do something asynchronous, e.g. *Memory.scan()* to
-locate a function you want to instrument, and guarantee that you won't miss any
-early calls.
+*Promise* if you need to do something asynchronous, e.g. *Memory.scan()* to
+locate a function you want to instrument, and guarantees that you won't miss any
+early calls. You may also expose a `dispose()` method if you need to perform
+some explicit cleanup when the process exits or your script get unloaded before
+the new version is loaded from disk (which happens with
+*FRIDA_GADGET_ENV=development*).
 
 For debugging you can use *console.log()*, *console.warn()*, and
 *console.error()*, which will print to *stdout*/*stderr*.
