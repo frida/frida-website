@@ -110,19 +110,31 @@ or a similar tool.
 
 ### Customizing your Xcode project
 
-Download the latest `FridaGadget.dylib` for iOS:
+Download the latest `FridaGadget.dylib` for iOS and sign it:
 
 {% highlight bash %}
-$ cd /path/to/your/xcode/project
 $ mkdir Frameworks
 $ cd Frameworks
 $ curl -O https://build.frida.re/frida/ios/lib/FridaGadget.dylib
+$ security find-identity -p codesigning -v
+  1) A30E15162B3EB979D2572783BF3… "Developer ID Application: …"
+  2) E18BA16DF86318F0ECA4BE17C03… "iPhone Developer: …"
+     2 valid identities found
+$ codesign -f -s E18BA16DF86318F0ECA4BE17C03… FridaGadget.dylib
+FridaGadget.dylib: replacing existing signature
 {% endhighlight %}
 
-Open your project in Xcode and switch to its "Build Phases" tab. Drag and
-drop `FridaGadget.dylib` into the "Link Binary With Libraries" section.
-Verify that the `Frameworks` directory with this .dylib also got added to
-the "Copy Bundle Resources" section.
+Open your project in Xcode and drag the "Frameworks" directory from the previous
+step into the Project Navigator view, dropping it right next to your
+"AppDelegate" source file. It's important that you drag the directory and not
+the file. Xcode will then prompt you "Choose options for adding these files:",
+and you should then enable the "Copy items if needed" option, and make sure that
+"Create folder references" is selected. Hit Finish. Select the project itself
+at the top of the Project Navigator view and switch to its "Build Phases" tab.
+Expand the "Frameworks" directory in the Project Navigator and drag and drop
+`FridaGadget.dylib` into the "Link Binary With Libraries" section. Verify that
+the `Frameworks` directory with this .dylib also got added to the
+"Copy Bundle Resources" section.
 
 ### A quick smoke-test
 
