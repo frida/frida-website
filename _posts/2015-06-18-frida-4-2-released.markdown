@@ -139,6 +139,53 @@ So let's run quickly through all the changes:
 - core: fix return-address seen by the invocation-context on arm64
 - core: add a fuzzy backtracer for arm64
 
+4.2.6:
+
+- core: fix access to arguments 4 through 7 on arm64
+- core: add *Memory.readFloat()*, *Memory.writeFloat()*, *Memory.readDouble()*
+        and *Memory.writeDouble()*
+- dalvik: improved type checking
+- qnx: implement side-stack for calling *onEnter()*/*onLeave()* with the
+       stack-hungry V8 engine
+
+4.2.7:
+
+- core: Darwin backend bug-fixes
+- core: optimize handling of the *send()* data payload
+- core: add APIs for interacting with the iOS kernel through *task_for_pid(0)*,
+        only available in the *attach(pid=0)* session
+- core: side-stack support for replaced functions on QNX
+- objc: add *getOwnPropertyNames()* to ObjC.classes
+- frida-repl: improved completion
+
+4.2.8:
+
+- python: fix Py3k regression
+
+4.2.9:
+
+- objc: add *$ownMethods* to *ObjC.Object*
+- dalvik: add support for primitive arrays and object arrays
+- python: improve compatibility between Python 2 and 3
+- frida-repl: better magic commands
+
+4.2.10:
+
+- core: fix Interceptor vector register clobbering issue on arm64
+- core: improve temporary directory handling on Android
+
+4.2.11:
+
+- dalvik: add support for accessing instance and static fields
+- dalvik: type conversion improvements
+- python: resolve python runtime lazily on Mac to allow our binaries to work
+          with multiple Python distributions
+- python: pip support
+
+4.2.12:
+
+- python: fix Py3k regressions
+
 That's all for now. Please help spread the word by sharing this post across
 the inter-webs. We're still quite small as an open source project, so
 word-of-mouth marketing means a lot to us.
