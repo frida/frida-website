@@ -20,14 +20,14 @@ you’ll need to make sure your system has before you start.
 - [setuptools](https://pypi.python.org/pypi/setuptools)
 - Windows, Mac OS X or Linux
 
-## Install with easy_install
+## Install with pip
 
 The best way to install Frida is via
 [PyPI](https://pypi.python.org/pypi/frida). At the terminal prompt,
 simply run the following command to install Frida:
 
 {% highlight bash %}
-$ sudo easy_install frida
+$ sudo pip install frida
 {% endhighlight %}
 
 All of Frida’s PyPI dependencies are automatically installed by the above

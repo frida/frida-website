@@ -9,7 +9,7 @@ permalink: /docs/quickstart/
 For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
-~ $ sudo easy_install frida
+~ $ sudo pip install frida
 ~ $ frida-trace -i 'recv*' -i 'read*' Skype
 recv: Auto-generated handler: …/recv.js
 # (snip)
