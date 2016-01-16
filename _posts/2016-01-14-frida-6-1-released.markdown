@@ -48,6 +48,8 @@ as just mentioned.
 
 So in closing, here's a summary of the changes:
 
+6.1.0:
+
 - core: replace the JavaScriptCore runtime with its successor built on Duktape
 - core: add *disable_jit()* to allow users to try out the new Duktape engine
 - core: fix crash on Linux when injecting into processes where *pthread_create*
@@ -59,5 +61,9 @@ So in closing, here's a summary of the changes:
 - frida-repl: upgrade to latest prompt-toolkit
 - frida-trace: fix crash when attempting to trace partially resolved imports
 - frida-trace: stick to ES5 in the generated handlers for Duktape compatibility
+
+6.1.1:
+
+- core: fix synchronization logic and error-handling bugs in the Duktape runtime
 
 Enjoy!
