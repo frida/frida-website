@@ -66,4 +66,8 @@ So in closing, here's a summary of the changes:
 
 - core: fix synchronization logic and error-handling bugs in the Duktape runtime
 
+6.1.2:
+
+- core: fix Android regression resulting in crash on inject
+
 Enjoy!
