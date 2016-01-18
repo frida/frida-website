@@ -69,5 +69,7 @@ So in closing, here's a summary of the changes:
 6.1.2:
 
 - core: fix Android regression resulting in crash on inject
+- core: fix Python 3.x build regression
+- clr: add *DisableJit()* to Session
 
 Enjoy!
