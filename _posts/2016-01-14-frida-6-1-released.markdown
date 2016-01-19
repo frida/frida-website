@@ -72,4 +72,11 @@ So in closing, here's a summary of the changes:
 - core: fix Python 3.x build regression
 - clr: add *DisableJit()* to Session
 
+6.1.3:
+
+- core: give the iOS frida-helper all the entitlements that the Preferences app
+        has, so system session scripts can read and write system configuration
+- core: changes to support AppContainer ACL on temporary directory/files within
+- node: fix pid check so it allows attaching to the system session
+
 Enjoy!
