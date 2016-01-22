@@ -79,4 +79,12 @@ So in closing, here's a summary of the changes:
 - core: changes to support AppContainer ACL on temporary directory/files within
 - node: fix pid check so it allows attaching to the system session
 
+6.1.4:
+
+- core: implement spawn() for console binaries on iOS
+- core: improve support for hooking low-level OS APIs
+- core: fix mapper issues preventing us from injecting into Mac processes
+        where libraries frida-agent depends are not yet loaded
+- core: make InvocationContext available to replaced functions also
+
 Enjoy!
