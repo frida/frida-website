@@ -40,9 +40,10 @@ $ frida-ps -U
 <div class="note info">
   <h5>Using Linux?</h5>
   <p>
-    There's not yet any usbmuxd integration, so in the meantime you can use
-    WiFi and set up an SSH tunnel between localhost:27042 in both ends, and
-    then use -R instead of -U.
+    As of Frida 6.0.9 there's now usbmuxd integration, so -U works.
+    For earlier Frida versions you can use WiFi and set up an SSH
+    tunnel between localhost:27042 on both ends, and then use -R instead
+    of -U.
   </p>
 </div>
 
