@@ -117,3 +117,27 @@ material becomes available, we will try to put it here.
   - Knowledge of the English language
   - It's great if you bring a laptop running Windows, Mac or Linux, and
     optionally also a jailbroken/rooted iOS or Android device
+
+- [FOSDEM 2016](https://fosdem.org/2016/schedule/track/testing_and_automation/):
+  [Testing interoperability with closed-source software through scriptable diplomacy](https://fosdem.org/2016/schedule/event/closed_source_interop/)
+  ([PDF](fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf))
+
+  You, of course, write open-source software. They didn’t. And for the sake of your mobile users, 
+  you both need to be friends. Enter Frida, the diplomat (she’s really only a library, but don’t tell 
+  anyone). She has coaxing superpowers that allow you to expose the innards of binary-only software, 
+  be it other libraries, operating systems, or other OS processes you must deal with. You can program 
+  Frida to infiltrate closed-source software, and expose their internals into abstractions you can use 
+  for testing the interoperability of your software. Want to lift some of their logic into your mock? 
+  Or replace a few functions in their binary code with your mocks? Hopefully, you want to do that 
+  using high-level languages such as JavaScript and/or Python, because those are the ones Frida likes 
+  the most.
+
+  In this talk, we use Frida, the scriptable, dynamic instrumentation toolkit, to expose internal 
+  functionality from binary-only software. By exposing internal functions and data structures, tightly 
+  integrating software often becomes easier to test at fine granularity. What previously had to be 
+  larger integration tests dependent upon several running subsystems, may, with a little effort, 
+  become isolated test fixtures that are easier to reason about. We show you unfortunate souls who 
+  have to deal with this level of interoperability how to program Frida to identify and expose 
+  functions in remote processes, and how to combine these exposed functions into small test fixtures 
+  in a unit-testing style.
+
