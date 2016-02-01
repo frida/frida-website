@@ -3,7 +3,6 @@ layout: news_item
 title: 'Frida presentation at FOSDEM 2016'
 date: 2016-01-31 23:59:59 +0100
 author: karltk
-version: 0.0
 categories: [presentation]
 ---
 
