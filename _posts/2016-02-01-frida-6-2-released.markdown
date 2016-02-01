@@ -78,6 +78,7 @@ So in closing, here's a summary of the changes:
 - core: fix crash when scheduled callbacks are freed late (V8 and Duktape)
 - frida-trace: improve performance by removing *setTimeout()* logic, allowing
                many hooks to be applied in the same transaction
+- frida-trace: batch log events in 50 ms chunks to improve performance
 
 6.2.1:
 
