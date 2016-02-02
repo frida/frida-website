@@ -10,7 +10,7 @@ For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
 ~ $ sudo pip install frida
-~ $ frida-trace -i 'recv*' -i 'read*' Skype
+~ $ frida-trace -i "recv*" -i "read*" Twitter
 recv: Auto-generated handler: …/recv.js
 # (snip)
 recvfrom: Auto-generated handler: …/recvfrom.js

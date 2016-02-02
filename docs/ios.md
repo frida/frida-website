@@ -74,7 +74,7 @@ making sure it stays in the foreground without the device going to sleep, go
 back to your desktop and run:
 
 {% highlight bash %}
-$ frida-trace -U -i 'CCCryptorCreate*' Twitter
+$ frida-trace -U -i "CCCryptorCreate*" Twitter
 Uploading data...
 CCCryptorCreate: Auto-generated handler …/CCCryptorCreate.js
 CCCryptorCreateFromData: Auto-generated handler …/CCCryptorCreateFromData.js
@@ -184,7 +184,7 @@ Assuming your app was just launched by Xcode and is waiting for you to let it
 finish launching, go ahead and try out some early instrumentation:
 
 {% highlight bash %}
-$ frida-trace -U -f re.frida.Gadget -i 'open*'
+$ frida-trace -U -f re.frida.Gadget -i "open*"
 Instrumenting functions...
 openlog: Auto-generated handler at …/openlog.js
 opendev: Auto-generated handler at …/opendev.js
