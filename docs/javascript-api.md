@@ -27,7 +27,7 @@ permalink: /docs/javascript-api/
   1. [DebugSymbol](#debugsymbol)
   1. [Instruction](#instruction)
   1. [ObjC](#objc)
-  1. [Dalvik](#dalvik)
+  1. [Java](#java)
   1. [WeakRef](#weakref)
 
 ## Global
@@ -1239,13 +1239,13 @@ proxy.release();
     string
 
 
-## Dalvik
+## Java
 
-+   `Dalvik.available`: a boolean specifying whether the current process has the
-    Dalvik VM loaded. Do not invoke any other `Dalvik` properties or methods
-    unless this is the case.
++   `Java.available`: a boolean specifying whether the current process has the
+    a Java VM loaded, i.e. Dalvik or ART. Do not invoke any other `Java`
+    properties or methods unless this is the case.
 
-+   `Dalvik.enumerateLoadedClasses(callbacks)`: enumerate classes loaded right
++   `Java.enumerateLoadedClasses(callbacks)`: enumerate classes loaded right
     now, where `callbacks` is an object specifying:
 
     -   `onMatch: function (className)`: called for each loaded class with
@@ -1253,15 +1253,15 @@ proxy.release();
 
     -   `onComplete: function ()`: called when all classes have been enumerated.
 
-+   `Dalvik.enumerateLoadedClassesSync()`: synchronous version of
++   `Java.enumerateLoadedClassesSync()`: synchronous version of
     `enumerateLoadedClasses()` that returns the class names in an array.
 
-+   `Dalvik.perform(fn)`: ensure that the current thread is attached to the VM
++   `Java.perform(fn)`: ensure that the current thread is attached to the VM
     and call `fn`. (This isn't necessary in callbacks from Java.)
 
 {% highlight js %}
-Dalvik.perform(function () {
-    var Activity = Dalvik.use("android.app.Activity");
+Java.perform(function () {
+    var Activity = Java.use("android.app.Activity");
     Activity.onResume.implementation = function () {
         send("onResume() got called! Let's call the original implementation");
         this.onResume();
@@ -1269,7 +1269,7 @@ Dalvik.perform(function () {
 });
 {% endhighlight %}
 
-+   `Dalvik.use(className)`: dynamically get a JavaScript wrapper for
++   `Java.use(className)`: dynamically get a JavaScript wrapper for
     `className` that you can instantiate objects from by calling `$new()` on
     it to invoke a constructor. Call `$dispose()` on an instance to clean it
     up explicitly (or wait for the JavaScript object to get garbage-collected,
@@ -1278,37 +1278,37 @@ Dalvik.perform(function () {
     from it:
 
 {% highlight js %}
-Dalvik.perform(function () {
-    var Activity = Dalvik.use("android.app.Activity");
-    var Exception = Dalvik.use("java.lang.Exception");
+Java.perform(function () {
+    var Activity = Java.use("android.app.Activity");
+    var Exception = Java.use("java.lang.Exception");
     Activity.onResume.implementation = function () {
         throw Exception.$new("Oh noes!");
     };
 });
 {% endhighlight %}
 
-+   `Dalvik.choose(className, callbacks)`: enumerate live instances of the
-    `className` class by scanning the Dalvik heap, where `callbacks` is an
++   `Java.choose(className, callbacks)`: enumerate live instances of the
+    `className` class by scanning the Java heap, where `callbacks` is an
     object specifying:
 
     -   `onMatch: function (instance)`: called once for each live instance found
         with a ready-to-use `instance` just as if you would have called
-        `Dalvik.cast()` with a raw handle to this particular instance.
+        `Java.cast()` with a raw handle to this particular instance.
 
         This function may return the string `stop` to cancel the enumeration
         early.
 
     -   `onComplete: function ()`: called when all instances have been enumerated
 
-+   `Dalvik.cast(handle, klass)`: create a JavaScript wrapper given the existing
++   `Java.cast(handle, klass)`: create a JavaScript wrapper given the existing
     instance at `handle` of given class `klass` (as returned from
-    `Dalvik.use()`). Such a wrapper also has a `class` property for getting a
+    `Java.use()`). Such a wrapper also has a `class` property for getting a
     wrapper for its class, and a `$className` property for getting a string
     representation of its class-name.
 
 {% highlight js %}
-var Activity = Dalvik.use("android.app.Activity");
-var activity = Dalvik.cast(ptr("0x1234"), Activity);
+var Activity = Java.use("android.app.Activity");
+var activity = Java.cast(ptr("0x1234"), Activity);
 {% endhighlight %}
 
 
