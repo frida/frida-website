@@ -43,7 +43,7 @@ before we *send()* a message or return from an RPC method). So unless you're
 attaching your hooks from timers or asynchronous APIs like *Memory.scan()*,
 they will all be batched into a single transaction and get a performance boost.
 
-Here's how we stack up to the closed-source CydiaSubstrate library:
+Here's how we stack up to CydiaSubstrate in terms of performance:
 
 {% gist bfd9b65865e9f17914f2 %}
 
@@ -52,14 +52,14 @@ have to call *begin_transaction()* and *end_transaction()* yourself to get this
 boost, but your code will still work even if you don't, because every operation
 will implicitly contain a transaction, and the API allows nesting those calls.
 
-That was function hooking performance. We didn't stop there. If you've ever used
-*frida-trace* to trace Objective-C APIs, or glob for functions across all loaded
-libraries, you may have noticed that it could take quite a while to resolve all
-the functions. If you combined this with early instrumentation it could even
-take so long that we exceeded the system's [launch timeout](https://github.com/frida/frida/issues/103).
+That was function hooking performance, but we didn't stop there. If you've ever
+used *frida-trace* to trace Objective-C APIs, or glob for functions across all
+loaded libraries, you may have noticed that it could take quite a while to
+resolve all the functions. If you combined this with early instrumentation it
+could even take so long that we exceeded the system's [launch timeout](https://github.com/frida/frida/issues/103).
 All of this has now been optimized, and to give you an idea of the speed-up,
-a typical Objective-C case that used to take seconds is now completing in less
-than 10 milliseconds.
+a typical Objective-C case that used to take seconds is now completing in a
+few milliseconds.
 
 Now to the final part of the news. Considering that dynamically discovering
 functions to hook is such a common use-case, and not just something that
