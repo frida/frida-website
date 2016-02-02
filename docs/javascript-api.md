@@ -23,6 +23,7 @@ permalink: /docs/javascript-api/
   1. [File](#file)
   1. [Interceptor](#interceptor)
   1. [Stalker](#stalker)
+  1. [ApiResolver](#apiresolver)
   1. [DebugSymbol](#debugsymbol)
   1. [Instruction](#instruction)
   1. [ObjC](#objc)
@@ -852,6 +853,74 @@ Stalker.follow(Process.getCurrentThreadId(), {
 +   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
     between each time the event queue is drained. Defaults to 250 ms, which
     means that the event queue is drained four times per second.
+
+
+## ApiResolver
+
++   `new ApiResolver(type)`: create a new resolver of the given `type`, allowing
+    you to quickly find functions by name, with globs permitted. Precisely which
+    resolvers are available depends on the current platform and runtimes loaded
+    in the current process. As of the time of writing, the available resolvers
+    are:
+
+    -   `module`: Resolves exported and imported functions of shared libraries
+                  currently loaded. Always available.
+    -   `objc`: Resolves Objective-C methods of classes currently loaded.
+                Available on Mac and iOS in processes that have the Objective-C
+                runtime loaded. Use `ObjC.available` to check at runtime, or
+                wrap your `new ApiResolver('objc')` call in a *try-catch*.
+
+    The resolver will load the minimum amount of data required on creation, and
+    lazy-load the rest depending on the queries it receives. It is thus
+    recommended to use the same instance for a batch of queries, but recreate it
+    for future batches to avoid looking at stale data.
+
+-   `enumerateMatches(query, callbacks)`: perform the resolver-specific `query`
+    string, where `callbacks` is an object specifying:
+
+    -   `onMatch: function (match)`: called for each match, where `match` is an
+        object with `name` and `address` keys.
+
+    -   `onComplete: function ()`: called when all matches have been enumerated.
+
+{% highlight js %}
+var resolver = new ApiResolver('module');
+resolver.enumerateMatches('exports:*!open*', {
+  onMatch: function (match) {
+    /*
+     * Where `match` contains an object like this one:
+     *
+     * {
+     *     name: '/usr/lib/libSystem.B.dylib!opendir$INODE64',
+     *     address: ptr('0x7fff870135c9')
+     * }
+     */
+  },
+  onComplete: function () {
+  }
+});
+{% endhighlight %}
+
+{% highlight js %}
+var resolver = new ApiResolver('objc');
+resolver.enumerateMatches('-[NSURL* *HTTP*]', {
+  onMatch: function (match) {
+    /*
+     * Where `match` contains an object like this one:
+     *
+     * {
+     *     name: '-[NSURLRequest valueForHTTPHeaderField:]',
+     *     address: ptr('0x7fff94183e22')
+     * }
+     */
+  },
+  onComplete: function () {
+  }
+});
+{% endhighlight %}
+
+-   `enumerateMatchesSync(query)`: synchronous version of `enumerateMatches()`
+    that returns the matches in an array.
 
 
 ## DebugSymbol
