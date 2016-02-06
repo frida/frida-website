@@ -103,4 +103,8 @@ So in closing, here's a summary of the changes:
 - frida-trace: fix path escaping issue
 - frida-trace: improve error-handling for bad handlers
 
+6.2.4:
+
+- frida-trace: monitor handlers instead of polling them
+
 Enjoy!
