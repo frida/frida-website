@@ -86,4 +86,21 @@ So in closing, here's a summary of the changes:
 - core: add *ApiResolver* API
 - frida-trace: improve performance by using the new *ApiResolver* API
 
+6.2.2:
+
+- core: fix oops that prevented injection into Windows Store/Universal apps
+- core: fix crash on teardown on 32-bit ARM
+- core: add frida-inject, a tool to inject an agent into a running process with
+        similar semantics to frida-gadget
+- core: (Linux) prevent libdl from unloading to work around TLS destructor bug
+- core: (Linux) fix race-condition on rapid uninject
+
+6.2.3:
+
+- core: fix source-map handling for eval code, which manifested itself as
+        unhandled exceptions getting swallowed, e.g. when running frida-trace
+- core: fix Python 3.x build system regression
+- frida-trace: fix path escaping issue
+- frida-trace: improve error-handling for bad handlers
+
 Enjoy!
