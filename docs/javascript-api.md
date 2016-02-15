@@ -365,6 +365,9 @@ session.detach()
         -   `onComplete: function ()`: called when the memory range has been
             fully scanned
 
+-   `Memory.scanSync(address, size, pattern)`: synchronous version of `scan()`
+    that returns the matches in an array.
+
 +   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap. The
     returned object is a `NativePointer` and the heap memory will be released
     when all JavaScript handles to it are gone. This means you need to keep
@@ -695,6 +698,14 @@ Interceptor.attach(f, {
         You may call `retval.replace(1337)` to replace the return value with
         the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace with
         a pointer.
+
+    You may also intercept arbitrary instructions by passing a function instead
+    of the `callbacks` object. This function has the same signature as
+    `onEnter`, but the `args` argument passed to it will only give you sensible
+    values if the intercepted instruction is at the beginning of a function or
+    at a point where registers/stack have not yet deviated from that point.
+
+    Returns a listener object that you can call `detach()` on.
 
     Note that these functions will be invoked with `this` bound to a
     per-invocation (thread-local) object where you can store arbitrary data,
