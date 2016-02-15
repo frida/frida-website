@@ -107,4 +107,17 @@ So in closing, here's a summary of the changes:
 
 - frida-trace: monitor handlers instead of polling them
 
+6.2.5:
+
+- core: add support for hooking arbitrary instructions by calling
+        *Interceptor.attach()* with a function instead of a callbacks object
+- core: add support for detaching individual listeners added by
+        *Interceptor.attach()*, even synchronously from their callbacks
+- core: add *Memory.scanSync()*
+- core: fix clobber by improving *Interceptor* to preserve *r12* aka *IP* on ARM
+- core: expose *r8* through *r12* to the JavaScript runtimes
+- core: fix crash on architectures where unaligned word access is not supported
+- frida-repl: simplify logic by using the RPC feature
+- node: upgrade to prebuild 3.x
+
 Enjoy!
