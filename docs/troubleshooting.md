@@ -32,7 +32,7 @@ sudo sysctl kernel.yama.ptrace_scope=0
 
 ## Failed to spawn: unexpected error while spawning child process 'XXX' (task_for_pid returned '(os/kern) failure')
 
-On MacOS this probably means that you did't properly sign Frida or that there
+On Mac OS X this probably means that you did't properly sign Frida or that there
 is a permission missing. For example if you are running Frida over SSH and can't
 respond to the authentication dialog that would pop up under *normal* use.
 
