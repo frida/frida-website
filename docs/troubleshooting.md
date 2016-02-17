@@ -30,15 +30,14 @@ have forgotten to enable ptrace of non-child processes. Try:
 sudo sysctl kernel.yama.ptrace_scope=0
 {% endhighlight %}
 
-## Failed to spawn: unexpected error while spawning child process 'XXX'
-(task_for_pid returned '(os/kern) failure')
-Under MacOS, this (probably) means that you don't have properly signed Frida or
-that there is some permissions missing (for example, you are running Frida over 
-SSH and can't respond to the authentication dialog that would pops up under a 
-*normal* use).
+## Failed to spawn: unexpected error while spawning child process 'XXX' (task_for_pid returned '(os/kern) failure')
 
-If it's a signature problem, follow 
-[this procedure]({{ site.repository }}/frida/frida#mac-and-ios) else, try:
+On MacOS this probably means that you did't properly sign Frida or that there
+is a permission missing. For example if you are running Frida over SSH and can't
+respond to the authentication dialog that would pop up under *normal* use.
+
+If it's a signature problem, follow [this procedure]({{ site.repository }}/frida/frida#mac-and-ios)
+else, try:
 
 {% highlight bash %}
 **WARNING: This may weaken security**
