@@ -124,6 +124,28 @@ nav li {
   }
 }
 
+/* Footer */
+
+footer .unit {
+  text-align: right;
+}
+.sponsored-by {
+  display: inline-block;
+  width: 208px;
+  text-align: left;
+}
+.sponsored-by h5 {
+  margin-bottom: 5px;
+}
+.sponsored-by a {
+  display: block;
+}
+.sponsored-by img {
+  display: block;
+  width: 208px;
+  height: 40px;
+}
+
 /* Intro */
 
 .intro .unit {
