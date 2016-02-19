@@ -120,4 +120,22 @@ So in closing, here's a summary of the changes:
 - frida-repl: simplify logic by using the RPC feature
 - node: upgrade to prebuild 3.x
 
+6.2.6:
+
+- core: fix regression on non-jailbroken iOS systems
+- core: fix Interceptor regression in the Duktape runtime
+- core: fix module name of resolved imports
+- core: add API for specifying which host to connect to
+- core: improve QNX support and fix build regressions
+- core: fix the frida-inject build system on Mac
+- core: (Windows) fix crash when USB device location retrieval fails
+- frida-server: allow overriding the default listen address
+- frida-node: add *addRemoteDevice()* and *removeRemoteDevice()* to
+              DeviceManager
+- frida-python: add -H switch for specifying the host to connect to
+- frida-python: add *add_remote_device()* and *remove_remote_device()* to
+                DeviceManager
+- frida-python: fix compatibility issues with the Duktape runtime
+- frida-python: canonicalize the requested RPC method name
+
 Enjoy!
