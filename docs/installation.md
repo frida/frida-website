@@ -80,3 +80,5 @@ and library versions):
 {% highlight py %}
 [u'cat', …, u'ld-2.15.so']
 {% endhighlight %}
+
+Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details.
