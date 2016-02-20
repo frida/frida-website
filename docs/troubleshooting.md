@@ -36,7 +36,7 @@ On Mac OS X this probably means that you did't properly sign Frida or that there
 is a permission missing. For example if you are running Frida over SSH and can't
 respond to the authentication dialog that would pop up under *normal* use.
 
-If it's a signature problem, follow [this procedure]({{ site.organization_url }}/frida#mac-and-ios)
+If it's a signature problem, follow [this procedure]({{ site.repository }}#mac-and-ios)
 else, try:
 
 {% highlight bash %}
