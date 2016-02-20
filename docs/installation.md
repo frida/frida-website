@@ -8,7 +8,7 @@ permalink: /docs/installation/
 
 Getting Frida installed and ready-to-go should only take a few minutes. If it
 ever becomes a pain in the ass, please [file an
-issue]({{ site.repository }}/frida-website/issues/new) (or submit a pull request)
+issue]({{ site.organization_url }}/frida-website/issues/new) (or submit a pull request)
 describing the issue you encountered and how we might make the process easier.
 
 ### Requirements
@@ -33,7 +33,7 @@ $ sudo pip install frida
 All of Frida’s PyPI dependencies are automatically installed by the above
 command, so you won’t have to worry about them at all. If you have problems
 installing Frida, check out the [troubleshooting](../troubleshooting/) page or
-[report an issue]({{ site.repository }}/frida-website/issues/new) so the Frida
+[report an issue]({{ site.organization_url }}/frida-website/issues/new) so the Frida
 community can improve the experience for everyone.
 
 ## Install manually

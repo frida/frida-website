@@ -4,4 +4,5 @@ google_analytics_id: UA-46880695-1
 permalink: /news/:year/:month/:day/:title/
 excerpt_separator: noifniof3nioaniof3nioafafinoafnoif
 repository: https://github.com/frida/frida
+organization_url: https://github.com/frida
 gems: [jekyll-gist]
