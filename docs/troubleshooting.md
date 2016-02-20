@@ -8,7 +8,7 @@ permalink: /docs/troubleshooting/
 
 If you ever run into problems installing or using Frida, here's a few tips
 that might be of help. If the problem you’re experiencing isn’t covered below,
-please [report an issue]({{ site.repository }}/frida-website/issues/new) so the
+please [report an issue]({{ site.organization_url }}/frida-website/issues/new) so the
 Frida community can make everyone’s experience better.
 
 ## ValueError: ambiguous name; it matches:
@@ -36,7 +36,7 @@ On Mac OS X this probably means that you did't properly sign Frida or that there
 is a permission missing. For example if you are running Frida over SSH and can't
 respond to the authentication dialog that would pop up under *normal* use.
 
-If it's a signature problem, follow [this procedure]({{ site.repository }}/frida/frida#mac-and-ios)
+If it's a signature problem, follow [this procedure]({{ site.organization_url }}/frida#mac-and-ios)
 else, try:
 
 {% highlight bash %}
