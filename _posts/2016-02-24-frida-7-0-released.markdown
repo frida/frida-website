@@ -1,0 +1,35 @@
+---
+layout: news_item
+title: 'Frida 7.0 Released'
+date: 2016-02-24 04:00:00 +0100
+author: oleavr
+version: 7.0
+categories: [release]
+---
+
+It's been a while since our last major release bump. This time we're addressing
+the long-standing issue where 64-bit integers were represented as JavaScript
+Number values. This meant that values beyond 53 bits were problematic due to
+the fact that the underlying representation is a double.
+
+The 64-bit types in the *Memory*, *NativeFunction*, and *NativeCallback* APIs
+are now properly represented by the newly introduced [Int64](/docs/javascript-api/#int64)
+and [UInt64](/docs/javascript-api/#uint64) types, and their APIs are almost
+identical to [NativePointer](/docs/javascript-api/#nativepointer).
+
+Now let's cross our fingers that int64/uint64 [make it into ES7](https://twitter.com/BrendanEich/status/526826278377099264).
+
+So in closing, here's a summary of the changes:
+
+7.0.0:
+
+- core: rework handling of 64-bit integers
+- core: improve strictness of constructors
+- core: improve QNX support
+- frida-repl: update the logo
+
+7.0.1:
+
+- core: fix Int64/UInt64 field capacity on 32-bit architectures
+
+Enjoy!
