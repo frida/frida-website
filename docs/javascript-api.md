@@ -560,6 +560,10 @@ Interceptor.attach(f, {
     make a new NativePointer with this NativePointer plus/minus/and/or/xor
     `rhs`, which may either be a JavaScript number or another NativePointer
 
+-   `shr(n)`, `shl(n)`:
+    make a new NativePointer with this NativePointer shifted right/left by `n`
+    bits
+
 -   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
     this one; i.e. it has the same pointer value
 
