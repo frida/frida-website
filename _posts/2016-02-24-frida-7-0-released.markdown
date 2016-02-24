@@ -32,4 +32,9 @@ So in closing, here's a summary of the changes:
 
 - core: fix Int64/UInt64 field capacity on 32-bit architectures
 
+7.0.2:
+
+- core: allow Int64 and UInt64 to be passed as-is to all relevant APIs
+- core: fix handling of $protocols on ObjC instances
+
 Enjoy!
