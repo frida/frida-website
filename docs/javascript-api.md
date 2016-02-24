@@ -32,6 +32,10 @@ permalink: /docs/javascript-api/
 
 ## Global
 
++   `int64(v)`: short-hand for `new Int64(v)`
+
++   `uint64(v)`: short-hand for `new UInt64(v)`
+
 +   `ptr(s)`: short-hand for `new NativePointer(s)`
 
 +   `NULL`: short-hand for `ptr("0")`
@@ -401,12 +405,10 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 +   `Memory.readS8(address)`, `Memory.readU8(address)`,
     `Memory.readS16(address)`, `Memory.readU16(address)`,
     `Memory.readS32(address)`, `Memory.readU32(address)`,
-    `Memory.readS64(address)`, `Memory.readU64(address)`,
     `Memory.readShort(address)`, `Memory.readUShort(address)`,
     `Memory.readInt(address)`, `Memory.readUInt(address)`,
-    `Memory.readLong(address)`, `Memory.readULong(address)`,
     `Memory.readFloat(address)`, `Memory.readDouble(address)`:
-    read a signed or unsigned 8/16/32/64-bit/etc. or float/double value from
+    read a signed or unsigned 8/16/32/etc. or float/double value from
     `address` and return it as a JavaScript number.
 
     A JavaScript exception will be thrown if `address` isn't readable.
@@ -414,13 +416,25 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 +   `Memory.writeS8(address, value)`, `Memory.writeU8(address, value)`,
     `Memory.writeS16(address, value)`, `Memory.writeU16(address, value)`,
     `Memory.writeS32(address, value)`, `Memory.writeU32(address, value)`,
-    `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`,
     `Memory.writeShort(address, value)`, `Memory.writeUShort(address, value)`,
     `Memory.writeInt(address, value)`, `Memory.writeUInt(address, value)`,
-    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`,
     `Memory.writeFloat(address, value)`, `Memory.writeDouble(address, value)`:
     write the JavaScript number `value` to the signed or unsigned
-    8/16/32/64-bit/etc. or float/double value at `address`.
+    8/16/32/etc. or float/double value at `address`.
+
+    A JavaScript exception will be thrown if `address` isn't writable.
+
++   `Memory.readS64(address)`, `Memory.readU64(address)`,
+    `Memory.readLong(address)`, `Memory.readULong(address):
+    read a signed or unsigned 64-bit, or long-sized, value from `address` and
+    return it as an Int64/UInt64 object.
+
+    A JavaScript exception will be thrown if `address` isn't readable.
+
++   `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`,
+    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`:
+    write the Int64/UInt64 `value` to the signed or unsigned 64-bit, or
+    long-sized, value at `address`.
 
     A JavaScript exception will be thrown if `address` isn't writable.
 
@@ -543,6 +557,54 @@ Interceptor.attach(f, {
 +   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
     seconds specified as a JavaScript number. For example 0.05 to sleep for
     50 ms.
+
+
+## Int64
+
++   `new Int64(v)`: create a new Int64 from `v`, which is either a JavaScript
+    Number or a string containing a value in decimal, or hexadecimal if prefixed
+    with "0x". You may use the `int64(v)` short-hand for brevity.
+
+-   `add(rhs)`, `sub(rhs)`,
+    `and(rhs)`, `or(rhs)`,
+    `xor(rhs)`:
+    make a new Int64 with this Int64 plus/minus/and/or/xor `rhs`, which may
+    either be a JavaScript number or another Int64
+
+-   `shr(n)`, `shl(n)`:
+    make a new Int64 with this Int64 shifted right/left by `n` bits
+
+-   `compare(rhs)`: returns an integer comparison result just like
+    String#localeCompare()
+
+-   `toNumber()`: cast this Int64 to a JavaScript Number
+
+-   `toString([radix = 10])`: convert to a string of optional radix (defaults to
+    10)
+
+
+## UInt64
+
++   `new UInt64(v)`: create a new UInt64 from `v`, which is either a JavaScript
+    Number or a string containing a value in decimal, or hexadecimal if prefixed
+    with "0x". You may use the `uint64(v)` short-hand for brevity.
+
+-   `add(rhs)`, `sub(rhs)`,
+    `and(rhs)`, `or(rhs)`,
+    `xor(rhs)`:
+    make a new UInt64 with this UInt64 plus/minus/and/or/xor `rhs`, which may
+    either be a JavaScript number or another UInt64
+
+-   `shr(n)`, `shl(n)`:
+    make a new UInt64 with this UInt64 shifted right/left by `n` bits
+
+-   `compare(rhs)`: returns an integer comparison result just like
+    String#localeCompare()
+
+-   `toNumber()`: cast this UInt64 to a JavaScript Number
+
+-   `toString([radix = 10])`: convert to a string of optional radix (defaults to
+    10)
 
 
 ## NativePointer
