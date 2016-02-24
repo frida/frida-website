@@ -16,6 +16,8 @@ permalink: /docs/javascript-api/
   1. [Memory](#memory)
   1. [MemoryAccessMonitor](#memoryaccessmonitor)
   1. [Thread](#thread)
+  1. [Int64](#int64)
+  1. [UInt64](#uint64)
   1. [NativePointer](#nativepointer)
   1. [NativeFunction](#nativefunction)
   1. [NativeCallback](#nativecallback)
