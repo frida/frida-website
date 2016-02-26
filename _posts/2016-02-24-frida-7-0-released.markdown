@@ -37,4 +37,11 @@ So in closing, here's a summary of the changes:
 - core: allow Int64 and UInt64 to be passed as-is to all relevant APIs
 - core: fix handling of $protocols on ObjC instances
 
+7.0.3:
+
+- core: fix race-condition where listener gets destroyed mid-call
+- core: fix handling of nested native exception scopes
+- core: improve QNX support
+- frida-repl: tweak the startup message
+
 Enjoy!
