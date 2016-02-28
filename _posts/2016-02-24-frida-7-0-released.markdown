@@ -44,4 +44,10 @@ So in closing, here's a summary of the changes:
 - core: improve QNX support
 - frida-repl: tweak the startup message
 
+7.0.4:
+
+- core: massively improve the function hooking success-rate on 32-bit ARM
+- core: improve the function hooking success-rate on 64-bit ARM
+- core: fix the `sp` value exposed by Interceptor on 32-bit ARM
+
 Enjoy!
