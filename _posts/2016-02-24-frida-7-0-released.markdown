@@ -50,4 +50,10 @@ So in closing, here's a summary of the changes:
 - core: improve the function hooking success-rate on 64-bit ARM
 - core: fix the *sp* value exposed by Interceptor on 32-bit ARM
 
+7.0.5:
+
+- core: spin the main CFRunLoop while waiting for *Device#resume()* when
+        spawning iOS apps, allowing thread-sensitive early instrumentation to be
+        applied from the main thread
+
 Enjoy!
