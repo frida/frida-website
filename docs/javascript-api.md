@@ -34,8 +34,8 @@ permalink: /docs/javascript-api/
 
 ## Global
 
-+   `hexdump(value[, options])`: generate a hexdump from the provided
-    *ArrayBuffer* or *NativePointer* `value`, optionally with `options` for
++   `hexdump(target[, options])`: generate a hexdump from the provided
+    *ArrayBuffer* or *NativePointer* `target`, optionally with `options` for
     customizing the output.
 
     For example:
