@@ -34,6 +34,30 @@ permalink: /docs/javascript-api/
 
 ## Global
 
++   `hexdump(buffer[, options])`: generate a hexdump from the provided
+    ArrayBuffer, optionally with `options` for customizing the output.
+
+    For example:
+
+{% highlight js %}
+var libc = Module.findBaseAddress('libc.so');
+var buf = Memory.readByteArray(libc, 64);
+console.log(hexdump(buf, {
+  offset: 0,
+  length: 64,
+  header: true,
+  ansi: true
+}));
+{% endhighlight %}
+
+{% highlight sh %}
+- offset -   0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
+0x00000000  7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00  .ELF............
+0x00000010  03 00 28 00 01 00 00 00 00 00 00 00 34 00 00 00  ..(.........4...
+0x00000020  34 a8 04 00 00 00 00 05 34 00 20 00 08 00 28 00  4.......4. ...(.
+0x00000030  1e 00 1d 00 06 00 00 00 34 00 00 00 34 00 00 00  ........4...4...
+{% endhighlight %}
+
 +   `int64(v)`: short-hand for `new Int64(v)`
 
 +   `uint64(v)`: short-hand for `new UInt64(v)`
@@ -88,6 +112,9 @@ permalink: /docs/javascript-api/
     through [frida-python](https://github.com/frida/frida-python),
     [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
+
+    Arguments that are ArrayBuffer objects will be substituted by the result of
+    `hexdump()` with default options.
 
 
 ## rpc
