@@ -56,4 +56,11 @@ So in closing, here's a summary of the changes:
         spawning iOS apps, allowing thread-sensitive early instrumentation to be
         applied from the main thread
 
+7.0.6:
+
+- core: fix hooking of half-word aligned functions on 32-bit ARM
+- core: fix thread enumeration on Linux
+- core: add simple *hexdump()* API to the Script runtimes
+- core: make the Duktape runtime's CpuContext serializable to JSON
+
 Enjoy!
