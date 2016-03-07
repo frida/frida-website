@@ -63,4 +63,8 @@ So in closing, here's a summary of the changes:
 - core: add simple *hexdump()* API to the Script runtimes
 - core: make the Duktape runtime's CpuContext serializable to JSON
 
+7.0.7:
+
+- core: allow passing a *NativePointer* to *hexdump()*
+
 Enjoy!
