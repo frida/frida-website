@@ -21,7 +21,7 @@ Started tracing 21 functions. Press Ctrl+C to stop.
    129 ms	recvfrom()
 {% endhighlight %}
 
-So as you can see, Frida injected itself into Skype, enumerated the loaded
+So as you can see, Frida injected itself into Twitter, enumerated the loaded
 shared libraries and hooked all the functions whose names start with either
 `recv` or `read`. It also generated some boilerplate scripts for taking care
 of inspecting the function calls as they happen. Now, those scripts are just
