@@ -486,14 +486,16 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 
 +   `Memory.readCString(address[, size = -1])`,
     `Memory.readUtf8String(address[, size = -1])`,
-    `Memory.readUtf16String(address[, size = -1])`,
+    `Memory.readUtf16String(address[, length = -1])`,
     `Memory.readAnsiString(address[, size = -1])`:
     read the bytes at `address` as an ASCII, UTF-8, UTF-16 or ANSI string.
     Supply the optional `size` argument if you know the size of the string
     in bytes, or omit it or specify -1 if the string is NUL-terminated.
+    Likewise you may supply the optional `length` argument if you know the
+    length of the string in characters.
 
-    A JavaScript exception will be thrown if any of the `size` bytes read from
-    `address` isn't readable.
+    A JavaScript exception will be thrown if any of the `size` / `length` bytes
+    read from `address` isn't readable.
 
     Note that `readAnsiString()` is only available (and relevant) on Windows.
 
