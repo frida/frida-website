@@ -67,4 +67,12 @@ So in closing, here's a summary of the changes:
 
 - core: allow passing a *NativePointer* to *hexdump()*
 
+7.0.8:
+
+- core: fix handling of wrapper objects in `retval.replace()`
+- core: fix behavior of Memory.readUtf8String() when a size is specified
+- core: add support for the new *task_for_pid(0)* method on the iOS 9.1 JB
+- core: don't use *cbnz* which is not available in ARM mode on some processors
+- core: implement *enumerate_threads()* and *modify_thread()* for QNX
+
 Enjoy!
