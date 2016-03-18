@@ -22,6 +22,7 @@ permalink: /docs/javascript-api/
   1. [NativeFunction](#nativefunction)
   1. [NativeCallback](#nativecallback)
   1. [Socket](#socket)
+  1. [Stream](#stream)
   1. [File](#file)
   1. [Interceptor](#interceptor)
   1. [Stalker](#stalker)
@@ -758,6 +759,47 @@ Interceptor.attach(f, {
     -   `ip`: (IP sockets) IP address as a string.
     -   `port`: (IP sockets) Port number as a JavaScript number.
     -   `path`: (UNIX sockets) UNIX path as a string.
+
+
+## Stream
+
++   `new UnixInputStream(fd[, options])`,
+    `new UnixOutputStream(fd[, options])`,
+    `new Win32InputStream(handle[, options])`,
+    `new Win32OutputStream(handle[, options])`: create a new stream object
+    from the file descriptor `fd` (UNIX) or file *HANDLE* `handle` (Windows).
+    You may also supply an `options` object with `autoClose` set to `true` to
+    make the stream close the underlying OS resource when the stream is
+    released, either through `close()` or future garbage-collection.
+
+    All methods of the returned object are fully asynchronous and return a
+    *Promise* object.
+
+-   `close()`: close the stream, releasing resources related to it. Once the
+    stream is closed, all other operations will fail. Closing a stream multiple
+    times is allowed and will not result in an error.
+
+-   `InputStream#read(size)`: read up to `size` bytes from the stream. The
+    returned *Promise* receives an *ArrayBuffer* up to `size` bytes long. End of
+    stream is signalled through an empty buffer.
+
+-   `InputStream#readAll(size)`: keep reading from the stream until exactly
+    `size` bytes have been consumed. The returned *Promise* receives an
+    *ArrayBuffer* that is exactly `size` bytes long. Premature error or end of
+    stream results in the *Promise* getting rejected with an error, where the
+    `Error` object has a `partialData` property containing the incomplete data.
+
+-   `OutputStream#write(data)`: try to write `data` to the stream. The `data`
+    value is either an *ArrayBuffer* or an array of integers between 0 and 255.
+    The returned *Promise* receives a *Number* specifying how many bytes of
+    `data` were written to the stream.
+
+-   `OutputStream#writeAll(data)`: keep writing to the stream until all of
+    `data` has been written. The `data` value is either an *ArrayBuffer* or an
+    array of integers between 0 and 255. Premature error or end of stream
+    results in an error, where the `Error` object has a `partialSize` property
+    specifying how many bytes of `data` were written to the stream before the
+    error occurred.
 
 
 ## File
