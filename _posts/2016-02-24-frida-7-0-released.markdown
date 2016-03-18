@@ -75,4 +75,15 @@ So in closing, here's a summary of the changes:
 - core: don't use *cbnz* which is not available in ARM mode on some processors
 - core: implement *enumerate_threads()* and *modify_thread()* for QNX
 
+7.0.9:
+
+- core: fix early crash in FridaGadget.dylib on iOS when running with
+        *ios-deploy* and other environments where we are loaded before
+        *CoreFoundation*
+- core: run a *CFRunLoop* in the main thread of *frida-helper* on Darwin,
+        allowing system session scripts to make use of even more Apple APIs
+- core: add stream APIs for working with GIO streams, for now only exposed
+        through UnixInputStream and UnixOutputStream (UNIX), and
+        Win32InputStream and Win32OutputStream (Windows)
+
 Enjoy!
