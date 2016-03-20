@@ -86,4 +86,8 @@ So in closing, here's a summary of the changes:
         through UnixInputStream and UnixOutputStream (UNIX), and
         Win32InputStream and Win32OutputStream (Windows)
 
+7.0.10:
+
+- core: fix deadlock on script unload when I/O operations are pending
+
 Enjoy!
