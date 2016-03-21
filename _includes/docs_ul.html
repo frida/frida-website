@@ -1,20 +1,17 @@
-{% assign items = include.items | split: ' ' %}
+{% assign items = include.items %}
 
 <ul>
 {% for item in items %}
-  {% assign item_url = item | prepend:'/docs/' | append:'/' %}
+  {% assign item_url = item | prepend:"/docs/" | append:"/" %}
 
   {% if item_url == page.url %}
-    {% assign c = 'current' %}
+    {% assign c = "current" %}
   {% else %}
-    {% assign c = '' %}
+    {% assign c = "" %}
   {% endif %}
 
-  {% for p in site.pages %}
-    {% if p.url == item_url %}
-      <li class="{{ c }}"><a href="{{ site.url }}{{ p.url }}">{{ p.title }}</a></li>
-    {% endif %}
-  {% endfor %}
+  {% assign p = site.docs | where:"url",item_url | first %}
+  <li class="{{ c }}"><a href="{{ site.baseurl }}{{ p.url }}">{{ p.title }}</a></li>
 
-{% endfor %}  
+{% endfor %}
 </ul>

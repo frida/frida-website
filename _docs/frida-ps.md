@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: frida-ps
-prev_section: frida-cli
-next_section: frida-trace
 permalink: /docs/frida-ps/
 ---
 

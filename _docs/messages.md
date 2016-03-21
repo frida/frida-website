@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Messages
-prev_section: functions
-next_section: ios
 permalink: /docs/messages/
 ---
 

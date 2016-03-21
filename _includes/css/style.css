@@ -419,6 +419,21 @@ aside li.current a {
   cursor: default;
 }
 
+.improve {
+  padding-top: 18px;
+  font-size: 14px;
+  color: #999;
+}
+.improve:hover {
+  color: #EF6456;
+}
+.improve a {
+  text-decoration: none;
+}
+.improve .fa-pencil {
+  margin-right: 5px;
+}
+
 .docs-nav-mobile select {
   width: 100%;
 }

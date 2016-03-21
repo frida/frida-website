@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: iOS
-prev_section: messages
-next_section: android
 permalink: /docs/ios/
 ---
 

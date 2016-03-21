@@ -1,17 +1,17 @@
 <ul>
   <li class="{% if page.overview %}current{% endif %}">
-    <a href="{{ site.url }}/">Overview</a>
+    <a href="{{ site.baseurl }}/">Overview</a>
   </li>
   <li class="{% if page.url contains '/docs/' %}current{% endif %}">
-    <a href="{{ site.url }}/docs/home/">Docs</span></a>
+    <a href="{{ site.baseurl }}/docs/home/">Docs</span></a>
   </li>
   <li class="{% if page.author %}current{% endif %}">
-    <a href="{{ site.url }}/news/">News</a>
+    <a href="{{ site.baseurl }}/news/">News</a>
   </li>
   <li class="">
     <a href="{{ site.repository }}">Code</a>
   </li>
   <li class="{% if page.url contains '/contact/' %}current{% endif %}">
-    <a href="{{ site.url }}/contact/">Contact</a>
+    <a href="{{ site.baseurl }}/contact/">Contact</a>
   </li>
 </ul>

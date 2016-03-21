@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: JavaScript API
-prev_section: ios
-next_section: troubleshooting
 permalink: /docs/javascript-api/
 ---
 

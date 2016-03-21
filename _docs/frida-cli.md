@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Frida CLI
-prev_section: android
-next_section: frida-ps
 permalink: /docs/frida-cli/
 ---
 

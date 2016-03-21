@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: GSoC Ideas 2015
-prev_section: contributing
-next_section: history
 permalink: /docs/gsoc-ideas-2015/
 ---
 

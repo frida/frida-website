@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Contributing
-prev_section: building
-next_section: gsoc-ideas-2015
 permalink: /docs/contributing/
 ---
 

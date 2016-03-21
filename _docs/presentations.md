@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Presentations
-next_section: functions
-prev_section: hacking
 permalink: /docs/presentations/
 ---
 

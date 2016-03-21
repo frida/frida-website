@@ -1,8 +1,31 @@
-highlight: pygments
-relative_permalinks: false
-google_analytics_id: UA-46880695-1
+markdown: kramdown
+highlighter: pygments
 permalink: /news/:year/:month/:day/:title/
-excerpt_separator: noifniof3nioaniof3nioafafinoafnoif
-repository: https://github.com/frida/frida
+excerpt_separator: ""
+
+google_analytics_id: UA-46880695-1
+
 organization_url: https://github.com/frida
-gems: [jekyll-gist]
+repository: https://github.com/frida/frida
+
+timezone: Europe/Oslo
+
+collections:
+  docs:
+    output: true
+
+name: Frida • A world-class dynamic instrumentation framework
+description: Inject JavaScript to explore native apps on Windows, Mac, Linux, iOS and Android
+url: http://www.frida.re
+
+twitter:
+  username: fridadotre
+
+gems:
+  - jekyll-feed
+  - jekyll-redirect-from
+  - jemoji
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-avatar
+  - jekyll-gist

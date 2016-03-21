@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Building
-prev_section: troubleshooting
-next_section: contributing
 permalink: /docs/building/
 ---
 

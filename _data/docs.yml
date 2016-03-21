@@ -1,0 +1,46 @@
+- title: Getting Started
+  docs:
+  - home
+  - quickstart
+  - installation
+  - usage
+  - modes
+  - hacking
+  - presentations
+
+- title: Tutorials
+  docs:
+  - functions
+  - messages
+  - ios
+  - android
+
+- title: Examples
+  docs:
+  - examples/windows
+  - examples/mac
+  - examples/linux
+  - examples/ios
+  - examples/android
+
+- title: Tools
+  docs:
+  - frida-cli
+  - frida-ps
+  - frida-trace
+  - frida-discover
+
+- title: API Reference
+  docs:
+  - javascript-api
+
+- title: Miscellaneous
+  docs:
+  - troubleshooting
+  - building
+
+- title: Meta
+  docs:
+  - contributing
+  - gsoc-ideas-2015
+  - history

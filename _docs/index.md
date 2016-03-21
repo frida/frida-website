@@ -1,8 +1,8 @@
 ---
 layout: docs
 title: Welcome
-next_section: quickstart
 permalink: /docs/home/
+redirect_from: /docs/index.html
 ---
 
 This site aims to be a comprehensive guide to Frida. We’ll cover topics such

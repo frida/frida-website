@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: frida-discover
-prev_section: frida-trace
-next_section: javascript-api
 permalink: /docs/frida-discover/
 ---
 

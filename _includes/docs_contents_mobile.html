@@ -1,20 +1,10 @@
 <div class="docs-nav-mobile unit whole show-on-mobiles">
   <select onchange="if (this.value) window.location.href=this.value">
     <option value="">Navigate the docs…</option>
-    <optgroup label="Getting started">
-      {% include docs_option.html items='home quickstart installation usage modes hacking presentations' %}
+    {% for section in site.data.docs %}
+    <optgroup label="{{ section.title }}">
+      {% include docs_option.html items=section.docs %}
     </optgroup>
-    <optgroup label="Tutorials">
-      {% include docs_option.html items='functions messages ios android' %}
-    </optgroup>
-    <optgroup label="API Reference">
-      {% include docs_option.html items='javascript-api' %}
-    </optgroup>
-    <optgroup label="Miscellaneous">
-      {% include docs_option.html items='troubleshooting building' %}
-    </optgroup>
-    <optgroup label="Meta">
-      {% include docs_option.html items='contributing gsoc-ideas-2015 history' %}
-    </optgroup>
+    {% endfor %}
   </select>
 </div>

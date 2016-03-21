@@ -15,6 +15,10 @@
 \*                */
 {% include css/fonts.css %}
 /*                *\
+ * $font-awesome.css   *
+\*                */
+{% include css/font-awesome.css %}
+/*                *\
  * $style.css     *
 \*                */
 {% include css/style.css %}

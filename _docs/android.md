@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Android
-prev_section: ios
-next_section: frida-cli
 permalink: /docs/android/
 ---
 

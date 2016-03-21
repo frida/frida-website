@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Modes of Operation
-prev_section: usage
-next_section: hacking
 permalink: /docs/modes/
 ---
 

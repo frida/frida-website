@@ -1,8 +1,6 @@
 ---
 layout: docs
 title: Troubleshooting
-prev_section: javascript-api
-next_section: building
 permalink: /docs/troubleshooting/
 ---
 
