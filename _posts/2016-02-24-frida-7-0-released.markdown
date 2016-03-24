@@ -90,4 +90,11 @@ So in closing, here's a summary of the changes:
 
 - core: fix deadlock on script unload when I/O operations are pending
 
+7.0.11:
+
+- core: spin the main CFRunLoop while FridaGadget.dylib is blocking waiting for
+        *Device#resume()*, allowing thread-sensitive early instrumentation to be
+        applied from the main thread
+- java: fix method type sanity-check
+
 Enjoy!
