@@ -8,7 +8,7 @@ For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
 ~ $ sudo pip install frida
-~ $ frida-trace -i "recv*" -i "read*" Twitter
+~ $ frida-trace -i "recv*" -i "read*" *twitter*
 recv: Auto-generated handler: …/recv.js
 # (snip)
 recvfrom: Auto-generated handler: …/recvfrom.js
@@ -98,8 +98,8 @@ log("recvfrom(socket=" + args[0].toInt32()
     + ")");
 {% endhighlight %}
 
-Save the file (it will be reloaded automatically) and click on a contact in
-your Skype contact list to trigger some network activity. You should now see
+Save the file (it will be reloaded automatically) and perform some action in
+your Twitter application to trigger some network activity. You should now see
 something along the lines of:
 
 {% highlight bash %}
