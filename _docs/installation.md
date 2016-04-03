@@ -49,6 +49,8 @@ $ cat
 Just let it sit and wait for input. On Windows you might want to use
 `notepad.exe`.
 
+Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details.
+
 In another terminal, make a file example.py with the following contents:
 
 {% highlight py %}
@@ -78,5 +80,3 @@ and library versions):
 {% highlight py %}
 [u'cat', …, u'ld-2.15.so']
 {% endhighlight %}
-
-Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details.
