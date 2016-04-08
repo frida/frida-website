@@ -183,8 +183,8 @@ Create a new file `hi.c`:
 #include <stdio.h>
 #include <unistd.h>
 
-int f
-(const char * s)
+int
+f (const char * s)
 {
   printf ("String: %s\n", s);
   return 0;
