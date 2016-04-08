@@ -171,3 +171,77 @@ Number: 1911
 Number: 1880
 …
 {% endhighlight %}
+
+## Experiment No. 2 - Injecting Strings and Calling a Function
+
+Injecting integers is really useful, but we can also inject strings,
+and indeed, any other kind of object you would require for fuzzing/testing.
+
+Create a new file `hi.c`:
+
+{% highlight c %}
+#include <stdio.h>
+#include <unistd.h>
+
+int f
+(const char * s)
+{
+  printf ("String: %s\n", s);
+  return 0;
+}
+
+int
+main ()
+{
+  const char * s = "Testing!";
+
+  printf ("f() is at %p\n", f);
+  printf ("s is at %p\n", s);
+
+  while (1)
+  {
+    f (s);
+    sleep (1);
+  }
+}
+{% endhighlight %}
+
+In a similar way to before, we can create a script `stringhook.py`, using Frida
+to inject a string into memory, and then call the function f() in the following
+way:
+
+{% highlight py %}
+import frida
+import sys
+
+session = frida.attach("hi")
+script = session.create_script("""
+var st = Memory.allocUtf8String("TESTMEPLZ!");
+var f = new NativeFunction(ptr("%s"), 'int', ['pointer']);
+    // In NativeFunction param 2 is the return value type,
+    // and param 3 is an array of input types
+f(st);
+""" % int(sys.argv[1], 16))
+def on_message(message, data):
+    print(message)
+script.on('message', on_message)
+script.load()
+{% endhighlight %}
+
+Keeping a beady eye on the output of `hi`, you should see something along these
+lines:
+
+{% highlight bash %}
+...
+String: Testing!
+String: Testing!
+String: TESTMEPLZ!
+String: Testing!
+String: Testing!
+...
+{% endhighlight %}
+
+Use similar methods, like `Memory.alloc()` and `Memory.protect()` to manipulate
+the process memory with ease. Couple this with the python `ctypes` library, and
+other memory objects, like `structs` can be created, loaded as byte arrays, and
+then passed into functions as pointer arguments.
