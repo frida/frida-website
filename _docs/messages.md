@@ -21,7 +21,8 @@ f (int n)
 }
 
 int
-main ()
+main (int argc,
+      char * argv[])
 {
   int i = 0;
 
@@ -60,6 +61,7 @@ You can send any JavaScript value which is serializable to JSON.
 Create a file `send.py` containing:
 
 {% highlight py %}
+from __future__ import print_function
 import frida
 import sys
 
@@ -106,6 +108,7 @@ It is possible to send messages from the Python script to the JavaScript
 script. Create the file `pingpong.py`:
 
 {% highlight py %}
+from __future__ import print_function
 import frida
 import sys
 
@@ -148,6 +151,7 @@ It is possible to wait for a message to arrive (a blocking receive) inside your
 JavaScript script. Create a script `rpc.py`:
 
 {% highlight py %}
+from __future__ import print_function
 import frida
 import sys
 
