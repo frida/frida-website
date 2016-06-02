@@ -1349,6 +1349,49 @@ const proxy = MyConnectionDelegateProxy.alloc().init();
 proxy.release();
 {% endhighlight %}
 
++   `ObjC.registerProtocol(properties)`: create a new Objective-C protocol,
+    where `properties` is an object specifying:
+
+    -   `name`: (optional) String specifying the name of the protocol; omit this
+        if you don't care about the globally visible name and would like the
+        runtime to auto-generate one for you.
+    -   `protocols`: (optional) Array of protocols this protocol incorporates.
+    -   `methods`: (optional) Object specifying methods to declare.
+
+{% highlight js %}
+const MyDataDelegate = ObjC.registerProtocol({
+  name: 'MyDataDelegate',
+  protocols: [ObjC.protocols.NSURLConnectionDataDelegate],
+  methods: {
+    /* You must specify the signature: */
+    '- connection:didStuff:': {
+      retType: 'void',
+      argTypes: ['object', 'object']
+    },
+    /* Or grab it from a method of an existing class: */
+    '- connection:didStuff:': {
+      types: ObjC.classes
+          .Foo['- connection:didReceiveResponse:'].types
+    },
+    /* Or from an existing protocol method: */
+    '- connection:didStuff:': {
+      types: ObjC.protocols.NSURLConnectionDataDelegate
+          .methods['- connection:didReceiveResponse:'].types
+    },
+    /* Or write the signature by hand if you really want to: */
+    '- connection:didStuff:': {
+      types: 'v32@0:8@16@24'
+    },
+    /* You can also make a method optional (default is required): */
+    '- connection:didStuff:': {
+      retType: 'void',
+      argTypes: ['object', 'object'],
+      optional: true
+    }
+  }
+});
+{% endhighlight %}
+
 +   `ObjC.bind(obj, data)`: bind some JavaScript data to an Objective-C
     instance; see `ObjC.registerClass()` for an example.
 
