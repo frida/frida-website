@@ -29,6 +29,11 @@ for spawning plain programs on Darwin, on both Mac and iOS, where *spawn()* is
 now lightning fast on both and no longer messes up the code-signing status on
 iOS.
 
+For those of you doing advanced instrumentation of Mac and iOS apps there's now
+also brand new API for dynamically creating your own Objective-C protocols at
+runtime. We already supported creating new classes and proxy objects, and with
+this new API you can do even more.
+
 So in closing, here's a summary of the changes:
 
 7.1.0:
