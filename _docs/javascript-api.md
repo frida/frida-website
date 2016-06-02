@@ -1275,7 +1275,7 @@ Interceptor.attach(method.implementation, {
 });
 {% endhighlight %}
 
-+   `ObjC.registerclass(properties)`: create a new Objective-C class, where
++   `ObjC.registerClass(properties)`: create a new Objective-C class, where
     `properties` is an object specifying:
 
     -   `name`: (optional) String specifying the name of the class; omit this
