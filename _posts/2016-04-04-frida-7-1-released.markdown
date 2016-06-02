@@ -1,7 +1,7 @@
 ---
 layout: news_item
 title: 'Frida 7.1 Released'
-date: 2016-04-04 04:00:00 +0100
+date: 2016-04-04 02:00:00 +0100
 author: oleavr
 version: 7.1
 categories: [release]
