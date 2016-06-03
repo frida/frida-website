@@ -16,14 +16,14 @@ systems where RWX pages are forbidden.
 
 Anyway, what is pretty neat is that Duktape has an API for compiling to
 bytecode, allowing you to cache the compiled code and save precious startup time
-when it's time to instrument a new process. Starting with this release we
-now have brand new API for compiling your JavaScript to bytecode, and of course
-creating a script from it. This API is not supported in the V8 runtime, but we
-should be able to support it after our next V8 upgrade, by using the WebAssembly
-support that is being worked on in the latest releases.
+when it's time to instrument a new process. Starting with this release we now
+have brand new API for compiling your JavaScript to bytecode, and of course
+instantiating a script from it. This API is not yet supported in our V8 runtime,
+but we should be able to implement it there after our next V8 upgrade, by using
+the WebAssembly infrastructure that started appearing in the latest releases.
 
-Anyway, let's take this new API for a spin with the Duktape runtime by
-forcing Frida to favor Duktape through *Session.disable_jit()*.
+So without further ado, let's take this new API for a spin with the Duktape
+runtime by forcing Frida to favor Duktape through *Session.disable_jit()*.
 
 From Node.js:
 
