@@ -71,7 +71,7 @@ $ make
 
 - Make sure you have:
   - 64-bit version of Windows (32-bit will work but may require some fiddling)
-  - Visual Studio 2013
+  - Visual Studio 2015
   - [Git](http://msysgit.github.com/)
   - [Python 2.7 and 3.4](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
@@ -125,7 +125,7 @@ For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
 ### Windows
 
 - Prepare your system
-  - Make sure that Visual Studio 2013 is installed.
+  - Make sure that Visual Studio 2015 is installed.
   - Install
   [hsbuild-0.2.msi](http://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
   You need [Git](http://msysgit.github.com/) and
