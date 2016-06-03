@@ -9,7 +9,7 @@ categories: [release]
 
 Some of you may be aware that Frida has two JavaScript runtimes, one based
 on [V8](https://developers.google.com/v8/), and another one based on [Duktape](http://duktape.org/).
-There was also one based on [JavaScriptCore](http://trac.webkit.org/wiki/JavaScriptCore),
+We also used to have a runtime based on [JavaScriptCore](http://trac.webkit.org/wiki/JavaScriptCore),
 but it got retired when our Duktape runtime proved better in all of the
 situations where V8 wasn't a good fit, e.g. on tiny embedded systems and
 systems where RWX pages are forbidden.
