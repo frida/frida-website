@@ -131,4 +131,8 @@ So in closing, let's summarize the changes:
 - python: add support for the new bytecode APIs
 - python: update to the revised RPC protocol
 
+7.2.1:
+
+- objc: add support for resolving methods on minimal Objective-C proxies
+
 Enjoy!
