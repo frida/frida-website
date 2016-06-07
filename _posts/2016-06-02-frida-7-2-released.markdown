@@ -135,4 +135,8 @@ So in closing, let's summarize the changes:
 
 - objc: add support for resolving methods on minimal Objective-C proxies
 
+7.2.2:
+
+- objc: fix handling of methods returning structs and floating point values
+
 Enjoy!
