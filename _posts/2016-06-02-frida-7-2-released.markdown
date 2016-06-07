@@ -126,7 +126,7 @@ So in closing, let's summarize the changes:
 - core: add support for compiling and loading to/from bytecode
 - core: include error name and stack trace in RPC error replies
 - node: add support for the new bytecode APIs
-- node: augment RPC errors with `name` and `stack` when available
+- node: augment RPC errors with *name* and *stack* when available
 - node: port examples to ES6
 - python: add support for the new bytecode APIs
 - python: update to the revised RPC protocol
