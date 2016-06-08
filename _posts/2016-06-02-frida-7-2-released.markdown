@@ -139,4 +139,8 @@ So in closing, let's summarize the changes:
 
 - objc: fix handling of methods returning structs and floating point values
 
+7.2.3:
+
+- objc: expose the raw handle of Objective-C methods
+
 Enjoy!
