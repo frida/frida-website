@@ -139,3 +139,22 @@ material becomes available, we will try to put it here.
   functions in remote processes, and how to combine these exposed functions into small test fixtures 
   in a unit-testing style.
 
+- [BSides Knoxville](https://bsidesknoxville.com/):
+  [Peeking under the hood with Frida](http://bsidesknoxville2016.sched.org/event/6tCd/peeking-under-the-hood-with-frida)
+  ([Recording](https://youtu.be/RINNW4xOWL8))
+
+  Ever wanted to peek beneath the hood of an application running on your desktop
+  or smart-phone? Want to know what data is passed to a particular crypto
+  function? Frida is for you!
+
+  Frida is a powerful and modern binary instrumentation framework which makes it
+  simple to hook and trace arbitrary functions within target executables, and
+  otherwise explore their functionality, using easy-to-write javascript. It's
+  like greasemonkey for binary applications! It supports Windows, Linux, OSX,
+  iOS, Android and QNX.
+
+  This talk will introduce Frida and show how it can be used to aid in analysis
+  of binary applications. It will be packed with demos.
+
+  Time permitting, we will also discuss some of the effort that was required to
+  port Frida to QNX.
