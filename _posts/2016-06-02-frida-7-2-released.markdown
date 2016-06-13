@@ -143,4 +143,9 @@ So in closing, let's summarize the changes:
 
 - objc: expose the raw handle of Objective-C methods
 
+7.2.4:
+
+- core: fix deadlock that was easily reproducible on iOS 9
+- java: improve Java.perform() robustness and handling of non-app processes
+
 Enjoy!
