@@ -148,4 +148,8 @@ So in closing, let's summarize the changes:
 - core: fix deadlock that was easily reproducible on iOS 9
 - java: improve Java.perform() robustness and handling of non-app processes
 
+7.2.5:
+
+- objc: fix handling of methods returning a struct in registers on x86-64
+
 Enjoy!
