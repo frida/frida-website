@@ -1193,8 +1193,8 @@ var sound = new ObjC.Object(ptr("0x1234"));
 >       class and parent classes
 >   -   `$ownMethods`: array containing native method names exposed by this object's
 >       class, not including parent classes
->   -   `$ivars`: object mapping instance variable name to the current value,
->       allowing you to read and write each through access and assignment
+>   -   `$ivars`: object mapping each instance variable name to its current
+>       value, allowing you to read and write each through access and assignment
 >
 >   There is also an `equals(other)` method for checking whether two instances
 >   refer to the same underlying object.
