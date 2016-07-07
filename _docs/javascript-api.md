@@ -1189,7 +1189,10 @@ var sound = new ObjC.Object(ptr("0x1234"));
 >   -   `$className`: string containing the class name of this object
 >   -   `$protocols`: object mapping protocol name to `ObjC.Protocol` instance
 >       for each of the protocols that this object conforms to
->   -   `$methods`: array containing native method names exposed by this object
+>   -   `$methods`: array containing native method names exposed by this object's
+>       class and parent classes
+>   -   `$ownMethods`: array containing native method names exposed by this object's
+>       class, not including parent classes
 >
 >   There is also an `equals(other)` method for checking whether two instances
 >   refer to the same underlying object.
