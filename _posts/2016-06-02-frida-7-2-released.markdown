@@ -152,4 +152,10 @@ So in closing, let's summarize the changes:
 
 - objc: fix handling of methods returning a struct in registers on x86-64
 
+7.2.6:
+
+- core: port Gum to MIPS
+- core: avoid swallowing exception when a Proxy object misbehaves
+- objc: add support for accessing Objective-C instance variables
+
 Enjoy!
