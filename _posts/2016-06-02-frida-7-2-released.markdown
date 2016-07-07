@@ -158,4 +158,12 @@ So in closing, let's summarize the changes:
 - core: avoid swallowing exception when a Proxy object misbehaves
 - objc: add support for accessing Objective-C instance variables
 
+7.2.7:
+
+- core: port .so injector to MIPS
+- core: enhance MIPS fuzzy backtracer with more branch-and-link instructions
+- core: fix *UnixInputStream* and *UnixOutputStream* pollable behavior on TTYs,
+        fixing hang on script unload
+- core: remove "0x" prefix from *hexdump()* offsets
+
 Enjoy!
