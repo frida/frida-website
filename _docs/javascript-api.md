@@ -1202,6 +1202,35 @@ var sound = new ObjC.Object(ptr("0x1234"));
 +   `new ObjC.Protocol(handle)`: create a JavaScript binding given the existing
     protocol at `handle` (a NativePointer).
 
++   `new ObjC.Block(target)`: create a JavaScript binding given the existing
+    block at `target` (a NativePointer), or, to define a new block, `target`
+    should be an object specifying the type signature and JavaScript function to
+    call whenever the block is invoked. The function is specified with an
+    `implementation` key, and the signature is specified either through a
+    `types` key, or through the `retType` and `argTypes` keys. See
+    `ObjC.registerClass()` for details.
+
+    The most common use-case is hooking an existing block, which for a block
+    expecting two arguments would look something like:
+
+{% highlight js %}
+const pendingBlocks = new Set();
+
+Interceptor.attach(..., {
+  onEnter(args) {
+    const block = new ObjC.Block(args[4]);
+    pendingBlocks.add(block); // Keep it alive
+    const appCallback = block.implementation;
+    block.implementation = (error, value) => {
+      // Do your logging here
+      const result = appCallback(error, value);
+      pendingBlocks.delete(block);
+      return result;
+    };
+  }
+});
+{% endhighlight %}
+
 +   `ObjC.implement(method, fn)`: create a JavaScript implementation compatible
     with the signature of `method`, where the JavaScript function `fn` is used
     as the implementation. Returns a `NativeCallback` that you may assign to an
