@@ -166,4 +166,12 @@ So in closing, let's summarize the changes:
         fixing hang on script unload
 - core: remove "0x" prefix from *hexdump()* offsets
 
+7.2.8:
+
+- objc: fix parsing of type hints
+- objc: add support for including type hints
+- objc: make ObjC.Block's `types` field public
+- objc: add support for properly declaring `void *`
+- core: (MIPS) fix stack offset when getting/setting stack arguments
+
 Enjoy!
