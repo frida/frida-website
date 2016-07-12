@@ -174,4 +174,8 @@ So in closing, let's summarize the changes:
 - objc: add support for properly declaring `void *`
 - core: (MIPS) fix stack offset when getting/setting stack arguments
 
+7.2.9:
+
+- core: fix bug preventing registers from being written in the V8 runtime
+
 Enjoy!
