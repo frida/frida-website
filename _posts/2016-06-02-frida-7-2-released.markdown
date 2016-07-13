@@ -180,7 +180,7 @@ So in closing, let's summarize the changes:
 
 7.2.10:
 
-- core: add support for injecting into iOS Simulator processes
+- core: add support for attaching to iOS Simulator processes
 - core: fix Android regression introduced in 7.2.4
 
 Enjoy!
