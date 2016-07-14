@@ -183,4 +183,8 @@ So in closing, let's summarize the changes:
 - core: add support for attaching to iOS Simulator processes
 - core: fix Android class-resolving regression introduced in 7.2.4
 
+7.2.11:
+
+- core: always kill iOS apps through SpringBoard
+
 Enjoy!
