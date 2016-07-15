@@ -187,4 +187,8 @@ So in closing, let's summarize the changes:
 
 - core: always kill iOS apps through SpringBoard
 
+7.2.12:
+
+- objc: unregister Objective-C classes on unload and GC
+
 Enjoy!
