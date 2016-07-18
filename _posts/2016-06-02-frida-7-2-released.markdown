@@ -191,4 +191,8 @@ So in closing, let's summarize the changes:
 
 - objc: unregister Objective-C classes on unload and GC
 
+7.2.13:
+
+- core: fix application kill logic on iOS 9
+
 Enjoy!
