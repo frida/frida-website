@@ -195,4 +195,9 @@ So in closing, let's summarize the changes:
 
 - core: fix application kill logic on iOS 9
 
+7.2.14:
+
+- core: make the Duktape runtime preemptible like the V8 runtime
+- core: fix a few locking bugs in the V8 runtime
+
 Enjoy!
