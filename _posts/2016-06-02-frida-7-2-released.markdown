@@ -170,8 +170,8 @@ So in closing, let's summarize the changes:
 
 - objc: fix parsing of type hints
 - objc: add support for including type hints
-- objc: make ObjC.Block's `types` field public
-- objc: add support for properly declaring `void *`
+- objc: make ObjC.Block's *types* field public
+- objc: add support for properly declaring *void \**
 - core: (MIPS) fix stack offset when getting/setting stack arguments
 
 7.2.9:
