@@ -200,4 +200,9 @@ So in closing, let's summarize the changes:
 - core: make the Duktape runtime preemptible like the V8 runtime
 - core: fix a few locking bugs in the V8 runtime
 
+7.2.15:
+
+- core: implement the *Kernel* API in the Duktape runtime also
+- core: remove the dangerous *Kernel.enumerateThreads()* API
+
 Enjoy!
