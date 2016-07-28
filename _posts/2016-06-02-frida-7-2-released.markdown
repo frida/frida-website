@@ -218,4 +218,12 @@ So in closing, let's summarize the changes:
 
 - core: fix session teardown regression
 
+7.2.18:
+
+- core: fix long-standing stability issue on iOS 9, where the injected bootstrap
+        code was not pseudo-signed and caused processes to eventually lose their
+        *CS_VALID* status
+- core: speed up app launching on iOS by eliminating unnecessary disk I/O
+- core: fix temporary directory clean-up on iOS
+
 Enjoy!
