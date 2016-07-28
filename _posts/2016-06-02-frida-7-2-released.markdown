@@ -214,4 +214,8 @@ So in closing, let's summarize the changes:
 - core: fix Windows build regression
 - core: fix iOS 7 regression
 
+7.2.17:
+
+- core: fix session teardown regression
+
 Enjoy!
