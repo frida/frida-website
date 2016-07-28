@@ -207,8 +207,7 @@ So in closing, let's summarize the changes:
 
 7.2.16:
 
-- core: improve robustness when detaching and immediately attaching to the same
-        process
+- core: improve robustness when quickly reattaching to the same process
 - core: fix deadlock when pending calls exist at detach time
 - core: fix hooking regression on 32-bit ARM
 - core: fix *dlsym()* deadlock in frida-gadget on Linux
