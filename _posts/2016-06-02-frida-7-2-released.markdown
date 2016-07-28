@@ -205,4 +205,14 @@ So in closing, let's summarize the changes:
 - core: implement the *Kernel* API in the Duktape runtime also
 - core: remove the dangerous *Kernel.enumerateThreads()* API
 
+7.2.16:
+
+- core: improve robustness when detaching and immediately attaching to the same
+        process
+- core: fix deadlock when pending calls exist at detach time
+- core: fix hooking regression on 32-bit ARM
+- core: fix *dlsym()* deadlock in frida-gadget on Linux
+- core: fix Windows build regression
+- core: fix iOS 7 regression
+
 Enjoy!
