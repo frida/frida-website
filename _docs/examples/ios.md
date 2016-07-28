@@ -30,7 +30,7 @@ var UIApplication = ObjC.classes.UIApplication;
 /* using Grand Central Dispatch to pass messages (invoke methods) in application's main thread */
 ObjC.schedule(ObjC.mainQueue, function () {
   /* using integer numerals for preferredStyle which is of type enum UIAlertControllerStyle*/ 
-  var alert = UIAlertController.alertControllerWithTitle_message_preferredStyle_("Frida","Running on stock iOS (NJB)", 1);
+  var alert = UIAlertController.alertControllerWithTitle_message_preferredStyle_("Frida","Hello from Frida", 1);
   /* again using integer numeral for style parameter that is enum*/
   var defaultAction = UIAlertAction.actionWithTitle_style_handler_("OK",0,handler);
   alert.addAction_(defaultAction);
