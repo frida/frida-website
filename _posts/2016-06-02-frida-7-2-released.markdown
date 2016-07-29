@@ -226,4 +226,8 @@ So in closing, let's summarize the changes:
 - core: speed up app launching on iOS by eliminating unnecessary disk I/O
 - core: fix temporary directory clean-up on iOS
 
+7.2.19:
+
+- core: fix preemption-related lifetime-issue in the Duktape runtime
+
 Enjoy!
