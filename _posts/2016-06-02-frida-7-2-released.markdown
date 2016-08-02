@@ -243,4 +243,8 @@ So in closing, let's summarize the changes:
         been executed
 - objc: add a *dealloc* event to the ObjC proxy API
 
+7.2.21:
+
+- core: fix hang on detach
+
 Enjoy!
