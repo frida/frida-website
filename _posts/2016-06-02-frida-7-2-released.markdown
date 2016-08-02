@@ -245,6 +245,11 @@ So in closing, let's summarize the changes:
 
 7.2.21:
 
-- core: fix hang on detach
+- core: fix hang on *detach()*
+
+7.2.22:
+
+- core: fix hang on script unload
+- core: fix hang on abrupt connection loss during *detach()*
 
 Enjoy!
