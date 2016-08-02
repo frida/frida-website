@@ -230,4 +230,17 @@ So in closing, let's summarize the changes:
 
 - core: fix preemption-related lifetime-issue in the Duktape runtime
 
+7.2.20:
+
+- core: rework the V8 runtime to support fully asynchronous unloading
+- core: rework the Duktape runtime to support fully asynchronous unloading
+- core: make the Duktape runtime fully reentrant
+- core: add *Script.pin()* and *Script.unpin()* for extending a script's
+        lifetime in critical moments, e.g. for callbacks expected from external
+        APIs out of one's control
+- core: fix a timer-related leak in both the V8 and the Duktape runtime
+- objc: keep script alive until callback scheduled by *ObjC.schedule()* has
+        been executed
+- objc: add a `dealloc` event to the ObjC proxy API
+
 Enjoy!
