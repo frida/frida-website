@@ -241,6 +241,6 @@ So in closing, let's summarize the changes:
 - core: fix a timer-related leak in both the V8 and the Duktape runtime
 - objc: keep script alive until callback scheduled by *ObjC.schedule()* has
         been executed
-- objc: add a `dealloc` event to the ObjC proxy API
+- objc: add a *dealloc* event to the ObjC proxy API
 
 Enjoy!
