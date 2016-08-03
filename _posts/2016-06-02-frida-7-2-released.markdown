@@ -252,4 +252,8 @@ So in closing, let's summarize the changes:
 - core: fix hang on script unload
 - core: fix hang on abrupt connection loss during *detach()*
 
+7.2.23:
+
+- core: fix two low-probability crashes during script unload
+
 Enjoy!
