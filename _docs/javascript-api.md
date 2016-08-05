@@ -1139,19 +1139,7 @@ Interceptor.attach(f, {
     for direct access to a big portion of the Objective-C runtime API.
 
 +   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
-    bindings for each of the currently registered classes.
-
-{% highlight js %}
-var UIAlertView = ObjC.classes.UIAlertView; /* iOS */
-var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
-    "Frida",
-    "Hello from Frida",
-    NULL,
-    "OK",
-    NULL);
-view.show();
-view.release();
-{% endhighlight %}
+    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details. 
 
 +   `ObjC.protocols`: an object mapping protocol names to `ObjC.Protocol`
     JavaScript bindings for each of the currently registered protocols.
