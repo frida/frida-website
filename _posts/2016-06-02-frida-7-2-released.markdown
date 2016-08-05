@@ -256,4 +256,10 @@ So in closing, let's summarize the changes:
 
 - core: fix two low-probability crashes during script unload
 
+7.2.24:
+
+- core: fix use-after-free in the Duktape runtime
+- core: fix use-after-free bugs in ModuleApiResolver
+- core: improve unload-behavior when an exception handler is set
+
 Enjoy!
