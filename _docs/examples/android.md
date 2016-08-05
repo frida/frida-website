@@ -3,49 +3,52 @@ layout: docs
 title: Android
 permalink: /docs/examples/android/
 ---
-# Example module for using Frida with Android #
 
-Using Android 4.4 Emulator x86 is strongly recommended, here is an example how to
-ctf the SECCON Quals CTF 2015 APK1 example, download the APK over here:
-[Link to APK](https://github.com/ctfs/write-ups-2015/tree/master/seccon-quals-ctf-2015/binary/reverse-engineering-android-apk-1)
+## Example tool built for an Android CTF
 
-##Usage:##
-Save code as ctf.py and run as "python ctf.py"
+For this particular example, using an Android 4.4 x86 emulator image is highly
+recommended. This tool is based on the SECCON Quals CTF 2015 APK1 example,
+download the APK [here](https://github.com/ctfs/write-ups-2015/tree/master/seccon-quals-ctf-2015/binary/reverse-engineering-android-apk-1).
 
-```
-# SECCTF2015 APK1
+Save code as *ctf.py* and run as `python ctf.py`.
 
-import frida,sys
- 
+{% highlight py %}
+import frida, sys
+
 def on_message(message, data):
-    try:
-        if message:
-            print("[*] {0}".format(message["payload"]))
-    except Exception as e:
+    if message['type'] == 'send':
+        print("[*] {0}".format(message['payload']))
+    else:
         print(message)
-        print(e)
- 
+
 jscode = """
- 
-Dalvik.perform(function () {
-var MainActivity = Dalvik.use("com.example.seccon2015.rock_paper_scissors.MainActivity"); //define function to hook over here
-MainActivity.onClick.implementation = function (v) { // if button gets clicked
-send("Run."); //Show a message, that function got called
-this.onClick(v); //Send original onClick event
-this.m['value']=0; //Set our values after running original onClick event, here value of variable m=0
-this.n['value']=1; //Set our values after running original onClick event, here value of variable n=1
-this.cnt['value']=999; //Set our values after running original onClick event, here value of cnt=999
-console.log("Done:"+JSON.stringify(this.cnt)); //Send info to console that its done, and we should have ctf !
-};
+Java.perform(function () {
+    // Function to hook is defined here
+    var MainActivity = Java.use('com.example.seccon2015.rock_paper_scissors.MainActivity');
+
+    // Whenever button is clicked
+    MainActivity.onClick.implementation = function (v) {
+        // Show a message to know that the function got called
+        send('onClick');
+
+        // Call the original onClick handler
+        this.onClick(v);
+
+        // Set our values after running the original onClick handler
+        this.m.value = 0;
+        this.n.value = 1;
+        this.cnt.value = 999;
+
+        // Log to the console that it's done, and we should have the flag!
+        console.log('Done:' + JSON.stringify(this.cnt));
+    };
 });
 """
- 
-process = frida.get_device_manager().enumerate_devices()[-1].attach("com.example.seccon2015.rock_paper_scissors") #Enumerate attached adb devices and attach to process "com.example.seccon2015.rock_paper_scissors"
-script = process.create_script(jscode) #Process Javascript part
+
+process = frida.get_usb_device().attach('com.example.seccon2015.rock_paper_scissors')
+script = process.create_script(jscode)
 script.on('message', on_message)
- 
-print "[*] Running CTF"
- 
+print('[*] Running CTF')
 script.load()
 sys.stdin.read()
-```
+{% endhighlight %}
