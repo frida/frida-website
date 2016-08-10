@@ -265,6 +265,7 @@ So in closing, let's summarize the changes:
 7.2.25:
 
 - core: fix app launching on iOS 9.3.3
-- frida-server: fix "hang" on detach when others are attached
+- frida-server: fix "hang" on detach when another client is attached to the
+                same process
 
 Enjoy!
