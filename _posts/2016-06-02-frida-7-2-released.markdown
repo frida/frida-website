@@ -262,4 +262,9 @@ So in closing, let's summarize the changes:
 - core: fix use-after-free bugs in ModuleApiResolver
 - core: improve unload-behavior when an exception handler is set
 
+7.2.25:
+
+- core: fix app launching on iOS 9.3.3
+- frida-server: fix "hang" on detach when others are attached
+
 Enjoy!
