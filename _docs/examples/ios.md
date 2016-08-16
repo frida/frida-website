@@ -195,3 +195,28 @@ ObjC.schedule(ObjC.mainQueue, function () {
   UIApplication.sharedApplication().keyWindow().rootViewController().presentViewController_animated_completion_(alert, true, NULL);
 })
 {% endhighlight %}
+
+
+### Printing an NSURL argument
+
+The following code shows how you can intercept a call to [UIApplication openURL:] and display the NSURL that is passed.
+
+{% highlight js %}
+// Get a reference to the openURL selector
+var openURL = ObjC.classes.UIApplication["- openURL:"];
+
+// Intercept the method
+Interceptor.attach(openURL.implementation, {
+  onEnter: function(args) {
+    // As this is an ObjectiveC method, the arguments are as follows:
+    // 1. 'self'
+    // 2. The selector (openURL:)
+    // 3. The first argument to the openURL selector
+    var myNSURL = new ObjC.Object(args[2]);
+    // Convert it to a JS string
+    var myJSURL = myNSURL.absoluteString().toString();
+    // Log it
+    console.log("Launching URL: " + str);
+  }
+});
+{% endhighlight %}
