@@ -1164,7 +1164,13 @@ ObjC.schedule(ObjC.mainQueue, function () {
     implementing a certain protocol only.
 
 {% highlight js %}
-var sound = new ObjC.Object(ptr("0x1234"));
+Interceptor.attach(myFunction.implementation, {
+  onEnter: function(args) {
+    // ObjC: args[0] = self, args[1] = selector, args[2-n] = arguments
+    var myString = new ObjC.Object(args[2]);
+    console.log("String argument: " + myString.toString());
+  }
+});
 {% endhighlight %}
 
 >   This object has some special properties:
