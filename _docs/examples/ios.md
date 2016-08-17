@@ -216,7 +216,7 @@ Interceptor.attach(openURL.implementation, {
     // Convert it to a JS string
     var myJSURL = myNSURL.absoluteString().toString();
     // Log it
-    console.log("Launching URL: " + str);
+    console.log("Launching URL: " + myJSURL);
   }
 });
 {% endhighlight %}
