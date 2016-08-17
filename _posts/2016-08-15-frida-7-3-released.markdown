@@ -26,4 +26,8 @@ So in closing, let's summarize the changes:
 - core: (arm64) improve function hooking by adding support for relocating LDRPC
         with an FP/SIMD destination register
 
+7.3.1:
+
+- core: build Android binaries with PIE like we used to
+
 Enjoy!
