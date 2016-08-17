@@ -1501,6 +1501,8 @@ Java.perform(function () {
 });
 {% endhighlight %}
 
++   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
+
 +   `Java.choose(className, callbacks)`: enumerate live instances of the
     `className` class by scanning the Java heap, where `callbacks` is an
     object specifying:
