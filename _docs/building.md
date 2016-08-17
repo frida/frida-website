@@ -73,9 +73,10 @@ $ make
   - 64-bit version of Windows (32-bit will work but may require some fiddling)
   - Visual Studio 2015
   - [Git](http://msysgit.github.com/)
-  - [Python 2.7 and 3.4](http://python.org/). You want both the 32- and the
+  - [Python 2.7 and 3.5](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
   `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
+  Directories must be named exactly `Python 2.7` and `Python 3.5`.
   - Clone `frida`:
 {% highlight bash %}
 $ git clone git://github.com/frida/frida.git
