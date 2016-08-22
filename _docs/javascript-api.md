@@ -131,10 +131,10 @@ console.log(hexdump(buf, {
 'use strict';
 
 rpc.exports = {
-    add(a, b) {
+    add: function (a, b) {
         return a + b;
     },
-    sub(a, b) {
+    sub: function (a, b) {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(a - b);
