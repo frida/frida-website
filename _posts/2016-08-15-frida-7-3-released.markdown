@@ -30,4 +30,9 @@ So in closing, let's summarize the changes:
 
 - core: build Android binaries with PIE like we used to
 
+7.3.2:
+
+- core: add *Script.setGlobalAccessHandler()* for handling attempts to access
+        undeclared global variables, which is useful for building REPLs
+
 Enjoy!
