@@ -35,4 +35,10 @@ So in closing, let's summarize the changes:
 - core: add *Script.setGlobalAccessHandler()* for handling attempts to access
         undeclared global variables, which is useful for building REPLs
 
+7.3.3:
+
+- objc: convert *Number* to *NSNumber* when an object is expected
+- objc: add support for auto-converting to an array of objects, useful when
+        calling e.g. *+[NSArray arrayWithObjects:count:]*
+
 Enjoy!
