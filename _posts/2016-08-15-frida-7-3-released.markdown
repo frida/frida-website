@@ -41,4 +41,9 @@ So in closing, let's summarize the changes:
 - objc: add support for auto-converting to an array of objects, useful when
         calling e.g. *+[NSArray arrayWithObjects:count:]*
 
+7.3.4:
+
+- core: improve the unstable accessor API
+- core: fix the Duktape globals accessor logic so it's only applied to reads
+
 Enjoy!
