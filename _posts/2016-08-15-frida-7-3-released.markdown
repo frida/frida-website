@@ -46,4 +46,9 @@ So in closing, let's summarize the changes:
 - core: improve the unstable accessor API
 - core: fix the Duktape globals accessor logic so it's only applied to reads
 
+7.3.5:
+
+- core: improve *hexdump()* to support any *NativePointer*-conforming object
+- objc: fix handling of the *L* type
+
 Enjoy!
