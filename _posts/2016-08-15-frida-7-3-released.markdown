@@ -51,4 +51,8 @@ So in closing, let's summarize the changes:
 - core: improve *hexdump()* to support any *NativePointer*-conforming object
 - objc: fix handling of the *L* type
 
+7.3.6:
+
+- core: fix regression in devkit header auto-generation logic
+
 Enjoy!
