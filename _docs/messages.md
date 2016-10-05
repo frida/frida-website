@@ -120,7 +120,7 @@ def on_message(message, data):
     print(message)
 script.on('message', on_message)
 script.load()
-script.post_message({"type": "poke"})
+script.post({"type": "poke"})
 sys.stdin.read()
 {% endhighlight %}
 
@@ -170,7 +170,7 @@ Interceptor.attach(ptr("%s"), {
 def on_message(message, data):
     print(message)
     val = int(message['payload'], 16)
-    script.post_message({'type': 'input', 'payload': str(val * 2)})
+    script.post({'type': 'input', 'payload': str(val * 2)})
 script.on('message', on_message)
 script.load()
 sys.stdin.read()
