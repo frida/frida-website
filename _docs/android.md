@@ -16,15 +16,19 @@ or emulator for the time being.
 
 You will also need the `adb` tool from the Android SDK.
 
-First off, download the latest `frida-server` for Android and get it running
-on your device:
+First off, download the latest `frida-server` for Android from our [releases
+page](https://github.com/frida/frida/releases) and get it running on your
+device:
 
 {% highlight bash %}
-$ curl -O https://build.frida.re/frida/android/arm/bin/frida-server
 $ adb push frida-server /data/local/tmp/
 $ adb shell "chmod 755 /data/local/tmp/frida-server"
 $ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}
+
+For the last step, make sure you start frida-server as root, i.e. if you are
+doing this on a rooted device, you might need to *su* and run it from that
+shell.
 
 Next, make sure `adb` can see your device:
 
