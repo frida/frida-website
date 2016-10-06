@@ -80,4 +80,8 @@ So in closing, let's summarize the changes:
 
 - node: fix *Script#post()*
 
+8.0.2:
+
+- core: fix deadlock when calling *recv().wait()* from our JS thread
+
 Enjoy!
