@@ -76,4 +76,8 @@ So in closing, let's summarize the changes:
 - clr: update to the new 8.x API
 - clr: plug leaks
 
+8.0.1:
+
+- node: fix *Script#post()*
+
 Enjoy!
