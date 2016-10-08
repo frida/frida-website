@@ -84,4 +84,11 @@ So in closing, let's summarize the changes:
 
 - core: fix deadlock when calling *recv().wait()* from our JS thread
 
+8.0.3:
+
+- core: reduce Interceptor base overhead by up to 65%
+- core: minimize Interceptor GC churn in our V8 runtime, using the same
+        recycling and copy-on-write tricks as our Duktape runtime
+- core: speed up *gum_process_get_current_thread_id()* on macOS and iOS
+
 Enjoy!
