@@ -73,6 +73,7 @@ $ make
   - 64-bit version of Windows (32-bit will work but may require some fiddling)
   - Visual Studio 2015
   - [Git](http://msysgit.github.com/)
+  - [Node.js](https://nodejs.org/) on your PATH
   - [Python 2.7 and 3.5](http://python.org/). You want both the 32- and the
   64-bit version of each, with the 32-bit versions installed in
   `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
