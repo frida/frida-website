@@ -10,7 +10,9 @@ Shows how to monitor a jvm.dll which is being executed by a process called
 *fledge.exe* (BB Simulator) using Frida.
 
 Save this code as *bb.py*, run BB Simulator (fledge.exe), then run
-`python.exe bb.py fledge.exe` for monitoring AES usage of *jvm.dll*.
+`python.exe bb.py fledge.exe` for monitoring
+[AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) usage of
+*jvm.dll*.
 
 {% highlight py %}
 import frida
