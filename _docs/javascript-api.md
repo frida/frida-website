@@ -897,8 +897,8 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     there as an empty callback.
   </p>
   <p>
-    On an iPhone 6 the base overhead when providing just <i>onEnter</i> might be
-    something like 15 microseconds, and 25 microseconds with both <i>onEnter</i>
+    On an iPhone 5S the base overhead when providing just <i>onEnter</i> might be
+    something like 6 microseconds, and 11 microseconds with both <i>onEnter</i>
     and <i>onLeave</i> provided.
   </p>
   <p>
