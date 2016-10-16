@@ -832,10 +832,14 @@ Interceptor.attach(f, {
         `NativePointer` objects.
 
     -   `onLeave: function (retval)`: callback function given one argument
-        `retval` that is a `NativePointer` containing the return value.
+        `retval` that is a `NativePointer`-derived object containing the raw
+        return value.
         You may call `retval.replace(1337)` to replace the return value with
         the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace with
         a pointer.
+        Note that this object is recycled across *onLeave* calls, so do not
+        store and use it outside your callback. Make a deep copy if you need
+        to store the contained value, e.g.: `ptr(retval.toString())`.
 
     You may also intercept arbitrary instructions by passing a function instead
     of the `callbacks` object. This function has the same signature as
