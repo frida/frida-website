@@ -9,18 +9,17 @@ ever becomes a pain in the ass, please [file an
 issue]({{ site.organization_url }}/frida-website/issues/new) (or submit a pull request)
 describing the issue you encountered and how we might make the process easier.
 
-### Requirements
+### Requirements for Python bindings
 
 Installing Frida is easy and straight-forward, but there are a few requirements
 you’ll need to make sure your system has before you start.
 
-- [Python](http://python.org/)
-- [setuptools](https://pypi.python.org/pypi/setuptools)
+- [Python](http://python.org/) – latest 3.x is highly recommended
 - Windows, Mac OS X or Linux
 
 ## Install with pip
 
-The best way to install Frida is via
+The best way to install Frida's Python bindings is via
 [PyPI](https://pypi.python.org/pypi/frida). At the terminal prompt,
 simply run the following command to install Frida:
 
