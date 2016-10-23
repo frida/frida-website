@@ -112,8 +112,9 @@ by Frida's buildbot.
 
 ## Port Frida to Windows Phone
 
-**Brief explanation:** Frida currently supports Windows, Mac, Linux, iOS, and
-Android, but sadly not yet Windows Phone. Adding support for WP would require:
+**Brief explanation:** Frida currently supports Windows, Mac, Linux, iOS,
+Android, and QNX, but sadly not yet Windows Phone. Adding support for WP would
+require:
 
 - An injector to get Frida's shared library injected into the target process
 

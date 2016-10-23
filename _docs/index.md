@@ -14,9 +14,9 @@ future development of Frida itself.
 
 It's Greasemonkey for native apps, or, put in more technical terms, it's a
 dynamic code instrumentation toolkit. It lets you inject snippets of JavaScript
-into native apps on Windows, Mac, Linux, iOS and Android. Frida also provides
-you with some simple tools built on top of the Frida API. These can be used
-as-is, tweaked to your needs, or serve as examples of how to use the API.
+into native apps on Windows, Mac, Linux, iOS, Android, and QNX. Frida also
+provides you with some simple tools built on top of the Frida API. These can be
+used as-is, tweaked to your needs, or serve as examples of how to use the API.
 
 ## Why do I need this?
 
@@ -48,8 +48,9 @@ bi-directional communication channel that is used to talk between your
 app (Python?) and the JS running inside the target process.
 
 On top of this C core there are multiple language bindings, e.g.
-[Python](https://github.com/frida/frida-python),
 [Node.js](https://github.com/frida/frida-node),
+[Python](https://github.com/frida/frida-python),
+[Swift](https://github.com/frida/frida-swift),
 [.NET](https://github.com/frida/frida-clr),
 [Qml](https://github.com/frida/frida-qml), etc., and it is very easy to build
 additional bindings for other languages and environments.
