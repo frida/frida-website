@@ -244,6 +244,10 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 
 - node: generate prebuilds for 6.0 (LTS) and 7.0 only
 
+8.1.6:
+
+- node: generate prebuilds for 4.0 and 5.0 in addition to 6.0 and 7.0
+
 Enjoy!
 
 
