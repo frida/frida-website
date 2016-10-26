@@ -248,6 +248,12 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 
 - node: generate prebuilds for 4.0 and 5.0 in addition to 6.0 and 7.0
 
+8.1.7:
+
+- objc: fix infinite recursion when proxying some proxies
+- objc: add support for proxying non-NSObject instances
+- python: fix removal of signal callbacks that are member functions
+
 Enjoy!
 
 
