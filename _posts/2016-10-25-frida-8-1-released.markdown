@@ -278,6 +278,10 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 - node: update dependencies
 - node: fix unhandled Promise rejection issues
 
+8.1.9:
+
+- core: fix use-after-free caused by race condition on script unload
+
 Enjoy!
 
 
