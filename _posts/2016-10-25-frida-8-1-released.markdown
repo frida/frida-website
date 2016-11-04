@@ -254,6 +254,30 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 - objc: add support for proxying non-NSObject instances
 - python: fix removal of signal callbacks that are member functions
 
+8.1.8:
+
+- core: implement hooking of single-instruction ARM functions
+- core: plug leak in the handling of unhookable functions on some architectures
+- core: fix *setImmediate()* callback processing behavior
+- core: plug leak in *setTimeout()*
+- core: fix race condition in the handling of *setTimeout(0)* and
+        *setImmediate()* in the Duktape runtime
+- core: fix crash when processing tick callbacks in the Duktape runtime
+- core: fix lifetime issue in the Duktape runtime
+- core: fix the reported module sizes on Linux
+- core: fix crash when launching apps on newer versions of Android
+- core: fix handling of attempts to launch Android apps not installed
+- core: improve compatibility with different versions and flavors of Android by
+        detecting Dalvik and ART field offsets dynamically
+- core: fix unload issue on newer versions of Android, which resulted in only
+        the first *attach()* succeeding and subsequent attempts all timing out
+- core: move *ObjC* and *Java* into their own modules published to npm, and use
+        *frida-compile* to keep baking them into Frida's built-in JS runtime
+- java: improve ART compatibility by detecting ArtMethod field offsets
+        dynamically
+- node: update dependencies
+- node: fix unhandled Promise rejection issues
+
 Enjoy!
 
 
