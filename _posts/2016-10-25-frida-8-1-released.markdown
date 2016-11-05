@@ -282,6 +282,10 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 
 - core: fix use-after-free caused by race condition on script unload
 
+8.1.10:
+
+- core: make *ApiResolver* and *DebugSymbol* APIs preemptible to avoid deadlocks
+
 Enjoy!
 
 
