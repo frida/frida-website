@@ -48,7 +48,12 @@ $ cat
 Just let it sit and wait for input. On Windows you might want to use
 `notepad.exe`.
 
-Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details.
+Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details. However, if you copy the `cat` binary to e.g., `/tmp/cat` then run that instead the example should work:
+
+{% highlight bash %}
+$ cp /bin/cat /tmp/cat
+$ /tmp/cat
+{% endhighlight %}
 
 In another terminal, make a file example.py with the following contents:
 
