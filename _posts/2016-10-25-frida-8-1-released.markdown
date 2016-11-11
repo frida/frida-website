@@ -294,6 +294,11 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 - core: fix leak in *InvocationContext* copy-on-write logic in the Duktape
         runtime, used when storing data on *this* across *onEnter* and *onLeave*
 
+8.1.12:
+
+- core: fix *Interceptor* argument replacement issue in the V8 runtime,
+        resulting in the argument only being replaced the first time
+
 Enjoy!
 
 
