@@ -286,6 +286,14 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 
 - core: make *ApiResolver* and *DebugSymbol* APIs preemptible to avoid deadlocks
 
+8.1.11:
+
+- core: use a Mach exception handler on macOS and iOS, allowing us to reliably
+        catch exceptions in apps that already have a Mach exception handler of
+        their own
+- core: fix leak in *InvocationContext* copy-on-write logic in the Duktape
+        runtime, used when storing data on *this* across *onEnter* and *onLeave*
+
 Enjoy!
 
 
