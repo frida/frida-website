@@ -33,6 +33,8 @@
 - title: API Reference
   docs:
   - javascript-api
+  - c-api
+  - swift-api
 
 - title: Miscellaneous
   docs:
