@@ -18,7 +18,7 @@
 - title: Examples
   docs:
   - examples/windows
-  - examples/mac
+  - examples/macos
   - examples/linux
   - examples/ios
   - examples/android
