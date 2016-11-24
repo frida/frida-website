@@ -202,6 +202,7 @@ print(script.exports.sub(5, 3))
 session.detach()
 {% endhighlight %}
 
+In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
 
 ## Frida
 
