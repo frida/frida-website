@@ -4,7 +4,20 @@ title: Building
 permalink: /docs/building/
 ---
 
+
+## Table of contents
+  1. Building Frida
+    1. [Design Constraints](#design-constraints)
+    1. [Linux](#linux)
+    1. [Mac](#mac)
+    1. [Windows](#windows)
+  1. Building the toolchain and SDK
+    1. [Unix](#unix-toolchain-and-sdk)
+    1. [Windows](#windows-toolchain-and-sdk)
+
 ## Building Frida
+
+### Design Constraints
 
 Frida has a rather complicated build system due to some design constraints:
 
@@ -57,6 +70,8 @@ $ cd frida
 $ make
 {% endhighlight %}
 
+`make` will provide you a list of modules to build.  See [the hacking page](http://www.frida.re/docs/hacking/) for more information.
+
 ### Mac
 
 - Make sure you have the latest Xcode with command-line tools installed.
@@ -66,6 +81,8 @@ $ git clone git://github.com/frida/frida.git
 $ cd frida
 $ make
 {% endhighlight %}
+
+`make` will provide you a list of modules to build.  See [the hacking page](http://www.frida.re/docs/hacking/) for more information.
 
 ### Windows
 
@@ -93,7 +110,7 @@ $ git submodule update
 This should not be necessary unless you're porting Frida to a new platform. The
 following steps assume you have the OS-specific prerequisites mentioned above.
 
-### UNIX
+### UNIX Toolchain and SDK
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
@@ -124,7 +141,7 @@ $ scp build/sdk-*.tar.bz2 your@own.server:
 (Note: the `frida` module now has integrated support for building the SDK.
 For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
 
-### Windows
+### Windows Toolchain and SDK
 
 - Prepare your system
   - Make sure that Visual Studio 2015 is installed.
