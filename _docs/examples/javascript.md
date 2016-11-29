@@ -72,4 +72,44 @@ function run(source) {
 run('console.log("Hello from Frida");');
 {% endhighlight %}
 
+## Trace function calls in a Perl 5 process
+
+{% highlight js %}
+'use strict';
+
+const pointerSize = Process.pointerSize;
+const SV_OFFSET_FLAGS = pointerSize + 4;
+const PVGV_OFFSET_NAMEHEK = 4 * pointerSize;
+
+const SVt_PVGV = 9;
+
+Interceptor.attach(Module.findExportByName(null, 'Perl_pp_entersub'), {
+  onEnter(args) {
+    const interpreter = args[0];
+    const stack = Memory.readPointer(interpreter);
+
+    const sub = Memory.readPointer(stack);
+
+    const flags = Memory.readU32(sub.add(SV_OFFSET_FLAGS));
+    const type = flags & 0xff;
+    if (type === SVt_PVGV) {
+      /*
+       * Note: this console.log() is not ideal performance-wise,
+       * a proper implementation would buffer and submit events
+       * periodically with send().
+       */
+      console.log(GvNAME(sub) + '()');
+    } else {
+      // XXX: Do we need to handle other types?
+    }
+  }
+});
+
+function GvNAME(sv) {
+  const body = Memory.readPointer(sv);
+  const nameHek = Memory.readPointer(body.add(PVGV_OFFSET_NAMEHEK));
+  return Memory.readUtf8String(nameHek.add(8));
+}
+{% endhighlight %}
+
 _Please click "Improve this page" above and add an example. Thanks!_
