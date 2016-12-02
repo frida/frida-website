@@ -6,14 +6,15 @@ permalink: /docs/building/
 
 
 ## Table of contents
-  1. Building Frida
-    1. [Design Constraints](#design-constraints)
-    1. [Linux](#linux)
-    1. [Mac](#mac)
-    1. [Windows](#windows)
-  1. Building the toolchain and SDK
-    1. [Unix](#unix-toolchain-and-sdk)
-    1. [Windows](#windows-toolchain-and-sdk)
+
+1. Building Frida
+ - [Design Constraints](#design-constraints)
+ - [Linux](#linux)
+ - [Mac](#mac)
+ - [Windows](#windows)
+2. Building the toolchain and SDK
+ - [Unix](#unix-toolchain-and-sdk)
+ - [Windows](#windows-toolchain-and-sdk)
 
 ## Building Frida
 
