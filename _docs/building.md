@@ -88,23 +88,29 @@ $ make
 ### Windows
 
 - Make sure you have:
-  - 64-bit version of Windows (32-bit will work but may require some fiddling)
+  - 64-bit version of Windows
   - Visual Studio 2015
-  - [Git](http://msysgit.github.com/)
-  - [Node.js](https://nodejs.org/) on your PATH
-  - [Python 2.7 and 3.5](http://python.org/). You want both the 32- and the
-  64-bit version of each, with the 32-bit versions installed in
-  `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
-  Directories must be named exactly `Python 2.7` and `Python 3.5`.
-  - Clone `frida`:
+  - [Git](https://git-scm.com/downloads) in your PATH
+  - [Node.js](https://nodejs.org/) in your PATH
+  - [Python 2.7](https://www.python.org/downloads/windows/) in your PATH and associated to .py files
+  - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
+
+- Clone the `frida` repository:
 {% highlight bash %}
-$ git clone git://github.com/frida/frida.git
+$ git clone https://github.com/frida/frida
 $ cd frida
 $ git submodule init
 $ git submodule update
 {% endhighlight %}
-- Open `frida.sln` and build it.
 
+- Enter the `frida` folder and execute the Python staging script
+{% highlight bash %}
+$ powershell
+PS> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
+PS> .\releng\stage-python.ps1
+{% endhighlight %}
+
+- Open `frida.sln` and build it.
 
 ## Building the toolchain and SDK
 
