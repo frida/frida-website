@@ -696,12 +696,16 @@ Interceptor.attach(f, {
     For a class that has virtual methods, the first parameter will be a pointer
     to [the vtable](https://en.wikipedia.org/wiki/Virtual_method_table).
 
-    In C++, the return value will be the first parameter, and you pass 'this' as
-    the second parameter.  Consider this example against WebKit:
+    For C++ scenarios involving a return value that is larger than
+    `Process.pointerSize`, a `NativePointer` to preallocated space must be passed
+    in as the first parameter. (This scenario is common in WebKit, for example.)
+    
+    Example:
 {% highlight js %}
-var friendlyFunctionName = new NativeFunction(DebugSymbol.findFunctionsMatching("*friendlyFunctionName*")[0], 'pointer', ['pointer', 'pointer']);
-var returnValue = Memory.alloc(Process.pointerSize);
-friendlyFunctionName(returnValue, callerFrame);
+// LargeObject HandyClass::friendlyFunctionName();
+var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr, 'void', ['pointer', 'pointer']);
+var returnValue = Memory.alloc(sizeOfLargeObject);
+friendlyFunctionName(returnValue, thisPtr);
 {% endhighlight %}
 
     ### Supported Types
