@@ -681,13 +681,30 @@ Interceptor.attach(f, {
     `argTypes` array specifies the argument types. You may optionally also
     specify `abi` if not system default. For variadic functions, add a `'...'`
     entry to `argTypes` between the fixed arguments and the variadic ones.
-    As for structs passed by value, instead of a string provide an array
-    containing the struct's field types following each other. You may nest
-    these as deep as desired for representing structs inside structs.
-    Note that the returned object is also a `NativePointer`, and can thus be
-    passed to `Interceptor#attach`.
 
-    Supported types:
+    ### Structs & Classes by Value
+
+    As for structs or classes passed by value, instead of a string provide an
+    array containing the struct's field types following each other. You may nest
+    these as deep as desired for representing structs inside structs. Note that
+    the returned object is also a `NativePointer`, and can thus be passed to
+    `Interceptor#attach`.
+
+    This must match the struct/class exactly, so if you have a struct with three
+    ints, you must pass `['int', 'int', 'int']`.
+
+    For a class that has virtual methods, the first parameter will be a pointer
+    to [the vtable](https://en.wikipedia.org/wiki/Virtual_method_table).
+
+    In C++, the return value will be the first parameter, and you pass 'this' as
+    the second parameter.  Consider this example against WebKit:
+{% highlight js %}
+var friendlyFunctionName = new NativeFunction(DebugSymbol.findFunctionsMatching("*friendlyFunctionName*")[0], 'pointer', ['pointer', 'pointer']);
+var returnValue = Memory.alloc(Process.pointerSize);
+friendlyFunctionName(returnValue, callerFrame);
+{% endhighlight %}
+
+    ### Supported Types
 
     -   void
     -   pointer
@@ -708,7 +725,7 @@ Interceptor.attach(f, {
     -   int64
     -   uint64
 
-    Supported ABIs:
+    ### Supported ABIs
 
     -   default
 
@@ -1144,7 +1161,7 @@ Interceptor.attach(f, {
     for direct access to a big portion of the Objective-C runtime API.
 
 +   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
-    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details. 
+    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details.
 
 +   `ObjC.protocols`: an object mapping protocol names to `ObjC.Protocol`
     JavaScript bindings for each of the currently registered protocols.
