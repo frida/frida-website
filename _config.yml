@@ -21,6 +21,8 @@ url: http://www.frida.re
 twitter:
   username: fridadotre
 
+exclude: ["COPYING", "README.md"]
+
 gems:
   - jekyll-feed
   - jekyll-redirect-from
