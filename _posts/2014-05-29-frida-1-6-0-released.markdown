@@ -31,7 +31,7 @@ The `Dalvik.perform()` call takes care of attaching your thread to the VM,
 and isn't necessary in callbacks from Java. Also, the first time you call
 `Dalvik.use()` with a given class name, Frida will interrogate the VM and
 build a JavaScript wrapper on-the-fly. Above we ask for the
-[Activity](http://developer.android.com/reference/android/app/Activity.html)
+[Activity](https://developer.android.com/reference/android/app/Activity.html)
 class and replace its implementation of `onResume` with our own version,
 and proceed to calling the original implementation after sending a message
 to the debugger (running on your Windows, Mac or Linux machine). You could

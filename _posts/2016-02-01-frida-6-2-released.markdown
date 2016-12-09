@@ -63,7 +63,7 @@ few milliseconds.
 
 Now to the final part of the news. Considering that dynamically discovering
 functions to hook is such a common use-case, and not just something that
-*frida-trace* does, we now have a [brand new API](http://www.frida.re/docs/javascript-api/#apiresolver)
+*frida-trace* does, we now have a [brand new API](https://www.frida.re/docs/javascript-api/#apiresolver)
 for just that:
 
 ![ApiResolver #1](/img/api-resolver-module.png "ApiResolver")

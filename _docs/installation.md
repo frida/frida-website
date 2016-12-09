@@ -14,7 +14,7 @@ describing the issue you encountered and how we might make the process easier.
 Installing Frida is easy and straight-forward, but there are a few requirements
 you’ll need to make sure your system has before you start.
 
-- [Python](http://python.org/) – latest 3.x is highly recommended
+- [Python](https://python.org/) – latest 3.x is highly recommended
 - Windows, Mac OS X or Linux
 
 ## Install with pip
@@ -35,7 +35,7 @@ community can improve the experience for everyone.
 
 ## Install manually
 
-You can also grab pre-release binaries from [here](http://build.frida.re/frida/).
+You can also grab pre-release binaries from [here](https://build.frida.re/frida/).
 
 ## Testing your installation
 

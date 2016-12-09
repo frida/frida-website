@@ -110,7 +110,7 @@ console.log(hexdump(buf, {
     is integrated.
     For example, this output goes to *stdout* or *stderr* when using Frida
     through [frida-python](https://github.com/frida/frida-python),
-    [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
+    [qDebug](https://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
 
     Arguments that are ArrayBuffer objects will be substituted by the result of

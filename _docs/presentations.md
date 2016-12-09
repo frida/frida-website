@@ -9,8 +9,8 @@ permalink: /docs/presentations/
 We have presented Frida at various conferences around the world. As presentation
 material becomes available, we will try to put it here.
 
-- [OSDC 2015](http://act.osdc.no/osdc2015no/):
-  [Putting the open back into closed software](http://act.osdc.no/osdc2015no/talk/6165)
+- [OSDC 2015](https://act.osdc.no/osdc2015no/):
+  [Putting the open back into closed software](https://act.osdc.no/osdc2015no/talk/6165)
   ([PDF](osdc-2015-putting-the-open-back-into-closed-software.pdf) · [Recording](https://youtu.be/tmpjftTHzH8))
 
   Have this black box process that you’re just dying to peek inside of? Is
@@ -27,8 +27,8 @@ material becomes available, we will try to put it here.
   processes. Hook any function, spy on crypto APIs or trace private application
   code. No source code, no permission needed!
 
-- [OSDC 2015](http://act.osdc.no/osdc2015no/):
-  [The engineering behind the reverse engineering](http://act.osdc.no/osdc2015no/talk/6195)
+- [OSDC 2015](https://act.osdc.no/osdc2015no/):
+  [The engineering behind the reverse engineering](https://act.osdc.no/osdc2015no/talk/6195)
   ([PDF](osdc-2015-the-engineering-behind-the-reverse-engineering.pdf) · [Recording](https://youtu.be/uc1mbN9EJKQ))
 
   Ever wondered how to build your own debugger? Did you complete that assembly
@@ -48,7 +48,7 @@ material becomes available, we will try to put it here.
 
 - [NLUUG 2015](https://www.nluug.nl/activiteiten/events/nj15/index.html):
   [Frida: Putting the open back into closed software](https://www.nluug.nl/activiteiten/events/nj15/abstracts/ab08.html)
-  ([Slides](http://slides.com/oleavr/nluug-2015-frida-putting-the-open-back-into-closed-software)
+  ([Slides](https://slides.com/oleavr/nluug-2015-frida-putting-the-open-back-into-closed-software)
   · [Demos](https://github.com/frida/frida-presentations/tree/master/NLUUG2015)
   · [Recording](https://youtu.be/3lo1Y2oKkE4))
 
@@ -144,7 +144,7 @@ material becomes available, we will try to put it here.
   fixtures in a unit-testing style.
 
 - [BSides Knoxville](https://bsidesknoxville.com/):
-  [Peeking under the hood with Frida](http://bsidesknoxville2016.sched.org/event/6tCd/peeking-under-the-hood-with-frida)
+  [Peeking under the hood with Frida](https://bsidesknoxville2016.sched.org/event/6tCd/peeking-under-the-hood-with-frida)
   ([Recording](https://youtu.be/RINNW4xOWL8))
 
   Ever wanted to peek beneath the hood of an application running on your desktop

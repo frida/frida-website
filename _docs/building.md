@@ -71,7 +71,7 @@ $ cd frida
 $ make
 {% endhighlight %}
 
-`make` will provide you a list of modules to build.  See [the hacking page](http://www.frida.re/docs/hacking/) for more information.
+`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
 
 ### Mac
 
@@ -83,7 +83,7 @@ $ cd frida
 $ make
 {% endhighlight %}
 
-`make` will provide you a list of modules to build.  See [the hacking page](http://www.frida.re/docs/hacking/) for more information.
+`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
 
 ### Windows
 
@@ -153,9 +153,9 @@ For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
 - Prepare your system
   - Make sure that Visual Studio 2015 is installed.
   - Install
-  [hsbuild-0.2.msi](http://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
-  You need [Git](http://msysgit.github.com/) and
-  [Perl](http://www.activestate.com/activeperl/) installed, and `perl` should be
+  [hsbuild-0.2.msi](https://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
+  You need [Git](https://msysgit.github.com/) and
+  [Perl](https://www.activestate.com/activeperl/) installed, and `perl` should be
   in your PATH. For packaging you will also need [7-Zip](http://www.7-zip.org/)
   to be in your PATH.
   - Ensure that your Git configuration at
@@ -166,7 +166,7 @@ autoCRLF = false
 ```
   - Also ensure that your environment does not have a `CC` environment variable
   defined (might have happened if you installed `msys` or `cygwin`).
-  - Use [bazaar](http://bazaar.canonical.com/) to check out our slightly
+  - Use [bazaar](https://bazaar.canonical.com/) to check out our slightly
   modified HSBuild:
 {% highlight bash %}
 $ bzr branch lp:~oleavr/hsbuild/tweaks hsbuild

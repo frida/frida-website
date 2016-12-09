@@ -1,3 +1,3 @@
 ## Frida's website
 
-Live at [www.frida.re](http://www.frida.re/).
+Live at [www.frida.re](https://www.frida.re/).
