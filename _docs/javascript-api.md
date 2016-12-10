@@ -1041,7 +1041,7 @@ Stalker.follow(Process.getCurrentThreadId(), {
     -   `module`: Resolves exported and imported functions of shared libraries
                   currently loaded. Always available.
     -   `objc`: Resolves Objective-C methods of classes currently loaded.
-                Available on Mac and iOS in processes that have the Objective-C
+                Available on macOS and iOS in processes that have the Objective-C
                 runtime loaded. Use `ObjC.available` to check at runtime, or
                 wrap your `new ApiResolver('objc')` call in a *try-catch*.
 
@@ -1177,7 +1177,7 @@ Interceptor.attach(f, {
     before calling `work`, and cleaned up on return.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 ObjC.schedule(ObjC.mainQueue, function () {
     var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
     sound.play();
@@ -1257,13 +1257,13 @@ Interceptor.attach(..., {
     ObjC method's `implementation` property.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 var oldImpl = NSSound.play.implementation;
 NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
     return oldImpl(handle, selector);
 });
 
-var NSView = ObjC.classes.NSView; /* Mac */
+var NSView = ObjC.classes.NSView; /* macOS */
 var drawRect = NSView['- drawRect:'];
 var oldImpl = drawRect.implementation;
 drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
@@ -1275,7 +1275,7 @@ drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
 >   `NativePointer`, you may also use `Interceptor` to hook functions:
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 Interceptor.attach(NSSound.play.implementation, {
     onEnter: function () {
         send("[NSSound play]");

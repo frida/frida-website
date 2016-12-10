@@ -10,7 +10,7 @@ permalink: /docs/building/
 1. Building Frida
  - [Design Constraints](#design-constraints)
  - [Linux](#linux)
- - [Mac](#mac)
+ - [macOS](#macOS)
  - [Windows](#windows)
 2. Building the toolchain and SDK
  - [Unix](#unix-toolchain-and-sdk)
@@ -26,7 +26,7 @@ Frida has a rather complicated build system due to some design constraints:
 toolchain and SDK to save time. This requires a bit more fiddling to get the
 build environment just right, but it has the added benefit of providing a
 coherent build environment. For example we know we're being built with just
-one version of autotools whether we're on Mac or Linux.
+one version of autotools whether we're on macOS or Linux.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
 Frida's run-time components, like frida-helper, frida-agent, etc. will at some
@@ -73,7 +73,7 @@ $ make
 
 `make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
 
-### Mac
+### macOS
 
 - Make sure you have the latest Xcode with command-line tools installed.
 - Clone `frida` and build it:

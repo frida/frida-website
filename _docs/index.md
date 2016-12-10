@@ -16,7 +16,7 @@ It's
 [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) for
 native apps, or, put in more technical terms, it's a dynamic code
 instrumentation toolkit. It lets you inject snippets of JavaScript or your own
-library into native apps on Windows, Mac, Linux, iOS, Android, and QNX. Frida
+library into native apps on Windows, macOS, Linux, iOS, Android, and QNX. Frida
 also provides you with some simple tools built on top of the Frida API. These
 can be used as-is, tweaked to your needs, or serve as examples of how to use the
 API.

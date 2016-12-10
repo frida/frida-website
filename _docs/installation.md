@@ -15,7 +15,7 @@ Installing Frida is easy and straight-forward, but there are a few requirements
 you’ll need to make sure your system has before you start.
 
 - [Python](https://python.org/) – latest 3.x is highly recommended
-- Windows, Mac OS X or Linux
+- Windows, macOS, or Linux
 
 ## Install with pip
 
@@ -48,7 +48,10 @@ $ cat
 Just let it sit and wait for input. On Windows you might want to use
 `notepad.exe`.
 
-Note that this example won’t work on Mac OS X El Capitan, as it rejects such attempts for system binaries. See [here]({{ site.repository }}/issues/83) for more details. However, if you copy the `cat` binary to e.g., `/tmp/cat` then run that instead the example should work:
+Note that this example won’t work on macOS El Capitan and later, as it rejects
+such attempts for system binaries. See [here]({{ site.repository }}/issues/83)
+for more details. However, if you copy the `cat` binary to e.g., `/tmp/cat` then
+run that instead the example should work:
 
 {% highlight bash %}
 $ cp /bin/cat /tmp/cat

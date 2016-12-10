@@ -82,7 +82,7 @@ Then download *frida-gadget* for your OS:
 - [Linux x86-64](https://build.frida.re/frida/linux/x86_64/lib/frida-gadget.so)
 - [Android/ARM](https://build.frida.re/frida/android/arm/lib/frida-gadget.so)
 - [Android/ARM64](https://build.frida.re/frida/android/arm64/lib/frida-gadget.so)
-- [Mac (universal)](https://build.frida.re/frida/mac/lib/FridaGadget.dylib)
+- [macOS (universal)](https://build.frida.re/frida/mac/lib/FridaGadget.dylib)
 - [iOS (universal)](https://build.frida.re/frida/ios/lib/FridaGadget.dylib)
 
 Now just set two environment variables and launch your target process:
@@ -93,8 +93,8 @@ FRIDA_GADGET_SCRIPT=/path/to/hook.js \
 cat /etc/hosts
 {% endhighlight %}
 
-Use *DYLD_INSERT_LIBRARIES* on Mac and iOS. Note that */bin/cat* won't work
-on El Capitan, as it ignores such attempts for system binaries.
+Use *DYLD_INSERT_LIBRARIES* on macOS and iOS. Note that */bin/cat* won't work
+on El Capitan and above, as it ignores such attempts for system binaries.
 
 You may also add `FRIDA_GADGET_ENV=development` while developing your
 instrumentation logic, which will make *frida-gadget* watch your file for
