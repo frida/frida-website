@@ -699,7 +699,7 @@ Interceptor.attach(f, {
     For C++ scenarios involving a return value that is larger than
     `Process.pointerSize`, a `NativePointer` to preallocated space must be passed
     in as the first parameter. (This scenario is common in WebKit, for example.)
-    
+
     Example:
 {% highlight js %}
 // LargeObject HandyClass::friendlyFunctionName();
