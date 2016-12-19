@@ -21,7 +21,8 @@ page](https://github.com/frida/frida/releases) and get it running on your
 device:
 
 {% highlight bash %}
-$ adb push frida-server /data/local/tmp/
+$ adb root # might be required
+$ adb push frida-server /data/local/tmp/ 
 $ adb shell "chmod 755 /data/local/tmp/frida-server"
 $ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}
