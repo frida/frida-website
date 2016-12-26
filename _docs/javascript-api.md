@@ -1101,7 +1101,7 @@ resolver.enumerateMatches('-[NSURL* *HTTP*]', {
 
 ## DebugSymbol
 
-+   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromAddress(name)`:
++   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromName(name)`:
     look up debug information for `address`/`name` and return it as an object
     containing:
 
