@@ -152,17 +152,18 @@ rpc.exports = {
 
 const co = require('co');
 const frida = require('frida');
+const load = require('frida-load');
 
 let session, script;
 co(function *() {
-    const source = yield frida.load(require.resolve('./agent.js'));
+    const source = yield load(require.resolve('./agent.js'));
     session = yield frida.attach("iTunes");
     script = yield session.createScript(source);
     script.events.listen('message', onMessage);
     yield script.load();
     const api = yield script.getExports();
-    console.log(yield exports.add(2, 3));
-    console.log(yield exports.sub(5, 3));
+    console.log(yield api.add(2, 3));
+    console.log(yield api.sub(5, 3));
 })
 .catch(onError);
 
