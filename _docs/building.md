@@ -64,6 +64,16 @@ below.
 $ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.9-dev \
     lib32z1-dev python-dev python3-dev zlib1g-dev
 {% endhighlight %}
+
+  - Development toolchain Ubuntu 14.04 (Trusty Jahr) with Node 7.x
+  See [Installing Node.js via package manager](https://nodejs.org/en/download/package-manager/) for more installation options
+{% highlight bash %}
+$ curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
+$ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.8-dev \
+    lib32z1-dev python-dev python3-dev zlib1g-dev
+{% endhighlight %}
+
 - Clone `frida` and build it:
 {% highlight bash %}
 $ git clone git://github.com/frida/frida.git
