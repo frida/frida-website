@@ -35,7 +35,7 @@ def main(target_process):
     Interceptor.attach(SetAesDeCrypt0, { // Intercept calls to our SetAesDecrypt function
 
         // When function is called, print out its parameters
-        onEnter(args) {
+        onEnter: function(args) {
             console.log('');
             console.log('[+] Called SetAesDeCrypt0' + SetAesDeCrypt0);
             console.log('[+] Ctx: ' + args[0]);
@@ -48,7 +48,7 @@ def main(target_process):
         },
 
         // When function is finished
-        onLeave(retval) {
+        onLeave: function(retval) {
             dumpAddr('Output', this.outptr, this.outsize); // Print out data array, which will contain de/encrypted data as output
             console.log('[+] Returned from SetAesDeCrypt0: ' + retval);
         }
