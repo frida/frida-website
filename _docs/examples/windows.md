@@ -75,7 +75,8 @@ def main(target_process):
 """)
     script.on('message', on_message)
     script.load()
-    raw_input('[!] Press Enter at any time to detach from instrumented program.\n\n')
+    print "[!] Press Enter at any time to detach from instrumented program.\n\n"
+    sys.stdin.read()
     session.detach()
 
 if __name__ == '__main__':
