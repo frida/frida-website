@@ -76,7 +76,7 @@ def main(target_process):
 """)
     script.on('message', on_message)
     script.load()
-    print("[!] Press Enter at any time to detach from instrumented program.\n\n")
+    print("[!] Ctrl+D on UNIX, Ctrl+Z on Windows/cmd.exe to detach from instrumented program.\n\n")
     sys.stdin.read()
     session.detach()
 
