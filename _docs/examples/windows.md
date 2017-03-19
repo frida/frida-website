@@ -15,11 +15,12 @@ Save this code as *bb.py*, run BB Simulator (fledge.exe), then run
 *jvm.dll*.
 
 {% highlight py %}
+from __future__ import print_function
 import frida
 import sys
 
 def on_message(message, data):
-    print "[%s] => %s" % (message, data)
+    print("[%s] => %s" % (message, data))
 
 def main(target_process):
     session = frida.attach(target_process)
@@ -75,7 +76,7 @@ def main(target_process):
 """)
     script.on('message', on_message)
     script.load()
-    print "[!] Press Enter at any time to detach from instrumented program.\n\n"
+    print("[!] Press Enter at any time to detach from instrumented program.\n\n")
     sys.stdin.read()
     session.detach()
 
