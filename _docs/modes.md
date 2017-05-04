@@ -78,6 +78,8 @@ rpc.exports = {
 
 Then download *frida-gadget* for your OS:
 
+- [Windows x86-32](https://build.frida.re/frida/windows/Win32-Release/bin/frida-gadget.dll)
+- [Windows x86-64](https://build.frida.re/frida/windows/x64-Release/bin/frida-gadget.dll)
 - [Linux x86-32](https://build.frida.re/frida/linux/i386/lib/frida-gadget.so)
 - [Linux x86-64](https://build.frida.re/frida/linux/x86_64/lib/frida-gadget.so)
 - [Android/ARM](https://build.frida.re/frida/android/arm/lib/frida-gadget.so)
