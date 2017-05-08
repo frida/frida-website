@@ -76,9 +76,9 @@ rpc.exports = {
 };
 {% endhighlight %}
 
-The latest *frida-gadget* for your OS can be found on github::
+The latest *frida-gadget* for your OS can be found on [GitHub](https://github.com/frida/frida/releases/latest).
 
-[GitHub Releases](https://github.com/frida/frida/releases/latest)
+
 
 
 Now just set two environment variables and launch your target process:
