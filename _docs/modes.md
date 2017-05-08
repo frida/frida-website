@@ -76,14 +76,10 @@ rpc.exports = {
 };
 {% endhighlight %}
 
-Then download *frida-gadget* for your OS:
+The latest *frida-gadget* for your OS can be found on github::
 
-- [Linux x86-32](https://build.frida.re/frida/linux/i386/lib/frida-gadget.so)
-- [Linux x86-64](https://build.frida.re/frida/linux/x86_64/lib/frida-gadget.so)
-- [Android/ARM](https://build.frida.re/frida/android/arm/lib/frida-gadget.so)
-- [Android/ARM64](https://build.frida.re/frida/android/arm64/lib/frida-gadget.so)
-- [Mac (universal)](https://build.frida.re/frida/mac/lib/FridaGadget.dylib)
-- [iOS (universal)](https://build.frida.re/frida/ios/lib/FridaGadget.dylib)
+[GitHub Releases](https://github.com/frida/frida/releases/latest)
+
 
 Now just set two environment variables and launch your target process:
 
