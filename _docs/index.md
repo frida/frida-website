@@ -12,11 +12,14 @@ future development of Frida itself.
 
 ## So what is Frida, exactly?
 
-It's Greasemonkey for native apps, or, put in more technical terms, it's a
-dynamic code instrumentation toolkit. It lets you inject snippets of JavaScript
-into native apps on Windows, Mac, Linux, iOS and Android. Frida also provides
-you with some simple tools built on top of the Frida API. These can be used
-as-is, tweaked to your needs, or serve as examples of how to use the API.
+It's
+[Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) for
+native apps, or, put in more technical terms, it's a dynamic code
+instrumentation toolkit. It lets you inject snippets of JavaScript or your own
+library into native apps on Windows, macOS, Linux, iOS, Android, and QNX. Frida
+also provides you with some simple tools built on top of the Frida API. These
+can be used as-is, tweaked to your needs, or serve as examples of how to use the
+API.
 
 ## Why do I need this?
 
@@ -41,17 +44,24 @@ Great question. We'll try to clarify with some use-cases:
 
 ## Why a Python API, but JavaScript debugging logic?
 
-Frida's core is written in C and injects Google's V8 engine into the target
-processes, where your JS gets executed with full access to memory, hooking
-functions and even calling native functions inside the process. There's a
-bi-directional communication channel that is used to talk between your
-app (Python?) and the JS running inside the target process.
+Frida's core is written in C and injects [Google's V8
+engine](https://developers.google.com/v8/) into the target processes, where your
+JS gets executed with full access to memory, hooking functions and even calling
+native functions inside the process. There's a bi-directional communication
+channel that is used to talk between your app and the JS running inside the
+target process.
 
-On top of this C core there are multiple language bindings, e.g.
-[Python](https://github.com/frida/frida-python),
+Using Python and JS allows for quick development with a risk-free API. Frida can
+help you easily catch errors in JS and provide you an exception rather than
+crashing.
+
+Rather not write in Python?  No problem.  You can use Frida from C directly, and
+on top of this C core there are multiple language bindings, e.g.
 [Node.js](https://github.com/frida/frida-node),
+[Python](https://github.com/frida/frida-python),
+[Swift](https://github.com/frida/frida-swift),
 [.NET](https://github.com/frida/frida-clr),
-[Qml](https://github.com/frida/frida-qml), etc., and it is very easy to build
+[Qml](https://github.com/frida/frida-qml), etc.  It is very easy to build
 additional bindings for other languages and environments.
 
 ## ProTips™, Notes, and Warnings
@@ -78,5 +88,5 @@ hazardous. Here’s what to look out for.
 
 If you come across anything along the way that we haven’t covered, or if you
 know of a tip you think others would find handy, please [file an
-issue]({{ site.organization_url }}/frida-website/issues/new) and we’ll see about
+issue]({{ site.organization_url }}/frida-website/issues/new), and we’ll see about
 including it in this guide.

@@ -6,6 +6,8 @@ permalink: /docs/gsoc-ideas-2015/
 
 ## Make Android a first-class Frida citizen
 
+### Update 2015: This is now implemented in Frida thanks to [NowSecure][].
+
 **Brief explanation:** While Frida does currently support Android, there
 are two missing pieces that result in a lot of friction when instrumenting
 Android apps, and we need to improve on those:
@@ -84,6 +86,8 @@ Want to know more about how it's implemented for x86? Read more [here](https://m
 
 ## Add support for spawning apps on Android: instrument from the first instruction
 
+### Update 2015: This is now implemented in Frida thanks to [NowSecure][].
+
 **Brief explanation:** Not to be confused with support for spawning processes,
 which is already present in Frida, this is about adding support for
 instrumenting an Android app from the first instruction executed after Zygote
@@ -112,8 +116,9 @@ by Frida's buildbot.
 
 ## Port Frida to Windows Phone
 
-**Brief explanation:** Frida currently supports Windows, Mac, Linux, iOS, and
-Android, but sadly not yet Windows Phone. Adding support for WP would require:
+**Brief explanation:** Frida currently supports Windows, macOS, Linux, iOS,
+Android, and QNX, but sadly not yet Windows Phone. Adding support for WP would
+require:
 
 - An injector to get Frida's shared library injected into the target process
 
@@ -135,6 +140,8 @@ although presumably much much simpler.
 
 ## Expose backtracer and symbol resolving API to JavaScript
 
+### Update 2015: This is now implemented in Frida thanks to [NowSecure][].
+
 **Brief explanation:** There's currently a [Backtracer](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumbacktracer.h)
 and a [symbol resolving](https://github.com/frida/frida-gum/blob/42b69917976f43ba3ec4297046b319970dc037dd/gum/gumsymbolutil.h)
 API in frida-gum that are not yet exposed to the JS runtime.
@@ -149,3 +156,6 @@ relies on DbgHelp.dll being loaded, which might not be an acceptable constraint.
 **Knowledge Prerequisite:** JavaScript, C
 
 **Possible Mentors:** Ole André Vadla Ravnås &lt;[oleavr@gmail.com](mailto:oleavr@gmail.com)&gt;, Karl Trygve Kalleberg &lt;[karltk@gmail.com](mailto:karltk@gmail.com)&gt;
+
+
+[NowSecure]: https://www.nowsecure.com/

@@ -28,7 +28,7 @@ your USB cable handy, though there's no need to plug it in just yet.
 
 ### A quick smoke-test
 
-Now, back on your Windows or Mac system it's time to make sure the basics
+Now, back on your Windows or macOS system it's time to make sure the basics
 are working. Run:
 
 {% highlight bash %}

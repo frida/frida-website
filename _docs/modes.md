@@ -78,9 +78,6 @@ rpc.exports = {
 
 The latest *frida-gadget* for your OS can be found on [GitHub](https://github.com/frida/frida/releases/latest).
 
-
-
-
 Now just set two environment variables and launch your target process:
 
 {% highlight bash %}
@@ -89,8 +86,8 @@ FRIDA_GADGET_SCRIPT=/path/to/hook.js \
 cat /etc/hosts
 {% endhighlight %}
 
-Use *DYLD_INSERT_LIBRARIES* on Mac and iOS. Note that */bin/cat* won't work
-on El Capitan, as it ignores such attempts for system binaries.
+Use *DYLD_INSERT_LIBRARIES* on macOS and iOS. Note that */bin/cat* won't work
+on El Capitan and above, as it ignores such attempts for system binaries.
 
 You may also add `FRIDA_GADGET_ENV=development` while developing your
 instrumentation logic, which will make *frida-gadget* watch your file for

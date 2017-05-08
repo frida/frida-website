@@ -32,7 +32,7 @@ So with this release out, let's talk about [CryptoShark](https://github.com/frid
 
 <iframe width="560" height="315" src="//www.youtube.com/embed/hzDsxtcRavY?rel=0" frameborder="0" allowfullscreen></iframe>
 
-Grab a pre-built Windows binary [here](http://build.frida.re/frida/windows/Win32-Release/bin/cryptoshark-0.1.1.exe),
+Grab a pre-built Windows binary [here](https://build.frida.re/frida/windows/Win32-Release/bin/cryptoshark-0.1.1.exe),
 or build it from source if you'd like to try it out on Mac or Linux.
 
 Enjoy!

@@ -4,7 +4,21 @@ title: Building
 permalink: /docs/building/
 ---
 
+
+## Table of contents
+
+1. Building Frida
+ - [Design Constraints](#design-constraints)
+ - [Linux](#linux)
+ - [macOS](#macOS)
+ - [Windows](#windows)
+2. Building the toolchain and SDK
+ - [Unix](#unix-toolchain-and-sdk)
+ - [Windows](#windows-toolchain-and-sdk)
+
 ## Building Frida
+
+### Design Constraints
 
 Frida has a rather complicated build system due to some design constraints:
 
@@ -12,7 +26,7 @@ Frida has a rather complicated build system due to some design constraints:
 toolchain and SDK to save time. This requires a bit more fiddling to get the
 build environment just right, but it has the added benefit of providing a
 coherent build environment. For example we know we're being built with just
-one version of autotools whether we're on Mac or Linux.
+one version of autotools whether we're on macOS or Linux.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
 Frida's run-time components, like frida-helper, frida-agent, etc. will at some
@@ -50,6 +64,16 @@ below.
 $ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.9-dev \
     lib32z1-dev python-dev python3-dev zlib1g-dev
 {% endhighlight %}
+
+  - Development toolchain Ubuntu 14.04 (Trusty Jahr) with Node 7.x
+  See [Installing Node.js via package manager](https://nodejs.org/en/download/package-manager/) for more installation options
+{% highlight bash %}
+$ curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
+$ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.8-dev \
+    lib32z1-dev python-dev python3-dev zlib1g-dev
+{% endhighlight %}
+
 - Clone `frida` and build it:
 {% highlight bash %}
 $ git clone git://github.com/frida/frida.git
@@ -57,7 +81,9 @@ $ cd frida
 $ make
 {% endhighlight %}
 
-### Mac
+`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
+
+### macOS
 
 - Make sure you have the latest Xcode with command-line tools installed.
 - Clone `frida` and build it:
@@ -67,31 +93,41 @@ $ cd frida
 $ make
 {% endhighlight %}
 
+`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
+
 ### Windows
 
 - Make sure you have:
-  - 64-bit version of Windows (32-bit will work but may require some fiddling)
+  - 64-bit version of Windows
   - Visual Studio 2015
-  - [Git](http://msysgit.github.com/)
-  - [Python 2.7 and 3.4](http://python.org/). You want both the 32- and the
-  64-bit version of each, with the 32-bit versions installed in
-  `C:\Program Files (x86)` and 64-bit ones installed in `C:\Program Files`.
-  - Clone `frida`:
+  - [Git](https://git-scm.com/downloads) in your PATH
+  - [Node.js](https://nodejs.org/) in your PATH
+  - [Python 2.7](https://www.python.org/downloads/windows/) in your PATH and associated to .py files
+  - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
+
+- Clone the `frida` repository:
 {% highlight bash %}
-$ git clone git://github.com/frida/frida.git
+$ git clone https://github.com/frida/frida
 $ cd frida
 $ git submodule init
 $ git submodule update
 {% endhighlight %}
-- Open `frida.sln` and build it.
 
+- Enter the `frida` folder and execute the Python staging script
+{% highlight bash %}
+$ powershell
+PS> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
+PS> .\releng\stage-python.ps1
+{% endhighlight %}
+
+- Open `frida.sln` and build it.
 
 ## Building the toolchain and SDK
 
 This should not be necessary unless you're porting Frida to a new platform. The
 following steps assume you have the OS-specific prerequisites mentioned above.
 
-### UNIX
+### UNIX Toolchain and SDK
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
@@ -122,14 +158,14 @@ $ scp build/sdk-*.tar.bz2 your@own.server:
 (Note: the `frida` module now has integrated support for building the SDK.
 For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
 
-### Windows
+### Windows Toolchain and SDK
 
 - Prepare your system
   - Make sure that Visual Studio 2015 is installed.
   - Install
-  [hsbuild-0.2.msi](http://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
-  You need [Git](http://msysgit.github.com/) and
-  [Perl](http://www.activestate.com/activeperl/) installed, and `perl` should be
+  [hsbuild-0.2.msi](https://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
+  You need [Git](https://msysgit.github.com/) and
+  [Perl](https://www.activestate.com/activeperl/) installed, and `perl` should be
   in your PATH. For packaging you will also need [7-Zip](http://www.7-zip.org/)
   to be in your PATH.
   - Ensure that your Git configuration at
@@ -140,7 +176,7 @@ autoCRLF = false
 ```
   - Also ensure that your environment does not have a `CC` environment variable
   defined (might have happened if you installed `msys` or `cygwin`).
-  - Use [bazaar](http://bazaar.canonical.com/) to check out our slightly
+  - Use [bazaar](https://bazaar.canonical.com/) to check out our slightly
   modified HSBuild:
 {% highlight bash %}
 $ bzr branch lp:~oleavr/hsbuild/tweaks hsbuild

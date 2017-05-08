@@ -18,10 +18,11 @@
 - title: Examples
   docs:
   - examples/windows
-  - examples/mac
+  - examples/macos
   - examples/linux
   - examples/ios
   - examples/android
+  - examples/javascript
 
 - title: Tools
   docs:
@@ -33,6 +34,8 @@
 - title: API Reference
   docs:
   - javascript-api
+  - c-api
+  - swift-api
 
 - title: Miscellaneous
   docs:

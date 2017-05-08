@@ -110,7 +110,7 @@ console.log(hexdump(buf, {
     is integrated.
     For example, this output goes to *stdout* or *stderr* when using Frida
     through [frida-python](https://github.com/frida/frida-python),
-    [qDebug](http://doc.qt.io/qt-5/qdebug.html) when using
+    [qDebug](https://doc.qt.io/qt-5/qdebug.html) when using
     [frida-qml](https://github.com/frida/frida-qml), etc.
 
     Arguments that are ArrayBuffer objects will be substituted by the result of
@@ -131,10 +131,10 @@ console.log(hexdump(buf, {
 'use strict';
 
 rpc.exports = {
-    add(a, b) {
+    add: function (a, b) {
         return a + b;
     },
-    sub(a, b) {
+    sub: function (a, b) {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(a - b);
@@ -152,17 +152,18 @@ rpc.exports = {
 
 const co = require('co');
 const frida = require('frida');
+const load = require('frida-load');
 
 let session, script;
 co(function *() {
-    const source = yield frida.load(require.resolve('./agent.js'));
+    const source = yield load(require.resolve('./agent.js'));
     session = yield frida.attach("iTunes");
     script = yield session.createScript(source);
     script.events.listen('message', onMessage);
     yield script.load();
     const api = yield script.getExports();
-    console.log(yield exports.add(2, 3));
-    console.log(yield exports.sub(5, 3));
+    console.log(yield api.add(2, 3));
+    console.log(yield api.sub(5, 3));
 })
 .catch(onError);
 
@@ -202,6 +203,7 @@ print(script.exports.sub(5, 3))
 session.detach()
 {% endhighlight %}
 
+In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
 
 ## Frida
 
@@ -680,13 +682,34 @@ Interceptor.attach(f, {
     `argTypes` array specifies the argument types. You may optionally also
     specify `abi` if not system default. For variadic functions, add a `'...'`
     entry to `argTypes` between the fixed arguments and the variadic ones.
-    As for structs passed by value, instead of a string provide an array
-    containing the struct's field types following each other. You may nest
-    these as deep as desired for representing structs inside structs.
-    Note that the returned object is also a `NativePointer`, and can thus be
-    passed to `Interceptor#attach`.
 
-    Supported types:
+    ### Structs & Classes by Value
+
+    As for structs or classes passed by value, instead of a string provide an
+    array containing the struct's field types following each other. You may nest
+    these as deep as desired for representing structs inside structs. Note that
+    the returned object is also a `NativePointer`, and can thus be passed to
+    `Interceptor#attach`.
+
+    This must match the struct/class exactly, so if you have a struct with three
+    ints, you must pass `['int', 'int', 'int']`.
+
+    For a class that has virtual methods, the first parameter will be a pointer
+    to [the vtable](https://en.wikipedia.org/wiki/Virtual_method_table).
+
+    For C++ scenarios involving a return value that is larger than
+    `Process.pointerSize`, a `NativePointer` to preallocated space must be passed
+    in as the first parameter. (This scenario is common in WebKit, for example.)
+
+    Example:
+{% highlight js %}
+// LargeObject HandyClass::friendlyFunctionName();
+var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr, 'void', ['pointer', 'pointer']);
+var returnValue = Memory.alloc(sizeOfLargeObject);
+friendlyFunctionName(returnValue, thisPtr);
+{% endhighlight %}
+
+    ### Supported Types
 
     -   void
     -   pointer
@@ -707,7 +730,7 @@ Interceptor.attach(f, {
     -   int64
     -   uint64
 
-    Supported ABIs:
+    ### Supported ABIs
 
     -   default
 
@@ -813,7 +836,8 @@ Interceptor.attach(f, {
 -   `flush()`: flush any buffered data to the underlying file
 
 -   `close()`: close the file. You should call this function when you're done
-    with the file.
+    with the file. Any remaining buffered data will automatically be flushed
+    before closure.
 
 
 ## Interceptor
@@ -832,10 +856,14 @@ Interceptor.attach(f, {
         `NativePointer` objects.
 
     -   `onLeave: function (retval)`: callback function given one argument
-        `retval` that is a `NativePointer` containing the return value.
+        `retval` that is a `NativePointer`-derived object containing the raw
+        return value.
         You may call `retval.replace(1337)` to replace the return value with
         the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace with
         a pointer.
+        Note that this object is recycled across *onLeave* calls, so do not
+        store and use it outside your callback. Make a deep copy if you need
+        to store the contained value, e.g.: `ptr(retval.toString())`.
 
     You may also intercept arbitrary instructions by passing a function instead
     of the `callbacks` object. This function has the same signature as
@@ -893,8 +921,8 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     there as an empty callback.
   </p>
   <p>
-    On an iPhone 6 the base overhead when providing just <i>onEnter</i> might be
-    something like 15 microseconds, and 25 microseconds with both <i>onEnter</i>
+    On an iPhone 5S the base overhead when providing just <i>onEnter</i> might be
+    something like 6 microseconds, and 11 microseconds with both <i>onEnter</i>
     and <i>onLeave</i> provided.
   </p>
   <p>
@@ -1015,7 +1043,7 @@ Stalker.follow(Process.getCurrentThreadId(), {
     -   `module`: Resolves exported and imported functions of shared libraries
                   currently loaded. Always available.
     -   `objc`: Resolves Objective-C methods of classes currently loaded.
-                Available on Mac and iOS in processes that have the Objective-C
+                Available on macOS and iOS in processes that have the Objective-C
                 runtime loaded. Use `ObjC.available` to check at runtime, or
                 wrap your `new ApiResolver('objc')` call in a *try-catch*.
 
@@ -1074,7 +1102,7 @@ resolver.enumerateMatches('-[NSURL* *HTTP*]', {
 
 ## DebugSymbol
 
-+   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromAddress(name)`:
++   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromName(name)`:
     look up debug information for `address`/`name` and return it as an object
     containing:
 
@@ -1139,7 +1167,7 @@ Interceptor.attach(f, {
     for direct access to a big portion of the Objective-C runtime API.
 
 +   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
-    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details. 
+    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details.
 
 +   `ObjC.protocols`: an object mapping protocol names to `ObjC.Protocol`
     JavaScript bindings for each of the currently registered protocols.
@@ -1151,7 +1179,7 @@ Interceptor.attach(f, {
     before calling `work`, and cleaned up on return.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 ObjC.schedule(ObjC.mainQueue, function () {
     var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
     sound.play();
@@ -1231,13 +1259,13 @@ Interceptor.attach(..., {
     ObjC method's `implementation` property.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 var oldImpl = NSSound.play.implementation;
 NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
     return oldImpl(handle, selector);
 });
 
-var NSView = ObjC.classes.NSView; /* Mac */
+var NSView = ObjC.classes.NSView; /* macOS */
 var drawRect = NSView['- drawRect:'];
 var oldImpl = drawRect.implementation;
 drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
@@ -1249,7 +1277,7 @@ drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
 >   `NativePointer`, you may also use `Interceptor` to hook functions:
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* Mac */
+var NSSound = ObjC.classes.NSSound; /* macOS */
 Interceptor.attach(NSSound.play.implementation, {
     onEnter: function () {
         send("[NSSound play]");
@@ -1506,6 +1534,8 @@ Java.perform(function () {
     };
 });
 {% endhighlight %}
+
++   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
 
 +   `Java.choose(className, callbacks)`: enumerate live instances of the
     `className` class by scanning the Java heap, where `callbacks` is an

@@ -10,14 +10,17 @@ Shows how to monitor a jvm.dll which is being executed by a process called
 *fledge.exe* (BB Simulator) using Frida.
 
 Save this code as *bb.py*, run BB Simulator (fledge.exe), then run
-`python.exe bb.py fledge.exe` for monitoring AES usage of *jvm.dll*.
+`python.exe bb.py fledge.exe` for monitoring
+[AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) usage of
+*jvm.dll*.
 
 {% highlight py %}
+from __future__ import print_function
 import frida
 import sys
 
 def on_message(message, data):
-    print "[%s] => %s" % (message, data)
+    print("[%s] => %s" % (message, data))
 
 def main(target_process):
     session = frida.attach(target_process)
@@ -33,7 +36,7 @@ def main(target_process):
     Interceptor.attach(SetAesDeCrypt0, { // Intercept calls to our SetAesDecrypt function
 
         // When function is called, print out its parameters
-        onEnter(args) {
+        onEnter: function (args) {
             console.log('');
             console.log('[+] Called SetAesDeCrypt0' + SetAesDeCrypt0);
             console.log('[+] Ctx: ' + args[0]);
@@ -46,7 +49,7 @@ def main(target_process):
         },
 
         // When function is finished
-        onLeave(retval) {
+        onLeave: function (retval) {
             dumpAddr('Output', this.outptr, this.outsize); // Print out data array, which will contain de/encrypted data as output
             console.log('[+] Returned from SetAesDeCrypt0: ' + retval);
         }
@@ -73,7 +76,8 @@ def main(target_process):
 """)
     script.on('message', on_message)
     script.load()
-    raw_input('[!] Press Enter at any time to detach from instrumented program.\n\n')
+    print("[!] Ctrl+D on UNIX, Ctrl+Z on Windows/cmd.exe to detach from instrumented program.\n\n")
+    sys.stdin.read()
     session.detach()
 
 if __name__ == '__main__':
