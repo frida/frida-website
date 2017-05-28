@@ -366,7 +366,7 @@ Press ENTER key to Continue
 
 If you are not fully familiar with the structure of a struct, there are many
 resources online that will tell you what's what. The important bits here are the
-bytes `0x1388`, or 5000 in hex. This is our port number (the 4 bytes that
+bytes `0x1388`, or 5000 in dec. This is our port number (the 4 bytes that
 follow are the IP address in hex). If we change this to `0x1389` then we can
 re-direct our client to a different point. If we change the next 4 bytes we
 can change the IP address that the client points at completely!
