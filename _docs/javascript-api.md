@@ -911,29 +911,32 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 
     -   `depth`: call depth of relative to other invocations
 
-    For eaxmple:
+    For example:
 
 {% highlight js %}
 Interceptor.attach(Module.findExportByName(null, 'read'), {
     onEnter: function (args) {
         console.log('Context information: ')
-        console.log("Context  : " + JSON.stringify(this.context))
-        console.log("Return   : " + this.returnAddress)
-        console.log("ThreadId : " + this.threadId)
-        console.log("Depth    : " + this.depth)
-        console.log("Errornr  : " + this.err)
-        console.log("Arg 0    : " + args[0])
-        //Save argument 0, for processing in onLeave.
-        this.args = []
-        this.args[0] = args[0]
+        console.log('Context  : ' + JSON.stringify(this.context))
+        console.log('Return   : ' + this.returnAddress)
+        console.log('ThreadId : ' + this.threadId)
+        console.log('Depth    : ' + this.depth)
+        console.log('Errornr  : ' + this.err)
+        
+        // Save arguments for processing in onLeave.
+        this.fd = args[0].toInt32()
+        this.buf = args[1]
+        this.count = args[2]
     },
-    onLeave: function(result) {
-        console.log("----------")
-        // Show argument 0, saved during onEnter.
-        console.log("Arg 0    : " + this.args[0])
-        console.log("Result   : " + result)
+    onLeave: function (result) {
+        console.log('----------')
+        // Show argument 1 (buf), saved during onEnter.
+        nrbytes = result.toInt32()
+        if (nrbytes > 0) {
+            console.log(hexdump(ptr(this.buf), {length: nrbytes}))
+        }
+        console.log('Result   : ' + nrbytes)
     }
- 
 })
 {% endhighlight %}
 
