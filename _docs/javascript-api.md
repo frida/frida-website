@@ -916,26 +916,26 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
 {% highlight js %}
 Interceptor.attach(Module.findExportByName(null, 'read'), {
     onEnter: function (args) {
-        console.log('Context information: ')
-        console.log('Context  : ' + JSON.stringify(this.context))
-        console.log('Return   : ' + this.returnAddress)
-        console.log('ThreadId : ' + this.threadId)
-        console.log('Depth    : ' + this.depth)
-        console.log('Errornr  : ' + this.err)
+        console.log('Context information:');
+        console.log('Context  : ' + JSON.stringify(this.context));
+        console.log('Return   : ' + this.returnAddress);
+        console.log('ThreadId : ' + this.threadId);
+        console.log('Depth    : ' + this.depth);
+        console.log('Errornr  : ' + this.err);
         
         // Save arguments for processing in onLeave.
-        this.fd = args[0].toInt32()
-        this.buf = args[1]
-        this.count = args[2]
+        this.fd = args[0].toInt32();
+        this.buf = args[1];
+        this.count = args[2].toInt32();
     },
     onLeave: function (result) {
         console.log('----------')
         // Show argument 1 (buf), saved during onEnter.
-        nrbytes = result.toInt32()
-        if (nrbytes > 0) {
-            console.log(hexdump(ptr(this.buf), {length: nrbytes}))
+        numBytes = result.toInt32()
+        if (numBytes > 0) {
+            console.log(hexdump(this.buf, { length: numBytes, ansi: true }));
         }
-        console.log('Result   : ' + nrbytes)
+        console.log('Result   : ' + numBytes);
     }
 })
 {% endhighlight %}
