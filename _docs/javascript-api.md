@@ -931,7 +931,7 @@ Interceptor.attach(Module.findExportByName(null, 'read'), {
     onLeave: function (result) {
         console.log('----------')
         // Show argument 1 (buf), saved during onEnter.
-        numBytes = result.toInt32()
+        numBytes = result.toInt32();
         if (numBytes > 0) {
             console.log(hexdump(this.buf, { length: numBytes, ansi: true }));
         }
