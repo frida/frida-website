@@ -99,7 +99,7 @@ $ make
 
 - Make sure you have:
   - 64-bit version of Windows
-  - Visual Studio 2015
+  - Visual Studio 2017
   - [Git](https://git-scm.com/downloads) in your PATH
   - [Node.js](https://nodejs.org/) in your PATH
   - [Python 2.7](https://www.python.org/downloads/windows/) in your PATH and associated to .py files
