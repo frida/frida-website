@@ -100,9 +100,9 @@ $ make
 - Make sure you have:
   - 64-bit version of Windows
   - Visual Studio 2017
-  - [Git](https://git-scm.com/downloads) in your PATH
-  - [Node.js](https://nodejs.org/) in your PATH
-  - [Python 2.7](https://www.python.org/downloads/windows/) in your PATH and associated to .py files
+  - [Git](https://git-scm.com/downloads) on your PATH
+  - [Node.js](https://nodejs.org/) on your PATH
+  - [Python 2.7](https://www.python.org/downloads/windows/) on your PATH and associated to .py files
   - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
 - Clone the `frida` repository:
