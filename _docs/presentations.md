@@ -172,7 +172,6 @@ material becomes available, we will try to put it here.
 
 - [RMLL 2017](https://2017.rmll.info/en/):
   [Unlocking secrets of proprietary software using Frida](https://prog2017.rmll.info/programme/securite-entre-transparence-et-opacite/devoilons-les-secrets-des-logiciels-proprietaires-avec-frida?lang=en)
-  ([PDF](fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf))
   ([Slides](http://slides.com/oleavr/frida-rmll-2017)
   · [Recording](https://rmll.ubicast.tv/videos/frida_03038/))
 
