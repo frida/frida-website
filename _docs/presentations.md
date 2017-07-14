@@ -169,3 +169,16 @@ material becomes available, we will try to put it here.
   Do you know what's Frida? Do you know what's about? What's useful for?. No, I'm not talking about the famous painter. I'm talking about a new hooking and dynamic binary instrumentation framework. 
 
   In this turbo talk, I pretend to show you this newly available framework to facilitate some daily reverse engineering tasks. I'm going to teach you which are it basic parts, why it could be useful for you, which are the advantages and disadvantages over other similar frameworks and how to use it trough some demos and code snippets.
+
+- [RMLL 2017](https://2017.rmll.info/en/):
+  [Unlocking secrets of proprietary software using Frida](https://prog2017.rmll.info/programme/securite-entre-transparence-et-opacite/devoilons-les-secrets-des-logiciels-proprietaires-avec-frida?lang=en)
+  ([PDF](fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf))
+  ([Slides](http://slides.com/oleavr/frida-rmll-2017)
+  · [Recording](https://rmll.ubicast.tv/videos/frida_03038/))
+
+  Ever wanted to understand the internals of an application running on your
+  desktop or phone? Want to know what data is passed to a particular crypto
+  function? Then Frida is for you!
+
+  This talk will introduce Frida and show how it can be used to aid in analysis
+  of binary applications. It will be packed with demos.
