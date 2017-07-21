@@ -24,7 +24,7 @@ The best way to install Frida's Python bindings is via
 simply run the following command to install Frida:
 
 {% highlight bash %}
-$ sudo pip install frida
+$ pip install --user frida
 {% endhighlight %}
 
 All of Frida’s PyPI dependencies are automatically installed by the above
