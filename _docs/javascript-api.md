@@ -1517,6 +1517,27 @@ Java.perform(function () {
 });
 {% endhighlight %}
 
+**Note:** In case you are using on an older version of Frida (for whatsoever reasons), early instrumentation may still be achieved using `Java.performNow()` instead of `Java.perform()`
+
+Below is a working sample using Java.performNow(): In the below example we are trying to hook into a popular Java crypto library, *java.security.KeyPair*, and get hold of the privateKey when it gets generated. 
+
+{% highlight js %}
+Java.performNow(
+  function()
+  {
+    var item = Java.use("java.security.KeyPair"); 
+    console.log("the PrivateKey class was just loaded");
+    item.getPrivate.implementation = function()
+    {
+      console.log("[*] This got called ");
+      var ret = this.getPrivate();
+      console.log("[*] Private key is " + ret);
+      return ret;
+    }
+  }
+);
+{% endhighlight %}
+
 +   `Java.use(className)`: dynamically get a JavaScript wrapper for
     `className` that you can instantiate objects from by calling `$new()` on
     it to invoke a constructor. Call `$dispose()` on an instance to clean it
@@ -1561,6 +1582,35 @@ var Activity = Java.use("android.app.Activity");
 var activity = Java.cast(ptr("0x1234"), Activity);
 {% endhighlight %}
 
+**Note** Difference between Java.use() and Java.choose() 
+
+*use () :*
+Doest not give direct access to the objects at all. 
+Gives access to the object via the `this` operator.
+
+Let's take this as an example :
+
+{% highlight js %}
+Java.perform(function () {
+    var Activity = Java.use("gca.lc");
+    Activity.methodM1.overload('[B', 'java.lang.String').implementation = function (a, str) {
+        var retval = this.methodM1(a, str);
+        console.log("[*] return value4: "+retval);
+        return retval;
+    };
+    });
+{% endhighlight %}
+
+So in the above we are saying that :
+Give me a javascript wrapper for the class `lc` in the package `gca`. This is being referenced by `Activity` in our case. Now we say that whenever the method, `methodM1`, from `gca.lc` (which in this case also happens to be overloaded) gets called by any object (or from anywhere in the app), hook it and run my javascript function as defined above. Inside this javascript function, I am using the `this` operator to call methodM1 explicitly with the current object (which we have access to through the `this` operator). 
+
+Note that we can actually create a new object of `gca.lc` (using the `$new()`) because I have reference of the class. I can also access the current object also using the `this` operator. However, all of this can happen only when the method, `methodM1`, of `gca.lc` gets called. 
+
+So `Java.use` comes into play only when the app makes an object of the given class **AND** (the word `AND` is of utmost importance here) the method, `methodM1`, gets called then I can take control of the object etc. 
+
+Now imagine a real life situation wherein say `gca.lc` has a method, `m2`, which actually deals with some super secret stuff. Now m2 gets called only based on certain conditions and there is no way to simulate those conditions. Now if we were using Java.use as above, because the app itself (or we) are never even able to meet those conditions, we would never be able to get access to the object at all, nor do anything with it, because all of it depends on the method `m2` being called in the first place. 
+
+This is where `Java.choose()` comes to the rescue. With `Java.choose()` we say that whenever the object gets made, irrespective of what methods are being called in the app etc. simply give me access to the object being made itself. That's why here we also have to provide the callback, saying as soon as the object is formed, make a call back to my callback() and do whatever I say in there. 
 
 ## WeakRef
 
