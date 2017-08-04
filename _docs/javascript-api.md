@@ -390,6 +390,15 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 +   `Module.enumerateSymbolsSync(name)`: synchronous version of
     `enumerateSymbols()` that returns the symbols in an array.
 
+<div class="note info">
+  <h5>Module.enumerateSymbols() is only available on i/macOS for now</h5>
+  <p>
+    We would love to support this on the other platforms too, so if you find
+    this useful and would like to help out, please get in touch. You may also
+    find the DebugSymbol API adequate, depending on your use-case.
+  </p>
+</div>
+
 +   `Module.enumerateRanges(name, protection, callbacks)`: just like
     `Process#enumerateRanges`, except it's scoped to the specified module
     `name`.
