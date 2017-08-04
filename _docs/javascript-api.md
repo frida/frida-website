@@ -1004,9 +1004,16 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
 Stalker.follow(Process.getCurrentThreadId(), {
   events: {
     call: true, // CALL instructions: yes please
-    ret: false, // RET instructions: no thanks
-    exec: false // all instructions: no thanks
+
+    // Other events:
+    ret: false, // RET instructions
+    exec: false, // all instructions: not recommended as it's a lot of data
+    block: false, // block executed: coarse execution trace
+    compile: false // block compiled: useful for coverage
   },
+  //
+  // Only specify one of the two following callbacks -- see note below:
+  //
   onReceive: function (events) {
     // Called with `events` containing a binary blob which is one or more
     // GumEvent structs.  See `gumevent.h` for the format. This is obviously a
