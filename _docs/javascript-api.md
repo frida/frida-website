@@ -361,6 +361,35 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 +   `Module.enumerateExportsSync(name)`: synchronous version of
     `enumerateExports()` that returns the exports in an array.
 
++   `Module.enumerateSymbols(name, callbacks)`: enumerate symbols of module with
+    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
+    specifying:
+
+    -   `onMatch: function (sym)`: called with `sym` object containing:
+        -   `isGlobal`: boolean specifying whether symbol is globally visible
+        -   `type`: string specifying one of:
+            -   unknown
+            -   undefined
+            -   absolute
+            -   section
+            -   prebound-undefined
+            -   indirect
+        -   `section`: if present, is an object containing:
+            -   `id`: string containing section index, segment name (if
+                      applicable) and section name – same format as
+                      [r2](http://radare.org/r/)'s section IDs
+            -   `protection`: protection like in `Process.enumerateRanges()`
+        -   `name`: symbol name as a string
+        -   `address`: absolute address as a `NativePointer`
+
+        This function may return the string `stop` to cancel the enumeration
+        early.
+
+    -   `onComplete: function ()`: called when all symbols have been enumerated
+
++   `Module.enumerateSymbolsSync(name)`: synchronous version of
+    `enumerateSymbols()` that returns the symbols in an array.
+
 +   `Module.enumerateRanges(name, protection, callbacks)`: just like
     `Process#enumerateRanges`, except it's scoped to the specified module
     `name`.
