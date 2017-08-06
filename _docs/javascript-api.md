@@ -1054,9 +1054,8 @@ Stalker.follow(Process.getCurrentThreadId(), {
   //
   onReceive: function (events) {
     // Called with `events` containing a binary blob which is one or more
-    // GumEvent structs.  See `gumevent.h` for the format. This is obviously a
-    // terrible API that is subject to change once a better trade-off between
-    // ease-of-use and performance has been found.
+    // GumEvent structs. See `gumevent.h` for the format. Use `Stalker.parse()`
+    // to examine the data.
   },
   onCallSummary: function (summary) {
     // Called with `summary` being a key-value mapping of call target to number
