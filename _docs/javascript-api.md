@@ -154,6 +154,7 @@ const bluebird = require('bluebird');
 const fs = require('fs');
 const frida = require('frida');
 const path = require('path');
+
 const readFileAsync = bluebird.promisify(fs.readFile);
 
 let session, script;
