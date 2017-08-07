@@ -152,20 +152,23 @@ rpc.exports = {
 
 const co = require('co');
 const frida = require('frida');
-const load = require('frida-load');
+const fs = require('fs');
+const path = require('path');
+const readFileAsync = bluebird.promisify(fs.readFile);
 
 let session, script;
-co(function *() {
-    const source = yield load(require.resolve('./agent.js'));
-    session = yield frida.attach("iTunes");
-    script = yield session.createScript(source);
+async function run (){
+    const source = await readFileAsync(path.join(__dirname, '_agent.js'), 'utf8');
+    session = await frida.attach("iTunes");
+    script = await session.createScript(source);
     script.events.listen('message', onMessage);
-    yield script.load();
+    await script.load();
     const api = yield script.getExports();
-    console.log(yield api.add(2, 3));
-    console.log(yield api.sub(5, 3));
-})
-.catch(onError);
+    console.log(await api.add(2, 3));
+    console.log(await api.sub(5, 3));
+}
+
+run().catch(onError);
 
 function onError(error) {
     console.error(error.stack);
