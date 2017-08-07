@@ -150,33 +150,37 @@ rpc.exports = {
 {% highlight js %}
 'use strict';
 
-const co = require('co');
+const bluebird = require('bluebird');
+const fs = require('fs');
 const frida = require('frida');
-const load = require('frida-load');
+const path = require('path');
+
+const readFileAsync = bluebird.promisify(fs.readFile);
 
 let session, script;
-co(function *() {
-    const source = yield load(require.resolve('./agent.js'));
-    session = yield frida.attach("iTunes");
-    script = yield session.createScript(source);
-    script.events.listen('message', onMessage);
-    yield script.load();
-    const api = yield script.getExports();
-    console.log(yield api.add(2, 3));
-    console.log(yield api.sub(5, 3));
-})
-.catch(onError);
+async function run () {
+  const source = await readFileAsync(path.join(__dirname, '_agent.js'), 'utf8');
+  session = await frida.attach('iTunes');
+  script = await session.createScript(source);
+  script.events.listen('message', onMessage);
+  await script.load();
+  const api = yield script.getExports();
+  console.log(await api.add(2, 3));
+  console.log(await api.sub(5, 3));
+}
+
+run().catch(onError);
 
 function onError(error) {
-    console.error(error.stack);
+  console.error(error.stack);
 }
 
 function onMessage(message, data) {
-    if (message.type === 'send') {
-        console.log(message.payload);
-    } else if (message.type === 'error') {
-        console.error(message.stack);
-    }
+  if (message.type === 'send') {
+    console.log(message.payload);
+  } else if (message.type === 'error') {
+    console.error(message.stack);
+  }
 }
 {% endhighlight %}
 
