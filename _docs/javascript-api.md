@@ -1109,7 +1109,7 @@ Stalker.follow(Process.getCurrentThreadId(), {
     made to `address`. Returns an id that can be passed to
     `Stalker#removeCallProbe` later.
 
-+   Stalker.removeCallProbe: remove a call probe added by
++   `Stalker.removeCallProbe`: remove a call probe added by
     `Stalker#addCallProbe`.
 
 +   `Stalker.trustThreshold`: an integer specifying how many times a piece of
