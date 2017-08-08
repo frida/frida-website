@@ -1083,6 +1083,24 @@ Stalker.follow(Process.getCurrentThreadId(), {
 +   `Stalker.unfollow([threadId])`: stop stalking `threadId` (or the current
     thread if omitted).
 
++   `Stalker.parse(events[, options])`: parse GumEvent binary blob, optionally
+    with `options` for customizing the output.
+
+    For example:
+
+{% highlight js %}
+  onReceive: function (events) {
+      console.log(Stalker.parse(events, {
+          annotate: true, // to display the type of event
+          stringify: true
+            // to format pointer values as strings instead of `NativePointer`
+            // values, i.e. less overhead if you're just going to `send()` the 
+            // thing not actually parse the data agent-side
+      }))
+    }))
+  },
+{% endhighlight %}
+
 +   `Stalker.garbageCollect()`: free accumulated memory at a safe point after
     `Stalker#unfollow`. This is needed to avoid race-conditions where the
     thread just unfollowed is executing its last instructions.
