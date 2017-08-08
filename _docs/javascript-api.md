@@ -1090,14 +1090,13 @@ Stalker.follow(Process.getCurrentThreadId(), {
 
 {% highlight js %}
   onReceive: function (events) {
-      console.log(Stalker.parse(events, {
-          annotate: true, // to display the type of event
-          stringify: true
-            // to format pointer values as strings instead of `NativePointer`
-            // values, i.e. less overhead if you're just going to `send()` the 
-            // thing not actually parse the data agent-side
-      }))
-    }))
+    console.log(Stalker.parse(events, {
+      annotate: true, // to display the type of event
+      stringify: true
+        // to format pointer values as strings instead of `NativePointer`
+        // values, i.e. less overhead if you're just going to `send()` the 
+        // thing not actually parse the data agent-side
+    }));
   },
 {% endhighlight %}
 
