@@ -445,11 +445,12 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 -   `Memory.scanSync(address, size, pattern)`: synchronous version of `scan()`
     that returns the matches in an array.
 
-+   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap. The
-    returned object is a `NativePointer` and the heap memory will be released
-    when all JavaScript handles to it are gone. This means you need to keep
-    a reference to it while the pointer is being used by code outside the
-    JavaScript runtime.
++   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap, or, if
+    `size` is a multiple of `Process.pageSize`, one or more raw memory pages
+    managed by the OS. The returned value is a `NativePointer` and the
+    underlying memory will be released when all JavaScript handles to it are
+    gone. This means you need to keep a reference to it while the pointer is
+    being used by code outside the JavaScript runtime.
 
 +   `Memory.copy(dst, src, n)`: just like memcpy.
 
