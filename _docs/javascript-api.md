@@ -467,6 +467,28 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 Memory.protect(ptr("0x1234"), 4096, 'rw-');
 {% endhighlight %}
 
++   `Memory.patchCode(address, size, apply)`: safely modify `size` bytes at
+    `address`, a NativePointer. The supplied JavaScript function `apply` gets
+    called with a writable pointer where you must write the desired
+    modifications before returning. Do not make any assumptions about this being
+    the same location as `address`, as some systems require modifications to be
+    written to a temporary location before being mapped into memory on top of
+    the original memory page (e.g. on iOS, where directly modifying in-memory
+    code may result in the process losing its CS_VALID status).
+
+    For example:
+
+{% highlight js %}
+var getLivesLeft = Module.findExportByName('game-engine.so', 'get_lives_left');
+var maxPatchSize = 64; // Do not write out of bounds, may be a temporary buffer!
+Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
+  var cw = new X86Writer(code, { pc: getLivesLeft });
+  cw.putMovRegU32('eax', 9000);
+  cw.putRet();
+  cw.flush();
+});
+{% endhighlight %}
+
 +   `Memory.readPointer(address)`: read a pointer from `address` and return
     it as a `NativePointer`.
 
