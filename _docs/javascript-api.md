@@ -1691,3 +1691,874 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 +   `WeakRef.unbind(id)`: stop monitoring the value passed to
     `WeakRef.bind(value, fn)`, and call the `fn` callback immediately.
+
+
+## X86Writer
+
++   `new X86Writer(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
+    writer for generating x86 machine code written directly to memory at
+    `codeAddress`, specified as a NativePointer.
+    The second argument is an optional options object where the initial program
+    counter may be specified, which is useful when generating code to a scratch
+    buffer. This is essential when using `Memory.patchCode()` on iOS, which may
+    provide you with a temporary location that later gets mapped into memory at
+    the intended memory location.
+
+-   `reset(codeAddress[, { pc: ptr('0x1234') }])`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `flush()`: resolve label references and write pending data to memory. You
+    should always call this once you've finished generating code. It is usually
+    also desirable to do this between pieces of unrelated code, e.g. when
+    generating multiple functions in one go.
+
+-   `offset`: current offset as a JavaScript Number
+
+-   `putLabel(id)`: put a label at the current position, where `id` is a string
+    that may be referenced in past and future `put*Label()` calls
+
+-   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallRegOffsetPtrWithArguments(reg, offset, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallAddress(address)`: put a CALL instruction
+
+-   `putCallReg(reg)`: put a CALL instruction
+
+-   `putCallRegOffsetPtr(reg, offset)`: put a CALL instruction
+
+-   `putCallIndirect(addr)`: put a CALL instruction
+
+-   `putCallNearLabel(labelId)`: put a CALL instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putLeave()`: put a LEAVE instruction
+
+-   `putRet()`: put a RET instruction
+
+-   `putRetImm(immValue)`: put a RET instruction
+
+-   `putJmpAddress(address)`: put a JMP instruction
+
+-   `putJmpShortLabel(labelId)`: put a JMP instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putJmpNearLabel(labelId)`: put a JMP instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putJmpReg(reg)`: put a JMP instruction
+
+-   `putJmpRegPtr(reg)`: put a JMP instruction
+
+-   `putJmpNearPtr(address)`: put a JMP instruction
+
+-   `putJccShort(instructionId, target, hint)`: put a JCC instruction
+
+-   `putJccNear(instructionId, target, hint)`: put a JCC instruction
+
+-   `putJccShortLabel(instructionId, labelId, hint)`: put a JCC instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putJccNearLabel(instructionId, labelId, hint)`: put a JCC instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putAddRegImm(reg, immValue)`: put an ADD instruction
+
+-   `putAddRegReg(dstReg, srcReg)`: put an ADD instruction
+
+-   `putAddRegNearPtr(dstReg, srcAddress)`: put an ADD instruction
+
+-   `putSubRegImm(reg, immValue)`: put a SUB instruction
+
+-   `putSubRegReg(dstReg, srcReg)`: put a SUB instruction
+
+-   `putSubRegNearPtr(dstReg, srcAddress)`: put a SUB instruction
+
+-   `putIncReg(reg)`: put an INC instruction
+
+-   `putDecReg(reg)`: put a DEC instruction
+
+-   `putIncRegPtr(target, reg)`: put an INC instruction
+
+-   `putDecRegPtr(target, reg)`: put a DEC instruction
+
+-   `putLockXaddRegPtrReg(dstReg, srcReg)`: put a LOCK XADD instruction
+
+-   `putLockCmpxchgRegPtrReg(dstReg, srcReg)`: put a LOCK CMPXCHG instruction
+
+-   `putLockIncImm32Ptr(target)`: put a LOCK INC IMM32 instruction
+
+-   `putLockDecImm32Ptr(target)`: put a LOCK DEC IMM32 instruction
+
+-   `putAndRegReg(dstReg, srcReg)`: put an AND instruction
+
+-   `putAndRegU32(reg, immValue)`: put an AND instruction
+
+-   `putShlRegU8(reg, immValue)`: put a SHL instruction
+
+-   `putShrRegU8(reg, immValue)`: put a SHR instruction
+
+-   `putXorRegReg(dstReg, srcReg)`: put an XOR instruction
+
+-   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegU32(dstReg, immValue)`: put a MOV instruction
+
+-   `putMovRegU64(dstReg, immValue)`: put a MOV instruction
+
+-   `putMovRegAddress(dstReg, address)`: put a MOV instruction
+
+-   `putMovRegPtrU32(dstReg, immValue)`: put a MOV instruction
+
+-   `putMovRegOffsetPtrU32(dstReg, dstOffset, immValue)`: put a MOV instruction
+
+-   `putMovRegPtrReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegOffsetPtrReg(dstReg, dstOffset, srcReg)`: put a MOV instruction
+
+-   `putMovRegRegPtr(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegRegOffsetPtr(dstReg, srcReg, srcOffset)`: put a MOV instruction
+
+-   `putMovRegBaseIndexScaleOffsetPtr(dstReg, baseReg, indexReg, scale, offset)`: put a MOV instruction
+
+-   `putMovRegNearPtr(dstReg, srcAddress)`: put a MOV instruction
+
+-   `putMovNearPtrReg(dstAddress, srcReg)`: put a MOV instruction
+
+-   `putMovFsU32PtrReg(fsOffset, srcReg)`: put a MOV FS instruction
+
+-   `putMovRegFsU32Ptr(dstReg, fsOffset)`: put a MOV FS instruction
+
+-   `putMovGsU32PtrReg(fsOffset, srcReg)`: put a MOV GS instruction
+
+-   `putMovRegGsU32Ptr(dstReg, fsOffset)`: put a MOV GS instruction
+
+-   `putMovqXmm0EspOffsetPtr(offset)`: put a MOVQ XMM0 ESP instruction
+
+-   `putMovqEaxOffsetPtrXmm0(offset)`: put a MOVQ EAX XMM0 instruction
+
+-   `putMovdquXmm0EspOffsetPtr(offset)`: put a MOVDQU XMM0 ESP instruction
+
+-   `putMovdquEaxOffsetPtrXmm0(offset)`: put a MOVDQU EAX XMM0 instruction
+
+-   `putLeaRegRegOffset(dstReg, srcReg, srcOffset)`: put a LEA instruction
+
+-   `putXchgRegRegPtr(leftReg, rightReg)`: put an XCHG instruction
+
+-   `putPushU32(immValue)`: put a PUSH instruction
+
+-   `putPushNearPtr(address)`: put a PUSH instruction
+
+-   `putPushReg(reg)`: put a PUSH instruction
+
+-   `putPopReg(reg)`: put a POP instruction
+
+-   `putPushImmPtr(immPtr)`: put a PUSH instruction
+
+-   `putPushax()`: put a PUSHAX instruction
+
+-   `putPopax()`: put a POPAX instruction
+
+-   `putPushfx()`: put a PUSHFX instruction
+
+-   `putPopfx()`: put a POPFX instruction
+
+-   `putTestRegReg(regA, regB)`: put a TEST instruction
+
+-   `putTestRegU32(reg, immValue)`: put a TEST instruction
+
+-   `putCmpRegI32(reg, immValue)`: put a CMP instruction
+
+-   `putCmpRegOffsetPtrReg(regA, offset, regB)`: put a CMP instruction
+
+-   `putCmpImmPtrImmU32(immPtr, immValue)`: put a CMP instruction
+
+-   `putClc()`: put a CLC instruction
+
+-   `putStc()`: put a STC instruction
+
+-   `putCld()`: put a CLD instruction
+
+-   `putStd()`: put a STD instruction
+
+-   `putCpuid()`: put a CPUID instruction
+
+-   `putLfence()`: put an LFENCE instruction
+
+-   `putRdtsc()`: put an RDTSC instruction
+
+-   `putPause()`: put a PAUSE instruction
+
+-   `putNop()`: put a NOP instruction
+
+-   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
+
+-   `putPadding(n)`: put `n` guard instruction
+
+-   `putNopPadding(n)`: put `n` NOP instructions
+
+-   `putU8(value)`: put a uint8
+
+-   `putS8(value)`: put an int8
+
+-   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+
+## X86Relocator
+
++   `new X86Relocator(inputCode, output)`: create a new code relocator for
+    copying x86 instructions from one memory location to another, taking
+    care to adjust position-dependent instructions accordingly.
+    The source address is specified by `inputCode`, a NativePointer.
+    The destination is given by `output`, an [X86Writer](#x86writer) pointed
+    at the desired target memory address.
+
+-   `reset(inputCode, output)`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `input`: latest [Instruction](#instruction) read so far. Starts out `null`
+    and changes on every call to `readOne()`.
+
+-   `eob`: boolean indicating whether end-of-block has been reached, i.e. we've
+    reached a branch of any kind, like CALL, JMP, BL, RET.
+
+-   `eoi`: boolean indicating whether end-of-input has been reached, e.g. we've
+    reached JMP/B/RET, an instruction after which there may or may not be valid
+    code.
+
+-   `readOne()`: read the next instruction into the relocator's internal buffer
+    and return the number of bytes read so far, including previous calls.
+    You may keep calling this method to keep buffering, or immediately call
+    either `writeOne()` or `skipOne()`. Or, you can buffer up until the desired
+    point and then call `writeAll()`.
+    Returns zero when end-of-input is reached, which means the `eoi` property is
+    now `true`.
+
+-   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+    written or skipped
+
+-   `peekNextWriteSource()`: peek at the address of the next instruction to be
+    written or skipped
+
+-   `skipOne()`: skip the instruction that would have been written next
+
+-   `skipOneNoLabel()`: skip the instruction that would have been written next,
+    but without a label for internal use. This breaks relocation of branches to
+    locations inside the relocated range, and is an optimization for use-cases
+    where all branches are rewritten (e.g. Frida's Stalker).
+
+-   `writeOne()`: write the next buffered instruction
+
+-   `writeOneNoLabel()`: write the next buffered instruction, but without a
+    label for internal use. This breaks relocation of branches to locations
+    inside the relocated range, and is an optimization for use-cases where all
+    branches are rewritten (e.g. Frida's Stalker).
+
+-   `writeAll()`: write all buffered instructions
+
+
+## x86 enum types
+
+-   Register: `xax` `xcx` `xdx` `xbx` `xsp` `xbp` `xsi` `xdi` `eax` `ecx` `edx`
+    `ebx` `esp` `ebp` `esi` `edi` `rax` `rcx` `rdx` `rbx` `rsp` `rbp` `rsi`
+    `rdi` `r8` `r9` `r10` `r11` `r12` `r13` `r14` `r15` `r8d` `r9d` `r10d`
+    `r11d` `r12d` `r13d` `r14d` `r15d` `xip` `eip` `rip`
+-   InstructionId: `jo` `jno` `jb` `jae` `je` `jne` `jbe` `ja` `js` `jns` `jp`
+    `jnp` `jl` `jge` `jle` `jg` `jcxz` `jecxz` `jrcxz`
+-   BranchHint: `no-hint` `likely` `unlikely`
+-   PointerTarget: `byte` `dword` `qword`
+
+
+## ArmWriter
+
++   `new ArmWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
+    writer for generating ARM machine code written directly to memory at
+    `codeAddress`, specified as a NativePointer.
+    The second argument is an optional options object where the initial program
+    counter may be specified, which is useful when generating code to a scratch
+    buffer. This is essential when using `Memory.patchCode()` on iOS, which may
+    provide you with a temporary location that later gets mapped into memory at
+    the intended memory location.
+
+-   `reset(codeAddress[, { pc: ptr('0x1234') }])`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `flush()`: resolve label references and write pending data to memory. You
+    should always call this once you've finished generating code. It is usually
+    also desirable to do this between pieces of unrelated code, e.g. when
+    generating multiple functions in one go.
+
+-   `offset`: current offset as a JavaScript Number
+
+-   `skip(nBytes)`: skip `nBytes`
+
+-   `putBImm(target)`: put a B instruction
+
+-   `putLdrRegAddress(reg, address)`: put an LDR instruction
+
+-   `putLdrRegU32(reg, val)`: put an LDR instruction
+
+-   `putAddRegRegImm(dstReg, srcReg, immVal)`: put an ADD instruction
+
+-   `putLdrRegRegImm(dstReg, srcReg, immVal)`: put an LDR instruction
+
+-   `putNop()`: put a NOP instruction
+
+-   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
+
+-   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
+
+-   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+
+## ArmRelocator
+
++   `new ArmRelocator(inputCode, output)`: create a new code relocator for
+    copying ARM instructions from one memory location to another, taking
+    care to adjust position-dependent instructions accordingly.
+    The source address is specified by `inputCode`, a NativePointer.
+    The destination is given by `output`, an [ArmWriter](#armwriter) pointed
+    at the desired target memory address.
+
+-   `reset(inputCode, output)`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `input`: latest [Instruction](#instruction) read so far. Starts out `null`
+    and changes on every call to `readOne()`.
+
+-   `eob`: boolean indicating whether end-of-block has been reached, i.e. we've
+    reached a branch of any kind, like CALL, JMP, BL, RET.
+
+-   `eoi`: boolean indicating whether end-of-input has been reached, e.g. we've
+    reached JMP/B/RET, an instruction after which there may or may not be valid
+    code.
+
+-   `readOne()`: read the next instruction into the relocator's internal buffer
+    and return the number of bytes read so far, including previous calls.
+    You may keep calling this method to keep buffering, or immediately call
+    either `writeOne()` or `skipOne()`. Or, you can buffer up until the desired
+    point and then call `writeAll()`.
+    Returns zero when end-of-input is reached, which means the `eoi` property is
+    now `true`.
+
+-   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+    written or skipped
+
+-   `peekNextWriteSource()`: peek at the address of the next instruction to be
+    written or skipped
+
+-   `skipOne()`: skip the instruction that would have been written next
+
+-   `writeOne()`: write the next buffered instruction
+
+-   `writeAll()`: write all buffered instructions
+
+
+## ThumbWriter
+
++   `new ThumbWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
+    writer for generating ARM machine code written directly to memory at
+    `codeAddress`, specified as a NativePointer.
+    The second argument is an optional options object where the initial program
+    counter may be specified, which is useful when generating code to a scratch
+    buffer. This is essential when using `Memory.patchCode()` on iOS, which may
+    provide you with a temporary location that later gets mapped into memory at
+    the intended memory location.
+
+-   `reset(codeAddress[, { pc: ptr('0x1234') }])`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `flush()`: resolve label references and write pending data to memory. You
+    should always call this once you've finished generating code. It is usually
+    also desirable to do this between pieces of unrelated code, e.g. when
+    generating multiple functions in one go.
+
+-   `offset`: current offset as a JavaScript Number
+
+-   `skip(nBytes)`: skip `nBytes`
+
+-   `putLabel(id)`: put a label at the current position, where `id` is a string
+    that may be referenced in past and future `put*Label()` calls
+
+-   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putBImm(target)`: put a B instruction
+
+-   `putBxReg(reg)`: put a BX instruction
+
+-   `putBlxReg(reg)`: put a BLX instruction
+
+-   `putBlImm(target)`: put a BL instruction
+
+-   `putBlxImm(target)`: put a BLX instruction
+
+-   `putCmpRegImm(reg, immValue)`: put a CMP instruction
+
+-   `putBLabel(labelId)`: put a B instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBeqLabel(labelId)`: put a BEQ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBneLabel(labelId)`: put a BNE instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBCondLabel(cc, labelId)`: put a B COND instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putCbzRegLabel(reg, labelId)`: put a CBZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putCbnzRegLabel(reg, labelId)`: put a CBNZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putPushRegs(regs)`: put a PUSH instruction with the specified registers,
+    specified as a JavaScript array where each element is a string specifying
+    the register name.
+
+-   `putPopRegs(regs)`: put a POP instruction with the specified registers,
+    specified as a JavaScript array where each element is a string specifying
+    the register name.
+
+-   `putLdrRegAddress(reg, address)`: put an LDR instruction
+
+-   `putLdrRegU32(reg, val)`: put an LDR instruction
+
+-   `putLdrRegReg(dstReg, srcReg)`: put an LDR instruction
+
+-   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
+
+-   `putStrRegReg(srcReg, dstReg)`: put a STR instruction
+
+-   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
+
+-   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegU8(dstReg, immValue)`: put a MOV instruction
+
+-   `putAddRegImm(dstReg, immValue)`: put an ADD instruction
+
+-   `putAddRegReg(dstReg, srcReg)`: put an ADD instruction
+
+-   `putAddRegRegReg(dstReg, leftReg, rightReg)`: put an ADD instruction
+
+-   `putAddRegRegImm(dstReg, leftReg, rightValue)`: put an ADD instruction
+
+-   `putSubRegImm(dstReg, immValue)`: put a SUB instruction
+
+-   `putSubRegReg(dstReg, srcReg)`: put a SUB instruction
+
+-   `putSubRegRegReg(dstReg, leftReg, rightReg)`: put a SUB instruction
+
+-   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
+
+-   `putNop()`: put a NOP instruction
+
+-   `putBkptImm(imm)`: put a BKPT instruction
+
+-   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
+
+-   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
+
+-   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+
+## ThumbRelocator
+
++   `new ThumbRelocator(inputCode, output)`: create a new code relocator for
+    copying ARM instructions from one memory location to another, taking
+    care to adjust position-dependent instructions accordingly.
+    The source address is specified by `inputCode`, a NativePointer.
+    The destination is given by `output`, a [ThumbWriter](#thumbwriter) pointed
+    at the desired target memory address.
+
+-   `reset(inputCode, output)`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `input`: latest [Instruction](#instruction) read so far. Starts out `null`
+    and changes on every call to `readOne()`.
+
+-   `eob`: boolean indicating whether end-of-block has been reached, i.e. we've
+    reached a branch of any kind, like CALL, JMP, BL, RET.
+
+-   `eoi`: boolean indicating whether end-of-input has been reached, e.g. we've
+    reached JMP/B/RET, an instruction after which there may or may not be valid
+    code.
+
+-   `readOne()`: read the next instruction into the relocator's internal buffer
+    and return the number of bytes read so far, including previous calls.
+    You may keep calling this method to keep buffering, or immediately call
+    either `writeOne()` or `skipOne()`. Or, you can buffer up until the desired
+    point and then call `writeAll()`.
+    Returns zero when end-of-input is reached, which means the `eoi` property is
+    now `true`.
+
+-   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+    written or skipped
+
+-   `peekNextWriteSource()`: peek at the address of the next instruction to be
+    written or skipped
+
+-   `skipOne()`: skip the instruction that would have been written next
+
+-   `writeOne()`: write the next buffered instruction
+
+-   `writeAll()`: write all buffered instructions
+
+
+## ARM enum types
+
+-   Register: `r0` `r1` `r2` `r3` `r4` `r5` `r6` `r7` `r8` `r9` `r10` `r11`
+    `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc`
+-   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
+    `gt` `le` `al`
+
+
+## Arm64Writer
+
++   `new Arm64Writer(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
+    writer for generating AArch64 machine code written directly to memory at
+    `codeAddress`, specified as a NativePointer.
+    The second argument is an optional options object where the initial program
+    counter may be specified, which is useful when generating code to a scratch
+    buffer. This is essential when using `Memory.patchCode()` on iOS, which may
+    provide you with a temporary location that later gets mapped into memory at
+    the intended memory location.
+
+-   `reset(codeAddress[, { pc: ptr('0x1234') }])`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `flush()`: resolve label references and write pending data to memory. You
+    should always call this once you've finished generating code. It is usually
+    also desirable to do this between pieces of unrelated code, e.g. when
+    generating multiple functions in one go.
+
+-   `offset`: current offset as a JavaScript Number
+
+-   `skip(nBytes)`: skip `nBytes`
+
+-   `putLabel(id)`: put a label at the current position, where `id` is a string
+    that may be referenced in past and future `put*Label()` calls
+
+-   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putBranchAddress(address)`: put a BRANCH instruction
+
+-   `putBImm(address)`: put a B instruction
+
+-   `putBLabel(labelId)`: put a B instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBCondLabel(cc, labelId)`: put a B COND instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBlImm(address)`: put a BL instruction
+
+-   `putBrReg(reg)`: put a BR instruction
+
+-   `putBlrReg(reg)`: put a BLR instruction
+
+-   `putRet()`: put a RET instruction
+
+-   `putCbzRegLabel(reg, labelId)`: put a CBZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putCbnzRegLabel(reg, labelId)`: put a CBNZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putTbzRegImmLabel(reg, bit, labelId)`: put a TBZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putTbnzRegImmLabel(reg, bit, labelId)`: put a TBNZ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putPushRegReg(regA, regB)`: put a PUSH instruction
+
+-   `putPopRegReg(regA, regB)`: put a POP instruction
+
+-   `putPushAllXRegisters()`: put code needed for pushing all X registers on the stack
+
+-   `putPopAllXRegisters()`: put code needed for popping all X registers off the stack
+
+-   `putPushAllQRegisters()`: put code needed for pushing all Q registers on the stack
+
+-   `putPopAllQRegisters()`: put code needed for popping all Q registers off the stack
+
+-   `putLdrRegAddress(reg, address)`: put an LDR instruction
+
+-   `putLdrRegU64(reg, val)`: put an LDR instruction
+
+-   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
+
+-   `putAdrpRegAddress(reg, address)`: put an ADRP instruction
+
+-   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
+
+-   `putLdpRegRegRegOffset(regA, regB, regSrc, srcOffset, mode)`: put an LDP instruction
+
+-   `putStpRegRegRegOffset(regA, regB, regDst, dstOffset, mode)`: put a STP instruction
+
+-   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putAddRegRegImm(dstReg, leftReg, rightValue)`: put an ADD instruction
+
+-   `putAddRegRegReg(dstReg, leftReg, rightReg)`: put an ADD instruction
+
+-   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
+
+-   `putNop()`: put a NOP instruction
+
+-   `putBrkImm(imm)`: put a BRK instruction
+
+-   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
+
+-   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+
+## Arm64Relocator
+
++   `new Arm64Relocator(inputCode, output)`: create a new code relocator for
+    copying AArch64 instructions from one memory location to another, taking
+    care to adjust position-dependent instructions accordingly.
+    The source address is specified by `inputCode`, a NativePointer.
+    The destination is given by `output`, an [Arm64Writer](#arm64writer) pointed
+    at the desired target memory address.
+
+-   `reset(inputCode, output)`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `input`: latest [Instruction](#instruction) read so far. Starts out `null`
+    and changes on every call to `readOne()`.
+
+-   `eob`: boolean indicating whether end-of-block has been reached, i.e. we've
+    reached a branch of any kind, like CALL, JMP, BL, RET.
+
+-   `eoi`: boolean indicating whether end-of-input has been reached, e.g. we've
+    reached JMP/B/RET, an instruction after which there may or may not be valid
+    code.
+
+-   `readOne()`: read the next instruction into the relocator's internal buffer
+    and return the number of bytes read so far, including previous calls.
+    You may keep calling this method to keep buffering, or immediately call
+    either `writeOne()` or `skipOne()`. Or, you can buffer up until the desired
+    point and then call `writeAll()`.
+    Returns zero when end-of-input is reached, which means the `eoi` property is
+    now `true`.
+
+-   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+    written or skipped
+
+-   `peekNextWriteSource()`: peek at the address of the next instruction to be
+    written or skipped
+
+-   `skipOne()`: skip the instruction that would have been written next
+
+-   `writeOne()`: write the next buffered instruction
+
+-   `writeAll()`: write all buffered instructions
+
+
+## AArch64 enum types
+
+-   Register: `x0` `x1` `x2` `x3` `x4` `x5` `x6` `x7` `x8` `x9` `x10` `x11`
+    `x12` `x13` `x14` `x15` `x16` `x17` `x18` `x19` `x20` `x21` `x22` `x23`
+    `x24` `x25` `x26` `x27` `x28` `x29` `x30` `w0` `w1` `w2` `w3` `w4` `w5`
+    `w6` `w7` `w8` `w9` `w10` `w11` `w12` `w13` `w14` `w15` `w16` `w17` `w18`
+    `w19` `w20` `w21` `w22` `w23` `w24` `w25` `w26` `w27` `w28` `w29` `w30`
+    `sp` `lr` `fp` `wsp` `wzr` `xzr` `nzcv` `ip0` `ip1` `s0` `s1` `s2` `s3`
+    `s4` `s5` `s6` `s7` `s8` `s9` `s10` `s11` `s12` `s13` `s14` `s15` `s16`
+    `s17` `s18` `s19` `s20` `s21` `s22` `s23` `s24` `s25` `s26` `s27` `s28`
+    `s29` `s30` `s31` `d0` `d1` `d2` `d3` `d4` `d5` `d6` `d7` `d8` `d9` `d10`
+    `d11` `d12` `d13` `d14` `d15` `d16` `d17` `d18` `d19` `d20` `d21` `d22`
+    `d23` `d24` `d25` `d26` `d27` `d28` `d29` `d30` `d31` `q0` `q1` `q2` `q3`
+    `q4` `q5` `q6` `q7` `q8` `q9` `q10` `q11` `q12` `q13` `q14` `q15` `q16`
+    `q17` `q18` `q19` `q20` `q21` `q22` `q23` `q24` `q25` `q26` `q27` `q28`
+    `q29` `q30` `q31`
+-   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
+    `gt` `le` `al` `nv`
+-   IndexMode: `post-adjust` `signed-offset` `pre-adjust`
+
+
+## MipsWriter
+
++   `new MipsWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
+    writer for generating MIPS machine code written directly to memory at
+    `codeAddress`, specified as a NativePointer.
+    The second argument is an optional options object where the initial program
+    counter may be specified, which is useful when generating code to a scratch
+    buffer. This is essential when using `Memory.patchCode()` on iOS, which may
+    provide you with a temporary location that later gets mapped into memory at
+    the intended memory location.
+
+-   `reset(codeAddress[, { pc: ptr('0x1234') }])`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `flush()`: resolve label references and write pending data to memory. You
+    should always call this once you've finished generating code. It is usually
+    also desirable to do this between pieces of unrelated code, e.g. when
+    generating multiple functions in one go.
+
+-   `offset`: current offset as a JavaScript Number
+
+-   `skip(nBytes)`: skip `nBytes`
+
+-   `putLabel(id)`: put a label at the current position, where `id` is a string
+    that may be referenced in past and future `put*Label()` calls
+
+-   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putJAddress(address)`: put a J instruction
+
+-   `putJLabel(labelId)`: put a J instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putJrReg(reg)`: put a JR instruction
+
+-   `putJalAddress(address)`: put a JAL instruction
+
+-   `putJalrReg(reg)`: put a JALR instruction
+
+-   `putBOffset(offset)`: put a B instruction
+
+-   `putBeqRegRegLabel(rightReg, leftReg, labelId)`: put a BEQ instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putRet()`: put a RET instruction
+
+-   `putLaRegAddress(reg, address)`: put a LA instruction
+
+-   `putLuiRegImm(reg, imm)`: put a LUI instruction
+
+-   `putOriRegRegImm(rt, rs, imm)`: put an ORI instruction
+
+-   `putLwRegRegOffset(dstReg, srcReg, srcOffset)`: put a LW instruction
+
+-   `putSwRegRegOffset(srcReg, dstReg, dstOffset)`: put a SW instruction
+
+-   `putMoveRegReg(dstReg, srcReg)`: put a MOVE instruction
+
+-   `putAdduRegRegReg(dstReg, leftReg, rightReg)`: put an ADDU instruction
+
+-   `putAddiRegRegImm(destReg, leftReg, imm)`: put an ADDI instruction
+
+-   `putAddiRegImm(destReg, imm)`: put an ADDI instruction
+
+-   `putSubRegRegImm(destReg, leftReg, imm)`: put a SUB instruction
+
+-   `putPushReg(reg)`: put a PUSH instruction
+
+-   `putPopReg(reg)`: put a POP instruction
+
+-   `putMfhiReg(reg)`: put a MFHI instruction
+
+-   `putMfloReg(reg)`: put a MFLO instruction
+
+-   `putMthiReg(reg)`: put a MTHI instruction
+
+-   `putMtloReg(reg)`: put a MTLO instruction
+
+-   `putNop()`: put a NOP instruction
+
+-   `putBreak()`: put a BREAK instruction
+
+-   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
+
+-   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+
+## MipsRelocator
+
++   `new MipsRelocator(inputCode, output)`: create a new code relocator for
+    copying MIPS instructions from one memory location to another, taking
+    care to adjust position-dependent instructions accordingly.
+    The source address is specified by `inputCode`, a NativePointer.
+    The destination is given by `output`, a [MipsWriter](#mipswriter) pointed
+    at the desired target memory address.
+
+-   `reset(inputCode, output)`: recycle instance
+
+-   `dispose()`: eagerly clean up memory
+
+-   `input`: latest [Instruction](#instruction) read so far. Starts out `null`
+    and changes on every call to `readOne()`.
+
+-   `eob`: boolean indicating whether end-of-block has been reached, i.e. we've
+    reached a branch of any kind, like CALL, JMP, BL, RET.
+
+-   `eoi`: boolean indicating whether end-of-input has been reached, e.g. we've
+    reached JMP/B/RET, an instruction after which there may or may not be valid
+    code.
+
+-   `readOne()`: read the next instruction into the relocator's internal buffer
+    and return the number of bytes read so far, including previous calls.
+    You may keep calling this method to keep buffering, or immediately call
+    either `writeOne()` or `skipOne()`. Or, you can buffer up until the desired
+    point and then call `writeAll()`.
+    Returns zero when end-of-input is reached, which means the `eoi` property is
+    now `true`.
+
+-   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+    written or skipped
+
+-   `peekNextWriteSource()`: peek at the address of the next instruction to be
+    written or skipped
+
+-   `skipOne()`: skip the instruction that would have been written next
+
+-   `writeOne()`: write the next buffered instruction
+
+-   `writeAll()`: write all buffered instructions
+
+
+## MIPS enum types
+
+-   Register: `v0` `v1` `a0` `a1` `a2` `a3` `t0` `t1` `t2` `t3` `t4` `t5` `t6`
+    `t7` `s0` `s1` `s2` `s3` `s4` `s5` `s6` `s7` `t8` `t9` `k0` `k1` `gp` `sp`
+    `fp` `s8` `ra` `hi` `lo` `zero` `at` `0` `1` `2` `3` `4` `5` `6` `7` `8`
+    `9` `10` `11` `12` `13` `14` `15` `16` `17` `18` `19` `20` `21` `22` `23`
+    `24` `25` `26` `27` `28` `29` `30` `31`
