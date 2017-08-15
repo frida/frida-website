@@ -468,8 +468,8 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 {% endhighlight %}
 
 +   `Memory.patchCode(address, size, apply)`: safely modify `size` bytes at
-    `address`, a NativePointer. The supplied JavaScript function `apply` gets
-    called with a writable pointer where you must write the desired
+    `address`, specified as a NativePointer. The supplied JavaScript function
+    `apply` gets called with a writable pointer where you must write the desired
     modifications before returning. Do not make any assumptions about this being
     the same location as `address`, as some systems require modifications to be
     written to a temporary location before being mapped into memory on top of
