@@ -30,6 +30,20 @@ permalink: /docs/javascript-api/
   1. [ObjC](#objc)
   1. [Java](#java)
   1. [WeakRef](#weakref)
+  1. [X86Writer](#x86writer)
+  1. [X86Relocator](#x86relocator)
+  1. [x86 enum types](#x86enums)
+  1. [ArmWriter](#armwriter)
+  1. [ArmRelocator](#armrelocator)
+  1. [ThumbWriter](#thumbwriter)
+  1. [ThumbRelocator](#thumbrelocator)
+  1. [ARM enum types](#armenums)
+  1. [Arm64Writer](#arm64writer)
+  1. [Arm64Relocator](#arm64relocator)
+  1. [AArch64 enum types](#arm64enums)
+  1. [MipsWriter](#mipswriter)
+  1. [MipsRelocator](#mipsrelocator)
+  1. [MIPS enum types](#mipsenums)
 
 ## Global
 
