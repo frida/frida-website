@@ -129,18 +129,18 @@ selectively skip instructions in case you want to do custom instrumentation.
 
 Anyway, that's the gist of it. You can find the brand new API references at:
 
-- x86:
+- x86
   * [X86Writer](/docs/javascript-api/#x86writer)
   * [X86Relocator](/docs/javascript-api/#x86relocator)
-- arm:
+- arm
   * [ArmWriter](/docs/javascript-api/#armwriter)
   * [ArmRelocator](/docs/javascript-api/#armrelocator)
   * [ThumbWriter](/docs/javascript-api/#thumbwriter)
   * [ThumbRelocator](/docs/javascript-api/#thumbrelocator)
-- arm64:
+- arm64
   * [Arm64Writer](/docs/javascript-api/#arm64writer)
   * [Arm64Relocator](/docs/javascript-api/#arm64relocator)
-- mips:
+- mips
   * [MipsWriter](/docs/javascript-api/#mipswriter)
   * [MipsRelocator](/docs/javascript-api/#mipsrelocator)
 
