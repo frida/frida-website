@@ -22,8 +22,11 @@ didn't see much value in exposing them to JavaScript, but after many years of
 interesting internal use-cases they've evolved to the point where the essential
 bits are now covered pretty well.
 
-So with 10.4 we are finally exposing all of these APIs to JavaScript. Let's take
-a look at an example on x86:
+So with 10.4 we are finally exposing all of these APIs to JavaScript. It's also
+worth mentioning that these new bindings are auto-generated, so future additions
+will be effortless.
+
+Let's take a look at an example on x86:
 
 {% highlight js %}
 var getLivesLeft = Module.findExportByName('game-engine.so',
