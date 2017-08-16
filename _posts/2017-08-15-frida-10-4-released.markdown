@@ -51,9 +51,9 @@ ret
 I.e. assuming the return type is `int`, we just replaced the function body with
 `return 9999;`.
 
-As a side-note it's worth mentioning that you could also use *Memory.protect()*
-to change the page protection and then go ahead and write code all over the
-place, but *Memory.patchCode()* is very handy because it also
+As a side-note you could also use *Memory.protect()* to change the page
+protection and then go ahead and write code all over the place, but
+*Memory.patchCode()* is very handy because it also
 
 - ensures CPU caches are flushed;
 - takes care of code-signing corner-cases on iOS.
