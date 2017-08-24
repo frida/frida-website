@@ -1197,23 +1197,99 @@ Stalker.follow(Process.getCurrentThreadId(), {
 
     // Other events:
     ret: false, // RET instructions
-    exec: false, // all instructions: not recommended as it's a lot of data
+    exec: false, // all instructions: not recommended as it's
+                 //                   a lot of data
     block: false, // block executed: coarse execution trace
     compile: false // block compiled: useful for coverage
   },
+
   //
-  // Only specify one of the two following callbacks -- see note below:
+  // Only specify one of the two following callbacks.
+  // (See note below.)
   //
-  onReceive: function (events) {
-    // Called with `events` containing a binary blob which is one or more
-    // GumEvent structs. See `gumevent.h` for the format. Use `Stalker.parse()`
-    // to examine the data.
-  },
+
+  //
+  // onReceive: Called with `events` containing a binary blob
+  //            comprised of one or more GumEvent structs.
+  //            See `gumevent.h` for details about the
+  //            format. Use `Stalker.parse()` to examine the
+  //            data.
+  //
+  //onReceive: function (events) {
+  //},
+  //
+
+  //
+  // onCallSummary: Called with `summary` being a key-value
+  //                mapping of call target to number of
+  //                calls, in the current time window. You
+  //                would typically implement this instead of
+  //                `onReceive()` for efficiency, i.e. when
+  //                you only want to know which targets were
+  //                called and how many times, but don't care
+  //                about the order that the calls happened
+  //                in.
+  //
   onCallSummary: function (summary) {
-    // Called with `summary` being a key-value mapping of call target to number
-    // of calls, in the current time window. You would typically implement this
-    // instead of `onReceive` for efficiency.
-  }
+  },
+
+  //
+  // Advanced users: This is how you can plug in your own
+  //                 StalkerTransformer, where the provided
+  //                 function is called synchronously
+  //                 whenever Stalker wants to recompile
+  //                 a basic block of the code that's about
+  //                 to be executed by the stalked thread.
+  //
+  //transform: function (iterator) {
+  //  var instruction = iterator.next();
+  //
+  //  var startAddress = instruction.address;
+  //  var isAppCode = startAddress.compare(appStart) >= 0 &&
+  //      startAddress.compare(appEnd) === -1;
+  //
+  //  do {
+  //    if (isAppCode && instruction.mnemonic === 'ret') {
+  //      iterator.putCmpRegI32('eax', 60);
+  //      iterator.putJccShortLabel('jb', 'nope', 'no-hint');
+  //
+  //      iterator.putCmpRegI32('eax', 90);
+  //      iterator.putJccShortLabel('ja', 'nope', 'no-hint');
+  //
+  //      iterator.putCallout(onMatch);
+  //
+  //      iterator.putLabel('nope');
+  //    }
+  //
+  //    iterator.keep();
+  //  } while ((instruction = iterator.next()) !== null);
+  //},
+  //
+  // The default implementation is just:
+  //
+  //   while (iterator.next() !== null)
+  //     iterator.keep();
+  //
+  // The example above shows how you can insert your own code
+  // just before every `ret` instruction across any code
+  // executed by the stalked thread inside the app's own
+  // memory range. It inserts code that checks if the `eax`
+  // register contains a value between 60 and 90, and inserts
+  // a synchronous callout back into JavaScript whenever that
+  // is the case. The callback receives a single argument
+  // that gives it access to the CPU registers, and it is
+  // also able to modify them as it pleases:
+  //
+  // function onMatch (context) {
+  //   console.log('Match! pc=' + context.pc +
+  //       ' rax=' + context.rax.toInt32());
+  // }
+  //
+  // Note that not calling keep() will result in the
+  // instruction getting dropped, which makes it possible
+  // for your transform to fully replace certain instructions
+  // when this is desirable.
+  //
 });
 {% endhighlight %}
 
