@@ -1042,7 +1042,7 @@ Interceptor.attach(Module.findExportByName(null, 'read'), {
         console.log('ThreadId : ' + this.threadId);
         console.log('Depth    : ' + this.depth);
         console.log('Errornr  : ' + this.err);
-        
+
         // Save arguments for processing in onLeave.
         this.fd = args[0].toInt32();
         this.buf = args[1];
