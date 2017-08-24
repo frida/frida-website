@@ -620,7 +620,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     -   `onAccess: function (details)`: called synchronously with `details`
         object containing:
         -   `operation`: the kind of operation that triggered the access, as a
-            string specifying either `read`, `write` or `execute`
+            string specifying either `read`, `write`, or `execute`
         -   `from`: address of instruction performing the access as a
             `NativePointer`
         -   `address`: address being accessed as a `NativePointer`
