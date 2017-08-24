@@ -1278,7 +1278,7 @@ Stalker.follow(Process.getCurrentThreadId(), {
   // a synchronous callout back into JavaScript whenever that
   // is the case. The callback receives a single argument
   // that gives it access to the CPU registers, and it is
-  // also able to modify them as it pleases:
+  // also able to modify them.
   //
   // function onMatch (context) {
   //   console.log('Match! pc=' + context.pc +
