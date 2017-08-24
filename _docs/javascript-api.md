@@ -22,6 +22,8 @@ permalink: /docs/javascript-api/
   1. [Socket](#socket)
   1. [Stream](#stream)
   1. [File](#file)
+  1. [SqliteDatabase](#sqlitedatabase)
+  1. [SqliteStatement](#sqlitestatement)
   1. [Interceptor](#interceptor)
   1. [Stalker](#stalker)
   1. [ApiResolver](#apiresolver)
@@ -958,6 +960,74 @@ friendlyFunctionName(returnValue, thisPtr);
 -   `close()`: close the file. You should call this function when you're done
     with the file unless you are fine with this happening when the object is
     garbage-collected or the script is unloaded.
+
+
+## SqliteDatabase
+
++   `SqliteDatabase.open(path)`: open the SQLite v3 database specified by
+    `path`, a string containing the filesystem path to the database. The
+    database will be opened read-write, and the returned SqliteDatabase object
+    will allow you to perform queries on it.
+
++   `SqliteDatabase.openInline(encodedContents)`: just like `open()` but the
+    contents of the database is provided as a string containing its data,
+    Base64-encoded. We recommend gzipping the database before Base64-encoding
+    it, but this is optional and detected by looking for a gzip magic marker.
+    The database is opened read-write, but is 100% in-memory and never touches
+    the filesystem. This is useful for agents that need to bundle a cache of
+    precomputed data, e.g. static analysis data used to guide dynamic analysis.
+
+-   `close()`: close the database. You should call this function when you're
+    done with the database, unless you are fine with this happening when the
+    object is garbage-collected or the script is unloaded.
+
+-   `exec(sql)`: execute a raw SQL query, where `sql` is a string containing
+    the text-representation of the query. The query's result is ignored, so this
+    should only be used for queries for setting up the database, e.g. table
+    creation.
+
+-   `prepare(sql)`: compile the provided SQL into a
+    [SqliteStatement](#sqlitestatement) object, where `sql` is a string
+    containing the text-representation of the query.
+
+    For example:
+
+{% highlight js %}
+var db, smt, row, name, bio;
+
+db = SqliteDatabase.open('/path/to/people.db');
+
+smt = db.prepare('SELECT name, bio FROM people WHERE age = ?');
+
+console.log('People whose age is 42:');
+smt.bindInteger(1, 42);
+while ((row = smt.step()) !== null) {
+  name = row[0];
+  bio = row[1];
+  console.log('Name:', name);
+  console.log('Bio:', bio);
+}
+smt.reset();
+{% endhighlight %}
+
+-   `dump()`: dump the database to a gzip-compressed blob encoded as Base64,
+    where the result is returned as a string. This is useful for inlining a
+    cache in your agent's code, loaded by calling `SqliteDatabase.openInline()`.
+
+
+## SqliteStatement
+
+-   `bindInteger(index, value)`: bind the integer `value` to `index`
+-   `bindFloat(index, value)`: bind the floating point `value` to `index`
+-   `bindText(index, value)`: bind the text `value` to `index`
+-   `bindBlob(index, bytes)`: bind the blob `bytes` to `index`, where `bytes`
+    is an ArrayBuffer, array of byte values, or a string
+-   `bindNull(index)`: bind a null value to `index`
+-   `step()`: either start a new query and get the first result, or move to the
+    next one. Returns an array containing the values in the order specified by
+    the query, or `null` when the last result is reached. You should call
+    `reset()` at that point if you intend to use this object again.
+-   `reset()`: reset internal state to allow subsequent queries
 
 
 ## Interceptor
