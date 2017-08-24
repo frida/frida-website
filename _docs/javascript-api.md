@@ -956,8 +956,8 @@ friendlyFunctionName(returnValue, thisPtr);
 -   `flush()`: flush any buffered data to the underlying file
 
 -   `close()`: close the file. You should call this function when you're done
-    with the file. Any remaining buffered data will automatically be flushed
-    before closure.
+    with the file unless you are fine with this happening when the object is
+    garbage-collected or the script is unloaded.
 
 
 ## Interceptor
