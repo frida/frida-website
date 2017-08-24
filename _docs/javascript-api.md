@@ -1817,6 +1817,8 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putJmpRegPtr(reg)`: put a JMP instruction
 
+-   `putJmpRegOffsetPtr(reg, offset)`: put a JMP instruction
+
 -   `putJmpNearPtr(address)`: put a JMP instruction
 
 -   `putJccShort(instructionId, target, hint)`: put a JCC instruction
