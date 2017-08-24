@@ -1467,12 +1467,23 @@ Interceptor.attach(f, {
 
     The object returned has the fields:
 
-    -   `address`: Address (EIP) of this instruction, as a `NativePointer`.
-    -   `next`: Pointer to the next instruction, so you can `parse()` it.
-    -   `size`: Size of this instruction.
-    -   `mnemonic`: String representation of instruction mnemonic.
-    -   `opStr`: String representation of instruction operands.
-    -   `toString()`: Convert to a human-readable string.
+    -   `address`: address (EIP) of this instruction, as a `NativePointer`
+    -   `next`: pointer to the next instruction, so you can `parse()` it
+    -   `size`: size of this instruction
+    -   `mnemonic`: string representation of instruction mnemonic
+    -   `opStr`: string representation of instruction operands
+    -   `operands`: array of objects describing each operand, each specifying
+                    the `type` and `value`, at a minimum, but potentially also
+                    additional properties depending on the architecture
+    -   `regsRead`: array of register names implicitly read by this instruction
+    -   `regsWritten`: array of register names implicitly written to by this
+        instruction
+    -   `groups`: array of group names that this instruction belongs to
+    -   `toString()`: convert to a human-readable string
+
+    For details about `operands` and `groups`, please consult the
+    [Capstone](http://www.capstone-engine.org/) documentation for your
+    architecture.
 
 
 ## ObjC
