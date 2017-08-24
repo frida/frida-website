@@ -336,6 +336,47 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 +   `Process.enumerateMallocRangesSync(protection)`: synchronous version of
     `enumerateMallocRanges()` that returns the ranges in an array.
 
++   `Process.setExceptionHandler(callback)`: install a process-wide exception
+    handler callback that gets a chance to handle native exceptions before the
+    hosting process itself does. Called with a single argument, `details`, that
+    is an object containing:
+
+    -   `type`: string specifying one of:
+        * abort
+        * access-violation
+        * guard-page
+        * illegal-instruction
+        * stack-overflow
+        * arithmetic
+        * breakpoint
+        * single-step
+        * system
+    -   `address`: address where the exception occurred, as a NativePointer
+    -   `memory`: if present, is an object containing:
+        -   `operation`: the kind of operation that triggered the exception, as
+            a string specifying either `read`, `write`, or `execute`
+        -   `address`: address that was accessed when the exception occurred, as
+            a NativePointer
+    -   `context`: object with the keys `pc` and `sp`, which are
+        NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
+        respectively, for ia32/x64/arm. Other processor-specific keys
+        are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
+        You may also update register values by assigning to these keys.
+    -   `nativeContext`: address of the OS and architecture-specific CPU context
+        struct, as a NativePointer. This is only exposed as a last resort for
+        edge-cases where `context` isn't providing enough details. We would
+        however discourage using this and rather submit a pull-request to add
+        the missing bits needed for your use-case.
+
+    It is up to your callback to decide what to do with the exception. It could
+    log the issue, notify your application through a send() followed by a
+    blocking recv() for acknowledgement of the sent data being received, or
+    it can modify registers and memory to recover from the exception. You should
+    return `true` if you did handle the exception, in which case Frida will
+    resume the thread immediately. If you do not return `true`, Frida will
+    forward the exception to the hosting process' exception handler, if it has
+    one, or let the OS terminate the process.
+
 
 ## Module
 
