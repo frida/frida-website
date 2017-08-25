@@ -8,7 +8,7 @@ categories: [release]
 ---
 
 The midnight oil has been burning and countless cups of coffee have been
-consumed here at [NowSecure][], and boy do we have news for you this time.
+consumed here at [NowSecure][], and I have some big news for you this time.
 
 Continuing in the spirit of last release' low-level bag of goodies, we'll be
 moving one level up the stack this time. We are going to introduce a brand new
