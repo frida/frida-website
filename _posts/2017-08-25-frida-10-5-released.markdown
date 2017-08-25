@@ -18,9 +18,9 @@ lazy dynamic recompilation on a per-thread basis, with precise control of the
 compilation process.
 
 But first a little background. Most people using Frida are probably using the
-Interceptor API to perform inline hooking, and/or doing method swizzling or
-replacement through the ObjC and Java APIs. The idea is typically to modify
-some interesting API that you expect to be called, and be able to divert
+[Interceptor][] API to perform inline hooking, and/or doing method swizzling or
+replacement through the [ObjC][] and [Java][] APIs. The idea is typically to
+modify some interesting API that you expect to be called, and be able to divert
 execution to your own code in order to observe, augment, or fully replace
 application behavior.
 
@@ -155,6 +155,9 @@ uses a lot less memory on both x86 and arm64, and is also more reliable. Lastly,
 Enjoy!
 
 [NowSecure]: https://www.nowsecure.com/
+[Interceptor]: /docs/javascript-api/#interceptor
+[ObjC]: /docs/javascript-api/#objc
+[Java]: /docs/javascript-api/#java
 [@asabil]: https://twitter.com/asabil
 [@karltk]: https://twitter.com/karltk
 [fun pair-programming sessions]: http://blog.kalleberg.org/post/833101026/live-x86-code-instrumentation-with-frida
