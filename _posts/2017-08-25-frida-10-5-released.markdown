@@ -7,20 +7,25 @@ version: 10.5
 categories: [release]
 ---
 
-It's only been ten days, and here we are again, it's release o'clock!
-This time we're continuing on last release' low-level theme, but we'll be
-moving one level up the stack. We are going to introduce a brand new way
-to use the CodeWriter APIs introduced by our previous release, 10.4.
+The midnight oil has been burning and countless cups of coffee have been
+consumed here at [NowSecure][], and boy do we have news for you this time.
 
-First, a little background. Most people using Frida are probably using the
-Interceptor API to perform inline hooking, and/or doing method swizzling or
-replacement through the ObjC and Java APIs. The idea is typically to modify some
-interesting API that you expect to be called, and be able to divert execution to
-your own code in order to observe, augment, or fully replace application
-behavior.
+Continuing in the spirit of last release' low-level bag of goodies, we'll be
+moving one level up the stack this time. We are going to introduce a brand new
+way to use new CodeWriter APIs, enabling you to weave in your own instructions
+into the machine code executed by any thread of your choosing. We're talking
+lazy dynamic recompilation on a per-thread basis, with precise control of the
+compilation process.
+
+But first a little background. Most people using Frida are probably using the
+*Interceptor* API to perform inline hooking, and/or doing method swizzling or
+replacement through the *ObjC* and *Java* APIs. The idea is typically to modify
+some interesting API that you expect to be called, and be able to divert
+execution to your own code in order to observe, augment, or fully replace
+application behavior.
 
 One drawback to such approaches is that code or data is modified, and such
-changes can be trivially detected. This is fine, though, as being invisible to
+changes can be trivially detected. This is fine though, as being invisible to
 the hosting process' own code is always going to be a cat and mouse game when
 doing in-process instrumentation.
 
@@ -28,41 +33,42 @@ These techniques are however quite limited when trying to answer the question
 of "behind this private API, which other APIs actually get called for a given
 input?". Or, when doing reversing and fuzzing, you might want to know where
 execution diverges between two known inputs to a given function. Another example
-is measuring code coverage. You could use Interceptor's support for
+is measuring code coverage. You could use *Interceptor*'s support for
 instruction-level probes, first using a static analysis tool to find all the
 basic blocks and then using Frida to put single-shot probes all over the place.
 
-Enter Stalker. It's not a new API, but it's been fairly limited in what it
+Enter *Stalker*. It's not a new API, but it's been fairly limited in what it
 allowed you to do. Think of it as a per-thread code-tracer, where the thread's
-original machine code is dynamically recompiled to a new memory location in
+original machine code is dynamically recompiled to new memory locations in
 order to weave in instrumentation between the original instructions.
 
 It does this recompilation lazily, one basic-block at a time. Considering that
 a lot of self-modifying code exists, it is careful about caching compiled blocks
 in case the original code changes after the fact.
 
-Stalker also goes to great lengths to recompile the code such that side-effects
-are identical. E.g. if the original instruction is a *CALL* it will make sure
-that the address of the original next instruction is what's pushed on the stack,
-and not the address of the next recompiled instruction.
+*Stalker* also goes to great lengths to recompile the code such that
+side-effects are identical. E.g. if the original instruction is a *CALL* it will
+make sure that the address of the original next instruction is what's pushed on
+the stack, and not the address of the next recompiled instruction.
 
-Anyway, Stalker has historically been like a hobby project inside of a hobby
+Anyway, *Stalker* has historically been like a pet project inside of a pet
 project. A lot of fun, but other parts of Frida received most of my attention
-over the years. There were some awesome exceptions though. Me and [@karltk][]
-did some [fun pair-programming sessions][] many years ago when we sat down and
-decided to get Stalker working well on hostile code. At some point I put
-together [CryptoShark][] in order get people excited about what kind of things
-are possible to build. Recently Stalker also got a critical bug-fix contributed
-by [Eloi Vanderbeken]. Then, early this year, [Antonio Ken Iannillo][] ported it
-to arm64. We're still missing 32-bit ARM and MIPS, but having 32- and 64-bit x86
-plus arm64 means we can already cover a lot of ground.
+over the years. There have been some awesome exceptions though. Me and
+[@karltk][] did some [fun pair-programming sessions][] many years ago when we
+sat down and decided to get *Stalker* working well on hostile code. At some
+later point I put together [CryptoShark][] in order get people excited about its
+potential, but much happened since then. Some time went by and suddenly
+*Stalker* received a critical bug-fix contributed by [Eloi Vanderbeken]. Early
+this year, [Antonio Ken Iannillo][] jumped on board and ported it to arm64.
+We're still missing 32-bit ARM and MIPS, but having 32- and 64-bit x86 plus
+arm64 means we can already cover a lot of ground.
 
-Stalker's API has so far been really limited. You can tell it to follow a
+*Stalker*'s API has so far been really limited. You can tell it to follow a
 thread, including the thread you're in, which is useful in combination with
 inline hooking, i.e. Interceptor. The only two things you could do was:
 
 1. Tell it which events you're interested in, e.g. `call: true`, which will
-   produce one event per *CALL* instruction. This means Stalker will add some
+   produce one event per *CALL* instruction. This means *Stalker* will add some
    logging code before each such instruction, and that would log where the
    *CALL* happened, its target, and its stack depth. The other event types are
    very similar.
@@ -120,10 +126,10 @@ The `transform` callback gets called synchronously whenever a new basic block
 is about to be compiled. It gives you an iterator that you then use to drive
 the recompilation-process forward, one instruction at a time. The returned
 [Instruction][] tells you what you need to know about the instruction that's
-about to be recompiled. You then call `keep()` to allow Stalker to recompile it
-as it normally would. This means you can omit this call if you want to skip some
-instructions, e.g. because you've replaced them with your own code. The iterator
-also allows you to insert your own instructions, as it exposes the full
+about to be recompiled. You then call `keep()` to allow *Stalker* to recompile
+it as it normally would. This means you can omit this call if you want to skip
+some instructions, e.g. because you've replaced them with your own code. The
+iterator also allows you to insert your own instructions, as it exposes the full
 CodeWriter API of the current architecture, e.g. [X86Writer][].
 
 The example above basically determines where the application's own code is in
@@ -137,14 +143,19 @@ it easy to do really fast checks in machine code but offload more complex tasks
 to a higher level language. You can also `Memory.alloc()` and have the generated
 code write directly there, without entering into JavaScript at all.
 
-So that's the big new thing in 10.5. Another big change is that the Instruction
-API now exposes a lot more details from the underlying [Capstone][] instruction.
-Stalker also uses a lot less memory on both x86 and arm64, and should be a lot
-more reliable. Lastly, [Process.setExceptionHandler()][] is now a documented
-API, along with our [SQLite API][].
+So that's the big new thing in 10.5. Special thanks to [@asabil] who helped
+shape this new API.
+
+In closing, the only other big change is that the *Instruction* API now exposes
+a lot more details of the underlying [Capstone][] instruction. *Stalker* also
+uses a lot less memory on both x86 and arm64, and is also more reliable. Lastly,
+[Process.setExceptionHandler()][] is now a documented API, along with our
+[SQLite API][].
 
 Enjoy!
 
+[NowSecure]: https://www.nowsecure.com/
+[@asabil]: https://twitter.com/asabil
 [@karltk]: https://twitter.com/karltk
 [fun pair-programming sessions]: http://blog.kalleberg.org/post/833101026/live-x86-code-instrumentation-with-frida
 [CryptoShark]: https://www.youtube.com/watch?v=hzDsxtcRavY
