@@ -57,11 +57,11 @@ over the years. There have been some awesome exceptions though. Me and
 [@karltk][] did some [fun pair-programming sessions][] many years ago when we
 sat down and decided to get *Stalker* working well on hostile code. At some
 later point I put together [CryptoShark][] in order get people excited about its
-potential, but much happened since then. Some time went by and suddenly
-*Stalker* received a critical bug-fix contributed by [Eloi Vanderbeken]. Early
-this year, [Antonio Ken Iannillo][] jumped on board and ported it to arm64.
-We're still missing 32-bit ARM and MIPS, but having 32- and 64-bit x86 plus
-arm64 means we can already cover a lot of ground.
+potential. Some time went by and suddenly *Stalker* received a critical bug-fix
+contributed by [Eloi Vanderbeken]. Early this year, [Antonio Ken Iannillo][]
+jumped on board and ported it to arm64. Then, very recently, [Erik Smit][]
+showed up and fixed a critical bug where we would produce invalid code for
+*REP*-prefixed *JCC* instructions. Yay!
 
 *Stalker*'s API has so far been really limited. You can tell it to follow a
 thread, including the thread you're in, which is useful in combination with
@@ -161,6 +161,7 @@ Enjoy!
 [CryptoShark]: https://www.youtube.com/watch?v=hzDsxtcRavY
 [Eloi Vanderbeken]: https://twitter.com/elvanderb
 [Antonio Ken Iannillo]: https://twitter.com/AKIannillo
+[Erik Smit]: https://github.com/erik-smit
 [Instruction]: /docs/javascript-api/#instruction
 [X86Writer]: /docs/javascript-api/#x86writer
 [Capstone]: http://www.capstone-engine.org/
