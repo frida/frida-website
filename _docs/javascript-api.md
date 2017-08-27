@@ -2109,6 +2109,8 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putCmpImmPtrImmU32(immPtr, immValue)`: put a CMP instruction
 
+-   `putCmpRegReg(regA, regB)`: put a CMP instruction
+
 -   `putClc()`: put a CLC instruction
 
 -   `putStc()`: put a STC instruction
