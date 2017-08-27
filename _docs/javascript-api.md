@@ -1182,6 +1182,15 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
 +   `Interceptor.revert(target)`: revert function at `target` to the previous
     implementation.
 
++   `Interceptor.flush()`: ensure any pending changes have been committed
+    to memory. This is should only be done in the few cases where this is
+    necessary, e.g. if you just attach()ed to or replace()d a function that you
+    are about to call using [NativeFunction](#nativefunction). Pending changes
+    are flushed automatically whenever the current thread is about to leave the
+    JavaScript runtime or calls send(). This includes any API built on top of
+    send(), like when returning from an [RPC](#rpc) method, and calling any
+    method on the [console](#console) API.
+
 
 ## Stalker
 
