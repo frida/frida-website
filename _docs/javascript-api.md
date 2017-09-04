@@ -1944,10 +1944,16 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     each element is either a string specifying the register, or a Number or
     NativePointer specifying the immediate value.
 
+-   `putCallAddressWithAlignedArguments(func, args)`: like above, but also
+    ensures that the argument list is aligned on a 16 byte boundary
+
 -   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
     NativePointer specifying the immediate value.
+
+-   `putCallRegWithAlignedArguments(reg, args)`: like above, but also
+    ensures that the argument list is aligned on a 16 byte boundary
 
 -   `putCallRegOffsetPtrWithArguments(reg, offset, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
@@ -2548,6 +2554,13 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putLdrRegU64(reg, val)`: put an LDR instruction
 
+-   `putLdrRegRef(reg)`: put an LDR instruction with a dangling data reference,
+    returning an opaque ref value that should be passed to `putLdrRegValue()`
+    at the desired location
+
+-   `putLdrRegValue(ref, value)`: put the value and update the LDR instruction
+    from a previous `putLdrRegRef()`
+
 -   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
 
 -   `putAdrpRegAddress(reg, address)`: put an ADRP instruction
@@ -2565,6 +2578,14 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 -   `putAddRegRegReg(dstReg, leftReg, rightReg)`: put an ADD instruction
 
 -   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
+
+-   `putSubRegRegReg(dstReg, leftReg, rightReg)`: put a SUB instruction
+
+-   `putAndRegRegImm(dstReg, leftReg, rightValue)`: put an AND instruction
+
+-   `putTstRegImm(reg, immValue)`: put a TST instruction
+
+-   `putCmpRegReg(regA, regB)`: put a CMP instruction
 
 -   `putNop()`: put a NOP instruction
 
