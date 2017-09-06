@@ -1934,6 +1934,12 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     also desirable to do this between pieces of unrelated code, e.g. when
     generating multiple functions in one go.
 
+-   `base`: memory location of the first byte of output, as a NativePointer
+
+-   `code`: memory location of the next byte of output, as a NativePointer
+
+-   `pc`: program counter at the next byte of output, as a NativePointer
+
 -   `offset`: current offset as a JavaScript Number
 
 -   `putLabel(id)`: put a label at the current position, where `id` is a string
@@ -2234,6 +2240,12 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     also desirable to do this between pieces of unrelated code, e.g. when
     generating multiple functions in one go.
 
+-   `base`: memory location of the first byte of output, as a NativePointer
+
+-   `code`: memory location of the next byte of output, as a NativePointer
+
+-   `pc`: program counter at the next byte of output, as a NativePointer
+
 -   `offset`: current offset as a JavaScript Number
 
 -   `skip(nBytes)`: skip `nBytes`
@@ -2320,6 +2332,12 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     should always call this once you've finished generating code. It is usually
     also desirable to do this between pieces of unrelated code, e.g. when
     generating multiple functions in one go.
+
+-   `base`: memory location of the first byte of output, as a NativePointer
+
+-   `code`: memory location of the next byte of output, as a NativePointer
+
+-   `pc`: program counter at the next byte of output, as a NativePointer
 
 -   `offset`: current offset as a JavaScript Number
 
@@ -2490,6 +2508,12 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     should always call this once you've finished generating code. It is usually
     also desirable to do this between pieces of unrelated code, e.g. when
     generating multiple functions in one go.
+
+-   `base`: memory location of the first byte of output, as a NativePointer
+
+-   `code`: memory location of the next byte of output, as a NativePointer
+
+-   `pc`: program counter at the next byte of output, as a NativePointer
 
 -   `offset`: current offset as a JavaScript Number
 
@@ -2680,6 +2704,12 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     should always call this once you've finished generating code. It is usually
     also desirable to do this between pieces of unrelated code, e.g. when
     generating multiple functions in one go.
+
+-   `base`: memory location of the first byte of output, as a NativePointer
+
+-   `code`: memory location of the next byte of output, as a NativePointer
+
+-   `pc`: program counter at the next byte of output, as a NativePointer
 
 -   `offset`: current offset as a JavaScript Number
 
