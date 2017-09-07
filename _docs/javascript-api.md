@@ -11,6 +11,7 @@ permalink: /docs/javascript-api/
   1. [Frida](#frida)
   1. [Process](#process)
   1. [Module](#module)
+  1. [ModuleMap](#modulemap)
   1. [Memory](#memory)
   1. [MemoryAccessMonitor](#memoryaccessmonitor)
   1. [Thread](#thread)
@@ -474,6 +475,39 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     the export named `exp` in `module`. If the module isn't known you may pass
     `null` instead of its name, but this can be a costly search and should be
     avoided.
+
+
+## ModuleMap
+
++   `new ModuleMap([filter])`: create a new module map optimized for determining
+    which module a given memory address belongs to, if any. Takes a snapshot of
+    the currently loaded modules when created, which may be refreshed by calling
+    `update()`. The `filter` argument is optional and allows you to pass a
+    function used for filtering the list of modules. This is useful if you e.g.
+    only care about modules owned by the application itself, and allows you to
+    quickly check if an address belongs to one of its modules. The `filter`
+    function is passed an object just like in `Process.enumerateModules()`,
+    and must return `true` for each module that should be kept in the map.
+    It is called for each loaded module every time the map is updated.
+
+-   `has(address)`: check if `address` belongs to any of the contained modules,
+    and returns the result as a boolean
+
+-   `find(address)`, `get(address)`: return an object with details about the
+    module that `address` belongs to. In the event that no such module could be
+    found, `find()` returns `null` whilst `get()` throws an exception.
+    See `Process.enumerateModules()` for details about which fields are
+    included.
+
+-   `findName(address)`,
+    `getName(address)`,
+    `findPath(address)`,
+    `getPath(address)`:
+    just like `find()` and `get()`, but only returns the `name` or `path`
+    field, which means less overhead when you don't need the other details.
+
+-   `update()`: update the map. You should call this after a module has been
+    loaded or unloaded to avoid operating on stale data.
 
 
 ## Memory
