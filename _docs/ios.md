@@ -36,7 +36,7 @@ $ frida-ps -U
 {% endhighlight %}
 
 <div class="note info">
-  <h5>Using Linux?</h5>
+  <h5>Using a Linux-based OS?</h5>
   <p>
     As of Frida 6.0.9 there's now usbmuxd integration, so -U works.
     For earlier Frida versions you can use WiFi and set up an SSH

@@ -15,7 +15,7 @@ Installing Frida is easy and straight-forward, but there are a few requirements
 you’ll need to make sure your system has before you start.
 
 - [Python](https://python.org/) – latest 3.x is highly recommended
-- Windows, macOS, or Linux
+- Windows, macOS, or GNU/Linux
 
 ## Install with pip
 
@@ -66,7 +66,7 @@ session = frida.attach("cat")
 print([x.name for x in session.enumerate_modules()])
 {% endhighlight %}
 
-If you are on Linux, issue:
+If you are on GNU/Linux, issue:
 
 {% highlight bash %}
 $ sudo sysctl kernel.yama.ptrace_scope=0

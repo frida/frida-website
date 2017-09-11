@@ -59,7 +59,7 @@ mode of operation which doesn't involve any TCP or outside communication. All
 you need to do is to set the `FRIDA_GADGET_SCRIPT` environment variable to the
 path to the file containing your JavaScript.
 
-For example on Linux, just create the file `hook.js` with the contents:
+For example on GNU/Linux, just create the file `hook.js` with the contents:
 
 {% highlight js %}
 'use strict';

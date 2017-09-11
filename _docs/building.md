@@ -9,7 +9,7 @@ permalink: /docs/building/
 
 1. Building Frida
  - [Design Constraints](#design-constraints)
- - [Linux](#linux)
+ - [GNU/Linux](#linux)
  - [macOS](#macOS)
  - [Windows](#windows)
 2. Building the toolchain and SDK
@@ -26,7 +26,7 @@ Frida has a rather complicated build system due to some design constraints:
 toolchain and SDK to save time. This requires a bit more fiddling to get the
 build environment just right, but it has the added benefit of providing a
 coherent build environment. For example we know we're being built with just
-one version of autotools whether we're on macOS or Linux.
+one version of autotools whether we're on macOS or GNU/Linux.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
 Frida's run-time components, like frida-helper, frida-agent, etc. will at some
@@ -49,13 +49,13 @@ unfortunately doesn't provide any way to fully clean up statically allocated
 resources, we had to patch that library to add support for this. Upstream
 doesn't consider this a valid use-case, so unfortunately we need to maintain our
 fork of this library. This means we can't make use of a system-wide GLib on
-Linux systems, which consequently makes the prebuilt SDK much larger.
+GNU/Linux systems, which consequently makes the prebuilt SDK much larger.
 
 Frida's build system tries to keep you sane by making use of a prebuilt
 toolchain and SDK for each platform. This is what's used in the steps outlined
 below.
 
-### Linux
+### GNU/Linux
 
 - Make sure you have a:
   - Modern x86 system
