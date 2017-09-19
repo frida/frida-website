@@ -20,6 +20,7 @@ permalink: /docs/javascript-api/
   1. [NativePointer](#nativepointer)
   1. [NativeFunction](#nativefunction)
   1. [NativeCallback](#nativecallback)
+  1. [SystemFunction](#systemfunction)
   1. [Socket](#socket)
   1. [Stream](#stream)
   1. [File](#file)
@@ -918,6 +919,15 @@ friendlyFunctionName(returnValue, thisPtr);
     See `NativeFunction` for details about supported types and abis.
     Note that the returned object is also a `NativePointer`, and can thus be
     passed to `Interceptor#replace`.
+
+
+## SystemCallback
+
++   `new SystemFunction(address, returnType, argTypes[, abi])`: just like
+    `NativeFunction`, but also provides a snapshot of the thread's last error
+    status. The return value is an object wrapping the actual return value as
+    `value`, with one additional platform-specific field named either `errno`
+    (UNIX) or `lastError` (Windows).
 
 
 ## Socket
