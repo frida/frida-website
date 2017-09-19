@@ -921,7 +921,7 @@ friendlyFunctionName(returnValue, thisPtr);
     passed to `Interceptor#replace`.
 
 
-## SystemCallback
+## SystemFunction
 
 +   `new SystemFunction(address, returnType, argTypes[, abi])`: just like
     `NativeFunction`, but also provides a snapshot of the thread's last error
