@@ -6,10 +6,16 @@ author: karltk
 categories: [presentation]
 ---
 
-[oleavr](https://github.com/oleavr) and [karltk](https://github.com/karltk) presented Frida at the 
-[FOSDEM](https://fosdem.org/2016) [Testing and 
-Automation](https://fosdem.org/2016/schedule/track/testing_and_automation/) devroom yesterday.
+[oleavr][] and [karltk][] presented Frida at the [FOSDEM][] [Testing and
+Automation][] devroom yesterday.
 
-[Slides](../docs/presentations/fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf) 
-for our talk&mdash;titled *Testing interoperability with closed-source software through scriptable 
-diplomacy*&mdash;are available on our [presentations](../docs/presentations/) page. No videos of the talk yet.
+[Slides][] for our talk&mdash;titled *Testing interoperability with
+closed-source software through scriptable diplomacy*&mdash;are available
+on our [presentations][] page. No videos of the talk yet.
+
+[oleavr]: https://github.com/oleavr
+[karltk]: https://github.com/karltk
+[FOSDEM]: https://fosdem.org/2016
+[Testing and Automation]: https://fosdem.org/2016/schedule/track/testing_and_automation/
+[Slides]: /docs/presentations/fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf
+[presentations]: /docs/presentations/
