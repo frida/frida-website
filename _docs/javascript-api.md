@@ -22,7 +22,15 @@ permalink: /docs/javascript-api/
   1. [NativeCallback](#nativecallback)
   1. [SystemFunction](#systemfunction)
   1. [Socket](#socket)
-  1. [Stream](#stream)
+  1. [SocketListener](#socketlistener)
+  1. [SocketConnection](#socketconnection)
+  1. [IOStream](#iostream)
+  1. [InputStream](#inputstream)
+  1. [OutputStream](#outputstream)
+  1. [UnixInputStream](#unixinputstream)
+  1. [UnixOutputStream](#unixoutputstream)
+  1. [Win32InputStream](#win32inputstream)
+  1. [Win32OutputStream](#win32outputstream)
   1. [File](#file)
   1. [SqliteDatabase](#sqlitedatabase)
   1. [SqliteStatement](#sqlitestatement)
@@ -928,6 +936,52 @@ friendlyFunctionName(returnValue, thisPtr);
 
 ## Socket
 
++   `Socket.listen([options])`: open a TCP or UNIX listening socket. Returns a
+    *Promise* that receives a [SocketListener](#socketlistener).
+
+    Defaults to listening on both IPv4 and IPv6, if supported, and binding on
+    all interfaces on a randomly selected TCP port.
+
+    The optional `options` argument is an object that may contain some of the
+    following keys:
+
+    -   `family`: address family as a string. Supported values are:
+        -   unix
+        -   ipv4
+        -   ipv6
+        Defaults to listening on both `ipv4` and `ipv6` if supported.
+    -   `host`: (IP family) IP address as a string. Defaults to all interfaces.
+    -   `port`: (IP family) IP port as a number. Defaults to any available.
+    -   `type`: (UNIX family) UNIX socket type as a string. Supported types are:
+        -   anonymous
+        -   path
+        -   abstract
+        -   abstract-padded
+        Defaults to `path`.
+    -   `path`: (UNIX family) UNIX socket path as a string.
+    -   `backlog`: Listen backlog as a number. Defaults to `10`.
+
++   `Socket.connect(options)`: connect to a TCP or UNIX server. Returns a
+    *Promise* that receives a [SocketConnection](#socketconnection).
+
+    The `options` argument is an object that should contain some of the
+    following keys:
+
+    -   `family`: address family as a string. Supported values are:
+        -   unix
+        -   ipv4
+        -   ipv6
+        Defaults to an IP family depending on the `host` specified.
+    -   `host`: (IP family) IP address as a string. Defaults to `localhost`.
+    -   `port`: (IP family) IP port as a number.
+    -   `type`: (UNIX family) UNIX socket type as a string. Supported types are:
+        -   anonymous
+        -   path
+        -   abstract
+        -   abstract-padded
+        Defaults to `path`.
+    -   `path`: (UNIX family) UNIX socket path as a string.
+
 +   `Socket.type(handle)`: inspect the OS socket `handle` and return its type
     as a string which is either `tcp`, `udp`, `tcp6`, `udp6`, `unix:stream`,
     `unix:dgram`, or `null` if invalid or unknown.
@@ -944,45 +998,134 @@ friendlyFunctionName(returnValue, thisPtr);
     -   `path`: (UNIX sockets) UNIX path as a string.
 
 
-## Stream
+## SocketListener
 
-+   `new UnixInputStream(fd[, options])`,
-    `new UnixOutputStream(fd[, options])`,
-    `new Win32InputStream(handle[, options])`,
-    `new Win32OutputStream(handle[, options])`: create a new stream object
-    from the file descriptor `fd` (UNIX) or file *HANDLE* `handle` (Windows).
-    You may also supply an `options` object with `autoClose` set to `true` to
-    make the stream close the underlying OS resource when the stream is
-    released, either through `close()` or future garbage-collection.
+    All methods are fully asynchronous and return Promise objects.
 
-    All methods of the returned object are fully asynchronous and return a
-    *Promise* object.
+-   `path`: (UNIX family) path being listened on.
+
+-   `port`: (IP family) IP port being listened on.
+
+-   `close()`: close the listener, releasing resources related to it. Once the
+    listener is closed, all other operations will fail. Closing a listener
+    multiple times is allowed and will not result in an error.
+
+-   `accept()`: wait for the next client to connect. The returned *Promise*
+    receives a [SocketConnection](#socketconnection).
+
+
+## SocketConnection
+
+    Inherits from IOStream.
+    All methods are fully asynchronous and return Promise objects.
+
+-   `setNoDelay(noDelay)`: disable the Nagle algorithm if `noDelay` is `true`,
+    otherwise enable it. The Nagle algorithm is enabled by default, so it is
+    only necessary to call this method if you wish to optimize for low delay
+    instead of high throughput.
+
+
+## IOStream
+
+    All methods are fully asynchronous and return Promise objects.
+
+-   `input`: the [InputStream](#inputstream) to read from.
+
+-   `output`: the [OutputStream](#outputstream) to write to.
+
+-   `close()`: close the stream, releasing resources related to it. This will
+    also close the individual input and output streams. Once the stream is
+    closed, all other operations will fail. Closing a stream multiple times is
+    allowed and will not result in an error.
+
+
+## InputStream
+
+    All methods are fully asynchronous and return Promise objects.
 
 -   `close()`: close the stream, releasing resources related to it. Once the
     stream is closed, all other operations will fail. Closing a stream multiple
     times is allowed and will not result in an error.
 
--   `InputStream#read(size)`: read up to `size` bytes from the stream. The
-    returned *Promise* receives an *ArrayBuffer* up to `size` bytes long. End of
-    stream is signalled through an empty buffer.
+-   `read(size)`: read up to `size` bytes from the stream. The returned
+    *Promise* receives an *ArrayBuffer* up to `size` bytes long. End of stream
+    is signalled through an empty buffer.
 
--   `InputStream#readAll(size)`: keep reading from the stream until exactly
-    `size` bytes have been consumed. The returned *Promise* receives an
-    *ArrayBuffer* that is exactly `size` bytes long. Premature error or end of
-    stream results in the *Promise* getting rejected with an error, where the
-    `Error` object has a `partialData` property containing the incomplete data.
+-   `readAll(size)`: keep reading from the stream until exactly `size` bytes
+    have been consumed. The returned *Promise* receives an *ArrayBuffer* that is
+    exactly `size` bytes long. Premature error or end of stream results in the
+    *Promise* getting rejected with an error, where the `Error` object has a
+    `partialData` property containing the incomplete data.
 
--   `OutputStream#write(data)`: try to write `data` to the stream. The `data`
-    value is either an *ArrayBuffer* or an array of integers between 0 and 255.
-    The returned *Promise* receives a *Number* specifying how many bytes of
-    `data` were written to the stream.
 
--   `OutputStream#writeAll(data)`: keep writing to the stream until all of
-    `data` has been written. The `data` value is either an *ArrayBuffer* or an
-    array of integers between 0 and 255. Premature error or end of stream
-    results in an error, where the `Error` object has a `partialSize` property
-    specifying how many bytes of `data` were written to the stream before the
-    error occurred.
+## OutputStream
+
+    All methods are fully asynchronous and return Promise objects.
+
+-   `close()`: close the stream, releasing resources related to it. Once the
+    stream is closed, all other operations will fail. Closing a stream multiple
+    times is allowed and will not result in an error.
+
+-   `write(data)`: try to write `data` to the stream. The `data` value is either
+    an *ArrayBuffer* or an array of integers between 0 and 255. The returned
+    *Promise* receives a *Number* specifying how many bytes of `data` were
+    written to the stream.
+
+-   `writeAll(data)`: keep writing to the stream until all of `data` has been
+    written. The `data` value is either an *ArrayBuffer* or an array of integers
+    between 0 and 255. Premature error or end of stream results in an error,
+    where the `Error` object has a `partialSize` property specifying how many
+    bytes of `data` were written to the stream before the error occurred.
+
+
+## UnixInputStream
+
+    (Only available on UNIX-like OSes.)
+
++   `new UnixInputStream(fd[, options])`: create a new
+    [InputStream](#inputstream) from the specified file descriptor `fd`.
+
+    You may also supply an `options` object with `autoClose` set to `true` to
+    make the stream close the underlying file descriptor when the stream is
+    released, either through `close()` or future garbage-collection.
+
+
+## UnixOutputStream
+
+    (Only available on UNIX-like OSes.)
+
++   `new UnixOutputStream(fd[, options])`: create a new
+    [OutputStream](#outputstream) from the specified file descriptor `fd`.
+
+    You may also supply an `options` object with `autoClose` set to `true` to
+    make the stream close the underlying file descriptor when the stream is
+    released, either through `close()` or future garbage-collection.
+
+
+## Win32InputStream
+
+    (Only available on Windows.)
+
++   `new Win32InputStream(handle[, options])`: create a new
+    [InputStream](#inputstream) from the specified `handle`, which is a Windows
+    *HANDLE* value.
+
+    You may also supply an `options` object with `autoClose` set to `true` to
+    make the stream close the underlying handle when the stream is released,
+    either through `close()` or future garbage-collection.
+
+
+## Win32OutputStream
+
+    (Only available on Windows.)
+
++   `new Win32OutputStream(handle[, options])`: create a new
+    [OutputStream](#outputstream) from the specified `handle`, which is a
+    Windows *HANDLE* value.
+
+    You may also supply an `options` object with `autoClose` set to `true` to
+    make the stream close the underlying handle when the stream is released,
+    either through `close()` or future garbage-collection.
 
 
 ## File
