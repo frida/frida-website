@@ -201,10 +201,10 @@ Supported configuration keys are:
     have configuration data in a *.config* file next to it. This means that
     *twitter.js* may specify its configuration in a file named *twitter.config*.
 
--   `on_change`: string specifying either `ignore` or `reload`, where `ignore`
+-   `on_change`: string specifying either `ignore` or `rescan`, where `ignore`
     means the directory will be scanned exactly once, and `rescan` means Gadget
     will monitor the directory and rescan it anytime it changes. The default is
-    `ignore`, but `reload` is highly recommended during development.
+    `ignore`, but `rescan` is highly recommended during development.
 
 Each script's optional configuration file may contain the following keys:
 
