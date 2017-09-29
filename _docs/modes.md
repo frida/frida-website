@@ -29,82 +29,30 @@ shared library that it injects into existing software, and provides a two-way
 communication channel for talking to your scripts, if needed, and later unload
 them. Beside this core functionality, frida-core also lets you enumerate
 installed apps, running processes, and connected devices. The connected devices
-are typically iOS and Android devices where frida-server is running. That
-component is essentially just a daemon that exposes frida-core over TCP, on
-*localhost:27042*.
+are typically iOS and Android devices where *frida-server* is running. That
+component is essentially just a daemon that exposes frida-core over TCP,
+listening on *localhost:27042* by default.
 
 ## Embedded
 
 It is sometimes not possible to use Frida in [Injected](#injected) mode, for
 example on jailed iOS and Android systems. For such cases we provide you with
-*frida-gadget*, a shared library that you're supposed to embed inside the app
-that you want to instrument. This library starts running as soon as the dynamic
-linker executes its constructor function, and exposes the same interface as
-*frida-server* does, listening on *localhost:27042*. The only difference is
-that the lists of running processes and installed apps only contain a single
-entry, which is for the app itself. The process name is always just *Gadget*,
-and the installed app's identifier is always *re.frida.Gadget*. In order to
-achieve early instrumentation we let the aforementioned constructor function
-block until you either *attach()* to the process, or call *resume()* after
-going through the usual *spawn()* -> *attach()* -> *…apply instrumentation…*
-steps. This means that existing CLI tools like [frida-trace](/docs/frida-trace/)
-work the same ways you're already using them.
+*frida-gadget*, a shared library that you're supposed to embed inside the
+program that you want to instrument. By simply loading the library it will allow
+you to interact with it remotely, using existing Frida-based tools like
+[frida-trace][]. It also supports a fully autonomous approach where it can run
+scripts off the filesystem without any outside communication.
+
+Read more about Gadget [here](/docs/gadget/).
 
 ## Preloaded
 
 Perhaps you're familiar with *LD_PRELOAD*, or *DYLD_INSERT_LIBRARIES*? Wouldn't
 it be cool if there was *JS_PRELOAD*? This is where *frida-gadget*, the shared
-library discussed in the [Embedded](#embedded) section, also provides a second
-mode of operation which doesn't involve any TCP or outside communication. All
-you need to do is to set the `FRIDA_GADGET_SCRIPT` environment variable to the
-path to the file containing your JavaScript.
+library discussed in the previous section, is really useful when configured to
+run autonomously by loading a script fromt the filesystem.
 
-For example on GNU/Linux, just create the file `hook.js` with the contents:
+Read more about Gadget [here](/docs/gadget/).
 
-{% highlight js %}
-'use strict';
 
-rpc.exports = {
-  init: function () {
-    Interceptor.attach(Module.findExportByName(null, 'open'), {
-      onEnter: function (args) {
-        var path = Memory.readUtf8String(args[0]);
-        console.log('open("' + path + '")');
-      }
-    });
-  }
-};
-{% endhighlight %}
-
-The latest *frida-gadget* for your OS can be found on [GitHub](https://github.com/frida/frida/releases/latest).
-
-Now just set two environment variables and launch your target process:
-
-{% highlight bash %}
-LD_PRELOAD=/path/to/frida-gadget.so \
-FRIDA_GADGET_SCRIPT=/path/to/hook.js \
-cat /etc/hosts
-{% endhighlight %}
-
-Use *DYLD_INSERT_LIBRARIES* on macOS and iOS. Note that */bin/cat* won't work
-on El Capitan and above, as it ignores such attempts for system binaries.
-
-You may also add `FRIDA_GADGET_ENV=development` while developing your
-instrumentation logic, which will make *frida-gadget* watch your file for
-changes and automatically reload the script whenever it changes on disk. This
-will even work if your script hooks functions, like in this example above, as
-all hooks are reverted automatically when the old version of the script is
-unloaded.
-
-The reason we expose an `init()` method using [Frida's RPC feature](/docs/javascript-api/#rpc)
-is because *frida-gadget* will call it and wait for it to return until it lets
-the program continue executing its entrypoint. This means you can return a
-*Promise* if you need to do something asynchronous, e.g. *Memory.scan()* to
-locate a function you want to instrument, and guarantees that you won't miss any
-early calls. You may also expose a `dispose()` method if you need to perform
-some explicit cleanup when the process exits or your script get unloaded before
-the new version is loaded from disk (which happens with
-*FRIDA_GADGET_ENV=development*).
-
-For debugging you can use *console.log()*, *console.warn()*, and
-*console.error()*, which will print to *stdout*/*stderr*.
+[frida-trace]: /docs/frida-trace/
