@@ -50,7 +50,7 @@ Read more about Gadget [here](/docs/gadget/).
 Perhaps you're familiar with *LD_PRELOAD*, or *DYLD_INSERT_LIBRARIES*? Wouldn't
 it be cool if there was *JS_PRELOAD*? This is where *frida-gadget*, the shared
 library discussed in the previous section, is really useful when configured to
-run autonomously by loading a script fromt the filesystem.
+run autonomously by loading a script from the filesystem.
 
 Read more about Gadget [here](/docs/gadget/).
 
