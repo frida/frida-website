@@ -5,7 +5,9 @@ permalink: /docs/gadget/
 ---
 
 Frida's Gadget is a shared library meant to be loaded by programs to be
-instrumented. This may be done in a variety of ways, for example:
+instrumented when the [Injected][] mode of operation isn't suitable.
+
+This may be done in a variety of ways, for example:
 
 -   Modifying the source code of the program
 -   Patching it or one of its libraries, e.g. by using a tool like
@@ -276,5 +278,6 @@ Next to the `filter` key you may also specify `parameters` and `on_change`,
 just like in the [Script](#script) configuration above.
 
 
+[Injected]: /docs/modes/#injected
 [insert_dylib]: https://github.com/Tyilo/insert_dylib
 [rpc]: /docs/javascript-api/#rpc
