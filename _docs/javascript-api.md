@@ -241,18 +241,15 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     `darwin`, `linux` or `qnx`
 
 +   `Process.pageSize`: property containing the size of a virtual memory page
-    (in bytes) as a JavaScript number. This is used to make your scripts more
-    portable.
+    (in bytes) as a number. This is used to make your scripts more portable.
 
 +   `Process.pointerSize`: property containing the size of a pointer
-    (in bytes) as a JavaScript number. This is used to make your scripts more
-    portable.
+    (in bytes) as a number. This is used to make your scripts more portable.
 
 +   `Process.isDebuggerAttached()`: returns a boolean indicating whether a
     debugger is currently attached
 
-+   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a
-    JavaScript number
++   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a number
 
 +   `Process.enumerateThreads(callbacks)`: enumerate all threads,
     where `callbacks` is an object specifying:
@@ -523,7 +520,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
         -   `onMatch: function (address, size)`: called with `address`
             containing the address of the occurence as a `NativePointer` and
-            `size` specifying the size as a JavaScript number.
+            `size` specifying the size as a number.
 
             This function may return the string `stop` to cancel the memory
             scanning early.
@@ -597,7 +594,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     `Memory.readInt(address)`, `Memory.readUInt(address)`,
     `Memory.readFloat(address)`, `Memory.readDouble(address)`:
     read a signed or unsigned 8/16/32/etc. or float/double value from
-    `address` and return it as a JavaScript number.
+    `address` and return it as a number.
 
     A JavaScript exception will be thrown if `address` isn't readable.
 
@@ -607,8 +604,8 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     `Memory.writeShort(address, value)`, `Memory.writeUShort(address, value)`,
     `Memory.writeInt(address, value)`, `Memory.writeUInt(address, value)`,
     `Memory.writeFloat(address, value)`, `Memory.writeDouble(address, value)`:
-    write the JavaScript number `value` to the signed or unsigned
-    8/16/32/etc. or float/double value at `address`.
+    write the number `value` to the signed or unsigned 8/16/32/etc. or
+    float/double value at `address`.
 
     A JavaScript exception will be thrown if `address` isn't writable.
 
@@ -745,21 +742,20 @@ Interceptor.attach(f, {
 {% endhighlight %}
 
 +   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
-    seconds specified as a JavaScript number. For example 0.05 to sleep for
-    50 ms.
+    seconds specified as a number. For example 0.05 to sleep for 50 ms.
 
 
 ## Int64
 
-+   `new Int64(v)`: create a new Int64 from `v`, which is either a JavaScript
-    Number or a string containing a value in decimal, or hexadecimal if prefixed
-    with "0x". You may use the `int64(v)` short-hand for brevity.
++   `new Int64(v)`: create a new Int64 from `v`, which is either a number or a
+    string containing a value in decimal, or hexadecimal if prefixed with "0x".
+    You may use the `int64(v)` short-hand for brevity.
 
 -   `add(rhs)`, `sub(rhs)`,
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
     make a new Int64 with this Int64 plus/minus/and/or/xor `rhs`, which may
-    either be a JavaScript number or another Int64
+    either be a number or another Int64
 
 -   `shr(n)`, `shl(n)`:
     make a new Int64 with this Int64 shifted right/left by `n` bits
@@ -767,7 +763,7 @@ Interceptor.attach(f, {
 -   `compare(rhs)`: returns an integer comparison result just like
     String#localeCompare()
 
--   `toNumber()`: cast this Int64 to a JavaScript Number
+-   `toNumber()`: cast this Int64 to a number
 
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
@@ -775,15 +771,15 @@ Interceptor.attach(f, {
 
 ## UInt64
 
-+   `new UInt64(v)`: create a new UInt64 from `v`, which is either a JavaScript
-    Number or a string containing a value in decimal, or hexadecimal if prefixed
-    with "0x". You may use the `uint64(v)` short-hand for brevity.
++   `new UInt64(v)`: create a new UInt64 from `v`, which is either a number or a
+    string containing a value in decimal, or hexadecimal if prefixed with "0x".
+    You may use the `uint64(v)` short-hand for brevity.
 
 -   `add(rhs)`, `sub(rhs)`,
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
     make a new UInt64 with this UInt64 plus/minus/and/or/xor `rhs`, which may
-    either be a JavaScript number or another UInt64
+    either be a number or another UInt64
 
 -   `shr(n)`, `shl(n)`:
     make a new UInt64 with this UInt64 shifted right/left by `n` bits
@@ -791,7 +787,7 @@ Interceptor.attach(f, {
 -   `compare(rhs)`: returns an integer comparison result just like
     String#localeCompare()
 
--   `toNumber()`: cast this UInt64 to a JavaScript Number
+-   `toNumber()`: cast this UInt64 to a number
 
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
@@ -810,7 +806,7 @@ Interceptor.attach(f, {
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
     make a new NativePointer with this NativePointer plus/minus/and/or/xor
-    `rhs`, which may either be a JavaScript number or another NativePointer
+    `rhs`, which may either be a number or another NativePointer
 
 -   `shr(n)`, `shl(n)`:
     make a new NativePointer with this NativePointer shifted right/left by `n`
@@ -944,7 +940,7 @@ friendlyFunctionName(returnValue, thisPtr);
     The object returned has the fields:
 
     -   `ip`: (IP sockets) IP address as a string.
-    -   `port`: (IP sockets) Port number as a JavaScript number.
+    -   `port`: (IP sockets) IP port as a number.
     -   `path`: (UNIX sockets) UNIX path as a string.
 
 
@@ -1481,7 +1477,7 @@ resolver.enumerateMatches('-[NSURL* *HTTP*]', {
     -   `name`: Name of the symbol, as a string.
     -   `moduleName`: Module name owning this symbol, as a string.
     -   `fileName`: File name owning this symbol, as a string.
-    -   `lineNumber`: Line number in `fileName`, as a JavaScript number.
+    -   `lineNumber`: Line number in `fileName`, as a number.
 
     You may also call `toString()` on it, which is very useful when combined
     with `Thread.backtrace()`:
