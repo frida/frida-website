@@ -42,7 +42,8 @@ root. It supports three different keys at the root level:
     `interpreter`, i.e. Duktape, which uses less memory at the expense of speed
     and JavaScript language features.
 
-## Table of contents
+## Supported interaction types
+
   1. [Listen](#listen)
   1. [Script](#script)
   1. [ScriptDirectory](#script-directory)
