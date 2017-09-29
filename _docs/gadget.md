@@ -280,4 +280,4 @@ just like in the [Script](#script) configuration above.
 
 [Injected]: /docs/modes/#injected
 [insert_dylib]: https://github.com/Tyilo/insert_dylib
-[rpc]: /docs/javascript-api/#rpc
+[rpc.exports]: /docs/javascript-api/#rpc
