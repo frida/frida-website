@@ -140,8 +140,8 @@ needs to be aware of its lifecycle.
 
 Gadget calls your `init()` method and waits for it to return before letting the
 program execute its entrypoint. This means you can return a *Promise* if you
-need to do something asynchronous, e.g. *Socket.connect()*, and guarantees that
-you won't miss any early calls.
+need to do something asynchronous, e.g. [Socket.connect()][], and guarantees
+that you won't miss any early calls.
 The first argument, `stage`, is a string specifying either `early` or `late`,
 useful for knowing if Gadget was just loaded, or the script is being reloaded.
 More on the latter topic below.
@@ -281,3 +281,4 @@ just like in the [Script](#script) configuration above.
 [Injected]: /docs/modes/#injected
 [insert_dylib]: https://github.com/Tyilo/insert_dylib
 [rpc.exports]: /docs/javascript-api/#rpc
+[Socket.connect()]: /docs/javascript-api/#socket
