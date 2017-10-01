@@ -6,7 +6,7 @@ overview: true
 <section class="intro">
   <div class="grid">
     <div class="unit whole center-on-mobiles">
-      <p class="first">Free/libre dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers.</p>
+      <p class="first">Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers.</p>
     </div>
   </div>
 </section>
@@ -16,17 +16,28 @@ overview: true
       <h2>Scriptable</h2>
       <p>
         Inject your own scripts into black box processes. Edit a script, hit
-        save in your text editor, and instantly see the results. No compilation
-        or deployment steps or program restarts needed. Hook any function, spy
-        on crypto APIs or trace private application code, no source code needed!
+        save in your text editor, and instantly see the results. No compilation,
+        deployment, or program restart needed. Hook any function, spy on crypto
+        APIs or trace private application code, no source code needed either!
+        Frida can also do stealthy code tracing without relying on software or
+        hardware breakpoints. Think <a href="http://en.wikipedia.org/wiki/DTrace">DTrace</a>
+        in user-space, based on dynamic recompilation, like <a href="http://www.dynamorio.org/">DynamoRIO</a>
+        and <a href="http://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool">PIN</a>,
+        but fully scriptable.
       </p>
     </div>
     <div class="unit one-third">
       <h2>Portable</h2>
       <p>
-        Works on Windows, macOS, GNU/Linux, iOS, Android, and QNX. Install the Node.js bindings from
-        <a href="https://www.npmjs.com/package/frida">npm</a>, grab a Python package from
-        <a href="https://pypi.python.org/pypi/frida">PyPI</a>, or use Frida through its
+        Built with portability in mind from day one, Frida works on a lot of
+        different OSes and architectures. Currently this means Windows, macOS,
+        GNU/Linux, iOS, Android, and QNX, spanning architectures from Intel to
+        ARM, ARM64, and MIPS. QNX and MIPS are the most recent additions, thanks
+        to a member of our awesome community.
+        We also have a wide range of language bindings. Install the Node.js
+        bindings from <a href="https://www.npmjs.com/package/frida">npm</a>,
+        grab a Python package from <a href="https://pypi.python.org/pypi/frida">PyPI</a>,
+        or use Frida through our
         <a href="https://github.com/frida/frida-swift">Swift bindings</a>,
         <a href="http://build.frida.re/frida/windows/x64-Release/bin/Frida.dll">.NET bindings</a>,
         <a href="https://github.com/frida/frida/releases">Qt/Qml bindings</a>, or
@@ -34,15 +45,18 @@ overview: true
       </p>
     </div>
     <div class="unit one-third">
-      <h2>Proven</h2>
+      <h2>Free</h2>
       <p>
-        Incorporated within the <a href="https://www.nowsecure.com/">NowSecure</a> mobile app
-        security testing platform for fast, deep analysis of mobile apps
+        Frida is and will always be <a href="https://www.gnu.org/philosophy/free-sw.en.html">free software</a>.
+        We want to empower the next generation of developer tools, and
+        help people achieve interoperability through reverse engineering.
+        Also, recognizing that a lot of companies roll their own dynamic
+        instrumentation, we think it would be awesome if we could all
+        collaborate on building the best possible toolkit to faciliate this.
+        Hence, our licensing allows using Frida in non-free software. We are
+        proud that <a href="https://www.nowsecure.com/">NowSecure</a> is using
+        Frida to do fast, deep analysis of mobile apps
         <a href="https://www.nowsecure.com/solutions/mobile-app-vetting/">at scale</a>.
-        Trusted by <a href="https://github.com/dweinstein/awesome-frida">awesome</a> developers
-        and security researchers world-wide, with Frida-based tools made by
-        a vibrant <a href="https://codeshare.frida.re">community</a>, including
-        <a href="https://github.com/google/ssl_logger">Google</a> and many others.
       </p>
     </div>
     <div class="clear"></div>
