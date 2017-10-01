@@ -48,7 +48,7 @@ root. It supports three different keys at the root level:
 
   1. [Listen](#listen)
   1. [Script](#script)
-  1. [ScriptDirectory](#script-directory)
+  1. [ScriptDirectory](#scriptdirectory)
 
 ## Listen
 
