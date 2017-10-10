@@ -820,6 +820,8 @@ Interceptor.attach(f, {
     make a new NativePointer with this NativePointer shifted right/left by `n`
     bits
 
+-   `not()`: make a new NativePointer with this NativePointer's bits inverted
+
 -   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
     this one; i.e. it has the same pointer value
 
