@@ -254,6 +254,14 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 +   `Process.pointerSize`: property containing the size of a pointer
     (in bytes) as a number. This is used to make your scripts more portable.
 
++   `Process.codeSigningPolicy`: property containing the string `optional` or
+    `required`, where the latter means Frida will avoid modifying existing code
+    in memory and will not try to run unsigned code. Currently this property
+    will always be set to `optional` unless you are using [Gadget](/docs/gadget)
+    and have configured it to assume that code-signing is required. This
+    property allows you to determine whether the [Interceptor](#interceptor) API
+    is off limits, and whether it is safe to modify code or run unsigned code.
+
 +   `Process.isDebuggerAttached()`: returns a boolean indicating whether a
     debugger is currently attached
 

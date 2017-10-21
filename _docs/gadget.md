@@ -28,7 +28,7 @@ dodging anti-Frida detection schemes that look for a loaded library with "Frida"
 in its name.
 
 The config file should be a UTF-8 encoded text file with a JSON object as its
-root. It supports three different keys at the root level:
+root. It supports four different keys at the root level:
 
 -   `interaction`: object describing which interaction to use. It defaults to
     the [Listen](#listen) interaction.
@@ -43,6 +43,17 @@ root. It supports three different keys at the root level:
     letting you choose between Duktape and V8, respectively. The default is
     `interpreter`, i.e. Duktape, which uses less memory at the expense of speed
     and JavaScript language features.
+
+-   `code_signing`: string specifying either `optional` or `required`, making
+    it possible to run on a jailed iOS device without a debugger attached by
+    setting this to `required`. The default is `optional`, which means Frida
+    will assume that it is possible to modify existing code in memory and run
+    unsigned code, both without getting killed by the kernel. Setting this to
+    `required` also means the Interceptor API is unavailable. So on a jailed
+    iOS device the only way to use the Interceptor API is if a debugger is
+    attached prior to Gadget being loaded. Note that it is sufficient to just
+    launch the app with a debugger, it does not have to remain attached as the
+    relaxed code-signing state is sticky once set.
 
 ## Supported interaction types
 
