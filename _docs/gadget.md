@@ -171,8 +171,13 @@ For debugging you can use *console.log()*, *console.warn()*, and
 Supported configuration keys are:
 
 -   `path`: string specifying the filesystem path to the script to load. May
-    also be a path relative to where the Gadget binary resides. This key does
-    not have a default value and must be provided.
+    also be a path relative to where the Gadget binary resides. Specifying a
+    relative path on iOS will first look for the script relative to the app's
+    Documents directory. This means you can use iTunes file sharing to upload
+    an updated version of the script, or update it by vending the whole
+    container through AFC, which is allowed for debuggable apps. This is
+    especially useful together with `"on_change": "reload"`.
+    This key does not have a default value and must be provided.
 
 -   `parameters`: object containing arbitrary configuration data that you would
     like to pass to the `init()` RPC method. Defaults to an empty object.
