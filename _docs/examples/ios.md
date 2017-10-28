@@ -101,7 +101,7 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
 ## Data Structures
 
->**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `log("Type of args[2] -> " + ObjC.Object(args[2]).$className)` to check the type of class that was decoded!
+>**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `console.log("Type of args[2] -> " + new ObjC.Object(args[2]).$className)` to determine the actual type of the object that you're dealing with!
 
 1. Converting NSData to String
 -
@@ -122,8 +122,8 @@ Memory.readByteArray(data.bytes(), data.length());
 -
 ```
 var array = new ObjC.Object(args[2]);
-var count = array.count().valueOf();
-for (var i = 0; i < count; i++) {
+var count = array.count().valueOf();  // Be sure to use valueOf!
+for (var i = 0; i !== count; i++) {
   var element = array.objectAtIndex_(i);
 }
 ```
