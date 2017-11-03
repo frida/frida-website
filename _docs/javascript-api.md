@@ -397,6 +397,12 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 ## Module
 
++   `Module.ensureInitialized(name)`: ensure that initializers of the specified
+    module have been run. This is important during early instrumentation, i.e.
+    code run early in the process lifetime, to be able to safely interact with
+    APIs. One such use-case is interacting with [ObjC](#objc) classes provided
+    by a given module.
+
 +   `Module.enumerateImports(name, callbacks)`: enumerate imports of module with
     the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
     specifying:
