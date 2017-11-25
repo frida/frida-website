@@ -235,9 +235,15 @@ session.detach()
 
 In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
 
+
 ## Frida
 
 +   `Frida.version`: property containing the current Frida version
+
++   `Frida.heapSize`: dynamic property containing the current size of Frida's
+    private heap, shared by all scripts and Frida's own runtime. This is useful
+    for keeping an eye on how much memory your instrumentation is using out of
+    the total consumed by the hosting process.
 
 
 ## Process
