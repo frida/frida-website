@@ -101,6 +101,8 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
 ## Data Structures
 
+>**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `console.log("Type of args[2] -> " + new ObjC.Object(args[2]).$className)` to determine the actual type of the object that you're dealing with!
+
 1. Converting NSData to String
 -
 ```
@@ -112,13 +114,15 @@ Memory.readUtf8String(data.bytes(), data.length());
 2. Converting NSData to Binary Data
 -
 ```
+var data = new ObjC.Object(args[2]);
 Memory.readByteArray(data.bytes(), data.length());
 ```
 
 3. Iterating an NSArray
 -
 ```
-var count = array.count();
+var array = new ObjC.Object(args[2]);
+var count = array.count().valueOf();  // Be sure to use valueOf!
 for (var i = 0; i !== count; i++) {
   var element = array.objectAtIndex_(i);
 }
@@ -127,6 +131,7 @@ for (var i = 0; i !== count; i++) {
 4. Iterating an NSDictionary
 -
 ```
+var dict = new ObjC.Object(args[2]);
 var enumerator = dict.keyEnumerator();
 var key;
 while ((key = enumerator.nextObject()) !== null) {
