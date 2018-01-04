@@ -122,7 +122,12 @@ Memory.readByteArray(data.bytes(), data.length());
 -
 ```
 var array = new ObjC.Object(args[2]);
-var count = array.count().valueOf();  // Be sure to use valueOf!
+/*
+ * Be sure to use valueOf() as NSUInteger is a Number in
+ * 32-bit processes, and UInt64 in 64-bit processes. This
+ * coerces it into a Number in the latter case.
+ */
+var count = array.count().valueOf();
 for (var i = 0; i !== count; i++) {
   var element = array.objectAtIndex_(i);
 }
