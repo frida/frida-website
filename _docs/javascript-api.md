@@ -535,6 +535,11 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 -   `update()`: update the map. You should call this after a module has been
     loaded or unloaded to avoid operating on stale data.
 
+-   `values()`: returns an array with the modules currently in the map. The
+    returned array is a deep copy and will not mutate after a call to
+    `update()`. See `Process.enumerateModules()` for details about which fields
+    are included in each module object.
+
 
 ## Memory
 
