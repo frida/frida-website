@@ -2098,9 +2098,6 @@ Java.perform(function () {
 
     -   `onComplete: function ()`: called when all instances have been enumerated
 
-+   `Java.chooseSync(className)`: synchronous version of `choose()` that returns
-    the instances in an array.
-
 +   `Java.cast(handle, klass)`: create a JavaScript wrapper given the existing
     instance at `handle` of given class `klass` (as returned from
     `Java.use()`). Such a wrapper also has a `class` property for getting a
