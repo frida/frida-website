@@ -2463,7 +2463,15 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `skip(nBytes)`: skip `nBytes`
 
+-   `putLabel(id)`: put a label at the current position, where `id` is a string
+    that may be referenced in past and future `put*Label()` calls
+
 -   `putBImm(target)`: put a B instruction
+
+-   `putBxReg(reg)`: put a BX instruction
+
+-   `putBLabel(labelId)`: put a B instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
 
 -   `putLdrRegAddress(reg, address)`: put an LDR instruction
 
@@ -2593,6 +2601,8 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 -   `putBCondLabel(cc, labelId)`: put a B COND instruction
     referencing `labelId`, defined by a past or future `putLabel()`
 
+-   `putBCondLabelWide(cc, labelId)`: put a B COND WIDE instruction
+
 -   `putCbzRegLabel(reg, labelId)`: put a CBZ instruction
     referencing `labelId`, defined by a past or future `putLabel()`
 
@@ -2639,6 +2649,10 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
 
+-   `putMrsRegReg(dstReg, srcReg)`: put a MRS instruction
+
+-   `putMsrRegReg(dstReg, srcReg)`: put a MSR instruction
+
 -   `putNop()`: put a NOP instruction
 
 -   `putBkptImm(imm)`: put a BKPT instruction
@@ -2646,6 +2660,9 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 -   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
+
+-   `putInstructionWide(upper, lower)`: put a raw Thumb-2 instruction from
+    two JavaScript Number values
 
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
@@ -2698,6 +2715,7 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   Register: `r0` `r1` `r2` `r3` `r4` `r5` `r6` `r7` `r8` `r9` `r10` `r11`
     `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc`
+-   SystemRegister: `apsr_nzcvq`
 -   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
     `gt` `le` `al`
 
@@ -2799,6 +2817,8 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     from a previous `putLdrRegRef()`
 
 -   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
+
+-   `putLdrswRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDRSW instruction
 
 -   `putAdrpRegAddress(reg, address)`: put an ADRP instruction
 
