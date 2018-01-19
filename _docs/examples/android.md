@@ -53,6 +53,8 @@ script.load()
 sys.stdin.read()
 {% endhighlight %}
 
+Note we use `this.m.value = 0` instead of `this.m = 0` to set the field's value. If there is also a method in this class called `m`, we need to use `this._m.value = 0` to set the value of field `m`.
+
 
 ## Example what we can do in the Java context
 
