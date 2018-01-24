@@ -2576,18 +2576,23 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putBImm(target)`: put a B instruction
 
--   `putBxReg(reg)`: put a BX instruction
+-   `putBLabel(labelId)`: put a B instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
 
--   `putBlxReg(reg)`: put a BLX instruction
+-   `putBLabelWide(labelId)`: put a B WIDE instruction
+
+-   `putBxReg(reg)`: put a BX instruction
 
 -   `putBlImm(target)`: put a BL instruction
 
+-   `putBlLabel(labelId)`: put a BL instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
 -   `putBlxImm(target)`: put a BLX instruction
 
--   `putCmpRegImm(reg, immValue)`: put a CMP instruction
+-   `putBlxReg(reg)`: put a BLX instruction
 
--   `putBLabel(labelId)`: put a B instruction
-    referencing `labelId`, defined by a past or future `putLabel()`
+-   `putCmpRegImm(reg, immValue)`: put a CMP instruction
 
 -   `putBeqLabel(labelId)`: put a BEQ instruction
     referencing `labelId`, defined by a past or future `putLabel()`
