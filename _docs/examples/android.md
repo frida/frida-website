@@ -53,7 +53,11 @@ script.load()
 sys.stdin.read()
 {% endhighlight %}
 
-Note we use `this.m.value = 0` instead of `this.m = 0` to set the field's value. If there is also a method in this class called `m`, we need to use `this._m.value = 0` to set the value of field `m`.
+Note we use `this.m.value = 0` instead of `this.m = 0` to set the field's value.
+If there is also a method in this class called `m`, we need to use
+`this._m.value = 0` to set the value of field `m`.  In general, when looking at
+the properties of objects it will be necessary to use `.value` to access the
+values those fields refer to.
 
 
 ## Example what we can do in the Java context
