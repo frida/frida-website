@@ -2186,6 +2186,9 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putCallIndirect(addr)`: put a CALL instruction
 
+-   `putCallIndirectLabel(labelId)`: put a CALL instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
 -   `putCallNearLabel(labelId)`: put a CALL instruction
     referencing `labelId`, defined by a past or future `putLabel()`
 
@@ -2778,6 +2781,9 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     referencing `labelId`, defined by a past or future `putLabel()`
 
 -   `putBlImm(address)`: put a BL instruction
+
+-   `putBlLabel(labelId)`: put a BL instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
 
 -   `putBrReg(reg)`: put a BR instruction
 
