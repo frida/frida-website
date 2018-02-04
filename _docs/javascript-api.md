@@ -418,6 +418,8 @@ In the example above we used `script.on('message', on_message)` to monitor for a
         -   `name`: import name as a string
         -   `module`: module name as a string
         -   `address`: absolute address as a `NativePointer`
+        -   `slot`: memory location where the import is stored, as a
+            `NativePointer`
 
         Only the `name` field is guaranteed to be present for all imports. The
         platform-specific backend will do its best to resolve the other fields
