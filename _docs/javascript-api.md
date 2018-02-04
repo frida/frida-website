@@ -479,7 +479,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     `enumerateSymbols()` that returns the symbols in an array.
 
 <div class="note info">
-  <h5>Module.enumerateSymbols() is only available on i/macOS for now</h5>
+  <h5>Module.enumerateSymbols() is only available on i/macOS and Linux-based OSes</h5>
   <p>
     We would love to support this on the other platforms too, so if you find
     this useful and would like to help out, please get in touch. You may also
