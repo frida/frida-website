@@ -8,14 +8,14 @@ categories: [release]
 ---
 
 iOS users rejoice: Frida is now compatible with the latest [Electra][]
-jailbreak on iOS 11. At the time of this writing that means 1.0.4, but
+jailbreak on iOS 11! At the time of this writing that means 1.0.4, but
 now that Electra seems to have stabilized it should be safe to assume
 that we'll also be compatible with future updates. Just make sure you're
 not running anything older than 1.0.4.
 
 In other news, our Android support has improved significantly over the
-last releases, so if you're even slightly behind: go grab 10.7 right
-away.
+last releases, so if you're even slightly behind: go grab the latest
+10.7.x right away.
 
 Enjoy!
 
