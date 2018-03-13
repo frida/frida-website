@@ -114,7 +114,10 @@ Download the latest `FridaGadget.dylib` for iOS and sign it:
 {% highlight bash %}
 $ mkdir Frameworks
 $ cd Frameworks
-$ curl -O https://build.frida.re/frida/ios/lib/FridaGadget.dylib
+$ frida_version=x.y.z
+$ curl https://github.com/frida/frida/releases/download\
+/$frida_version/frida-gadget-$frida_version-ios-univers\
+al.dylib.xz | xz -d > FridaGadget.dylib
 $ security find-identity -p codesigning -v
   1) A30E15162B3EB979D2572783BF3… "Developer ID Application: …"
   2) E18BA16DF86318F0ECA4BE17C03… "iPhone Developer: …"
