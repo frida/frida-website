@@ -2840,6 +2840,8 @@ var activity = Java.cast(ptr("0x1234"), Activity);
 
 -   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
 
+-   `putUxtwRegReg(dstReg, srcReg)`: put an UXTW instruction
+
 -   `putAddRegRegImm(dstReg, leftReg, rightValue)`: put an ADD instruction
 
 -   `putAddRegRegReg(dstReg, leftReg, rightReg)`: put an ADD instruction
