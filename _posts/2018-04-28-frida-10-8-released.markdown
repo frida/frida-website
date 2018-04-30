@@ -40,9 +40,8 @@ Or in plain English: programs that start other programs, either by replacing
 themselves entirely, e.g. *execve()*, or by spawning a child process, e.g.
 *posix_spawn()* without *POSIX_SPAWN_SETEXEC*.
 
-Just like after a *fork()* happened you will now be able to apply
-instrumentation and control when the child process starts running its first
-instructions.
+Just like after a *fork()* happened you are now able to apply instrumentation
+and control when the child process starts running its first instructions.
 
 ### Limitation #3: dealing with sudden process termination
 
