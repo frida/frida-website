@@ -34,7 +34,7 @@ channel, and start things back up afterwards. You are then able to apply the
 desired instrumentation to the child, if any, before letting it continue
 running.
 
-### Limitation #2: execve(), posix_spawn(), CreateProcess, and friends
+### Limitation #2: execve(), posix_spawn(), CreateProcess(), and friends
 
 Or in plain English: programs that start other programs, either by replacing
 themselves entirely, e.g. *execve()*, or by spawning a child process, e.g.
