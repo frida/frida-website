@@ -73,8 +73,8 @@ you should be applying the desired instrumentation, if any, before calling
 children. Processes will remain suspended and part of that list until they're
 resumed by you, or eventually killed.
 
-So that's the theory. Let's have a look at a practical example, using Frida's
-Python bindings:
+So that's the theory. Let's have a look at a practical [example][], using
+Frida's Python bindings:
 
 {% highlight python %}
 from __future__ import print_function
@@ -216,4 +216,5 @@ This means you can also instrument Zygote for your own needs. Just remember to
 So that's pretty much it for this release. Enjoy!
 
 
+[example]: https://github.com/frida/frida-python/blob/c846da1191e50e017235f29580c737f5b8555d9a/examples/child_gating.py
 [RPC]: /docs/javascript-api/#rpc
