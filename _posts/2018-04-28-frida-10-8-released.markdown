@@ -8,7 +8,7 @@ categories: [release]
 ---
 
 Get ready for a major upgrade. This time we have solved our three longest
-standing limitations, all in one release.
+standing limitations – all in one release.
 
 ### Limitation #1: fork()
 
