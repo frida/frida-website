@@ -7,7 +7,7 @@ version: 10.8
 categories: [release]
 ---
 
-Get ready for a major upgrade. This time we are solving our three longest
+Get ready for a major upgrade. This time we have solved our three longest
 standing limitations, all in one release.
 
 ### Limitation #1: fork()
