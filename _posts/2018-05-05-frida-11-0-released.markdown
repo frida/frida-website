@@ -26,7 +26,7 @@ pid = device.spawn(["com.apple.mobilesafari"])
 
 Well, that's pretty much all you could do with that API really... except one
 thing that wasn't exposed by the Python and Node.js bindings. We'll get to
-that in a bit. Before we go there, let's take a peek at the underlying [API][]
+that in a bit. Before we go there, let's take a look at the underlying [API][]
 in frida-core, which these bindings expose to different languages:
 
 {% highlight vala %}
