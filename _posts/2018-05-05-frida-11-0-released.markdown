@@ -242,7 +242,7 @@ const pid = await device.spawn('/bin/sh', {
 So as you can see, the second argument is an object with options, and those not
 recognized end up in the aux dictionary.
 
-### The rest
+### Remaining changes in 11.0.0
 
 Let's just summarize the remaining changes, starting with the *Device* class:
 
@@ -256,6 +256,13 @@ Let's just summarize the remaining changes, starting with the *Device* class:
 The final change is that the *Child* class' *path*, *argv*, and *envp*
 properties are now all nullable. This is to be able to discern e.g. "no *envp*
 provided" from "empty *envp* provided".
+
+### Changes in 11.0.1
+
+- core: fix stack alignment of agent thread for 32-bit ARM processes
+- core: fix fragile SELinux rule patching
+
+### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
 happened last week, make sure you go read about it [here][].
