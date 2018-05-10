@@ -262,6 +262,10 @@ provided" from "empty *envp* provided".
 - core: fix stack alignment of agent thread for 32-bit ARM processes
 - core: fix fragile SELinux rule patching
 
+### Changes in 11.0.2
+
+- core: plug Mach ports leaks in spawn()-logic on i/macOS (long-standing issue)
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
