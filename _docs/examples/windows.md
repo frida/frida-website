@@ -82,7 +82,7 @@ def main(target_process):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print "Usage: %s <process name or PID>" % __file__
+        print("Usage: %s <process name or PID>" % __file__)
         sys.exit(1)
 
     try:

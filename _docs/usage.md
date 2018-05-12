@@ -37,7 +37,7 @@ by the target process' session `s`.
 Running:
 
 {% highlight py %}
-print s.enumerate_ranges('rw-')
+print(s.enumerate_ranges('rw-'))
 {% endhighlight %}
 
 should give you something like:
@@ -59,7 +59,7 @@ in data (a raw Python string) to `address`.
 Running:
 
 {% highlight py %}
-print s.read_bytes(49758817247232, 10).encode("hex")
+print(s.read_bytes(49758817247232, 10).encode("hex"))
 {% endhighlight %}
 
 should give you some binary data, e.g.:
