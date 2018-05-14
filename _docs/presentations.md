@@ -181,3 +181,15 @@ material becomes available, we will try to put it here.
 
   This talk will introduce Frida and show how it can be used to aid in analysis
   of binary applications. It will be packed with demos.
+  
+- [GPN 2018](https://entropia.de/GPN18):
+  [Frida - (Game)Hacking mit JavaScript](https://www.youtube.com/watch?v=6QpRD3tkw48) (German presentation)
+
+  Jeder kennt JavaScript. Aber wie viele wissen, dass sich mit JavaScript auch
+  ganz gut Spiele oder Programme hacken lassen? Ich stelle das Frida Framework
+  vor, welches genau das ermöglicht!
+
+  Frida ist ein Framework, welches es erlaubt JavaScript in Prozesse zu laden.
+  Es wird dafür der V8 JavaScript Interpreter in einen Prozess geladen, welcher
+  diverse Features mitbringt. Speichermanipulation, Hooks, Detours, alles ist
+  möglich!
