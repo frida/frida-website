@@ -185,8 +185,11 @@ material becomes available, we will try to put it here.
 - [GPN 2018](https://entropia.de/GPN18):
   [Frida - (Game)Hacking mit JavaScript](https://www.youtube.com/watch?v=6QpRD3tkw48) (German presentation)
 
-  Jeder kennt JavaScript. Aber wie viele wissen, dass sich mit JavaScript auch ganz gut Spiele oder Programme hacken lassen? Ich stelle   das Frida Framework vor, welches genau das ermöglicht!
+  Jeder kennt JavaScript. Aber wie viele wissen, dass sich mit JavaScript auch
+  ganz gut Spiele oder Programme hacken lassen? Ich stelle das Frida Framework
+  vor, welches genau das ermöglicht!
 
   Frida ist ein Framework, welches es erlaubt JavaScript in Prozesse zu laden.
-  Es wird dafür der V8 JavaScript Interpreter in einen Prozess geladen, welcher diverse Features mitbringt.
-  Speichermanipulation, Hooks, Detours, alles ist möglich!
+  Es wird dafür der V8 JavaScript Interpreter in einen Prozess geladen, welcher
+  diverse Features mitbringt. Speichermanipulation, Hooks, Detours, alles ist
+  möglich!
