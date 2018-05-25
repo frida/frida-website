@@ -342,7 +342,8 @@ In the example above we used `script.on('message', on_message)` to monitor for a
             containing:
 
             -   `path`: full filesystem path as a string
-            -   `offset`: offset in bytes
+            -   `offset`: offset in the mapped file on disk, in bytes
+            -   `size`: size in the mapped file on disk, in bytes
 
         This function may return the string `stop` to cancel the enumeration
         early.
