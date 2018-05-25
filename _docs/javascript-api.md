@@ -460,11 +460,16 @@ In the example above we used `script.on('message', on_message)` to monitor for a
         -   `isGlobal`: boolean specifying whether symbol is globally visible
         -   `type`: string specifying one of:
             -   unknown
-            -   undefined
-            -   absolute
             -   section
-            -   prebound-undefined
-            -   indirect
+            -   undefined (Mach-O)
+            -   absolute (Mach-O)
+            -   prebound-undefined (Mach-O)
+            -   indirect (Mach-O)
+            -   object (ELF)
+            -   function (ELF)
+            -   file (ELF)
+            -   common (ELF)
+            -   tls (ELF)
         -   `section`: if present, is an object containing:
             -   `id`: string containing section index, segment name (if
                       applicable) and section name – same format as
