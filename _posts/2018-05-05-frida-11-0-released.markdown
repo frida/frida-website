@@ -266,6 +266,30 @@ provided" from "empty *envp* provided".
 
 - core: plug Mach ports leaks in spawn()-logic on i/macOS (long-standing issue)
 
+### Changes in 11.0.3
+
+- core: fix crash on iPhone 8 and X caused by bad tls_base calculation on arm64
+
+### Changes in 11.0.4
+
+- python: update metadata and bump requirements
+
+### Changes in 11.0.5
+
+- core: fix compatibility issue with Electra's Tweak Injector
+- core: fix process name truncation in *enumerate_processes()* on iOS
+- java: Java.registerClass() now supports overloads
+- packaging: every new release now comes with packages for Fedora and Ubuntu
+
+### Changes in 11.0.6
+
+- python: fix dependency spec so REPL works again when installed from PyPI
+
+### Changes in 11.0.7
+
+- core: better child gating API coverage on Windows
+- python: 2.7 binaries for Linux are no longer broken when installed from PyPI
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
