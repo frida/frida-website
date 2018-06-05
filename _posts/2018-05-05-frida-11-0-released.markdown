@@ -299,6 +299,11 @@ provided" from "empty *envp* provided".
 
 - java: fix issue preventing *Java.registerClass()* during early instrumentation
 
+### Changes in 11.0.10
+
+- core: fix crash when enumerating imports/exports of ELF modules with an empty
+  DT_GNU_HASH
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
