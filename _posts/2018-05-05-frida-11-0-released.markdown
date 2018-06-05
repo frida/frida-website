@@ -295,6 +295,10 @@ provided" from "empty *envp* provided".
 - core: fix race resulting in crash on system session setup on some platforms
 - python: fix deadlock on interpreter shutdown
 
+### Changes in 11.0.9
+
+- java: fix issue preventing *Java.registerClass()* during early instrumentation
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
