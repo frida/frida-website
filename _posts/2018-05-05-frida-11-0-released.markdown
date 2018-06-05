@@ -290,6 +290,11 @@ provided" from "empty *envp* provided".
 - core: better child gating API coverage on Windows
 - python: 2.7 binaries for Linux are no longer broken when installed from PyPI
 
+### Changes in 11.0.8
+
+- core: fix race resulting in crash on system session setup on some platforms
+- python: fix deadlock on interpreter shutdown
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
