@@ -304,6 +304,11 @@ provided" from "empty *envp* provided".
 - core: fix crash when enumerating imports/exports of ELF modules with an empty
   DT_GNU_HASH
 
+### Changes in 11.0.11
+
+- java: fix type compatibility checking, which typically resulted in the wrong
+  overload getting called, in turn causing the VM to abort()
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
