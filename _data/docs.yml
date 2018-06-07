@@ -31,6 +31,8 @@
   - frida-ps
   - frida-trace
   - frida-discover
+  - frida-ls-devices
+  - frida-kill
 
 - title: API Reference
   docs:
