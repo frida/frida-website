@@ -309,6 +309,12 @@ provided" from "empty *envp* provided".
 - java: fix type compatibility checking, which typically resulted in the wrong
   overload getting called, in turn causing the VM to abort()
 
+### Changes in 11.0.12
+
+- core: fix compatibility issues with the latest macOS Mojave and iOS 12 betas
+- core: improve the iOS *Kernel* API available in the system session, i.e. PID 0
+- frida-trace: fix crash when tracer scripts *send()* arbitrary data
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that
