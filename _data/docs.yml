@@ -33,6 +33,7 @@
   - frida-discover
   - frida-ls-devices
   - frida-kill
+  - frida-compile
 
 - title: API Reference
   docs:
