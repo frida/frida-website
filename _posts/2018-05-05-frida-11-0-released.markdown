@@ -315,6 +315,10 @@ provided" from "empty *envp* provided".
 - core: improve the iOS *Kernel* API available in the system session, i.e. PID 0
 - frida-trace: fix crash when tracer scripts *send()* arbitrary data
 
+### Changes in 11.0.13
+
+- core: fix hang on teardown of script that was never *load()*ed
+
 ### EOF
 
 So that's about it. If you didn't read about the Frida 10.8 release that

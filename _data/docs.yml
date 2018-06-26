@@ -35,6 +35,7 @@
   - frida-kill
   - frida-compile
 
+
 - title: API Reference
   docs:
   - javascript-api
