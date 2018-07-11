@@ -70,6 +70,7 @@ rpc.exports.enumerateModules = function () {
   return Process.enumerateModulesSync();
 };
 """)
+script.on("message", on_message)
 script.load()
 
 print([m["name"] for m in script.exports.enumerate_modules()])
