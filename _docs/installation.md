@@ -9,33 +9,29 @@ ever becomes a pain in the ass, please [file an
 issue]({{ site.organization_url }}/frida-website/issues/new) (or submit a pull request)
 describing the issue you encountered and how we might make the process easier.
 
-### Requirements for Python bindings
+### Requirements for Frida's CLI tools
 
-Installing Frida is easy and straight-forward, but there are a few requirements
-you’ll need to make sure your system has before you start.
+Installing Frida's CLI tools is easy and straight-forward, but there are a few
+requirements you’ll need to make sure your system has before you start.
 
 - [Python](https://python.org/) – latest 3.x is highly recommended
 - Windows, macOS, or GNU/Linux
 
 ## Install with pip
 
-The best way to install Frida's Python bindings is via
-[PyPI](https://pypi.python.org/pypi/frida). At the terminal prompt,
-simply run the following command to install Frida:
+The best way to install Frida's CLI tools is via [PyPI][]:
 
 {% highlight bash %}
-$ sudo pip install frida
+$ sudo pip install frida-tools
 {% endhighlight %}
 
-All of Frida’s PyPI dependencies are automatically installed by the above
-command, so you won’t have to worry about them at all. If you have problems
-installing Frida, check out the [troubleshooting](../troubleshooting/) page or
-[report an issue]({{ site.organization_url }}/frida-website/issues/new) so the Frida
-community can improve the experience for everyone.
+If you have problems installing Frida, check out the [troubleshooting][] page or
+[report an issue]({{ site.organization_url }}/frida-website/issues/new) so the
+Frida community can improve the experience for everyone.
 
 ## Install manually
 
-You can also grab pre-release binaries from [here](https://build.frida.re/frida/).
+You can also grab other binaries from Frida's GitHub [releases][] page.
 
 ## Testing your installation
 
@@ -62,8 +58,21 @@ In another terminal, make a file example.py with the following contents:
 
 {% highlight py %}
 import frida
+
+def on_message(message, data):
+    print("[on_message] message:", message, "data:", data)
+
 session = frida.attach("cat")
-print([x.name for x in session.enumerate_modules()])
+
+script = session.create_script("""'use strict';
+
+rpc.exports.enumerateModules = function () {
+  return Process.enumerateModulesSync();
+};
+""")
+script.load()
+
+print([m["name"] for m in script.exports.enumerate_modules()])
 {% endhighlight %}
 
 If you are on GNU/Linux, issue:
@@ -87,3 +96,7 @@ and library versions):
 {% highlight py %}
 [u'cat', …, u'ld-2.15.so']
 {% endhighlight %}
+
+[PyPI]: https://pypi.python.org/pypi/frida-tools
+[troubleshooting]: ../troubleshooting/
+[releases]: https://github.com/frida/frida/releases

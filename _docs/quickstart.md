@@ -7,7 +7,7 @@ permalink: /docs/quickstart/
 For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
-~ $ sudo pip install frida
+~ $ sudo pip install frida-tools
 ~ $ frida-trace -i "recv*" -i "read*" *twitter*
 recv: Auto-generated handler: …/recv.js
 # (snip)
@@ -112,4 +112,4 @@ something along the lines of:
 That's nothing, though. The real magic happens when you start building your
 own tools using the Python API that [frida-trace][] is built on top of.
 
-[frida-trace]: https://github.com/frida/frida-python/blob/master/src/frida/tracer.py
+[frida-trace]: https://github.com/frida/frida-tools/blob/master/frida_tools/tracer.py
