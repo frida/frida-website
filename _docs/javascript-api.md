@@ -176,23 +176,22 @@ rpc.exports = {
 {% highlight js %}
 'use strict';
 
-const bluebird = require('bluebird');
-const fs = require('fs');
 const frida = require('frida');
+const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
-const readFileAsync = bluebird.promisify(fs.readFile);
+const readFile = util.promisify(fs.readFile);
 
 let session, script;
 async function run () {
-  const source = await readFileAsync(path.join(__dirname, '_agent.js'), 'utf8');
+  const source = await readFile(path.join(__dirname, '_agent.js'), 'utf8');
   session = await frida.attach('iTunes');
   script = await session.createScript(source);
   script.events.listen('message', onMessage);
   await script.load();
-  const api = yield script.getExports();
-  console.log(await api.add(2, 3));
-  console.log(await api.sub(5, 3));
+  console.log(await script.exports.add(2, 3));
+  console.log(await script.exports.sub(5, 3));
 }
 
 run().catch(onError);
