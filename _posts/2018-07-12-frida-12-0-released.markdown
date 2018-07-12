@@ -17,7 +17,7 @@ all these in mind got me thinking that it was time to bite the bullet.
 
 This is why I'm stoked to announce Frida 12. We have finally reached a point
 in Frida's evolution where our foundations can be considered sufficiently stable
-for book to be written.
+for a book to be written.
 
 Let's have a look at the changes.
 
