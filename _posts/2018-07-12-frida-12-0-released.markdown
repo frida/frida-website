@@ -8,7 +8,7 @@ categories: [release]
 ---
 
 As some of you may have picked up on, there may be a [book][] on Frida in the
-works. In may day to day at [NowSecure[] I spend a good chunk of time as a user
+works. In may day to day at [NowSecure][] I spend a good chunk of time as a user
 of Frida's APIs, and consequently I'm often reminded of historical design
 decisions that I've since come to regret. Even though I did address most of
 these over the years, some of them were so painful to address that I kept
