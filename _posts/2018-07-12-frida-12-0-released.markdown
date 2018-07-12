@@ -135,15 +135,9 @@ improved our default backtracer on Windows.
 
 ### Tether?
 
-You might have wondered why:
-
-{% highlight py %}
-device = frida.get_usb_device()
-{% endhighlight %}
-
-Would give you a *Device* whose *type* was *'tether'*. It is now finally *'usb'*
-as you'd expect. So our language bindings are finally consistent with our core
-API.
+You might have wondered why `frida.get_usb_device()` would give you a *Device*
+whose *type* was *'tether'*. It is now finally *'usb'* as you'd expect. So our
+language bindings are finally consistent with our [core API][].
 
 ### Changes in 12.0.1
 
@@ -173,3 +167,4 @@ Enjoy!
 [JS APIs]: https://frida.re/docs/javascript-api/
 [TypeScript]: https://www.typescriptlang.org/
 [VS Code]: https://code.visualstudio.com/
+[core API]: https://gist.github.com/oleavr/e6af8791adbef8fbde06
