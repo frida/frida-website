@@ -23,13 +23,13 @@ Let's have a look at the changes.
 
 ### CLI tools
 
-One thing that caused a bit of confusion in the past is the fact that our
+One thing that caused a bit of confusion in the past was the fact that our
 Python bindings also came with some CLI tools. Frida is a toolkit for building
 tools, and even though we provide a few sample tools it should be up to you if
 you want to have them installed.
 
 Up until now this meant anyone building a tool using our Python bindings would
-end up depending on *colorama*, *prompt_toolkit*, and *pygments*, because our
+end up depending on *colorama*, *prompt-toolkit*, and *pygments*, because our
 CLI tools happen to depend on those.
 
 Well, that changes now. If you do:
@@ -59,12 +59,12 @@ scenes for you.
 Back then it was somewhat tedious to communicate with an agent as the [rpc][]
 API didn't exist, but even so, it was a bad design decision. The [JS APIs][]
 are numerous and not all can be exposed without introducing new layers of
-complexity. Another aspect was that every language binding would have to
+complexity. Another aspect is that every language binding would have to
 duplicate such convenience APIs, or we would have to add core APIs that
 bindings could expose. Both are terrible options, and cause confusion by
-blurring the lines, ultimately confusing people new to Frida. Granted it did
-make life easier for some very simple use-caes, like memory dumping tools, but
-for everybody else it just added bloat and confusion.
+blurring the lines, ultimately confusing people new to Frida. Granted, it did
+make things easier for some very simple use-cases, like memory dumping tools,
+but for everybody else it just added bloat and confusion.
 
 These APIs are now finally gone from our Python and Node.js bindings. The other
 bindings are unaffected as they didn't implement any such convenience APIs.
@@ -72,10 +72,10 @@ bindings are unaffected as they didn't implement any such convenience APIs.
 ### Node.js bindings
 
 It's been a few years since our Node.js bindings were written, and since then
-Node.js has evolved a lot. It now supports ES6 classes, *async*/*await*, arrow
+Node.js has evolved a lot. It now supports ES6 classes, *async* / *await*, arrow
 functions, *Proxy* objects, etc.
 
-Just the *Proxy* objects alone means we can simplify [rpc][] use-cases like:
+Just the *Proxy* support alone means we can simplify [rpc][] use-cases like:
 
 {% highlight js %}
 const api = await script.getExports();
@@ -96,10 +96,10 @@ also get type-aware refactoring and amazing code completion.
 However, for type checking and editor features to really shine, it is crucial to
 have type definitions for your project's dependencies. This is rarely ever an
 issue these days, except for those of you using Frida's Node.js bindings.
-Up until now we didn't provided any type definitions. This has finally been
+Up until now we didn't provide any type definitions. This has finally been
 resolved. Rather than augmenting our bindings with type definitions, I decided
 to rewrite them in TypeScript instead. This means we also take advantage of
-modern language features like ES6 classes and *async*/*await*.
+modern language features like ES6 classes and *async* / *await*.
 
 We could have stopped there, but those of you using our Node.js bindings from
 TypeScript would still find this a bit frustrating:
@@ -111,7 +111,7 @@ script.events.listen('message', (message, data) => {
 
 Here, the compiler knows nothing about which events exist on the *Script*
 object, and what the callback's signature is supposed to be for this particular
-event. We've fixed this. The API now looks like this:
+event. We've finally fixed this. The API now looks like this:
 
 {% highlight js %}
 script.message.connect((message, data) => {
@@ -142,7 +142,8 @@ device = frida.get_usb_device()
 {% endhighlight %}
 
 Would give you a *Device* whose *type* was *'tether'*. It is now finally *'usb'*
-as you'd expect. So the core API is now consistent with our language bindings.
+as you'd expect. So our language bindings are finally consistent with our core
+API.
 
 ### Changes in 12.0.1
 
