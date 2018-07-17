@@ -151,11 +151,19 @@ language bindings are finally consistent with our [core API][].
 - core: upgrade to Capstone's *next* branch
 - core: fix the DbgHelp backtracer on Windows and update to latest DbgHelp
 - python: fix long description
-- java: fix hooking of *java.lang.Class.getMethod()*
+- java: fix hooking of *java.lang.Class.getMethod()* – thanks [0x3430D][]!
 
 ### Changes in 12.0.3
 
 - core: fix the iOS build system broken by Capstone upgrade
+
+### Changes in 12.0.4
+
+- core: fix i/macOS libc++ initialization on early instrumentation
+        – thanks [mrmacete][]!
+- core: add support for memory search with mask – thanks [mrmacete][]!
+- core: fix *InvocationContext.get_return_address()*
+- node: fix crash on RPC object return from an async function
 
 Enjoy!
 
@@ -168,3 +176,5 @@ Enjoy!
 [TypeScript]: https://www.typescriptlang.org/
 [VS Code]: https://code.visualstudio.com/
 [core API]: https://gist.github.com/oleavr/e6af8791adbef8fbde06
+[0x3430D]: https://github.com/0x3430D
+[mrmacete]: https://github.com/mrmacete
