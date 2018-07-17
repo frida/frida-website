@@ -472,7 +472,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
         -   `section`: if present, is an object containing:
             -   `id`: string containing section index, segment name (if
                       applicable) and section name – same format as
-                      [r2](http://radare.org/r/)'s section IDs
+                      [r2][]'s section IDs
             -   `protection`: protection like in `Process.enumerateRanges()`
         -   `name`: symbol name as a string
         -   `address`: absolute address as a `NativePointer`
@@ -554,7 +554,14 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     occurences of `pattern` in the memory range given by `address` and `size`.
 
     -   `pattern` must be of the form "13 37 ?? ff" to match 0x13 followed by
-        0x37 followed by any byte followed by 0xff
+        0x37 followed by any byte followed by 0xff.
+        For more advanced matching it is also possible to specify an
+        [r2][]-style mask. The mask is bitwise AND-ed against both the needle
+        and the haystack. To specify the mask append a `:` character after the
+        needle, followed by the mask using the same syntax.
+        For example: "13 37 13 37 : 1f ff ff f1".
+        For convenience it is also possible to specify nibble-level wildcards,
+        like "?3 37 13 ?7", which gets translated into masks behind the scenes.
 
     -   `callbacks` is an object with:
 
@@ -3088,3 +3095,6 @@ var activity = Java.cast(ptr("0x1234"), Activity);
     `fp` `s8` `ra` `hi` `lo` `zero` `at` `0` `1` `2` `3` `4` `5` `6` `7` `8`
     `9` `10` `11` `12` `13` `14` `15` `16` `17` `18` `19` `20` `21` `22` `23`
     `24` `25` `26` `27` `28` `29` `30` `31`
+
+
+[r2]: http://radare.org/r/
