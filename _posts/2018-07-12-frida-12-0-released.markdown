@@ -165,6 +165,13 @@ language bindings are finally consistent with our [core API][].
 - core: fix *InvocationContext.get_return_address()*
 - node: fix crash on RPC object return from an async function
 
+### Changes in 12.0.5
+
+- core: fix arm64 crashes caused by Capstone upgrade, where test-and-branch
+        decoding logic failed to decode negative offsets – kudos to
+        [mrmacete][] for discovering and fixing this one!
+- core: fix MIPS regressions and one crasher – thanks [r0ck3tAKATrashPanda][]!
+
 Enjoy!
 
 
@@ -178,3 +185,4 @@ Enjoy!
 [core API]: https://gist.github.com/oleavr/e6af8791adbef8fbde06
 [0x3430D]: https://github.com/0x3430D
 [mrmacete]: https://github.com/mrmacete
+[r0ck3tAKATrashPanda]: https://github.com/r0ck3tAKATrashPanda
