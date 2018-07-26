@@ -172,6 +172,12 @@ language bindings are finally consistent with our [core API][].
         [mrmacete][] for discovering and fixing this one!
 - core: fix MIPS regressions and one crasher – thanks [r0ck3tAKATrashPanda][]!
 
+### Changes in 12.0.6
+
+- python: improve *spawn()* to support unicode aux options on Python 2.x
+- java: fix *Java.registerClass()* when cache dir is missing
+- java: make the temporary file naming configurable
+
 Enjoy!
 
 
