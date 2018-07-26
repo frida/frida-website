@@ -178,6 +178,11 @@ language bindings are finally consistent with our [core API][].
 - java: fix *Java.registerClass()* when cache dir is missing
 - java: make the temporary file naming configurable
 
+### Changes in 12.0.7
+
+- core: fix early instrumentation on iOS 11.3.1 through 11.4.1 – thanks
+        [mrmacete][]!
+
 Enjoy!
 
 
