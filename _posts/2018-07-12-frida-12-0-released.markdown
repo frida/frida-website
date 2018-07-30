@@ -183,6 +183,12 @@ language bindings are finally consistent with our [core API][].
 - core: fix early instrumentation on iOS 11.3.1 through 11.4.1 – thanks
         [mrmacete][]!
 
+### Changes in 12.0.8
+
+- core: fix launching of Android apps with custom process name – thanks
+        [giantpune][]!
+- java: fix *ClassLinker* field offset detection on Android 8.0
+
 Enjoy!
 
 
@@ -197,3 +203,4 @@ Enjoy!
 [0x3430D]: https://github.com/0x3430D
 [mrmacete]: https://github.com/mrmacete
 [r0ck3tAKATrashPanda]: https://github.com/r0ck3tAKATrashPanda
+[giantpune]: https://github.com/giantpune
