@@ -15,8 +15,8 @@ upgraded to the latest and greatest. Let's have a look at the highlights.
 Frida's V8 dependency was previously at 6.2.2, and has now been upgraded to
 7.0.242. The move to such a new version means that the V8 debugger API is gone
 and has been replaced with the new Inspector API, which the latest Node.js is
-also using. What's pretty awesome about it is that it's natively supported by
-Google Chrome's Inspector.
+also using. One thing that's pretty awesome about it is that it's natively
+supported by Google Chrome's Inspector.
 
 To start using it, just tell Frida to use V8, by calling *session.enable_jit()*,
 and then *session.enable_debugger()*.
