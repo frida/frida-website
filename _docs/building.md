@@ -106,9 +106,6 @@ Running `make` will provide you a list of modules to build. See
 - Clone the `frida` repository:
 {% highlight bash %}
 $ git clone --recurse-submodules https://github.com/frida/frida
-$ cd frida
-$ git submodule init
-$ git submodule update
 {% endhighlight %}
 
 - Enter the `frida` folder and execute the Python staging script
