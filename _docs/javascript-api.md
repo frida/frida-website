@@ -247,6 +247,8 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 ## Process
 
++   `Process.id`: property containing the PID as a number
+
 +   `Process.arch`: property containing the string `ia32`, `x64`, `arm`
     or `arm64`
 
