@@ -129,20 +129,13 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
-$ sudo apt-get install build-essential gcc-multilib lib32stdc++-5-dev \
-    python-dev python3-dev git flex bison
-{% endhighlight %}
-  Note that you may run into [this bug](https://bugs.launchpad.net/ubuntu/+source/zlib/+bug/1155307)
-  when building a 32-bit SDK on recent Ubuntu releases. The workaround is:
-{% highlight bash %}
-  $ sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include
+$ sudo apt-get install flex bison
 {% endhighlight %}
 - Clone the `frida` repository and build away:
 {% highlight bash %}
 $ git clone --recurse-submodules https://github.com/frida/frida
 $ cd frida
 $ make -f Makefile.toolchain.mk
-$ make -f Makefile.sdk.mk FRIDA_HOST=linux-x86
 $ make -f Makefile.sdk.mk FRIDA_HOST=linux-x86_64
 {% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
@@ -155,11 +148,6 @@ $ scp build/sdk-*.tar.bz2 your@own.server:
 
 ### Windows Toolchain and SDK
 
-- Make sure you have:
-  - Visual Studio 2017 w/XP support installed
-  - [Git](https://git-scm.com/downloads) on your PATH
-  - [Python 3.7](https://www.python.org/downloads/windows/) on your PATH,
-    `py` launcher installed, and associated to .py files
 - Clone the `frida` repository and build away:
 {% highlight bash %}
 $ git clone --recurse-submodules https://github.com/frida/frida
