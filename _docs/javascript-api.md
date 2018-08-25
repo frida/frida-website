@@ -161,8 +161,8 @@ rpc.exports = {
         return a + b;
     },
     sub: function (a, b) {
-        return new Promise(resolve => {
-            setTimeout(() => {
+        return new Promise(function (resolve) {
+            setTimeout(function () {
                 resolve(a - b);
             }, 100);
         });
