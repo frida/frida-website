@@ -58,56 +58,54 @@ below.
 ### GNU/Linux
 
 - Make sure you have a:
-  - Modern x86 system
-  - Development toolchain:
+  - Modern x86 system with GCC 5.4 or newer
+  - Development toolchain, and Node.js on your PATH. E.g. on Ubuntu 16.04:
 {% highlight bash %}
-$ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.9-dev \
-    lib32z1-dev python-dev python3-dev zlib1g-dev
-{% endhighlight %}
-
-  - Development toolchain Ubuntu 14.04 (Trusty Jahr) with Node 7.x
-  See [Installing Node.js via package manager](https://nodejs.org/en/download/package-manager/) for more installation options
-{% highlight bash %}
-$ curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+$ sudo apt-get install build-essential gcc-multilib lib32stdc++-5-dev \
+    python-dev python3-dev git
+$ curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
-$ sudo apt-get install build-essential gcc-multilib git lib32stdc++-4.8-dev \
-    lib32z1-dev python-dev python3-dev zlib1g-dev
 {% endhighlight %}
 
 - Clone `frida` and build it:
 {% highlight bash %}
-$ git clone git://github.com/frida/frida.git
+$ git clone --recurse-submodules https://github.com/frida/frida.git
 $ cd frida
 $ make
 {% endhighlight %}
 
-`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
+Running `make` will provide you a list of modules to build. See
+[the hacking page](https://www.frida.re/docs/hacking/) for more information.
 
 ### macOS
 
-- Make sure you have the latest Xcode with command-line tools installed.
+- Make sure you have:
+  - Xcode with command-line tools
+  - [Python 3.7](https://www.python.org/downloads/mac-osx/) on your PATH
+  - [Node.js](https://nodejs.org/) on your PATH
 - Clone `frida` and build it:
 {% highlight bash %}
-$ git clone git://github.com/frida/frida.git
+$ git clone --recurse-submodules https://github.com/frida/frida.git
 $ cd frida
 $ make
 {% endhighlight %}
 
-`make` will provide you a list of modules to build.  See [the hacking page](https://www.frida.re/docs/hacking/) for more information.
+Running `make` will provide you a list of modules to build. See
+[the hacking page](https://www.frida.re/docs/hacking/) for more information.
 
 ### Windows
 
 - Make sure you have:
-  - 64-bit version of Windows
-  - Visual Studio 2017
+  - Visual Studio 2017 w/XP support installed
   - [Git](https://git-scm.com/downloads) on your PATH
+  - [Python 3.7](https://www.python.org/downloads/windows/) on your PATH
   - [Node.js](https://nodejs.org/) on your PATH
-  - [Python 2.7](https://www.python.org/downloads/windows/) on your PATH and associated to .py files
+    `py` launcher installed, and associated to .py files
   - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
 - Clone the `frida` repository:
 {% highlight bash %}
-$ git clone https://github.com/frida/frida
+$ git clone --recurse-submodules https://github.com/frida/frida
 $ cd frida
 $ git submodule init
 $ git submodule update
@@ -131,21 +129,21 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
-$ sudo apt-get install bison build-essential flex gcc-multilib git \
-    lib32stdc++-4.9-dev lib32z1-dev libglib2.0-dev python-dev python3-dev \
-    zlib1g-dev
+$ sudo apt-get install build-essential gcc-multilib lib32stdc++-5-dev \
+    python-dev python3-dev git flex bison
 {% endhighlight %}
   Note that you may run into [this bug](https://bugs.launchpad.net/ubuntu/+source/zlib/+bug/1155307)
   when building a 32-bit SDK on recent Ubuntu releases. The workaround is:
 {% highlight bash %}
   $ sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include
 {% endhighlight %}
-- Clone the `frida-ci` repository and build away:
+- Clone the `frida` repository and build away:
 {% highlight bash %}
-$ git clone git://github.com/frida/frida-ci.git
-$ mkdir tmp
-$ cd tmp
-$ ../frida-ci/create-toolchain-and-sdk.sh
+$ git clone --recurse-submodules https://github.com/frida/frida
+$ cd frida
+$ make -f Makefile.toolchain.mk
+$ make -f Makefile.sdk.mk FRIDA_HOST=linux-x86
+$ make -f Makefile.sdk.mk FRIDA_HOST=linux-x86_64
 {% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
 {% highlight bash %}
@@ -155,48 +153,18 @@ $ scp build/sdk-*.tar.bz2 your@own.server:
 - Now you can clone `frida` like above and adjust the URLs in
 `releng/setup-env.sh` (look for `download_command`) before running `make`.
 
-(Note: the `frida` module now has integrated support for building the SDK.
-For example: `make -f Makefile.sdk.mk FRIDA_HOST=android-arm`)
-
 ### Windows Toolchain and SDK
 
-- Prepare your system
-  - Make sure that Visual Studio 2015 is installed.
-  - Install
-  [hsbuild-0.2.msi](https://launchpad.net/hsbuild/trunk/0.2/+download/hsbuild-0.2.msi).
-  You need [Git](https://msysgit.github.com/) and
-  [Perl](https://www.activestate.com/activeperl/) installed, and `perl` should be
-  in your PATH. For packaging you will also need [7-Zip](http://www.7-zip.org/)
-  to be in your PATH.
-  - Ensure that your Git configuration at
-  `C:\Program Files (x86)\Git\etc\gitconfig` (or similar) has the following in
-   its `core` section:
-```
-autoCRLF = false
-```
-  - Also ensure that your environment does not have a `CC` environment variable
-  defined (might have happened if you installed `msys` or `cygwin`).
-  - Use [bazaar](https://bazaar.canonical.com/) to check out our slightly
-  modified HSBuild:
+- Make sure you have:
+  - Visual Studio 2017 w/XP support installed
+  - [Git](https://git-scm.com/downloads) on your PATH
+  - [Python 3.7](https://www.python.org/downloads/windows/) on your PATH,
+    `py` launcher installed, and associated to .py files
+- Clone the `frida` repository and build away:
 {% highlight bash %}
-$ bzr branch lp:~oleavr/hsbuild/tweaks hsbuild
-{% endhighlight %}
-  - Open `msbuild\tasks\HSBuildTasks.sln` and build it in `Release` configuration.
-  - Open `hsbuild\hsbuild.sln` and build it in `Release` configuration (with
-  Platform set to `x86`).
-  - As Administrator, run `deploy.bat`, which will update the system-wide
-  HSBuild installation.
-  - Clone the `frida-ci` repository:
-{% highlight bash %}
-$ git clone git://github.com/frida/frida-ci.git
-{% endhighlight %}
-  - Copy `frida-ci\Frida.props` next to HSBuild's .targets/.props
-  files, typically at `C:\Program Files (x86)\MSBuild\HSBuild`.
-- Build it
-  - Open `cmd.exe` and navigate to `frida-ci`.
-  - Start the build process:
-{% highlight bash %}
-$ build-deps-windows.py
+$ git clone --recurse-submodules https://github.com/frida/frida
+$ cd frida
+$ py -3 releng\build-deps-windows.py
 {% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
 {% highlight bash %}
@@ -204,5 +172,5 @@ $ scp toolchain-windows-*.exe your@own.server:
 $ scp sdk-windows-*.exe your@own.server:
 {% endhighlight %}
 - Now you can clone `frida` like above and adjust the URLs in
-`releng\windows-toolchain.txt` and `releng\windows-sdk.txt` before opening
-`frida.sln`.
+  `releng\windows-toolchain.txt` and `releng\windows-sdk.txt` before opening
+  `frida.sln`.
