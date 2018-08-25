@@ -10,12 +10,12 @@ categories: [release]
 Massive changes under the hood this time. All of our dependencies have been
 upgraded to the latest and greatest. Let's have a look at the highlights.
 
-### V8
+### V8 7.0
 
-Frida's V8 was previously at 6.2.2, and has now been upgraded to 7.0.242.
-The move to such a new version of V8 means that the V8 debugger API is gone,
-and has been replaced with the new V8 Inspector API that the latest Node.js
-also uses. What's pretty awesome about it is that it's natively supported by
+Frida's V8 dependency was previously at 6.2.2, and has now been upgraded to
+7.0.242. The move to such a new version means that the V8 debugger API is gone
+and has been replaced with the new Inspector API, which the latest Node.js is
+also using. What's pretty awesome about it is that it's natively supported by
 Google Chrome's Inspector.
 
 To start using it, just tell Frida to use V8, by calling *session.enable_jit()*,
