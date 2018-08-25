@@ -188,7 +188,7 @@ async function run () {
   const source = await readFile(path.join(__dirname, '_agent.js'), 'utf8');
   session = await frida.attach('iTunes');
   script = await session.createScript(source);
-  script.events.listen('message', onMessage);
+  script.message.connect(onMessage);
   await script.load();
   console.log(await script.exports.add(2, 3));
   console.log(await script.exports.sub(5, 3));
