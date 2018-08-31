@@ -22,7 +22,7 @@ requirements you’ll need to make sure your system has before you start.
 The best way to install Frida's CLI tools is via [PyPI][]:
 
 {% highlight bash %}
-$ sudo pip install frida-tools
+$ pip install frida-tools
 {% endhighlight %}
 
 If you have problems installing Frida, check out the [troubleshooting][] page or
