@@ -7,7 +7,7 @@ permalink: /docs/quickstart/
 For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
-~ $ sudo pip install frida-tools
+~ $ pip install frida-tools
 ~ $ frida-trace -i "recv*" -i "read*" *twitter*
 recv: Auto-generated handler: …/recv.js
 # (snip)
