@@ -1,7 +1,7 @@
 ---
 layout: news_item
 title: 'Frida 12.2 Released'
-date: 2018-09-11 22:00:00 +0200
+date: 2018-09-11 21:00:00 +0200
 author: mrmacete
 version: 12.2
 categories: [release]
