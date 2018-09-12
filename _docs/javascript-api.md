@@ -1790,14 +1790,14 @@ Interceptor.attach(f, {
     For example:
 
 {% highlight js %}
-Kernel.protect(UInt64("0x1234"), 4096, 'rw-');
+Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 {% endhighlight %}
 
 +   `Kernel.readByteArray(address, length)`: just like `Memory.readByteArray`,
     but reading from kernel memory.
 
 +   `Kernel.writeByteArray(address, bytes)`: just like `Memory.writeByteArray`,
-    but reading from kernel memory.
+    but writing to kernel memory.
 
 +   `Kernel.scan(address, size, pattern, callbacks)`: just like `Memory.scan`,
     but scanning kernel memory.
