@@ -497,7 +497,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 </div>
 
 +   `Module.enumerateRanges(name, protection, callbacks)`: just like
-    `Process#enumerateRanges`, except it's scoped to the specified module
+    `Process.enumerateRanges`, except it's scoped to the specified module
     `name`.
 
 +   `Module.enumerateRangesSync(name, protection)`: synchronous version of
