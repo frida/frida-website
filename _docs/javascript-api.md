@@ -39,6 +39,7 @@ permalink: /docs/javascript-api/
   1. [ApiResolver](#apiresolver)
   1. [DebugSymbol](#debugsymbol)
   1. [Instruction](#instruction)
+  1. [Kernel](#kernel)
   1. [ObjC](#objc)
   1. [Java](#java)
   1. [WeakRef](#weakref)
@@ -1719,6 +1720,90 @@ Interceptor.attach(f, {
     For details about `operands` and `groups`, please consult the
     [Capstone](http://www.capstone-engine.org/) documentation for your
     architecture.
+
+
+## Kernel
+
++   `Kernel.available`: a boolean specifying whether the Kernel API is
+    available. Do not invoke any other `Kernel` properties or methods unless
+    this is the case.
+
++   `Kernel.base`: base address of the kernel, as a UInt64.
+
++   `Kernel.pageSize`: size of a kernel page in bytes, as a number.
+
++   `Kernel.enumerateModules(callbacks)`: enumerate kernel modules loaded right
+    now, where `callbacks` is an object specifying:
+
+    -   `onMatch: function (module)`: called with `module` object containing:
+        -   `name`: canonical module name as a string
+        -   `base`: base address as a `NativePointer`
+        -   `size`: size in bytes
+
+        This function may return the string `stop` to cancel the enumeration
+        early.
+
+    -   `onComplete: function ()`: called when all modules have been enumerated
+
++   `Kernel.enumerateModulesSync()`: synchronous version of `enumerateModules()`
+    that returns the modules in an array.
+
++   `Kernel.enumerateRanges(protection|specifier, callbacks)`: enumerate kernel
+    memory ranges satisfying `protection` given as a string of the form: `rwx`,
+    where `rw-` means "must be at least readable and writable". Alternatively
+    you may provide a `specifier` object with a `protection` key whose value is
+    as aforementioned, and a `coalesce` key set to `true` if you'd like
+    neighboring ranges with the same protection to be coalesced (the default is
+    `false`; i.e. keeping the ranges separate). `callbacks` is an object
+    specifying:
+
+    -   `onMatch: function (range)`: called with `range` object containing:
+        -   `base`: base address as a `NativePointer`
+        -   `size`: size in bytes
+        -   `protection`: protection string (see above)
+
+        This function may return the string `stop` to cancel the enumeration
+        early.
+
+    -   `onComplete: function ()`: called when all memory ranges have been
+        enumerated
+
++   `Kernel.enumerateRangesSync(protection|specifier)`: synchronous version of
+    `enumerateRanges()` that returns the ranges in an array.
+
++   `Kernel.enumerateModuleRanges(name, protection, callbacks)`: just like
+    `Kernel.enumerateRanges`, except it's scoped to the specified module
+    `name` – which may be `null` for the module of the kernel itself. Each
+    range also has a `name` field containing a unique identifier as a string.
+
++   `Kernel.enumerateModuleRangesSync(name, protection)`: synchronous version of
+    `enumerateModuleRanges()` that returns the ranges in an array.
+
++   `Kernel.alloc(size)`: allocate `size` bytes of kernel memory, rounded up to
+    a multiple of the kernel's page size. The returned value is a `UInt64`
+    specifying the base address of the allocation.
+
++   `Kernel.protect(address, size, protection)`: update protection on a region
+    of kernel memory, where `protection` is a string of the same format as
+    `Kernel.enumerateRanges()`.
+
+    For example:
+
+{% highlight js %}
+Kernel.protect(UInt64("0x1234"), 4096, 'rw-');
+{% endhighlight %}
+
++   `Kernel.readByteArray(address, length)`: just like `Memory.readByteArray`,
+    but reading from kernel memory.
+
++   `Kernel.writeByteArray(address, bytes)`: just like `Memory.writeByteArray`,
+    but reading from kernel memory.
+
++   `Kernel.scan(address, size, pattern, callbacks)`: just like `Memory.scan`,
+    but scanning kernel memory.
+
+-   `Kernel.scanSync(address, size, pattern)`: synchronous version of `scan()`
+    that returns the matches in an array.
 
 
 ## ObjC
