@@ -69,7 +69,6 @@ Below is an example which shows some posibilities with the Java context in Frida
 
 if (Java.available) {
     Java.perform(function() {
-
         // Create an instance of java.lang.String and initialize it with a string.
         const JavaString = Java.use('java.lang.String');
         var exampleString1 = JavaString.$new('Hello World, this is an example string in Java.');
@@ -117,7 +116,6 @@ if (Java.available) {
             return result;
         }
         console.log('[+] StringBuilder.toString() hooked');
-        
     }
 )}
 {% endhighlight %}
