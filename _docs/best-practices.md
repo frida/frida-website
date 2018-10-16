@@ -4,8 +4,6 @@ title: Best Practices
 permalink: /docs/best-practices/
 ---
 
-## Best Practices
-
 This section is meant to contain best practices and pitfalls commonly
 encountered when using Frida.
 
