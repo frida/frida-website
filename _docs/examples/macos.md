@@ -47,4 +47,4 @@ def main(target_process):
 
 if __name__ == "__main__":
     main("Safari")
-{% end highlight %}
+{% endhighlight %}
