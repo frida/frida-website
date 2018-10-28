@@ -421,7 +421,7 @@ be used to find any exported function by name in our target. If we can supply a
 module then it will be faster on larger binaries, but that is less critical
 here.
 
-Now, run `./client 127.0.0.1`, in another terminal run `nc -l 5001`, and in a
+Now, run `./client 127.0.0.1`, in another terminal run `nc -lp 5001`, and in a
 third terminal run `./struct_mod.py`. Once our script is running, press ENTER
 in the `client` terminal window, and netcat should now show the string sent
 by the client.
