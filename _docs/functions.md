@@ -347,7 +347,7 @@ main (int argc,
 {% endhighlight %}
 
 This is fairly standard code, and calls out to any IP address given as the
-first argument. If you run `nc -l 5000` and in another terminal window run
+first argument. If you run `nc -lp 5000` and in another terminal window run
 `./client 127.0.0.1`, you should see the message appear in netcat, and also
 be able to send messages back to `client` in return.
 
