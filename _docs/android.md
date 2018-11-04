@@ -9,10 +9,19 @@ In this tutorial we show how to do function tracing on your Android device.
 ## Setting up your Android device
 
 Before you start, you will need to root your device in case you haven't done so
-already. Also note that most of our testing has involved Android 4.4, and while
-we do support 4.2 all the way through 6.0, there's for now limited support for
-ART and we would recommend that you start out with a Dalvik-powered ARM device
-or emulator for the time being.
+already. It is technically also possible to use Frida without rooting your
+device, for example by repackaging the app to include frida-gadget, or using a
+debugger to accomplish the same. But, for this introduction we're going to focus
+on the simplest case: a rooted device.
+
+Also note that most of our recent testing has been taking place on a Nexus 5X
+running Android 8.1.0. Older and newer ROMs may work, but if you're running into
+basic issues like Frida crashing the system when launching an app, this is due
+to ROM-specific quirks. We cannot test on all possible devices, so we count on
+your help to improve on this. However if you're just starting out with Frida it
+is strongly recommended to go with a Nexus device with factory software, or an
+official 8.x emulator image for arm or arm64. (x86 may work too but has gone
+through significantly less testing.)
 
 You will also need the `adb` tool from the Android SDK.
 
