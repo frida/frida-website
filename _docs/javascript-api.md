@@ -959,9 +959,9 @@ friendlyFunctionName(returnValue, thisPtr);
 
 +   `new NativeFunction(address, returnType, argTypes[, options])`: just like
     the previous constructor, but where the fourth argument, `options`, is an
-    object that may contain some of the following keys:
+    object that may contain one or more of the following keys:
 
-    -   `abi`: same enum as above..
+    -   `abi`: same enum as above.
     -   `scheduling`: scheduling behavior as a string. Supported values are:
         -   cooperative: Allow other threads to execute JavaScript code while
                          calling the native function, i.e. let go of the lock
