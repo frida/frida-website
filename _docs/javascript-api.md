@@ -1560,6 +1560,9 @@ Stalker.follow(Process.getCurrentThreadId(), {
   },
 {% endhighlight %}
 
++   `Stalker.flush()`: flush out any buffered events. Useful when you don't want
+    to wait until the next `Stalker.queueDrainInterval` tick.
+
 +   `Stalker.garbageCollect()`: free accumulated memory at a safe point after
     `Stalker#unfollow`. This is needed to avoid race-conditions where the
     thread just unfollowed is executing its last instructions.
