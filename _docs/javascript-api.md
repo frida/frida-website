@@ -957,6 +957,32 @@ friendlyFunctionName(returnValue, thisPtr);
         -   sysv
         -   vfp
 
++   `new NativeFunction(address, returnType, argTypes[, options])`: just like
+    the previous constructor, but where the fourth argument, `options`, is an
+    object that may contain some of the following keys:
+
+    -   `abi`: same enum as above..
+    -   `scheduling`: scheduling behavior as a string. Supported values are:
+        -   cooperative: Allow other threads to execute JavaScript code while
+                         calling the native function, i.e. let go of the lock
+                         before the call, and re-acquire it afterwards.
+                         This is the default behavior.
+        -   exclusive: Do not allow other threads to execute JavaScript code
+                       while calling the native function, i.e. keep holding the
+                       JavaScript lock.
+                       This is faster but may result in deadlocks.
+    -   `exceptions`: exception behavior as a string. Supported values are:
+        -   steal: If the called function generates a native exception, e.g.
+                   by dereferencing an invalid pointer, Frida will unwind the
+                   stack and steal the exception, turning it into a JavaScript
+                   exception that can be handled. This may leave the application
+                   in an undefined state, but is useful to avoid crashing the
+                   process while experimenting.
+                   This is the default behavior.
+        -   propagate: Let the application deal with any native exceptions that
+                       occur during the function call. (Or, the handler
+                       installed through `Process.setExceptionHandler()`.)
+
 
 ## NativeCallback
 
@@ -976,6 +1002,10 @@ friendlyFunctionName(returnValue, thisPtr);
     status. The return value is an object wrapping the actual return value as
     `value`, with one additional platform-specific field named either `errno`
     (UNIX) or `lastError` (Windows).
+
++   `new SystemFunction(address, returnType, argTypes[, options])`: same as
+    above but accepting an `options` object like `NativeFunction`'s
+    corresponding constructor.
 
 
 ## Socket
