@@ -934,6 +934,7 @@ friendlyFunctionName(returnValue, thisPtr);
     -   uint32
     -   int64
     -   uint64
+    -   bool
 
     ### Supported ABIs
 
