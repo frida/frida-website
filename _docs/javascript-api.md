@@ -2140,6 +2140,64 @@ const MyDataDelegate = ObjC.registerProtocol({
 +   `ObjC.getBoundData(obj)`: look up previously bound data from an Objective-C
     object.
 
++   `ObjC.enumerateLoadedClasses([options, ]callbacks)`: enumerate classes
+    loaded right now, where `callbacks` is an object specifying:
+
+    -   `onMatch: function (name, owner)`: called for each loaded class with the
+        `name` of the class as a string, and `owner` specifying the path to the
+        module where the class was loaded from. To obtain a JavaScript wrapper
+        for a given class, do: `ObjC.classes[name]`.
+
+    -   `onComplete: function ()`: called when all classes have been enumerated.
+
+    For example:
+
+{% highlight js %}
+ObjC.enumerateLoadedClasses({
+  onMatch: function (name, owner) {
+    console.log('onMatch:', name, owner);
+  },
+  onComplete: function () {
+  }
+});
+{% endhighlight %}
+
+    The optional `options` argument is an object where you may specify the
+    `ownedBy` property to limit enumeration to modules in a given `ModuleMap`.
+
+    For example:
+
+{% highlight js %}
+var appModules = new ModuleMap(isAppModule);
+ObjC.enumerateLoadedClasses({ ownedBy: appModules }, {
+  onMatch: function (name, owner) {
+    console.log('onMatch:', name, owner);
+  },
+  onComplete: function () {
+  }
+});
+
+function isAppModule(m) {
+  return !/^\/(usr\/lib|System|Developer)\//.test(m.path);
+}
+{% endhighlight %}
+
++   `ObjC.enumerateLoadedClassesSync([options])`: synchronous version of
+    `enumerateLoadedClasses()` that returns an object mapping owner module to
+    an array of class names.
+
+    For example:
+
+{% highlight js %}
+var appModules = new ModuleMap(isAppModule);
+var appClasses = ObjC.enumerateLoadedClassesSync({ ownedBy: appModules });
+console.log('appClasses:', JSON.stringify(appClasses));
+
+function isAppModule(m) {
+  return !/^\/(usr\/lib|System|Developer)\//.test(m.path);
+}
+{% endhighlight %}
+
 +   `ObjC.choose(specifier, callbacks)`: enumerate live instances of classes
     matching `specifier` by scanning the heap. `specifier` is either a class
     selector or an object specifying a class selector and desired options.
