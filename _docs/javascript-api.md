@@ -275,52 +275,28 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 +   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a number
 
-+   `Process.enumerateThreads(callbacks)`: enumerate all threads,
-    where `callbacks` is an object specifying:
++   `Process.enumerateThreads()`: enumerates all threads, returning an array of
+    objects containing the following properties:
 
-    -   `onMatch: function (thread)`: called with `thread` object containing:
-        -   `id`: OS-specific id
-        -   `state`: string specifying either `running`, `stopped`, `waiting`,
-            `uninterruptible` or `halted`
-        -   `context`: object with the keys `pc` and `sp`, which are
-            NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
-            respectively, for ia32/x64/arm. Other processor-specific keys
-            are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
-
-        This function may return the string `stop` to cancel the enumeration
-        early.
-
-    -   `onComplete: function ()`: called when all threads have been enumerated
-
-+   `Process.enumerateThreadsSync()`: synchronous version of
-    `enumerateThreads()` that returns the threads in an array.
+    -   `id`: OS-specific id
+    -   `state`: string specifying either `running`, `stopped`, `waiting`,
+        `uninterruptible` or `halted`
+    -   `context`: object with the keys `pc` and `sp`, which are
+        NativePointer objects specifying EIP/RIP/PC and ESP/RSP/SP,
+        respectively, for ia32/x64/arm. Other processor-specific keys
+        are also available, e.g. `eax`, `rax`, `r0`, `x0`, etc.
 
 +   `Process.findModuleByAddress(address)`,
     `Process.getModuleByAddress(address)`,
     `Process.findModuleByName(name)`,
     `Process.getModuleByName(name)`:
-    return an object with details about the module whose *address* or *name*
-    matches the one specified. In the event that no such module could be found,
-    the *find*-prefixed functions return *null* whilst the *get*-prefixed
-    functions throw an exception.  See `Process.enumerateModules()` for
-    details about which fields are included.
+    returns a [Module](#module) whose *address* or *name* matches the one
+    specified. In the event that no such module could be found, the
+    *find*-prefixed functions return *null* whilst the *get*-prefixed functions
+    throw an exception.
 
-+   `Process.enumerateModules(callbacks)`: enumerate modules loaded right now,
-    where `callbacks` is an object specifying:
-
-    -   `onMatch: function (module)`: called with `module` object containing:
-        -   `name`: canonical module name as a string
-        -   `base`: base address as a `NativePointer`
-        -   `size`: size in bytes
-        -   `path`: full filesystem path as a string
-
-        This function may return the string `stop` to cancel the enumeration
-        early.
-
-    -   `onComplete: function ()`: called when all modules have been enumerated
-
-+   `Process.enumerateModulesSync()`: synchronous version of
-    `enumerateModules()` that returns the modules in an array.
++   `Process.enumerateModules()`: enumerates modules loaded right now, returning
+    an array of [Module](#module) objects.
 
 +   `Process.findRangeByAddress(address)`, `getRangeByAddress(address)`:
     return an object with details about the range containing *address*. In the
@@ -328,39 +304,27 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     *null* whilst *getRangeByAddress()* throws an exception.  See
     `Process.enumerateRanges()` for details about which fields are included.
 
-+   `Process.enumerateRanges(protection|specifier, callbacks)`: enumerate memory
-    ranges satisfying `protection` given as a string of the form: `rwx`, where
-    `rw-` means "must be at least readable and writable". Alternatively you may
++   `Process.enumerateRanges(protection|specifier)`: enumerates memory ranges
+    satisfying `protection` given as a string of the form: `rwx`, where `rw-`
+    means "must be at least readable and writable". Alternatively you may
     provide a `specifier` object with a `protection` key whose value is as
     aforementioned, and a `coalesce` key set to `true` if you'd like neighboring
     ranges with the same protection to be coalesced (the default is `false`;
-    i.e. keeping the ranges separate). `callbacks` is an object specifying:
+    i.e. keeping the ranges separate). Returns an array of objects containing
+    the following properties:
 
-    -   `onMatch: function (range)`: called with `range` object containing:
-        -   `base`: base address as a `NativePointer`
-        -   `size`: size in bytes
-        -   `protection`: protection string (see above)
-        -   `file`: (when available) file mapping details as an object
-            containing:
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
+    -   `protection`: protection string (see above)
+    -   `file`: (when available) file mapping details as an object
+        containing:
 
-            -   `path`: full filesystem path as a string
-            -   `offset`: offset in the mapped file on disk, in bytes
-            -   `size`: size in the mapped file on disk, in bytes
+        -   `path`: full filesystem path as a string
+        -   `offset`: offset in the mapped file on disk, in bytes
+        -   `size`: size in the mapped file on disk, in bytes
 
-        This function may return the string `stop` to cancel the enumeration
-        early.
-
-    -   `onComplete: function ()`: called when all memory ranges have been
-        enumerated
-
-+   `Process.enumerateRangesSync(protection|specifier)`: synchronous version of
-    `enumerateRanges()` that returns the ranges in an array.
-
-+   `Process.enumerateMallocRanges(callbacks)`: just like `enumerateRanges()`,
-    but for individual memory allocations known to the system heap.
-
-+   `Process.enumerateMallocRangesSync(protection)`: synchronous version of
-    `enumerateMallocRanges()` that returns the ranges in an array.
++   `Process.enumerateMallocRanges()`: just like `enumerateRanges()`, but for
+    individual memory allocations known to the system heap.
 
 +   `Process.setExceptionHandler(callback)`: install a process-wide exception
     handler callback that gets a chance to handle native exceptions before the
@@ -406,90 +370,64 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 ## Module
 
-+   `Module.ensureInitialized(name)`: ensure that initializers of the specified
-    module have been run. This is important during early instrumentation, i.e.
-    code run early in the process lifetime, to be able to safely interact with
-    APIs. One such use-case is interacting with [ObjC](#objc) classes provided
-    by a given module.
+    Objects returned by e.g. `Process.enumerateModules()`.
 
-+   `Module.enumerateImports(name, callbacks)`: enumerate imports of module with
-    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
-    specifying:
+-   `name`: canonical module name as a string
 
-    -   `onMatch: function (imp)`: called with `imp` object containing:
-        -   `type`: string specifying either `function` or `variable`
-        -   `name`: import name as a string
-        -   `module`: module name as a string
-        -   `address`: absolute address as a `NativePointer`
-        -   `slot`: memory location where the import is stored, as a
-            `NativePointer`
+-   `base`: base address as a `NativePointer`
 
-        Only the `name` field is guaranteed to be present for all imports. The
-        platform-specific backend will do its best to resolve the other fields
-        even beyond what the native metadata provides, but there is no guarantee
-        that it will succeed.  This function may return the string `stop` to
-        cancel the enumeration early.
+-   `size`: size in bytes
 
-    -   `onComplete: function ()`: called when all imports have been
-        enumerated
+-   `path`: full filesystem path as a string
 
-+   `Module.enumerateImportsSync(name)`: synchronous version of
-    `enumerateImports()` that returns the imports in an array.
+-   `enumerateImports()`: enumerates imports of module, returning an array of
+    objects containing the following properties:
 
-+   `Module.enumerateExports(name, callbacks)`: enumerate exports of module with
-    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
-    specifying:
+    -   `type`: string specifying either `function` or `variable`
+    -   `name`: import name as a string
+    -   `module`: module name as a string
+    -   `address`: absolute address as a `NativePointer`
+    -   `slot`: memory location where the import is stored, as a
+        `NativePointer`
 
-    -   `onMatch: function (exp)`: called with `exp` object containing:
-        -   `type`: string specifying either `function` or `variable`
-        -   `name`: export name as a string
-        -   `address`: absolute address as a `NativePointer`
+    Only the `name` field is guaranteed to be present for all imports. The
+    platform-specific backend will do its best to resolve the other fields
+    even beyond what the native metadata provides, but there is no guarantee
+    that it will succeed.
 
-        This function may return the string `stop` to cancel the enumeration
-        early.
+-   `enumerateExports()`: enumerates exports of module, returning an array
+    of objects containing the following properties:
 
-    -   `onComplete: function ()`: called when all exports have been
-        enumerated
+    -   `type`: string specifying either `function` or `variable`
+    -   `name`: export name as a string
+    -   `address`: absolute address as a `NativePointer`
 
-+   `Module.enumerateExportsSync(name)`: synchronous version of
-    `enumerateExports()` that returns the exports in an array.
+-   `enumerateSymbols()`: enumerates symbols of module, returning an array of
+    objects containing the following properties:
 
-+   `Module.enumerateSymbols(name, callbacks)`: enumerate symbols of module with
-    the `name` as seen in `Process#enumerateModules`. `callbacks` is an object
-    specifying:
-
-    -   `onMatch: function (sym)`: called with `sym` object containing:
-        -   `isGlobal`: boolean specifying whether symbol is globally visible
-        -   `type`: string specifying one of:
-            -   unknown
-            -   section
-            -   undefined (Mach-O)
-            -   absolute (Mach-O)
-            -   prebound-undefined (Mach-O)
-            -   indirect (Mach-O)
-            -   object (ELF)
-            -   function (ELF)
-            -   file (ELF)
-            -   common (ELF)
-            -   tls (ELF)
-        -   `section`: if present, is an object containing:
-            -   `id`: string containing section index, segment name (if
-                      applicable) and section name – same format as
-                      [r2][]'s section IDs
-            -   `protection`: protection like in `Process.enumerateRanges()`
-        -   `name`: symbol name as a string
-        -   `address`: absolute address as a `NativePointer`
-
-        This function may return the string `stop` to cancel the enumeration
-        early.
-
-    -   `onComplete: function ()`: called when all symbols have been enumerated
-
-+   `Module.enumerateSymbolsSync(name)`: synchronous version of
-    `enumerateSymbols()` that returns the symbols in an array.
+    -   `isGlobal`: boolean specifying whether symbol is globally visible
+    -   `type`: string specifying one of:
+        -   unknown
+        -   section
+        -   undefined (Mach-O)
+        -   absolute (Mach-O)
+        -   prebound-undefined (Mach-O)
+        -   indirect (Mach-O)
+        -   object (ELF)
+        -   function (ELF)
+        -   file (ELF)
+        -   common (ELF)
+        -   tls (ELF)
+    -   `section`: if present, is an object containing:
+        -   `id`: string containing section index, segment name (if
+                  applicable) and section name – same format as
+                  [r2][]'s section IDs
+        -   `protection`: protection like in `Process.enumerateRanges()`
+    -   `name`: symbol name as a string
+    -   `address`: absolute address as a `NativePointer`
 
 <div class="note info">
-  <h5>Module.enumerateSymbols() is only available on i/macOS and Linux-based OSes</h5>
+  <h5>enumerateSymbols() is only available on i/macOS and Linux-based OSes</h5>
   <p>
     We would love to support this on the other platforms too, so if you find
     this useful and would like to help out, please get in touch. You may also
@@ -497,20 +435,28 @@ In the example above we used `script.on('message', on_message)` to monitor for a
   </p>
 </div>
 
-+   `Module.enumerateRanges(name, protection, callbacks)`: just like
-    `Process.enumerateRanges`, except it's scoped to the specified module
-    `name`.
+-   `enumerateRanges(protection)`: just like `Process.enumerateRanges`, except
+    it's scoped to the module.
 
-+   `Module.enumerateRangesSync(name, protection)`: synchronous version of
-    `enumerateRanges()` that returns the ranges in an array.
++   `Module.ensureInitialized(name)`: ensures that initializers of the specified
+    module have been run. This is important during early instrumentation, i.e.
+    code run early in the process lifetime, to be able to safely interact with
+    APIs. One such use-case is interacting with [ObjC](#objc) classes provided
+    by a given module.
 
-+   `Module.findBaseAddress(name)`: returns the base address of the `name`
-    module, or `null` if the module isn't loaded
++   `Module.findBaseAddress(name)`,
+    `Module.getBaseAddress(name)`: returns the base address of the `name`
+    module. In the event that no such module could be found, the *find*-prefixed
+    function returns *null* whilst the *get*-prefixed function throws an
+    exception.
 
-+   `Module.findExportByName(module|null, exp)`: returns the absolute address of
-    the export named `exp` in `module`. If the module isn't known you may pass
-    `null` instead of its name, but this can be a costly search and should be
-    avoided.
++   `Module.findExportByName(moduleName|null, exportName)`,
+    `Module.getExportByName(moduleName|null, exportName)`: returns the absolute
+    address of the export named `exp` in `module`. If the module isn't known you
+    may pass `null` instead of its name, but this can be a costly search and
+    should be avoided. In the event that no such module or export could be
+    found, the *find*-prefixed function returns *null* whilst the *get*-prefixed
+    function throws an exception.
 
 
 ## ModuleMap
@@ -522,18 +468,16 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     function used for filtering the list of modules. This is useful if you e.g.
     only care about modules owned by the application itself, and allows you to
     quickly check if an address belongs to one of its modules. The `filter`
-    function is passed an object just like in `Process.enumerateModules()`,
-    and must return `true` for each module that should be kept in the map.
-    It is called for each loaded module every time the map is updated.
+    function is passed a [Module](#module) object and must return `true` for
+    each module that should be kept in the map. It is called for each loaded
+    module every time the map is updated.
 
 -   `has(address)`: check if `address` belongs to any of the contained modules,
     and returns the result as a boolean
 
--   `find(address)`, `get(address)`: return an object with details about the
-    module that `address` belongs to. In the event that no such module could be
-    found, `find()` returns `null` whilst `get()` throws an exception.
-    See `Process.enumerateModules()` for details about which fields are
-    included.
+-   `find(address)`, `get(address)`: returns a [Module](#module) with details
+    about the module that `address` belongs to. In the event that no such module
+    could be found, `find()` returns `null` whilst `get()` throws an exception.
 
 -   `findName(address)`,
     `getName(address)`,
@@ -545,10 +489,9 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 -   `update()`: update the map. You should call this after a module has been
     loaded or unloaded to avoid operating on stale data.
 
--   `values()`: returns an array with the modules currently in the map. The
-    returned array is a deep copy and will not mutate after a call to
-    `update()`. See `Process.enumerateModules()` for details about which fields
-    are included in each module object.
+-   `values()`: returns an array with the [Module](#module) objects currently in
+    the map. The returned array is a deep copy and will not mutate after a call
+    to `update()`.
 
 
 ## Memory
@@ -1640,52 +1583,39 @@ Stalker.follow(Process.getCurrentThreadId(), {
     recommended to use the same instance for a batch of queries, but recreate it
     for future batches to avoid looking at stale data.
 
--   `enumerateMatches(query, callbacks)`: perform the resolver-specific `query`
-    string, where `callbacks` is an object specifying:
+-   `enumerateMatches(query)`: performs the resolver-specific `query` string,
+    returning an array of objects containing the following properties:
 
-    -   `onMatch: function (match)`: called for each match, where `match` is an
-        object with `name` and `address` keys.
-
-    -   `onComplete: function ()`: called when all matches have been enumerated.
+    -   `name`: name of the API that was found
+    -   `address`: address as a `NativePointer`
 
 {% highlight js %}
 var resolver = new ApiResolver('module');
-resolver.enumerateMatches('exports:*!open*', {
-  onMatch: function (match) {
-    /*
-     * Where `match` contains an object like this one:
-     *
-     * {
-     *     name: '/usr/lib/libSystem.B.dylib!opendir$INODE64',
-     *     address: ptr('0x7fff870135c9')
-     * }
-     */
-  },
-  onComplete: function () {
-  }
-});
+var matches = resolver.enumerateMatches('exports:*!open*');
+var first = matches[0];
+/*
+ * Where `first` is an object similar to:
+ *
+ * {
+ *   name: '/usr/lib/libSystem.B.dylib!opendir$INODE64',
+ *   address: ptr('0x7fff870135c9')
+ * }
+ */
 {% endhighlight %}
 
 {% highlight js %}
 var resolver = new ApiResolver('objc');
-resolver.enumerateMatches('-[NSURL* *HTTP*]', {
-  onMatch: function (match) {
-    /*
-     * Where `match` contains an object like this one:
-     *
-     * {
-     *     name: '-[NSURLRequest valueForHTTPHeaderField:]',
-     *     address: ptr('0x7fff94183e22')
-     * }
-     */
-  },
-  onComplete: function () {
-  }
-});
+var matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
+var first = matches[0];
+/*
+ * Where `first` contains an object like this one:
+ *
+ * {
+ *   name: '-[NSURLRequest valueForHTTPHeaderField:]',
+ *   address: ptr('0x7fff94183e22')
+ * }
+ */
 {% endhighlight %}
-
--   `enumerateMatchesSync(query)`: synchronous version of `enumerateMatches()`
-    that returns the matches in an array.
 
 
 ## DebugSymbol
@@ -1766,52 +1696,30 @@ Interceptor.attach(f, {
 
 +   `Kernel.pageSize`: size of a kernel page in bytes, as a number.
 
-+   `Kernel.enumerateModules(callbacks)`: enumerate kernel modules loaded right
-    now, where `callbacks` is an object specifying:
++   `Kernel.enumerateModules()`: enumerates kernel modules loaded right now,
+    returning an array of objects containing the following properties:
 
-    -   `onMatch: function (module)`: called with `module` object containing:
-        -   `name`: canonical module name as a string
-        -   `base`: base address as a `NativePointer`
-        -   `size`: size in bytes
+    -   `name`: canonical module name as a string
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
 
-        This function may return the string `stop` to cancel the enumeration
-        early.
++   `Kernel.enumerateRanges(protection|specifier)`: enumerate kernel memory
+    ranges satisfying `protection` given as a string of the form: `rwx`, where
+    `rw-` means "must be at least readable and writable". Alternatively you may
+    provide a `specifier` object with a `protection` key whose value is as
+    aforementioned, and a `coalesce` key set to `true` if you'd like neighboring
+    ranges with the same protection to be coalesced (the default is `false`;
+    i.e. keeping the ranges separate). Returns an array of objects containing
+    the following properties:
 
-    -   `onComplete: function ()`: called when all modules have been enumerated
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
+    -   `protection`: protection string (see above)
 
-+   `Kernel.enumerateModulesSync()`: synchronous version of `enumerateModules()`
-    that returns the modules in an array.
-
-+   `Kernel.enumerateRanges(protection|specifier, callbacks)`: enumerate kernel
-    memory ranges satisfying `protection` given as a string of the form: `rwx`,
-    where `rw-` means "must be at least readable and writable". Alternatively
-    you may provide a `specifier` object with a `protection` key whose value is
-    as aforementioned, and a `coalesce` key set to `true` if you'd like
-    neighboring ranges with the same protection to be coalesced (the default is
-    `false`; i.e. keeping the ranges separate). `callbacks` is an object
-    specifying:
-
-    -   `onMatch: function (range)`: called with `range` object containing:
-        -   `base`: base address as a `NativePointer`
-        -   `size`: size in bytes
-        -   `protection`: protection string (see above)
-
-        This function may return the string `stop` to cancel the enumeration
-        early.
-
-    -   `onComplete: function ()`: called when all memory ranges have been
-        enumerated
-
-+   `Kernel.enumerateRangesSync(protection|specifier)`: synchronous version of
-    `enumerateRanges()` that returns the ranges in an array.
-
-+   `Kernel.enumerateModuleRanges(name, protection, callbacks)`: just like
++   `Kernel.enumerateModuleRanges(name, protection)`: just like
     `Kernel.enumerateRanges`, except it's scoped to the specified module
     `name` – which may be `null` for the module of the kernel itself. Each
     range also has a `name` field containing a unique identifier as a string.
-
-+   `Kernel.enumerateModuleRangesSync(name, protection)`: synchronous version of
-    `enumerateModuleRanges()` that returns the ranges in an array.
 
 +   `Kernel.alloc(size)`: allocate `size` bytes of kernel memory, rounded up to
     a multiple of the kernel's page size. The returned value is a `UInt64`
