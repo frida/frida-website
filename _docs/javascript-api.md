@@ -68,8 +68,7 @@ permalink: /docs/javascript-api/
 
 {% highlight js %}
 var libc = Module.findBaseAddress('libc.so');
-var buf = Memory.readByteArray(libc, 64);
-console.log(hexdump(buf, {
+console.log(hexdump(libc, {
   offset: 0,
   length: 64,
   header: true,
@@ -104,9 +103,9 @@ console.log(hexdump(buf, {
 +   `send(message[, data])`: send the JavaScript object `message` to your
     Frida-based application (it must be serializable to JSON). If you also have
     some raw binary data that you'd like to send along with it, e.g. you dumped
-    some memory using `Memory#readByteArray`, then you may pass this through the
-    optional `data` argument. This requires it to either be an ArrayBuffer or an
-    array of integers between 0 and 255.
+    some memory using `NativePointer#readByteArray`, then you may pass this
+    through the optional `data` argument. This requires it to either be an
+    ArrayBuffer or an array of integers between 0 and 255.
 
 <div class="note">
   <h5>Performance considerations</h5>
@@ -546,7 +545,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     For example:
 
 {% highlight js %}
-Memory.protect(ptr("0x1234"), 4096, 'rw-');
+Memory.protect(ptr('0x1234'), 4096, 'rw-');
 {% endhighlight %}
 
 +   `Memory.patchCode(address, size, apply)`: safely modify `size` bytes at
@@ -570,92 +569,6 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
   cw.flush();
 });
 {% endhighlight %}
-
-+   `Memory.readPointer(address)`: read a pointer from `address` and return
-    it as a `NativePointer`.
-
-    A JavaScript exception will be thrown if `address` isn't readable.
-
-+   `Memory.writePointer(address, ptr)`: write `ptr` to `address`.
-
-    A JavaScript exception will be thrown if `address` isn't writable.
-
-+   `Memory.readS8(address)`, `Memory.readU8(address)`,
-    `Memory.readS16(address)`, `Memory.readU16(address)`,
-    `Memory.readS32(address)`, `Memory.readU32(address)`,
-    `Memory.readShort(address)`, `Memory.readUShort(address)`,
-    `Memory.readInt(address)`, `Memory.readUInt(address)`,
-    `Memory.readFloat(address)`, `Memory.readDouble(address)`:
-    read a signed or unsigned 8/16/32/etc. or float/double value from
-    `address` and return it as a number.
-
-    A JavaScript exception will be thrown if `address` isn't readable.
-
-+   `Memory.writeS8(address, value)`, `Memory.writeU8(address, value)`,
-    `Memory.writeS16(address, value)`, `Memory.writeU16(address, value)`,
-    `Memory.writeS32(address, value)`, `Memory.writeU32(address, value)`,
-    `Memory.writeShort(address, value)`, `Memory.writeUShort(address, value)`,
-    `Memory.writeInt(address, value)`, `Memory.writeUInt(address, value)`,
-    `Memory.writeFloat(address, value)`, `Memory.writeDouble(address, value)`:
-    write the number `value` to the signed or unsigned 8/16/32/etc. or
-    float/double value at `address`.
-
-    A JavaScript exception will be thrown if `address` isn't writable.
-
-+   `Memory.readS64(address)`, `Memory.readU64(address)`,
-    `Memory.readLong(address)`, `Memory.readULong(address):
-    read a signed or unsigned 64-bit, or long-sized, value from `address` and
-    return it as an Int64/UInt64 object.
-
-    A JavaScript exception will be thrown if `address` isn't readable.
-
-+   `Memory.writeS64(address, value)`, `Memory.writeU64(address, value)`,
-    `Memory.writeLong(address, value)`, `Memory.writeULong(address, value)`:
-    write the Int64/UInt64 `value` to the signed or unsigned 64-bit, or
-    long-sized, value at `address`.
-
-    A JavaScript exception will be thrown if `address` isn't writable.
-
-+   `Memory.readByteArray(address, length)`: read `length` bytes from `address`
-    and return it as an ArrayBuffer. This buffer may be efficiently transferred
-    to your Frida-based application by passing it as the second argument to
-    `send()`.
-
-    A JavaScript exception will be thrown if any of the `length` bytes read from
-    `address` isn't readable.
-
-+   `Memory.writeByteArray(address, bytes)`: write `bytes` to `address`, where
-    the former is either an ArrayBuffer, typically returned from
-    `Memory.readByteArray()`, or an array of integers between 0 and 255. For
-    example: `[ 0x13, 0x37, 0x42 ]`.
-
-    A JavaScript exception will be thrown if any of the bytes written to
-    `address` isn't writable.
-
-+   `Memory.readCString(address[, size = -1])`,
-    `Memory.readUtf8String(address[, size = -1])`,
-    `Memory.readUtf16String(address[, length = -1])`,
-    `Memory.readAnsiString(address[, size = -1])`:
-    read the bytes at `address` as an ASCII, UTF-8, UTF-16 or ANSI string.
-    Supply the optional `size` argument if you know the size of the string
-    in bytes, or omit it or specify -1 if the string is NUL-terminated.
-    Likewise you may supply the optional `length` argument if you know the
-    length of the string in characters.
-
-    A JavaScript exception will be thrown if any of the `size` / `length` bytes
-    read from `address` isn't readable.
-
-    Note that `readAnsiString()` is only available (and relevant) on Windows.
-
-+   `Memory.writeUtf8String(address, str)`,
-    `Memory.writeUtf16String(address, str)`,
-    `Memory.writeAnsiString(address, str)`:
-    encode and write the JavaScript string to `address` (with NUL-terminator).
-
-    A JavaScript exception will be thrown if any of the bytes written to
-    `address` isn't writable.
-
-    Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
 +   `Memory.allocUtf8String(str)`,
     `Memory.allocUtf16String(str)`,
@@ -788,9 +701,9 @@ Interceptor.attach(f, {
 
 ## NativePointer
 
-+   `new NativePointer(s)`: create a new NativePointer from the string `s`
++   `new NativePointer(s)`: creates a new NativePointer from the string `s`
     containing a memory address in either decimal, or hexadecimal if prefixed
-    with "0x". You may use the `ptr(s)` short-hand for brevity.
+    with '0x'. You may use the `ptr(s)` short-hand for brevity.
 
 -   `isNull()`: returns a boolean allowing you to conveniently check if a
     pointer is NULL
@@ -798,14 +711,14 @@ Interceptor.attach(f, {
 -   `add(rhs)`, `sub(rhs)`,
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
-    make a new NativePointer with this NativePointer plus/minus/and/or/xor
+    makes a new NativePointer with this NativePointer plus/minus/and/or/xor
     `rhs`, which may either be a number or another NativePointer
 
 -   `shr(n)`, `shl(n)`:
-    make a new NativePointer with this NativePointer shifted right/left by `n`
+    makes a new NativePointer with this NativePointer shifted right/left by `n`
     bits
 
--   `not()`: make a new NativePointer with this NativePointer's bits inverted
+-   `not()`: makes a new NativePointer with this NativePointer's bits inverted
 
 -   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
     this one; i.e. it has the same pointer value
@@ -813,13 +726,99 @@ Interceptor.attach(f, {
 -   `compare(rhs)`: returns an integer comparison result just like
     String#localeCompare()
 
--   `toInt32()`: cast this NativePointer to a signed 32-bit integer
+-   `toInt32()`: casts this NativePointer to a signed 32-bit integer
 
--   `toString([radix = 16])`: convert to a string of optional radix (defaults to
-    16)
+-   `toString([radix = 16])`: converts to a string of optional radix (defaults
+    to 16)
 
 -   `toMatchPattern()`: returns a string containing a `Memory.scan()`-compatible
     match pattern for this pointer's raw value
+
+-   `readPointer()`: reads a `NativePointer` from this memory location.
+
+    A JavaScript exception will be thrown if the address isn't readable.
+
+-   `writePointer(ptr)`: writes `ptr` to this memory location.
+
+    A JavaScript exception will be thrown if the address isn't writable.
+
+-   `readS8()`, `readU8()`,
+    `readS16()`, `readU16()`,
+    `readS32()`, `readU32()`,
+    `readShort()`, `readUShort()`,
+    `readInt()`, `readUInt()`,
+    `readFloat()`, `readDouble()`:
+    reads a signed or unsigned 8/16/32/etc. or float/double value from
+    this memory location and returns it as a number.
+
+    A JavaScript exception will be thrown if the address isn't readable.
+
+-   `writeS8(value)`, `writeU8(value)`,
+    `writeS16(value)`, `writeU16(value)`,
+    `writeS32(value)`, `writeU32(value)`,
+    `writeShort(value)`, `writeUShort(value)`,
+    `writeInt(value)`, `writeUInt(value)`,
+    `writeFloat(value)`, `writeDouble(value)`:
+    writes a signed or unsigned 8/16/32/etc. or float/double `value` to this
+    memory location.
+
+    A JavaScript exception will be thrown if the address isn't writable.
+
+-   `readS64()`, `readU64()`,
+    `readLong()`, `readULong():
+    reads a signed or unsigned 64-bit, or long-sized, value from this memory
+    location and returns it as an [Int64](#int64)/[UInt64](#uint64) value.
+
+    A JavaScript exception will be thrown if the address isn't readable.
+
+-   `writeS64(value)`, `writeU64(value)`,
+    `writeLong(value)`, `writeULong(value)`:
+    writes the [Int64](#int64)/[UInt64](#uint64) `value` to this memory
+    location.
+
+    A JavaScript exception will be thrown if the address isn't writable.
+
+-   `readByteArray(length)`: reads `length` bytes from this memory location, and
+    returns it as an *ArrayBuffer*. This buffer may be efficiently transferred
+    to your Frida-based application by passing it as the second argument to
+    `send()`.
+
+    A JavaScript exception will be thrown if any of the `length` bytes read from
+    the address isn't readable.
+
+-   `writeByteArray(bytes)`: writes `bytes` to this memory location, where
+    `bytes` is either an *ArrayBuffer*, typically returned from
+    `readByteArray()`, or an array of integers between 0 and 255. For example:
+    `[ 0x13, 0x37, 0x42 ]`.
+
+    A JavaScript exception will be thrown if any of the bytes written to
+    the address isn't writable.
+
+-   `readCString([size = -1])`,
+    `readUtf8String([size = -1])`,
+    `readUtf16String([length = -1])`,
+    `readAnsiString([size = -1])`:
+    reads the bytes at this memory location as an ASCII, UTF-8, UTF-16, or ANSI
+    string. Supply the optional `size` argument if you know the size of the
+    string in bytes, or omit it or specify *-1* if the string is NUL-terminated.
+    Likewise you may supply the optional `length` argument if you know the
+    length of the string in characters.
+
+    A JavaScript exception will be thrown if any of the `size` / `length` bytes
+    read from the address isn't readable.
+
+    Note that `readAnsiString()` is only available (and relevant) on Windows.
+
+-   `writeUtf8String(str)`,
+    `writeUtf16String(str)`,
+    `writeAnsiString(str)`:
+    encodes and writes the JavaScript string to this memory location (with
+    NUL-terminator).
+
+    A JavaScript exception will be thrown if any of the bytes written to
+    the address isn't writable.
+
+    Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
 
 ## NativeFunction
@@ -1154,7 +1153,7 @@ friendlyFunctionName(returnValue, thisPtr);
     `fopen()` from the C standard library).
 
 -   `write(data)`: synchronously write `data` to the file, where `data` is
-    either a string or a buffer as returned by `Memory#readByteArray`
+    either a string or a buffer as returned by `NativePointer#readByteArray`
 
 -   `flush()`: flush any buffered data to the underlying file
 
@@ -1369,13 +1368,13 @@ Interceptor.attach(Module.findExportByName(null, 'read'), {
     Here's an example:
 
 {% highlight js %}
-var openPtr = Module.findExportByName("libc.so", "open");
+var openPtr = Module.findExportByName('libc.so', 'open');
 var open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
 Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
-    var path = Memory.readUtf8String(pathPtr);
-    log("Opening '" + path + "'");
+    var path = pathPtr.readUtf8String();
+    log('Opening "' + path + '"');
     var fd = open(pathPtr, flags);
-    log("Got fd: " + fd);
+    log('Got fd: ' + fd);
     return fd;
 }, 'int', ['pointer', 'int']));
 {% endhighlight %}
@@ -1735,11 +1734,11 @@ Interceptor.attach(f, {
 Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 {% endhighlight %}
 
-+   `Kernel.readByteArray(address, length)`: just like `Memory.readByteArray`,
-    but reading from kernel memory.
++   `Kernel.readByteArray(address, length)`: just like
+    `NativePointer#readByteArray`, but reading from kernel memory.
 
-+   `Kernel.writeByteArray(address, bytes)`: just like `Memory.writeByteArray`,
-    but writing to kernel memory.
++   `Kernel.writeByteArray(address, bytes)`: just like
+    `NativePointer#writeByteArray`, but writing to kernel memory.
 
 +   `Kernel.scan(address, size, pattern, callbacks)`: just like `Memory.scan`,
     but scanning kernel memory.

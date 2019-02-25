@@ -107,7 +107,7 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 -
 ```
 var data = new ObjC.Object(args[2]);
-Memory.readUtf8String(data.bytes(), data.length());
+data.bytes().readUtf8String(data.length());
 ```
 >**Tip**: 2nd argument (number of bytes) is not required if the string data is null-terminated.
 
@@ -115,7 +115,7 @@ Memory.readUtf8String(data.bytes(), data.length());
 -
 ```
 var data = new ObjC.Object(args[2]);
-Memory.readByteArray(data.bytes(), data.length());
+data.bytes().readByteArray(data.length());
 ```
 
 3. Iterating an NSArray
@@ -155,7 +155,7 @@ var parsedValue = ObjC.classes.NSKeyedUnarchiver.unarchiveObjectWithData_(value)
 If args[0] is a pointer to a struct, and let's say you want to read the uint32
 at offset 4, you can do it as shown below:
 ```
-Memory.readU32(args[0].add(4));
+args[0].add(4).readU32();
 ```
 
 ## Objective-C examples

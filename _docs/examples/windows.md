@@ -60,7 +60,7 @@ def main(target_process):
             return;
 
         console.log('Data dump ' + info + ' :');
-        var buf = Memory.readByteArray(addr, size);
+        var buf = addr.readByteArray(size);
 
         // If you want color magic, set ansi to true
         console.log(hexdump(buf, { offset: 0, length: size, header: true, ansi: false }));

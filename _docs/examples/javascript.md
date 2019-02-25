@@ -86,11 +86,11 @@ const SVt_PVGV = 9;
 Interceptor.attach(Module.findExportByName(null, 'Perl_pp_entersub'), {
   onEnter(args) {
     const interpreter = args[0];
-    const stack = Memory.readPointer(interpreter);
+    const stack = interpreter.readPointer();
 
-    const sub = Memory.readPointer(stack);
+    const sub = stack.readPointer();
 
-    const flags = Memory.readU32(sub.add(SV_OFFSET_FLAGS));
+    const flags = sub.add(SV_OFFSET_FLAGS).readU32();
     const type = flags & 0xff;
     if (type === SVt_PVGV) {
       /*
@@ -106,9 +106,9 @@ Interceptor.attach(Module.findExportByName(null, 'Perl_pp_entersub'), {
 });
 
 function GvNAME(sv) {
-  const body = Memory.readPointer(sv);
-  const nameHek = Memory.readPointer(body.add(PVGV_OFFSET_NAMEHEK));
-  return Memory.readUtf8String(nameHek.add(8));
+  const body = sv.readPointer();
+  const nameHek = body.add(PVGV_OFFSET_NAMEHEK).readPointer();
+  return nameHek.add(8).readUtf8String();
 }
 {% endhighlight %}
 

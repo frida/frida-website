@@ -387,7 +387,7 @@ script = session.create_script("""
 send("Allocating memory and writing bytes...");
 var st = Memory.alloc(16);
 // Now we need to fill it - this is a bit blunt, but works...
-Memory.writeByteArray(st,[0x02, 0x00, 0x13, 0x89, 0x7F, 0x00, 0x00, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30]);
+st.writeByteArray([0x02, 0x00, 0x13, 0x89, 0x7F, 0x00, 0x00, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30]);
 // Module.findExportByName() can find functions without knowing the source
 // module, but it's slower, especially over large binaries! YMMV...
 Interceptor.attach(Module.findExportByName(null, "connect"), {

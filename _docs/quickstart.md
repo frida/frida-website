@@ -51,9 +51,8 @@ Now, let's have a look at the generated `recvfrom.js`:
      * to be presented to the user.
      * @param {array} args - Function arguments represented as
      * an array of NativePointer objects.
-     * For example use Memory.readUtf8String(args[0]) if the
-     * first argument is a pointer to a C string encoded as
-     * UTF-8.
+     * For example use args[0].readUtf8String() if the first
+     * argument is a pointer to a C string encoded as UTF-8.
      * It is also possible to modify arguments by assigning a
      * NativePointer object to an element of this array.
      * @param {object} state - Object allowing you to keep
@@ -94,7 +93,7 @@ log("recvfrom(socket=" + args[0].toInt32()
     + ", length=" + args[2].toInt32()
     + ", flags=" + args[3]
     + ", address=" + args[4]
-    + ", address_len=" + Memory.readPointer(args[5]).toInt32()
+    + ", address_len=" + args[5].readPointer().toInt32()
     + ")");
 {% endhighlight %}
 

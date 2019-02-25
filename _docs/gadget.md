@@ -135,7 +135,7 @@ rpc.exports = {
 
     Interceptor.attach(Module.findExportByName(null, 'open'), {
       onEnter: function (args) {
-        var path = Memory.readUtf8String(args[0]);
+        var path = args[0].readUtf8String();
         console.log('open("' + path + '")');
       }
     });

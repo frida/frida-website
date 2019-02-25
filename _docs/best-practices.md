@@ -14,7 +14,7 @@ is as simple as:
 
 {% highlight javascript %}
 onEnter: function (args) {
-  Memory.writeUtf8String(args[0], 'mystring');
+  args[0].writeUtf8String('mystring');
 }
 {% endhighlight %}
 
@@ -22,8 +22,8 @@ However, this may not be possible because the string pointed to may:
 
 - Reside in a "read-only-data" section which gets mapped into the process'
   address space as read-only;
-- Be longer than the string already there, so *Memory.writeUtf8String()* causes
-  a buffer-overflow and may corrupt unrelated memory.
+- Be longer than the string already there, so *writeUtf8String()* causes a
+  buffer-overflow and may corrupt unrelated memory.
 
 Even if you could solve the former issue by using *Memory.protect()*, there is
 a much better solution: allocate a new string and replace the argument instead.
