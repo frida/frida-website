@@ -765,7 +765,7 @@ Interceptor.attach(f, {
     A JavaScript exception will be thrown if the address isn't writable.
 
 -   `readS64()`, `readU64()`,
-    `readLong()`, `readULong():
+    `readLong()`, `readULong()`:
     reads a signed or unsigned 64-bit, or long-sized, value from this memory
     location and returns it as an [Int64](#int64)/[UInt64](#uint64) value.
 
