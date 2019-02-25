@@ -560,7 +560,7 @@ Memory.protect(ptr('0x1234'), 4096, 'rw-');
     For example:
 
 {% highlight js %}
-var getLivesLeft = Module.findExportByName('game-engine.so', 'get_lives_left');
+var getLivesLeft = Module.getExportByName('game-engine.so', 'get_lives_left');
 var maxPatchSize = 64; // Do not write out of bounds, may be a temporary buffer!
 Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
   var cw = new X86Writer(code, { pc: getLivesLeft });
@@ -636,14 +636,14 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     positives, but it will work on any binary.
 
 {% highlight js %}
-var f = Module.findExportByName("libcommonCrypto.dylib",
-    "CCCryptorCreate");
+var f = Module.getExportByName('libcommonCrypto.dylib',
+    'CCCryptorCreate');
 Interceptor.attach(f, {
-    onEnter: function (args) {
-        console.log("CCCryptorCreate called from:\n" +
-            Thread.backtrace(this.context, Backtracer.ACCURATE)
-            .map(DebugSymbol.fromAddress).join("\n") + "\n");
-    }
+  onEnter: function (args) {
+    console.log('CCCryptorCreate called from:\n' +
+        Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).join('\n') + '\n');
+  }
 });
 {% endhighlight %}
 
@@ -1237,7 +1237,7 @@ smt.reset();
     you would like to intercept calls to. Note that on 32-bit ARM this address
     must have its least significant bit set to 0 for ARM functions, and 1 for
     Thumb functions. Frida takes care of this detail for you if you get the
-    address from a Frida API (for example `Module.findExportByName()`).
+    address from a Frida API (for example `Module.getExportByName()`).
 
     The `callbacks` argument is an object containing one or more of:
 
@@ -1271,15 +1271,15 @@ smt.reset();
     For example:
 
 {% highlight js %}
-Interceptor.attach(Module.findExportByName("libc.so", "read"), {
-    onEnter: function (args) {
-        this.fileDescriptor = args[0].toInt32();
-    },
-    onLeave: function (retval) {
-        if (retval.toInt32() > 0) {
-            /* do something with this.fileDescriptor */
-        }
+Interceptor.attach(Module.getExportByName('libc.so', 'read'), {
+  onEnter: function (args) {
+    this.fileDescriptor = args[0].toInt32();
+  },
+  onLeave: function (retval) {
+    if (retval.toInt32() > 0) {
+      /* do something with this.fileDescriptor */
     }
+  }
 });
 {% endhighlight %}
 
@@ -1304,29 +1304,29 @@ Interceptor.attach(Module.findExportByName("libc.so", "read"), {
     For example:
 
 {% highlight js %}
-Interceptor.attach(Module.findExportByName(null, 'read'), {
-    onEnter: function (args) {
-        console.log('Context information:');
-        console.log('Context  : ' + JSON.stringify(this.context));
-        console.log('Return   : ' + this.returnAddress);
-        console.log('ThreadId : ' + this.threadId);
-        console.log('Depth    : ' + this.depth);
-        console.log('Errornr  : ' + this.err);
+Interceptor.attach(Module.getExportByName(null, 'read'), {
+  onEnter: function (args) {
+    console.log('Context information:');
+    console.log('Context  : ' + JSON.stringify(this.context));
+    console.log('Return   : ' + this.returnAddress);
+    console.log('ThreadId : ' + this.threadId);
+    console.log('Depth    : ' + this.depth);
+    console.log('Errornr  : ' + this.err);
 
-        // Save arguments for processing in onLeave.
-        this.fd = args[0].toInt32();
-        this.buf = args[1];
-        this.count = args[2].toInt32();
-    },
-    onLeave: function (result) {
-        console.log('----------')
-        // Show argument 1 (buf), saved during onEnter.
-        numBytes = result.toInt32();
-        if (numBytes > 0) {
-            console.log(hexdump(this.buf, { length: numBytes, ansi: true }));
-        }
-        console.log('Result   : ' + numBytes);
+    // Save arguments for processing in onLeave.
+    this.fd = args[0].toInt32();
+    this.buf = args[1];
+    this.count = args[2].toInt32();
+  },
+  onLeave: function (result) {
+    console.log('----------')
+    // Show argument 1 (buf), saved during onEnter.
+    var numBytes = result.toInt32();
+    if (numBytes > 0) {
+      console.log(hexdump(this.buf, { length: numBytes, ansi: true }));
     }
+    console.log('Result   : ' + numBytes);
+  }
 })
 {% endhighlight %}
 
@@ -1368,14 +1368,14 @@ Interceptor.attach(Module.findExportByName(null, 'read'), {
     Here's an example:
 
 {% highlight js %}
-var openPtr = Module.findExportByName('libc.so', 'open');
+var openPtr = Module.getExportByName('libc.so', 'open');
 var open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
 Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
-    var path = pathPtr.readUtf8String();
-    log('Opening "' + path + '"');
-    var fd = open(pathPtr, flags);
-    log('Got fd: ' + fd);
-    return fd;
+  var path = pathPtr.readUtf8String();
+  log('Opening "' + path + '"');
+  var fd = open(pathPtr, flags);
+  log('Got fd: ' + fd);
+  return fd;
 }, 'int', ['pointer', 'int']));
 {% endhighlight %}
 
@@ -1633,14 +1633,14 @@ var first = matches[0];
     with `Thread.backtrace()`:
 
 {% highlight js %}
-var f = Module.findExportByName("libcommonCrypto.dylib",
-    "CCCryptorCreate");
+var f = Module.getExportByName('libcommonCrypto.dylib',
+    'CCCryptorCreate');
 Interceptor.attach(f, {
-    onEnter: function (args) {
-        console.log("CCCryptorCreate called from:\n" +
-            Thread.backtrace(this.context, Backtracer.ACCURATE)
-            .map(DebugSymbol.fromAddress).join("\n") + "\n");
-    }
+  onEnter: function (args) {
+    console.log('CCCryptorCreate called from:\n' +
+        Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).join('\n') + '\n');
+  }
 });
 {% endhighlight %}
 
@@ -1662,7 +1662,7 @@ Interceptor.attach(f, {
     Note that on 32-bit ARM this address must have its least significant bit
     set to 0 for ARM functions, and 1 for Thumb functions. Frida takes care
     of this detail for you if you get the address from a Frida API (for
-    example `Module.findExportByName()`).
+    example `Module.getExportByName()`).
 
     The object returned has the fields:
 

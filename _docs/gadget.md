@@ -133,7 +133,7 @@ rpc.exports = {
   init: function (stage, parameters) {
     console.log('[init]', stage, JSON.stringify(parameters));
 
-    Interceptor.attach(Module.findExportByName(null, 'open'), {
+    Interceptor.attach(Module.getExportByName(null, 'open'), {
       onEnter: function (args) {
         var path = args[0].readUtf8String();
         console.log('open("' + path + '")');

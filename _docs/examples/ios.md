@@ -92,7 +92,7 @@ Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
 9. Calling a native function
 -
 ```
-var address = Module.findExportByName('libsqlite3.dylib', 'sqlite3_sql');
+var address = Module.getExportByName('libsqlite3.dylib', 'sqlite3_sql');
 var sql = new NativeFunction(address, 'char', ['pointer']);
 sql(statement);
 ```

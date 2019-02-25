@@ -384,15 +384,15 @@ import sys
 session = frida.attach("client")
 script = session.create_script("""
 // First, let's give ourselves a bit of memory to put our struct in:
-send("Allocating memory and writing bytes...");
+send('Allocating memory and writing bytes...');
 var st = Memory.alloc(16);
 // Now we need to fill it - this is a bit blunt, but works...
 st.writeByteArray([0x02, 0x00, 0x13, 0x89, 0x7F, 0x00, 0x00, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30]);
-// Module.findExportByName() can find functions without knowing the source
+// Module.getExportByName() can find functions without knowing the source
 // module, but it's slower, especially over large binaries! YMMV...
-Interceptor.attach(Module.findExportByName(null, "connect"), {
+Interceptor.attach(Module.getExportByName(null, 'connect'), {
     onEnter: function(args) {
-        send("Injecting malicious byte array:");
+        send('Injecting malicious byte array:');
         args[1] = st;
     }
     //, onLeave: function(retval) {
@@ -416,7 +416,7 @@ script.load()
 sys.stdin.read()
 {% endhighlight %}
 
-Note that this script demonstrates how the `Module.findExportByName()` API can
+Note that this script demonstrates how the `Module.getExportByName()` API can
 be used to find any exported function by name in our target. If we can supply a
 module then it will be faster on larger binaries, but that is less critical
 here.

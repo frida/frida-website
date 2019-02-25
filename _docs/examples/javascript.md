@@ -9,22 +9,22 @@ permalink: /docs/examples/javascript/
 {% highlight js %}
 'use strict';
 
-const uv_default_loop = new NativeFunction(Module.findExportByName(null, 'uv_default_loop'), 'pointer', []);
-const uv_async_init = new NativeFunction(Module.findExportByName(null, 'uv_async_init'), 'int', ['pointer', 'pointer', 'pointer']);
-const uv_async_send = new NativeFunction(Module.findExportByName(null, 'uv_async_send'), 'int', ['pointer']);
-const uv_close = new NativeFunction(Module.findExportByName(null, 'uv_close'), 'void', ['pointer', 'pointer']);
-const uv_unref = new NativeFunction(Module.findExportByName(null, 'uv_unref'), 'void', ['pointer']);
+const uv_default_loop = new NativeFunction(Module.getExportByName(null, 'uv_default_loop'), 'pointer', []);
+const uv_async_init = new NativeFunction(Module.getExportByName(null, 'uv_async_init'), 'int', ['pointer', 'pointer', 'pointer']);
+const uv_async_send = new NativeFunction(Module.getExportByName(null, 'uv_async_send'), 'int', ['pointer']);
+const uv_close = new NativeFunction(Module.getExportByName(null, 'uv_close'), 'void', ['pointer', 'pointer']);
+const uv_unref = new NativeFunction(Module.getExportByName(null, 'uv_unref'), 'void', ['pointer']);
 
-const v8_Isolate_GetCurrent = new NativeFunction(Module.findExportByName(null, '_ZN2v87Isolate10GetCurrentEv'), 'pointer', []);
-const v8_Isolate_GetCurrentContext = new NativeFunction(Module.findExportByName(null, '_ZN2v87Isolate17GetCurrentContextEv'), 'pointer', ['pointer']);
+const v8_Isolate_GetCurrent = new NativeFunction(Module.getExportByName(null, '_ZN2v87Isolate10GetCurrentEv'), 'pointer', []);
+const v8_Isolate_GetCurrentContext = new NativeFunction(Module.getExportByName(null, '_ZN2v87Isolate17GetCurrentContextEv'), 'pointer', ['pointer']);
 
-const v8_HandleScope_init = new NativeFunction(Module.findExportByName(null, '_ZN2v811HandleScopeC1EPNS_7IsolateE'), 'void', ['pointer', 'pointer']);
-const v8_HandleScope_finalize = new NativeFunction(Module.findExportByName(null, '_ZN2v811HandleScopeD1Ev'), 'void', ['pointer']);
+const v8_HandleScope_init = new NativeFunction(Module.getExportByName(null, '_ZN2v811HandleScopeC1EPNS_7IsolateE'), 'void', ['pointer', 'pointer']);
+const v8_HandleScope_finalize = new NativeFunction(Module.getExportByName(null, '_ZN2v811HandleScopeD1Ev'), 'void', ['pointer']);
 
-const v8_String_NewFromUtf8 = new NativeFunction(Module.findExportByName(null, '_ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS_13NewStringTypeEi'), 'pointer', ['pointer', 'pointer', 'int', 'int']);
+const v8_String_NewFromUtf8 = new NativeFunction(Module.getExportByName(null, '_ZN2v86String11NewFromUtf8EPNS_7IsolateEPKcNS_13NewStringTypeEi'), 'pointer', ['pointer', 'pointer', 'int', 'int']);
 
-const v8_Script_Compile = new NativeFunction(Module.findExportByName(null, '_ZN2v86Script7CompileENS_5LocalINS_7ContextEEENS1_INS_6StringEEEPNS_12ScriptOriginE'), 'pointer', ['pointer', 'pointer', 'pointer']);
-const v8_Script_Run = new NativeFunction(Module.findExportByName(null, '_ZN2v86Script3RunENS_5LocalINS_7ContextEEE'), 'pointer', ['pointer', 'pointer']);
+const v8_Script_Compile = new NativeFunction(Module.getExportByName(null, '_ZN2v86Script7CompileENS_5LocalINS_7ContextEEENS1_INS_6StringEEEPNS_12ScriptOriginE'), 'pointer', ['pointer', 'pointer', 'pointer']);
+const v8_Script_Run = new NativeFunction(Module.getExportByName(null, '_ZN2v86Script3RunENS_5LocalINS_7ContextEEE'), 'pointer', ['pointer', 'pointer']);
 
 const NewStringType = {
   kNormal: 0,
@@ -83,7 +83,7 @@ const PVGV_OFFSET_NAMEHEK = 4 * pointerSize;
 
 const SVt_PVGV = 9;
 
-Interceptor.attach(Module.findExportByName(null, 'Perl_pp_entersub'), {
+Interceptor.attach(Module.getExportByName(null, 'Perl_pp_entersub'), {
   onEnter(args) {
     const interpreter = args[0];
     const stack = interpreter.readPointer();
