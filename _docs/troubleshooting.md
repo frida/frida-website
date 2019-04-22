@@ -28,6 +28,8 @@ have forgotten to enable ptrace of non-child processes. Try:
 sudo sysctl kernel.yama.ptrace_scope=0
 {% endhighlight %}
 
+This could also be [due to Magisk Hide](https://github.com/frida/frida/issues/824#issuecomment-479664290). Try disabling it and rebooting before running your command.
+
 ## Failed to spawn: unexpected error while spawning child process 'XXX' (task_for_pid returned '(os/kern) failure')
 
 On macOS this probably means that you did't properly sign Frida or that there
