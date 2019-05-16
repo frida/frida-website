@@ -369,7 +369,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 ## Module
 
-    Objects returned by e.g. `Process.enumerateModules()`.
+    Objects returned by e.g. `Module.load()` and `Process.enumerateModules()`.
 
 -   `name`: canonical module name as a string
 
@@ -436,6 +436,9 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 -   `enumerateRanges(protection)`: just like `Process.enumerateRanges`, except
     it's scoped to the module.
+
++   `Module.load(name)`: loads the specified module and returns a `Module`
+    object. Throws an exception if the specified module cannot be loaded.
 
 +   `Module.ensureInitialized(name)`: ensures that initializers of the specified
     module have been run. This is important during early instrumentation, i.e.
