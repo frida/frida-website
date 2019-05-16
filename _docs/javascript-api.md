@@ -460,11 +460,11 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 +   `Module.findExportByName(moduleName|null, exportName)`,
     `Module.getExportByName(moduleName|null, exportName)`: returns the absolute
-    address of the export named `exp` in `module`. If the module isn't known you
-    may pass `null` instead of its name, but this can be a costly search and
-    should be avoided. In the event that no such module or export could be
-    found, the *find*-prefixed function returns *null* whilst the *get*-prefixed
-    function throws an exception.
+    address of the export named `exportName` in `moduleName`. If the module
+    isn't known you may pass `null` instead of its name, but this can be a
+    costly search and should be avoided. In the event that no such module or
+    export could be found, the *find*-prefixed function returns *null* whilst
+    the *get*-prefixed function throws an exception.
 
 
 ## ModuleMap
