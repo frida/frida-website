@@ -41,7 +41,7 @@ Or, perhaps you're tired of console.log() and would like to set some breakpoints
 in your scripts to help you understand what's going on? Now you can, because
 Frida just got an integrated Node.js-compatible debugger.
 
-![Yo Dawg](https://cdn.meme.am/instances/500x/61299733.jpg "Yo Dawg")
+(Cue “Yo Dawg” meme here.)
 
 Yep yep, but it is actually quite useful, and all of the CLI tools provide
 the `--debug` switch to enable it:
