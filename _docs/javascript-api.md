@@ -437,6 +437,12 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 -   `enumerateRanges(protection)`: just like `Process.enumerateRanges`, except
     it's scoped to the module.
 
+-   `findExportByName(exportName)`,
+    `getExportByName(exportName)`: returns the absolute address of the export
+    named `exportName`. In the event that no such export could be found, the
+    *find*-prefixed function returns *null* whilst the *get*-prefixed function
+    throws an exception.
+
 +   `Module.load(name)`: loads the specified module and returns a `Module`
     object. Throws an exception if the specified module cannot be loaded.
 
