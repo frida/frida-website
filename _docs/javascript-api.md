@@ -2218,6 +2218,11 @@ var Activity = Java.use("android.app.Activity");
 var activity = Java.cast(ptr("0x1234"), Activity);
 {% endhighlight %}
 
++   `Java.deoptimizeEverything()`: forces the VM to execute everything with
+    its interpreter. Necessary to prevent optimizations from bypassing method
+    hooks in some cases, and allows ART's Instrumentation APIs to be used for
+    tracing the runtime.
+
 
 ## WeakRef
 
