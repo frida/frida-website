@@ -164,6 +164,24 @@ In chronological order:
 
 - Apple USB devices are properly detected on Windows. Thanks [@xiofee][]!
 
+### Changes in 12.5.6
+
+- Android Java integration now has a workaround for a bug in ART's
+  exception delivery logic, where one particular code-path assumes that
+  there is at least one Java stack frame present on the current thread.
+  That is however not the case on a pure native thread, like Frida's JS
+  thread. Simplest reproducer is *Java.deoptimizeEverything()* followed
+  by *Java.use()* of a non-existent class name. Kudos to
+  [Jake Van Dyke][] for reporting and helping track this one down.
+- Android Java integration no longer crashes the process when calling
+  *Java.deoptimizeEverything()* in a process unable to TCP listen().
+- Android Java integration supports JNI checked mode like it used to.
+- Node.js 12 supported in addition to 8 and 10, with prebuilds for all
+  supported platforms.
+- Node.js bindings' *enableDebugger()* method no longer requires
+  specifying which port to listen on.
+
+
 
 [V8]: https://v8.dev/
 [Duktape]: https://duktape.org/
