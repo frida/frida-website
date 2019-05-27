@@ -181,6 +181,16 @@ In chronological order:
 - Node.js bindings' *enableDebugger()* method no longer requires
   specifying which port to listen on.
 
+### Changes in 12.5.7
+
+- Android teardown no longer crashes on systems where we are unable to
+  spawn *logcat* for crash reporting purposes.
+- Better *SuperSU* integration teardown logic on Android.
+- Android Java integration now properly supports JNI checked mode, which
+  massively improves Android ROM compatibility. Kudos to [@muhzii][] for
+  reporting and assisting with testing the changes.
+- V8 backend teardown no longer suffers from a use-after-free, and also
+  no longer crashes when a WeakRef is bound late.
 
 
 [V8]: https://v8.dev/
@@ -200,3 +210,4 @@ In chronological order:
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
 [@xiofee]: https://github.com/xiofee
+[@muhzii]: https://github.com/muhzii
