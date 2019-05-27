@@ -192,6 +192,14 @@ In chronological order:
 - V8 backend teardown no longer suffers from a use-after-free, and also
   no longer crashes when a WeakRef is bound late.
 
+### Changes in 12.5.8
+
+- Linux child-gating now handles children changing architecture, e.g. a
+  32-bit app doing fork+exec to run a 64-bit executable. Big thanks to
+  [@gebing][] for the fix.
+- Child gating no longer deadlocks in case of a fork+exec where a child
+  process is not followed. Kudos to [@gebing][] for the fix.
+- Module export lookups no longer fail on Android apps' own modules.
 
 [V8]: https://v8.dev/
 [Duktape]: https://duktape.org/
@@ -211,3 +219,4 @@ In chronological order:
 [Giovanni Rocca]: https://twitter.com/iGio90
 [@xiofee]: https://github.com/xiofee
 [@muhzii]: https://github.com/muhzii
+[@gebing]: https://github.com/gebing
