@@ -201,6 +201,21 @@ In chronological order:
   process is not followed. Kudos to [@gebing][] for the fix.
 - Module export lookups no longer fail on Android apps' own modules.
 
+### Changes in 12.5.9
+
+- Our libc shim now includes *memcpy()*, making it safe to hook. Thanks to
+  [Giovanni Rocca][] for debugging and contributing the fix.
+- *Interceptor.flush()* now also works even when a thread has temporarily
+  released the JS lock, e.g. while calling a *NativeFunction*.
+- Android Java integration no longer crashes intermittently during ART
+  exception delivery, e.g. when hooking *ClassLoader.loadClass()*. Kudos
+  to [Jake Van Dyke][] and [Giovanni Rocca][] for helping track this one
+  down. This bug has been around for as long as ART has been supported,
+  so this fix is worth celebrating. 🎉
+- Android Java integration no longer crashes processes where the *JDWP*
+  transport cannot be started.
+
+
 [V8]: https://v8.dev/
 [Duktape]: https://duktape.org/
 [Gum]: https://github.com/frida/frida-gum
