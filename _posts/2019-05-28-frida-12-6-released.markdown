@@ -35,6 +35,13 @@ Enjoy!
   Dropbox app from start to login screen, this would take ~94 seconds
   on a Pixel 3 running Android 9, and now takes ~6 seconds.
 
+### Changes in 12.6.2
+
+- Android Java integration now supports more arm64 systems thanks to a
+  fix contributed by [Giovanni Rocca][].
+- Android Java integration once again supports being used by more than
+  one script at a time.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
