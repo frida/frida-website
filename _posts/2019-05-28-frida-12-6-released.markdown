@@ -51,6 +51,10 @@ Enjoy!
 - Frida can now talk to old versions of Frida, from before the addition
   of per-script runtime selection.
 
+### Changes in 12.6.4
+
+- Build system is back in business on all platforms.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
