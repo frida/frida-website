@@ -42,6 +42,16 @@ Enjoy!
 - Android Java integration once again supports being used by more than
   one script at a time.
 
+### Changes in 12.6.3
+
+- *Java.choose()* is now working again on Android >= 8.1, thanks to a
+  fix contributed by [Eugene Kolo][].
+- Android Java integration unhooking is now working again. This also
+  means hooks are properly reverted on script unload.
+- Frida can now talk to old versions of Frida, from before the addition
+  of per-script runtime selection.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
+[Eugene Kolo]: https://twitter.com/eugenekolo
