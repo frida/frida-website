@@ -27,6 +27,14 @@ released – and now is the time to make sure you're running Frida 12.6.
 
 Enjoy!
 
+### Changes in 12.6.1
+
+- The exception delivery fix in the Android Java integration introduced
+  a performance bottleneck when running the VM in interpreter mode, e.g.
+  through *Java.deoptimizeEverything()*. For example when running the
+  Dropbox app from start to login screen, this would take ~94 seconds
+  on a Pixel 3 running Android 9, and now takes ~6 seconds.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
