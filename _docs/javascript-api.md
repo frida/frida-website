@@ -9,6 +9,7 @@ permalink: /docs/javascript-api/
   1. [console](#console)
   1. [rpc](#rpc)
   1. [Frida](#frida)
+  1. [Script](#script)
   1. [Process](#process)
   1. [Module](#module)
   1. [ModuleMap](#modulemap)
@@ -117,15 +118,28 @@ console.log(hexdump(libc, {
   </p>
 </div>
 
-+   `setTimeout(fn, delay)`: call `fn` after `delay` milliseconds. Returns an
-    id that can be passed to `clearTimeout` to cancel it.
++   `setTimeout(func, delay[, ...parameters])`: call `func` after `delay`
+    milliseconds, optionally passing it one or more `parameters`.
+    Returns an id that can be passed to `clearTimeout` to cancel it.
 
-+   `clearTimeout(id)`: cancel id returned by call to `setTimeout`
++   `clearTimeout(id)`: cancel id returned by call to `setTimeout`.
 
-+   `setInterval(fn, delay)`: call `fn` every `delay` milliseconds. Returns an
-    id that can be passed to `clearInterval` to cancel it.
++   `setInterval(func, delay[, ...parameters])`: call `func` every `delay`
+    milliseconds, optionally passing it one or more `parameters`.
+    Returns an id that can be passed to `clearInterval` to cancel it.
 
-+   `clearInterval(id)`: cancel id returned by call to `setInterval`
++   `clearInterval(id)`: cancel id returned by call to `setInterval`.
+
++   `setImmediate(func[, ...parameters])`: schedules `func` to be called on
+    Frida's JavaScript thread as soon as possible, optionally passing it one
+    or more `parameters`.
+    Returns an id that can be passed to `clearImmediate` to cancel it.
+
++   `clearImmediate(id)`: cancel id returned by call to `setImmediate`.
+
++   `gc()`: force garbage collection. Useful for testing `WeakRef.bind()` logic,
+    but also sometimes needed when using the Duktape runtime and its default GC
+    heuristics proving a bit too lazy.
 
 
 ## console
@@ -237,12 +251,18 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 
 ## Frida
 
-+   `Frida.version`: property containing the current Frida version
++   `Frida.version`: property containing the current Frida version, as a string.
 
 +   `Frida.heapSize`: dynamic property containing the current size of Frida's
     private heap, shared by all scripts and Frida's own runtime. This is useful
     for keeping an eye on how much memory your instrumentation is using out of
     the total consumed by the hosting process.
+
+
+## Script
+
++   `Script.runtime`: string property containing the runtime being used.
+    Either `DUK` or `V8'`.
 
 
 ## Process
@@ -2149,6 +2169,9 @@ function isAppModule(m) {
 +   `Java.available`: a boolean specifying whether the current process has the
     a Java VM loaded, i.e. Dalvik or ART. Do not invoke any other `Java`
     properties or methods unless this is the case.
+
++   `Java.androidVersion`: a string specifying which version of Android we're
+    running on.
 
 +   `Java.enumerateLoadedClasses(callbacks)`: enumerate classes loaded right
     now, where `callbacks` is an object specifying:
