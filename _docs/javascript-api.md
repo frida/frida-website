@@ -2184,18 +2184,41 @@ function isAppModule(m) {
 +   `Java.enumerateLoadedClassesSync()`: synchronous version of
     `enumerateLoadedClasses()` that returns the class names in an array.
 
++   `Java.enumerateClassLoaders(callbacks)`: enumerate class loaders present
+    in the Java VM, where `callbacks` is an object specifying:
+
+    -   `onMatch: function (loader)`: called for each class loader with
+        `loader`, a wrapper for the specific `java.lang.ClassLoader`.
+
+    -   `onComplete: function ()`: called when all class loaders have been
+        enumerated.
+
+    You may assign such a loader to `Java.classFactory.loader` to make
+    `Java.use()` look for classes on a specific loader instead of the default
+    loader used by the app.
+
++   `Java.enumerateClassLoadersSync()`: synchronous version of
+    `enumerateClassLoaders()` that returns the class loaders in an array.
+
++   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
+
 +   `Java.perform(fn)`: ensure that the current thread is attached to the VM
     and call `fn`. (This isn't necessary in callbacks from Java.)
+    Will defer calling `fn` if the app's class loader is not available yet.
+    Use `Java.performNow()` if access to the app's classes is not needed.
 
 {% highlight js %}
 Java.perform(function () {
-    var Activity = Java.use("android.app.Activity");
-    Activity.onResume.implementation = function () {
-        send("onResume() got called! Let's call the original implementation");
-        this.onResume();
-    };
+  var Activity = Java.use('android.app.Activity');
+  Activity.onResume.implementation = function () {
+    send('onResume() got called! Let's call the original implementation');
+    this.onResume();
+  };
 });
 {% endhighlight %}
+
++   `Java.performNow(fn)`: ensure that the current thread is attached to the
+    VM and call `fn`. (This isn't necessary in callbacks from Java.)
 
 +   `Java.use(className)`: dynamically get a JavaScript wrapper for
     `className` that you can instantiate objects from by calling `$new()` on
@@ -2207,21 +2230,29 @@ Java.perform(function () {
 
 {% highlight js %}
 Java.perform(function () {
-    var Activity = Java.use("android.app.Activity");
-    var Exception = Java.use("java.lang.Exception");
-    Activity.onResume.implementation = function () {
-        throw Exception.$new("Oh noes!");
-    };
+  var Activity = Java.use('android.app.Activity');
+  var Exception = Java.use('java.lang.Exception');
+  Activity.onResume.implementation = function () {
+    throw Exception.$new('Oh noes!');
+  };
 });
 {% endhighlight %}
 
-+   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
+    Uses the app's class loader by default, but you may customize this by
+    assigning a different loader instance to `Java.classFactory.loader`.
+
++   `Java.openClassFile(filePath)`: open the .dex file at `filePath`, returning
+    an object with the following methods:
+
+    -   `load()`: load the contained classes into the VM.
+
+    -   `getClassNames()`: obtain an array of available class names.
 
 +   `Java.choose(className, callbacks)`: enumerate live instances of the
     `className` class by scanning the Java heap, where `callbacks` is an
     object specifying:
 
-    -   `onMatch: function (instance)`: called once for each live instance found
+    -   `onMatch: function (instance)`: called with each live instance found
         with a ready-to-use `instance` just as if you would have called
         `Java.cast()` with a raw handle to this particular instance.
 
@@ -2231,20 +2262,114 @@ Java.perform(function () {
     -   `onComplete: function ()`: called when all instances have been enumerated
 
 +   `Java.cast(handle, klass)`: create a JavaScript wrapper given the existing
-    instance at `handle` of given class `klass` (as returned from
-    `Java.use()`). Such a wrapper also has a `class` property for getting a
-    wrapper for its class, and a `$className` property for getting a string
-    representation of its class-name.
+    instance at `handle` of given class `klass` as returned from `Java.use()`.
+    Such a wrapper also has a `class` property for getting a wrapper for its
+    class, and a `$className` property for getting a string representation of
+    its class-name.
 
 {% highlight js %}
-var Activity = Java.use("android.app.Activity");
-var activity = Java.cast(ptr("0x1234"), Activity);
+var Activity = Java.use('android.app.Activity');
+var activity = Java.cast(ptr('0x1234'), Activity);
+{% endhighlight %}
+
++   `Java.array(type, elements)`: creates a Java array with elements of the
+     specified `type`, from a JavaScript array `elements`. The resulting Java
+     array behaves like a JS array, but can be passed by reference to Java APIs
+     in order to allow them to modify its contents.
+
+{% highlight js %}
+var values = Java.array('int', [ 1003, 1005, 1007 ]);
+
+var JString = Java.use('java.lang.String');
+var str = JString.$new(Java.array('byte', [ 0x48, 0x65, 0x69 ]));
+{% endhighlight %}
+
++   `Java.isMainThread()`: determine whether the caller is running on the main
+    thread.
+
++   `Java.registerClass(spec)`: create a new Java class and return a wrapper for
+    it, where `spec` is an object containing:
+
+    -   `name`: String specifying the name of the class.
+    -   `implements`: (optional) Array of interfaces implemented by this class.
+    -   `methods`: (optional) Object specifying methods to implement.
+
+{% highlight js %}
+var X509TrustManager = Java.use('javax.net.ssl.X509TrustManager');
+
+var MyTrustManager = Java.registerClass({
+  name: 'com.example.MyTrustManager',
+  implements: [X509TrustManager],
+  methods: {
+    checkClientTrusted: function (chain, authType) {
+    },
+    checkServerTrusted: function (chain, authType) {
+    },
+    getAcceptedIssuers: function () {
+      return [];
+    },
+  }
+});
+
+var MyWeirdTrustManager = Java.registerClass({
+  name: 'com.example.MyWeirdTrustManager',
+  implements: [X509TrustManager],
+  methods: {
+    checkClientTrusted: function (chain, authType) {
+      console.log('checkClientTrusted');
+    },
+    checkServerTrusted: [{
+      returnType: 'void',
+      argumentTypes: ['[Ljava.security.cert.X509Certificate;', 'java.lang.String'],
+      implementation: function (chain, authType) {
+        console.log('checkServerTrusted A');
+      }
+    }, {
+      returnType: 'java.util.List',
+      argumentTypes: ['[Ljava.security.cert.X509Certificate;', 'java.lang.String', 'java.lang.String'],
+      implementation: function (chain, authType, host) {
+        console.log('checkServerTrusted B');
+        return null;
+      }
+    }],
+    getAcceptedIssuers: function () {
+      console.log('getAcceptedIssuers');
+      return [];
+    },
+  }
+});
 {% endhighlight %}
 
 +   `Java.deoptimizeEverything()`: forces the VM to execute everything with
     its interpreter. Necessary to prevent optimizations from bypassing method
     hooks in some cases, and allows ART's Instrumentation APIs to be used for
     tracing the runtime.
+
++   `Java.vm`: object with the following methods:
+
+    -   `perform(fn)`: ensures that the current thread is attached to the VM and
+        calls `fn`. (This isn't necessary in callbacks from Java.)
+
+    -   `getEnv()`: gets a wrapper for the current thread's `JNIEnv`. Throws an
+        exception if the current thread is not attached to the VM.
+
+    -   `tryGetEnv()`: tries to get a wrapper for the current thread's `JNIEnv`.
+        Returns `null` if the current thread is not attached to the VM.
+
++   `Java.classFactory`: object with the following properties:
+
+    -   `loader`: wrapper for the class loader currently being used. Typically
+        updated by the first call to `Java.perform()`.
+
+        You may assign a different `java.lang.ClassLoader` to make `Java.use()`
+        look for classes on a specific loader instead of the default loader used
+        by the app.
+
+    -   `cacheDir`: string containing path to cache directory currently being
+        used. Typically updated by the first call to `Java.perform()`.
+
+    -   `tempFileNaming`: object specifying naming convention to use for
+        temporary files. Defaults to `{ prefix: 'frida', suffix: 'dat' }`.
 
 
 ## WeakRef
