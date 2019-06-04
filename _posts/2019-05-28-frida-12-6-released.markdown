@@ -55,6 +55,11 @@ Enjoy!
 
 - Build system is back in business on all platforms.
 
+### Changes in 12.6.5
+
+- Linux thread enumeration is now working properly on x86-64.
+- Stalker finally handles restartable Linux syscalls.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
