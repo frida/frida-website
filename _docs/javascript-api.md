@@ -1193,10 +1193,13 @@ friendlyFunctionName(returnValue, thisPtr);
 
 ## SqliteDatabase
 
-+   `SqliteDatabase.open(path)`: open the SQLite v3 database specified by
-    `path`, a string containing the filesystem path to the database. The
-    database will be opened read-write, and the returned SqliteDatabase object
-    will allow you to perform queries on it.
++   `SqliteDatabase.open(path[, options])`: opens the SQLite v3 database
+    specified by `path`, a string containing the filesystem path to the
+    database. By default the database will be opened read-write, but you may
+    customize this behavior by providing an `options` object with a property
+    named `flags`, specifying an array of strings containing one or more of the
+    following values: `readonly`, `readwrite`, `create`.  The returned
+    SqliteDatabase object will allow you to perform queries on the database.
 
 +   `SqliteDatabase.openInline(encodedContents)`: just like `open()` but the
     contents of the database is provided as a string containing its data,
