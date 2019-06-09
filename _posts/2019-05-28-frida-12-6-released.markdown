@@ -60,6 +60,10 @@ Enjoy!
 - Linux thread enumeration is now working properly on x86-64.
 - Stalker finally handles restartable Linux syscalls.
 
+### Changes in 12.6.6
+
+- Android Java integration is back in fully working condition on 32-bit ARM.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
