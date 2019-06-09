@@ -2985,7 +2985,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   Register: `r0` `r1` `r2` `r3` `r4` `r5` `r6` `r7` `r8` `r9` `r10` `r11`
     `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc`
--   SystemRegister: `apsr_nzcvq`
+-   SystemRegister: `apsr-nzcvq`
 -   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
     `gt` `le` `al`
 
