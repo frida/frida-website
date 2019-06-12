@@ -14,14 +14,16 @@ device, for example by repackaging the app to include frida-gadget, or using a
 debugger to accomplish the same. But, for this introduction we're going to focus
 on the simplest case: a rooted device.
 
-Also note that most of our recent testing has been taking place on a Nexus 5X
-running Android 8.1.0. Older and newer ROMs may work, but if you're running into
-basic issues like Frida crashing the system when launching an app, this is due
-to ROM-specific quirks. We cannot test on all possible devices, so we count on
+Also note that most of our recent testing has been taking place on a Pixel 3
+running Android 9. Older ROMs may work too, but if you're running into basic
+issues like Frida crashing the system when launching an app, this is due to
+ROM-specific quirks. We cannot test on all possible devices, so we count on
 your help to improve on this. However if you're just starting out with Frida it
-is strongly recommended to go with a Nexus device with factory software, or an
-official 8.x emulator image for arm or arm64. (x86 may work too but has gone
-through significantly less testing.)
+is strongly recommended to go for a Pixel or Nexus device running the latest
+official software, or a device whose software is as close to AOSP as possible.
+Another option is using an emulator, ideally with a Google-provided Android 9
+emulator image for arm or arm64. (x86 may work too but has gone through
+significantly less testing.)
 
 You will also need the `adb` tool from the Android SDK.
 
