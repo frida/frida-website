@@ -64,6 +64,12 @@ Enjoy!
 
 - Android Java integration is back in fully working condition on 32-bit ARM.
 
+### Changes in 12.6.7
+
+- Latest Chimera iOS jailbreaks are now supported; confirmed working on *1.0.8*.
+- Linux injector handles target processes where the libc's name is ambiguous,
+  which is often an issue on Android.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
