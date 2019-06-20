@@ -1831,6 +1831,7 @@ Interceptor.attach(myFunction.implementation, {
 >   -   `$superClass`: super-class as an *ObjC.Object* instance
 >   -   `$class`: class of this object as an *ObjC.Object* instance
 >   -   `$className`: string containing the class name of this object
+>   -   `$moduleName`: string containing the module path of this object
 >   -   `$protocols`: object mapping protocol name to `ObjC.Protocol` instance
 >       for each of the protocols that this object conforms to
 >   -   `$methods`: array containing native method names exposed by this object's
