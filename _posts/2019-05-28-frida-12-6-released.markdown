@@ -70,7 +70,14 @@ Enjoy!
 - Linux injector handles target processes where the libc's name is ambiguous,
   which is often an issue on Android.
 
+### Changes in 12.6.8
+
+- *ObjC.Object* now provides *$moduleName*, useful for determining which module
+  owns a given class. Kudos to [David Weinstein][] for contributing this neat
+  feature!
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
 [Eugene Kolo]: https://twitter.com/eugenekolo
+[David Weinstein]: https://twitter.com/insitusec
