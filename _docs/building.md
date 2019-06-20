@@ -9,8 +9,8 @@ permalink: /docs/building/
 
 1. Building Frida
  - [Design Constraints](#design-constraints)
- - [GNU/Linux](#linux)
- - [macOS](#macOS)
+ - [GNU/Linux](#gnulinux)
+ - [macOS](#macos)
  - [Windows](#windows)
 2. Building the toolchain and SDK
  - [Unix](#unix-toolchain-and-sdk)
