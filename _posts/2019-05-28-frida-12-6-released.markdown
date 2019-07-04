@@ -92,6 +92,11 @@ Enjoy!
 - Swift bindings support RPC and have been moved to Swift 5.0, thanks to
   [John Coates][]' awesome contribution.
 
+### Changes in 12.6.10
+
+- Enumeration of memory ranges is now reliable on all platforms. There was a
+  long-standing bug when a removal ends up splitting an existing range.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
