@@ -76,8 +76,26 @@ Enjoy!
   owns a given class. Kudos to [David Weinstein][] for contributing this neat
   feature!
 
+### Changes in 12.6.9
+
+- Latest unc0ver jailbreak is now fully supported.
+- Early instrumentation logic has been improved to fully support iOS 12. Kudos
+  to [Francesco Tamagni][] for helping get these tricky changes across the
+  finish-line.
+- Enumeration of memory ranges is now more reliable on iOS 12, as memory ranges
+  belonging to threads are now correctly cloaked.
+- Cloaked memory ranges are now compacted, making lookups faster.
+- Child gating is able to hold children for longer than 25 seconds. Previously
+  these would get resumed automatically after that accidental timeout. This also
+  affects early instrumentation on Android, as it is built on top of child
+  gating.
+- Swift bindings support RPC and have been moved to Swift 5.0, thanks to
+  [John Coates][]' awesome contribution.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
 [Eugene Kolo]: https://twitter.com/eugenekolo
 [David Weinstein]: https://twitter.com/insitusec
+[Francesco Tamagni]: https://twitter.com/bezjaje
+[John Coates]: https://twitter.com/JohnCoatesDev
