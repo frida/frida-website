@@ -105,6 +105,35 @@ Enjoy!
   apps, thanks to a neat contribution by [gebing][].
 - Cloaking of memory ranges got a critical fix affecting Windows users.
 
+### Changes in 12.6.12
+
+- The *frida-inject* tool now supports passing parameters to the script through
+  *-P/--parameters*. Kudos to [Eugene Kolo][] for contributing this neat
+  feature.
+- Child-gating no longer deadlocks when script unload blocks. Kudos to
+  [Ioannis Gasparis][] for helping track this one down.
+- Child-gating is more reliable as Frida now allocates file-descriptors in a
+  higher range to avoid them getting closed by applications calling *dup2()*
+  during a *fork()+exec()*. This would typically happen on Android when an app
+  called *Runtime.exec()*. Kudos to [Ioannis Gasparis][] for helping track this
+  one down.
+- The painful Android NDK upgrade to r20 landed, thanks to a slew of awesome
+  contributions by [Muhammed Ziad][].
+- Error-handling was improved to avoid crashing in scenarios where we fail to
+  initialize due to lack of permissions. Kudos to [pancake][] for reporting.
+- The native lockdown integration for iOS that had been sitting in a branch for
+  a very long time was finally merged. It is unfinished and considered unstable
+  API, but had to be merged due to a major refactoring that's in progress.
+- *Stalker* now allows *unfollow()* from the *transform* callback, instead of
+  crashing the process like it used to. Kudos to [Giovanni Rocca][] for helping
+  fix this.
+- Gadget's Android package name detection logic was improved to handle one
+  edge-case not previously accounted for. Kudos to [xiaobaiyey][] for reporting
+  and suggesting a fix.
+- The *Java.registerClass()* API was improved to support specifying the super
+  class, along with a slew of fixes for both that API and handling of arrays
+  with generics. Big thanks to [gebing][] for these awesome improvements.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
@@ -114,3 +143,7 @@ Enjoy!
 [John Coates]: https://twitter.com/JohnCoatesDev
 [CodeColorist]: https://twitter.com/CodeColorist
 [gebing]: https://github.com/gebing
+[Ioannis Gasparis]: https://github.com/igasparis
+[Muhammed Ziad]: https://github.com/muhzii
+[pancake]: https://twitter.com/trufae
+[xiaobaiyey]: https://github.com/xiaobaiyey
