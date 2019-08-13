@@ -2301,10 +2301,15 @@ var str = JString.$new(Java.array('byte', [ 0x48, 0x65, 0x69 ]));
     it, where `spec` is an object containing:
 
     -   `name`: String specifying the name of the class.
+    -   `superClass`: (optional) Super-class. Omit to inherit from
+                      `java.lang.Object`.
     -   `implements`: (optional) Array of interfaces implemented by this class.
+    -   `fields`: (optional) Object specifying the name and type of each field
+                  to expose.
     -   `methods`: (optional) Object specifying methods to implement.
 
 {% highlight js %}
+var SomeBaseClass = Java.use('com.example.SomeBaseClass');
 var X509TrustManager = Java.use('javax.net.ssl.X509TrustManager');
 
 var MyTrustManager = Java.registerClass({
@@ -2323,8 +2328,16 @@ var MyTrustManager = Java.registerClass({
 
 var MyWeirdTrustManager = Java.registerClass({
   name: 'com.example.MyWeirdTrustManager',
+  superClass: SomeBaseClass,
   implements: [X509TrustManager],
+  fields: {
+    description: 'java.lang.String',
+    limit: 'int',
+  },
   methods: {
+    $init: function () {
+      console.log('Constructor called');
+    },
     checkClientTrusted: function (chain, authType) {
       console.log('checkClientTrusted');
     },
