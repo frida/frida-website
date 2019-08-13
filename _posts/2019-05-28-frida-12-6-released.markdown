@@ -134,6 +134,15 @@ Enjoy!
   class, along with a slew of fixes for both that API and handling of arrays
   with generics. Big thanks to [gebing][] for these awesome improvements.
 
+### Changes in 12.6.13
+
+- Constructor/destructor functions in Agent and Gadget are now finally correctly
+  ordered, and our libc shim's memory allocator hacks could be dropped. Those
+  fragile hacks broke in a new and colorful way with 32-bit ARM processes on
+  Android due to a subtle change in the toolchain's *libgcc*.
+- Our libc shim now also handles *__cxa_atexit()* and *atexit()*, where the
+  former is crucial to avoid leaks.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
