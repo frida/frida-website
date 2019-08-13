@@ -143,6 +143,15 @@ Enjoy!
 - Our libc shim now also handles *__cxa_atexit()* and *atexit()*, where the
   former is crucial to avoid leaks.
 
+### Changes in 12.6.14
+
+- The *Java.registerClass()* API was improved to support user-defined
+  constructors and fields, thanks to the awesome improvements contributed
+  by [gebing][].
+- Temporary files are now cleaned up on all platforms.
+- Ctrl+C is handled by frida-server on Windows to support graceful shutdown
+  without leaving temporary files behind.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
