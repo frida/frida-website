@@ -1659,10 +1659,13 @@ var first = matches[0];
     containing:
 
     -   `address`: Address that this symbol is for, as a `NativePointer`.
-    -   `name`: Name of the symbol, as a string.
-    -   `moduleName`: Module name owning this symbol, as a string.
-    -   `fileName`: File name owning this symbol, as a string.
-    -   `lineNumber`: Line number in `fileName`, as a number.
+    -   `name`: Name of the symbol, as a string, or null if unknown.
+    -   `moduleName`: Module name owning this symbol, as a string, or null if
+                      unknown.
+    -   `fileName`: File name owning this symbol, as a string, or null if
+                    unknown.
+    -   `lineNumber`: Line number in `fileName`, as a number, or null if
+                      unknown.
 
     You may also call `toString()` on it, which is very useful when combined
     with `Thread.backtrace()`:
