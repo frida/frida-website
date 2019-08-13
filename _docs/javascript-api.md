@@ -965,6 +965,9 @@ friendlyFunctionName(returnValue, thisPtr);
     See `NativeFunction` for details about supported types and abis.
     Note that the returned object is also a `NativePointer`, and can thus be
     passed to `Interceptor#replace`.
+    When using the resulting callback with *Interceptor.replace()*, `func` will
+    be invoked with `this` bound to an object with some useful properties, just
+    like the one in *Interceptor.attach()*.
 
 
 ## SystemFunction
