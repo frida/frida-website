@@ -97,6 +97,14 @@ Enjoy!
 - Enumeration of memory ranges is now reliable on all platforms. There was a
   long-standing bug when a removal ends up splitting an existing range.
 
+### Changes in 12.6.11
+
+- Enumeration of applications includes icons on iOS >= 12, thanks to a nice fix
+  by [CodeColorist][].
+- Gadget was taught how to detect the executable and package name of Android
+  apps, thanks to a neat contribution by [gebing][].
+- Cloaking of memory ranges got a critical fix affecting Windows users.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
@@ -104,3 +112,5 @@ Enjoy!
 [David Weinstein]: https://twitter.com/insitusec
 [Francesco Tamagni]: https://twitter.com/bezjaje
 [John Coates]: https://twitter.com/JohnCoatesDev
+[CodeColorist]: https://twitter.com/CodeColorist
+[gebing]: https://github.com/gebing
