@@ -168,19 +168,17 @@ console.log(hexdump(libc, {
 >   For example:
 
 {% highlight js %}
-'use strict';
-
 rpc.exports = {
-    add: function (a, b) {
-        return a + b;
-    },
-    sub: function (a, b) {
-        return new Promise(function (resolve) {
-            setTimeout(function () {
-                resolve(a - b);
-            }, 100);
-        });
-    }
+  add: function (a, b) {
+    return a + b;
+  },
+  sub: function (a, b) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve(a - b);
+      }, 100);
+    });
+  }
 };
 {% endhighlight %}
 
@@ -188,8 +186,6 @@ rpc.exports = {
 >   like this:
 
 {% highlight js %}
-'use strict';
-
 const frida = require('frida');
 const fs = require('fs');
 const path = require('path');
@@ -198,7 +194,7 @@ const util = require('util');
 const readFile = util.promisify(fs.readFile);
 
 let session, script;
-async function run () {
+async function run() {
   const source = await readFile(path.join(__dirname, '_agent.js'), 'utf8');
   session = await frida.attach('iTunes');
   script = await session.createScript(source);
@@ -880,7 +876,8 @@ Interceptor.attach(f, {
     Example:
 {% highlight js %}
 // LargeObject HandyClass::friendlyFunctionName();
-var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr, 'void', ['pointer', 'pointer']);
+var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr,
+    'void', ['pointer', 'pointer']);
 var returnValue = Memory.alloc(sizeOfLargeObject);
 friendlyFunctionName(returnValue, thisPtr);
 {% endhighlight %}
@@ -1891,14 +1888,14 @@ Interceptor.attach(..., {
 var NSSound = ObjC.classes.NSSound; /* macOS */
 var oldImpl = NSSound.play.implementation;
 NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
-    return oldImpl(handle, selector);
+  return oldImpl(handle, selector);
 });
 
 var NSView = ObjC.classes.NSView; /* macOS */
 var drawRect = NSView['- drawRect:'];
 var oldImpl = drawRect.implementation;
 drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
-    oldImpl(handle, selector);
+  oldImpl(handle, selector);
 });
 {% endhighlight %}
 

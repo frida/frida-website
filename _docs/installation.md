@@ -64,10 +64,9 @@ def on_message(message, data):
 
 session = frida.attach("cat")
 
-script = session.create_script("""'use strict';
-
+script = session.create_script("""
 rpc.exports.enumerateModules = function () {
-  return Process.enumerateModulesSync();
+  return Process.enumerateModules();
 };
 """)
 script.on("message", on_message)

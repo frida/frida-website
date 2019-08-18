@@ -28,8 +28,6 @@ runtime by forcing Frida to favor Duktape through *Session.disable_jit()*.
 From Node.js:
 
 {% highlight js %}
-'use strict';
-
 const co = require('co');
 const frida = require('frida');
 
@@ -37,8 +35,6 @@ co(function* () {
   const systemSession = yield frida.attach(0);
   yield systemSession.disableJit();
   const bytecode = yield systemSession.compileScript(`
-    'use strict';
-
     rpc.exports = {
       listThreads: function () {
         return Process.enumerateThreadsSync();
@@ -70,8 +66,6 @@ import frida
 system_session = frida.attach(0)
 system_session.disable_jit()
 bytecode = system_session.compile_script("""
-'use strict';
-
 rpc.exports = {
   listThreads: function () {
     return Process.enumerateThreadsSync();

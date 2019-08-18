@@ -127,8 +127,6 @@ Here's the minimal configuration needed:
 Where *explore.js* contains the following skeleton:
 
 {% highlight js %}
-'use strict';
-
 rpc.exports = {
   init: function (stage, parameters) {
     console.log('[init]', stage, JSON.stringify(parameters));
@@ -245,8 +243,6 @@ Say you want to write a tweak for Twitter's macOS app, you could create
 a file named *twitter.js* in */usr/local/frida/scripts*, containing:
 
 {% highlight js %}
-'use strict';
-
 var TMTheme = ObjC.classes.TMTheme;
 
 rpc.exports = {

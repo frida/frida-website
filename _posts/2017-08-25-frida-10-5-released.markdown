@@ -80,8 +80,6 @@ can do with this API, and this one is a game changer. You can now customize
 the recompilation process, and it's really easy:
 
 {% highlight js %}
-'use strict';
-
 var appModule = Process.enumerateModulesSync()[0];
 var appStart = appModule.base;
 var appEnd = appStart.add(appModule.size);

@@ -7,8 +7,6 @@ permalink: /docs/examples/javascript/
 ## Connect to a Node.js process' V8 VM to inject arbitrary JS
 
 {% highlight js %}
-'use strict';
-
 const uv_default_loop = new NativeFunction(Module.getExportByName(null, 'uv_default_loop'), 'pointer', []);
 const uv_async_init = new NativeFunction(Module.getExportByName(null, 'uv_async_init'), 'int', ['pointer', 'pointer', 'pointer']);
 const uv_async_send = new NativeFunction(Module.getExportByName(null, 'uv_async_send'), 'int', ['pointer']);
@@ -75,8 +73,6 @@ run('console.log("Hello from Frida");');
 ## Trace function calls in a Perl 5 process
 
 {% highlight js %}
-'use strict';
-
 const pointerSize = Process.pointerSize;
 const SV_OFFSET_FLAGS = pointerSize + 4;
 const PVGV_OFFSET_NAMEHEK = 4 * pointerSize;

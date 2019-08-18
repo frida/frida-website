@@ -118,8 +118,7 @@ class Application(object):
         print("✔ enable_child_gating()")
         session.enable_child_gating()
         print("✔ create_script()")
-        script = session.create_script("""'use strict';
-
+        script = session.create_script("""
 Interceptor.attach(Module.findExportByName(null, 'open'), {
   onEnter: function (args) {
     send({

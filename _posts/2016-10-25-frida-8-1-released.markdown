@@ -72,8 +72,6 @@ an empty directory and paste this into a file named “package.json”:
 Then in agent.js, paste the following code:
 
 {% highlight js %}
-'use strict';
-
 const express = require('express');
 
 const app = express();

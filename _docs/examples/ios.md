@@ -101,7 +101,7 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
 ## Data Structures
 
->**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `console.log("Type of args[2] -> " + new ObjC.Object(args[2]).$className)` to determine the actual type of the object that you're dealing with!
+>**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `console.log('Type of args[2] -> ' + new ObjC.Object(args[2]).$className)` to determine the actual type of the object that you're dealing with!
 
 1. Converting NSData to String
 -
@@ -206,27 +206,26 @@ ObjC.schedule(ObjC.mainQueue, function () {
 })
 {% endhighlight %}
 
-
 ### Printing an NSURL argument
 
 The following code shows how you can intercept a call to [UIApplication openURL:] and display the NSURL that is passed.
 
 {% highlight js %}
 // Get a reference to the openURL selector
-var openURL = ObjC.classes.UIApplication["- openURL:"];
+var openURL = ObjC.classes.UIApplication['- openURL:'];
 
 // Intercept the method
 Interceptor.attach(openURL.implementation, {
-  onEnter: function(args) {
-    // As this is an ObjectiveC method, the arguments are as follows:
+  onEnter: function (args) {
+    // As this is an Objective-C method, the arguments are as follows:
     // 0. 'self'
     // 1. The selector (openURL:)
-    // 2. The first argument to the openURL selector
+    // 2. The first argument to the openURL method
     var myNSURL = new ObjC.Object(args[2]);
     // Convert it to a JS string
     var myJSURL = myNSURL.absoluteString().toString();
     // Log it
-    console.log("Launching URL: " + myJSURL);
+    console.log('Launching URL: ' + myJSURL);
   }
 });
 {% endhighlight %}
