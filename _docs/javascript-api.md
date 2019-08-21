@@ -2268,6 +2268,20 @@ Java.perform(function () {
 
     -   `onComplete: function ()`: called when all instances have been enumerated
 
++   `Java.retain(obj)`: duplicates the JavaScript wrapper `obj` for later use
+    outside replacement method.
+
+{% highlight js %}
+Java.perform(function () {
+  var Activity = Java.use('android.app.Activity');
+  var lastActivity = null;
+  Activity.onResume.implementation = function () {
+    lastActivity = Java.retain(this);
+    this.onResume();
+  };
+});
+{% endhighlight %}
+
 +   `Java.cast(handle, klass)`: create a JavaScript wrapper given the existing
     instance at `handle` of given class `klass` as returned from `Java.use()`.
     Such a wrapper also has a `class` property for getting a wrapper for its
