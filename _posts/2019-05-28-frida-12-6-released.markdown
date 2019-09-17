@@ -152,6 +152,11 @@ Enjoy!
 - Ctrl+C is handled by frida-server on Windows to support graceful shutdown
   without leaving temporary files behind.
 
+### Changes in 12.6.15
+
+- *NativePointerValue*, i.e. support for passing an object with a *handle*
+  property in addition to *NativePointer*, is once again working everywhere.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
