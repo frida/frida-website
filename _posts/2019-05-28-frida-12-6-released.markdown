@@ -195,6 +195,10 @@ Enjoy!
 
 - *DeviceManager.find_device()* no longer crashes on startup.
 
+### Changes in 12.6.21
+
+- *Future.wait_async()* no longer crashes when cancelled last-minute.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
