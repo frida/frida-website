@@ -199,6 +199,18 @@ Enjoy!
 
 - *Future.wait_async()* no longer crashes when cancelled last-minute.
 
+### Changes in 12.6.22
+
+- State management was improved to allow *eternalize()* and *post()* in disposed
+  state as well.
+- The *dispose()* RPC export is now passed a parameter specifying the reason,
+  to be able to differentiate between *unload*, *exit*, and *exec*.
+- Scripts may now be *dispose()*d again if an exec transition fails.
+- The *frida-inject* CLI tool was improved to exit on detach.
+- *RpcClient* no longer crashes when *post_rpc_message()* fails.
+- *Fruity* and *Droidy* backends are now disabled on iOS and Android, to reduce
+  footprint size on platforms where these backends are not applicable.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
