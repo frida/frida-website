@@ -191,6 +191,10 @@ Enjoy!
   passing a *Cancellable* object. Remaining language bindings work like before,
   and contributions are most welcome.
 
+### Changes in 12.6.20
+
+- *DeviceManager.find_device()* no longer crashes on startup.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
