@@ -181,6 +181,10 @@ Enjoy!
 - *Duktape* runtime no longer includes the problematic *Reflect* builtin.
 - *Interceptor* C API was refactored to improve naming.
 
+### Changes in 12.6.18
+
+- Gadget binaries are once again stripped on all platforms.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
