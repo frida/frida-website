@@ -161,6 +161,26 @@ Enjoy!
 
 - The *frida-gadget-ios* meta-package is now dependency-free.
 
+### Changes in 12.6.17
+
+- Crash reporter integration is now compatible with iOS 12.4.
+- Java integration was improved to eagerly release global handles when a
+  replaced method is called, to avoid running out of handles. Kudos to
+  [gebing][] for this nice improvement.
+- *Java.retain()* was added to allow storing *this* for later use outside a
+  replaced Java method.
+- Support for older versions of Android should now be slightly better.
+- Frida no longer crashes on i/macOS if the target process dies while injecting
+  a library into it.
+- Support for MIPS64 thanks to awesome contributions by [Jon Wilson][].
+- *Memory.patchCode()* no longer crashes on *android-arm64*, thanks to a fix by
+  [gebing][].
+- Interception of already intercepted Thumb function is now working properly.
+- Frida no longer crashes when logging early in the process lifetime on iOS.
+- Simple *ModuleApiResolver* queries are now blazing fast.
+- *Duktape* runtime no longer includes the problematic *Reflect* builtin.
+- *Interceptor* C API was refactored to improve naming.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
@@ -174,3 +194,4 @@ Enjoy!
 [Muhammed Ziad]: https://github.com/muhzii
 [pancake]: https://twitter.com/trufae
 [xiaobaiyey]: https://github.com/xiaobaiyey
+[Jon Wilson]: https://github.com/jonwilson030981
