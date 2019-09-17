@@ -185,6 +185,12 @@ Enjoy!
 
 - Gadget binaries are once again stripped on all platforms.
 
+### Changes in 12.6.19
+
+- All APIs are now cancellable. Python and Node.js language bindings support
+  passing a *Cancellable* object. Remaining language bindings work like before,
+  and contributions are most welcome.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
