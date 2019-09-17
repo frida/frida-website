@@ -211,6 +211,10 @@ Enjoy!
 - *Fruity* and *Droidy* backends are now disabled on iOS and Android, to reduce
   footprint size on platforms where these backends are not applicable.
 
+### Changes in 12.6.23
+
+- Frida no longer crashes when *HostSession* gets lost mid-request.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
