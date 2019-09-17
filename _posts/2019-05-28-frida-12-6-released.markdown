@@ -157,6 +157,10 @@ Enjoy!
 - *NativePointerValue*, i.e. support for passing an object with a *handle*
   property in addition to *NativePointer*, is once again working everywhere.
 
+### Changes in 12.6.16
+
+- The *frida-gadget-ios* meta-package is now dependency-free.
+
 
 [Jake Van Dyke]: https://twitter.com/giantpune
 [Giovanni Rocca]: https://twitter.com/iGio90
