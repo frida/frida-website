@@ -1796,28 +1796,28 @@ Interceptor.attach(f, {
 +   `new CModule(source[, symbols])`: compiles C `source` code string to machine
     code, straight to memory.
 
-    Useful for implementing hot callbacks, e.g. for `Interceptor` and `Stalker`,
+    Useful for implementing hot callbacks, e.g. for *Interceptor* and *Stalker*,
     but also useful when needing to start new threads in order to call functions
     in a tight loop, e.g. for fuzzing purposes.
 
-    Global functions are automatically exported as `NativePointer` properties
+    Global functions are automatically exported as *NativePointer* properties
     named exactly like in the C source code. This means you can pass them to
-    `Interceptor` and `Stalker`, or call them using `NativeFunction`.
+    *Interceptor* and *Stalker*, or call them using *NativeFunction*.
 
     The optional second argument, `symbols`, is an object specifying additional
-    symbol names and their `NativePointer` values, each of which will be plugged
+    symbol names and their *NativePointer* values, each of which will be plugged
     in at creation. This may for example be one or more memory blocks allocated
-    using `Memory.alloc()`, and/or `NativeCallback` values for receiving
+    using *Memory.alloc()*, and/or *NativeCallback* values for receiving
     callbacks from the C module.
 
     To perform initialization and cleanup, you may define functions with the
     following names and signatures:
 
-        `void init (void)`
-        `void finalize (void)`
+    -   `void init (void)`
+    -   `void finalize (void)`
 
     Note that all data is read-only, so writable globals should be declared
-    `extern`, allocated using e.g. `Memory.alloc()`, and passed in as symbols
+    *extern*, allocated using e.g. *Memory.alloc()*, and passed in as symbols
     through the constructor's second argument.
 
 -   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
