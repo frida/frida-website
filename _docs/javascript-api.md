@@ -39,6 +39,7 @@ permalink: /docs/javascript-api/
   1. [Stalker](#stalker)
   1. [ApiResolver](#apiresolver)
   1. [DebugSymbol](#debugsymbol)
+  1. [CModule](#cmodule)
   1. [Instruction](#instruction)
   1. [Kernel](#kernel)
   1. [ObjC](#objc)
@@ -1264,12 +1265,12 @@ smt.reset();
 
 ## Interceptor
 
-+   `Interceptor.attach(target, callbacks)`: intercept calls to function at
-    `target`. This is a `NativePointer` specifying the address of the function
-    you would like to intercept calls to. Note that on 32-bit ARM this address
-    must have its least significant bit set to 0 for ARM functions, and 1 for
-    Thumb functions. Frida takes care of this detail for you if you get the
-    address from a Frida API (for example `Module.getExportByName()`).
++   `Interceptor.attach(target, callbacks[, data])`: intercept calls to function
+    at `target`. This is a `NativePointer` specifying the address of the
+    function you would like to intercept calls to. Note that on 32-bit ARM this
+    address must have its least significant bit set to 0 for ARM functions, and
+    1 for Thumb functions. Frida takes care of this detail for you if you get
+    the address from a Frida API (for example `Module.getExportByName()`).
 
     The `callbacks` argument is an object containing one or more of:
 
@@ -1287,11 +1288,25 @@ smt.reset();
         store and use it outside your callback. Make a deep copy if you need
         to store the contained value, e.g.: `ptr(retval.toString())`.
 
+    In case the hooked function is very hot, `onEnter` and `onLeave` may be
+    `NativePointer` values pointing at native C functions compiled using
+    [CModule](#cmodule). Their signatures are:
+
+    -   `void onEnter (GumInvocationContext * ic)`
+
+    -   `void onLeave (GumInvocationContext * ic)`
+
+    In such cases, the third optional argument `data` may be a `NativePointer`
+    accessible through `gum_invocation_context_get_listener_function_data()`.
+
     You may also intercept arbitrary instructions by passing a function instead
     of the `callbacks` object. This function has the same signature as
     `onEnter`, but the `args` argument passed to it will only give you sensible
     values if the intercepted instruction is at the beginning of a function or
     at a point where registers/stack have not yet deviated from that point.
+
+    Just like above, this function may also be implemented in C by specifying
+    a `NativePointer` instead of a function.
 
     Returns a listener object that you can call `detach()` on.
 
@@ -1384,15 +1399,30 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
     single <i>send()</i>-call, based on whether low delay or high throughput
     is desired.
   </p>
+  <p>
+    However when hooking hot functions you may use Interceptor in conjunction
+    with CModule to implement the callbacks in C.
+  </p>
 </div>
 
 +   `Interceptor.detachAll()`: detach all previously attached callbacks.
 
-+   `Interceptor.replace(target, replacement)`: replace function at `target`
-    with implementation at `replacement`. This is typically used if you want
-    to fully or partially replace an existing function's implementation. Use
-    `NativeCallback` to implement a `replacement` in JavaScript. Note that
-    `replacement` will be kept alive until `Interceptor#revert` is called.
++   `Interceptor.replace(target, replacement[, data])`: replace function at
+    `target` with implementation at `replacement`. This is typically used if you
+    want to fully or partially replace an existing function's implementation.
+
+    Use `NativeCallback` to implement a `replacement` in JavaScript.
+
+    In case the replaced function is very hot, you may implement `replacement`
+    in C using [CModule](#cmodule). You may then also specify the third optional
+    argument `data`, which is a `NativePointer` accessible through
+    `gum_invocation_context_get_listener_function_data()`. Use
+    `gum_interceptor_get_current_invocation()` to get hold of the
+    `GumInvocationContext *`.
+
+    Note that `replacement` will be kept alive until `Interceptor#revert` is
+    called.
+
     If you want to chain to the original implementation you can synchronously
     call `target` through a `NativeFunction` inside your implementation, which
     will bypass and go directly to the original implementation.
@@ -1425,6 +1455,17 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
 
 
 ## Stalker
+
++   `Stalker.exclude(range)`: marks the specified memory `range` as excluded,
+    which is an object with `base` and `size` properties – like the properties
+    in an object returned by e.g. `Process.getModuleByName()`.
+
+    This means Stalker will not follow execution when encountering a call to an
+    instruction in such a range. You will thus be able to observe/modify the
+    arguments going in, and the return value coming back, but won't see the
+    instructions that happened between.
+
+    Useful to improve performance and reduce noise.
 
 +   `Stalker.follow([threadId, options])`: start stalking `threadId` (or the
     current thread if omitted), optionally with `options` for enabling events.
@@ -1531,6 +1572,54 @@ Stalker.follow(Process.getCurrentThreadId(), {
   // for your transform to fully replace certain instructions
   // when this is desirable.
   //
+
+  //
+  // Want better performance? Write the callbacks in C:
+  //
+  // /*
+  //  * const cm = new CModule(\`
+  //  *
+  //  * #include <gum/gumstalker.h>
+  //  *
+  //  * static void on_ret (GumCpuContext * cpu_context,
+  //  *     gpointer user_data);
+  //  *
+  //  * void
+  //  * transform (GumStalkerIterator * iterator,
+  //  *            GumStalkerWriter * output,
+  //  *            gpointer user_data)
+  //  * {
+  //  *   cs_insn * insn;
+  //  *
+  //  *   while (gum_stalker_iterator_next (iterator, &insn))
+  //  *   {
+  //  *     if (insn->id == X86_INS_RET)
+  //  *     {
+  //  *       gum_x86_writer_put_nop (output);
+  //  *       gum_stalker_iterator_put_callout (iterator,
+  //  *           on_ret, NULL, NULL);
+  //  *     }
+  //  *
+  //  *     gum_stalker_iterator_keep (iterator);
+  //  *   }
+  //  * }
+  //  *
+  //  * static void
+  //  * on_ret (GumCpuContext * cpu_context,
+  //  *         gpointer user_data)
+  //  * {
+  //  *   printf ("on_ret!\n");
+  //  * }
+  //  *
+  //  * `);
+  //  */
+  //
+  //transform: cm.transform,
+  //data: ptr(1337) /* user_data */
+  //
+  // You may also use a hybrid approach and only write
+  // some of the callouts in C.
+  //
 });
 {% endhighlight %}
 
@@ -1542,6 +1631,10 @@ Stalker.follow(Process.getCurrentThreadId(), {
     other way around, make sure you omit the callback that you don't need; i.e.
     avoid putting your logic in <i>onCallSummary</i> and leaving
     <i>onReceive</i> in there as an empty callback.
+  </p>
+  <p>
+    Also note that Stalker may be used in conjunction with CModule, which means
+    the callbacks may be implemented in C.
   </p>
 </div>
 
@@ -1572,10 +1665,18 @@ Stalker.follow(Process.getCurrentThreadId(), {
     `Stalker#unfollow`. This is needed to avoid race-conditions where the
     thread just unfollowed is executing its last instructions.
 
-+   `Stalker.addCallProbe(address, callback)`: call `callback` (see
-    `Interceptor#attach#onEnter` for signature) synchronously when a CALL is
++   `Stalker.addCallProbe(address, callback[, data])`: call `callback` (see
+    `Interceptor#attach#onEnter` for signature) synchronously when a call is
     made to `address`. Returns an id that can be passed to
     `Stalker#removeCallProbe` later.
+
+    It is also possible to implement `callback` in C using [CModule](#cmodule),
+    by specifying a `NativePointer` instead of a function. Signature:
+
+    -   `void onCall (GumCallSite * site, gpointer user_data)`
+
+    In such cases, the third optional argument `data` may be a `NativePointer`
+    whose value is passed to the callback as `user_data`.
 
 +   `Stalker.removeCallProbe`: remove a call probe added by
     `Stalker#addCallProbe`.
@@ -1688,6 +1789,39 @@ Interceptor.attach(f, {
 
 +   `DebugSymbol.findFunctionsMatching(glob)`: resolves function names matching
     `glob` and returns their addresses as an array of `NativePointer` objects.
+
+
+## CModule
+
++   `new CModule(source[, symbols])`: compiles C `source` code string to machine
+    code, straight to memory.
+
+    Useful for implementing hot callbacks, e.g. for `Interceptor` and `Stalker`,
+    but also useful when needing to start new threads in order to call functions
+    in a tight loop, e.g. for fuzzing purposes.
+
+    Global functions are automatically exported as `NativePointer` properties
+    named exactly like in the C source code. This means you can pass them to
+    `Interceptor` and `Stalker`, or call them using `NativeFunction`.
+
+    The optional second argument, `symbols`, is an object specifying additional
+    symbol names and their `NativePointer` values, each of which will be plugged
+    in at creation. This may for example be one or more memory blocks allocated
+    using `Memory.alloc()`, and/or `NativeCallback` values for receiving
+    callbacks from the C module.
+
+    To perform initialization and cleanup, you may define functions with the
+    following names and signatures:
+
+        `void init (void)`
+        `void finalize (void)`
+
+    Note that all data is read-only, so writable globals should be declared
+    `extern`, allocated using e.g. `Memory.alloc()`, and passed in as symbols
+    through the constructor's second argument.
+
+-   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
+    modules when waiting for a future garbage collection isn't desirable.
 
 
 ## Instruction
