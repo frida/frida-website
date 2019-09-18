@@ -1473,7 +1473,9 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
     For example:
 
 {% highlight js %}
-Stalker.follow(Process.getCurrentThreadId(), {
+const mainThread = Process.enumerateThreads()[0];
+
+Stalker.follow(mainThread.id, {
   events: {
     call: true, // CALL instructions: yes please
 
