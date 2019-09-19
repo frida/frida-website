@@ -361,6 +361,14 @@ Enjoy!
   unload).
 - *CModule.dispose()* was added for eagerly cleaning up memory.
 
+### Changes in 12.7.4
+
+- The *frida-inject* tool now supports *spawn()*. Kudos to [@hunterli][] for
+  contributing this neat feature.
+- Our V8 runtime no longer deadlocks on i/macOS when *thread_suspend()* is
+  called with the JS lock still held, like *Stalker.follow()* indirectly does
+  when asked to follow another thread.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -372,3 +380,4 @@ Enjoy!
 [GLib.String]: https://developer.gnome.org/glib/stable/glib-Strings.html
 [GLib.Timer]: https://developer.gnome.org/glib/stable/glib-Timers.html
 [Json.Builder]: https://developer.gnome.org/json-glib/stable/JsonBuilder.html
+[@hunterli]: https://github.com/hunterli
