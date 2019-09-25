@@ -2354,7 +2354,7 @@ function isAppModule(m) {
 Java.perform(function () {
   var Activity = Java.use('android.app.Activity');
   Activity.onResume.implementation = function () {
-    send('onResume() got called! Let's call the original implementation');
+    send('onResume() got called! Let\'s call the original implementation');
     this.onResume();
   };
 });
