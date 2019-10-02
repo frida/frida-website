@@ -259,7 +259,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
 ## Script
 
 +   `Script.runtime`: string property containing the runtime being used.
-    Either `DUK` or `V8'`.
+    Either `DUK` or `V8`.
 
 
 ## Process
