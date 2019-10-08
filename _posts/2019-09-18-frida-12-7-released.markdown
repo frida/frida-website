@@ -335,10 +335,10 @@ Enjoy!
 - *Stalker.exclude()* is now exposed to JS to be able to mark specific memory
   ranges as excluded. This is useful to improve performance and reduce noise.
 - Concurrent calls to *Java.use()* are now supported, thanks to a neat
-  contribution by [gebing][].
+  contribution by [@gebing][].
 - The *hexdump()* implementation was improved to clamp the *length* option to
   the length of the ArrayBuffer, thanks to another neat contribution by
-  [gebing][].
+  [@gebing][].
 
 ### Changes in 12.7.1
 
@@ -369,6 +369,17 @@ Enjoy!
   called with the JS lock still held, like *Stalker.follow()* indirectly does
   when asked to follow another thread.
 
+### Changes in 12.7.5
+
+- Brand new channels API for establishing TCP connections to a tethered iOS
+  or Android device, as well as talking to lockdown services on a tethered
+  iOS device.
+- The timeout logic behind *DeviceManager.find_device()* and its sibling methods
+  is now working properly.
+- Java marshaling of *java.lang.Class* is now working properly, and instance
+  fields can also be introspected without needing an instance. Kudos to
+  [@gebing][] for contributing these neat fixes!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -376,7 +387,7 @@ Enjoy!
 [GLib.Array]: https://developer.gnome.org/glib/stable/glib-Arrays.html
 [GLib.Mutex]: https://developer.gnome.org/glib/stable/glib-Threads.html#GMutex
 [frida-gum/bindings/gumjs/runtime/cmodule]: https://github.com/frida/frida-gum/tree/master/bindings/gumjs/runtime/cmodule
-[gebing]: https://github.com/gebing
+[@gebing]: https://github.com/gebing
 [GLib.String]: https://developer.gnome.org/glib/stable/glib-Strings.html
 [GLib.Timer]: https://developer.gnome.org/glib/stable/glib-Timers.html
 [Json.Builder]: https://developer.gnome.org/json-glib/stable/JsonBuilder.html
