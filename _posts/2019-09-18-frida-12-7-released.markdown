@@ -380,6 +380,25 @@ Enjoy!
   fields can also be introspected without needing an instance. Kudos to
   [@gebing][] for contributing these neat fixes!
 
+### Changes in 12.7.6
+
+- The Android linker is now properly detected on Android 10.
+- Our Android SELinux policy patcher now also handles devices like Samsung S10,
+  thanks to a neat contribution by [@cbayet][].
+- The *frida-inject* tool now supports *-D/--device* for working with non-local
+  devices.
+- We now have better error-handling to avoid crashing when i/macOS processes
+  terminate unexpectedly during early instrumentation.
+- iOS crash reporter integration is way more robust, thanks to some awesome
+  fixes contributed by [@mrmacete][]. One of his fixes also ensures parallel
+  calls to *recv().wait()* for the same message type don't end up in an infinite
+  wait.
+- Stalking of thread creation is now supported on Linux/arm64. Kudos to
+  [@alvaro_fe][] for this awesome contribution!
+- V8 runtime's WebAssembly support is working again on non-iOS also.
+- The *Gum.DarwinModule* API is now part of the cross-platform Gum API. Useful
+  for parsing Mach-O files on non-Apple systems.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -392,3 +411,6 @@ Enjoy!
 [GLib.Timer]: https://developer.gnome.org/glib/stable/glib-Timers.html
 [Json.Builder]: https://developer.gnome.org/json-glib/stable/JsonBuilder.html
 [@hunterli]: https://github.com/hunterli
+[@cbayet]: https://github.com/cbayet
+[@mrmacete]: https://twitter.com/bezjaje
+[@alvaro_fe]: https://twitter.com/alvaro_fe
