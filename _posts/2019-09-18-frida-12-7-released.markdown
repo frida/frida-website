@@ -427,6 +427,11 @@ Enjoy!
   processes stuck in a suspended state. Kudos to [@mrmacete][] for this awesome
   improvement.
 
+### Changes in 12.7.9
+
+- We are back in business on macOS after a last-minute build regression snuck
+  into the previous release.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
