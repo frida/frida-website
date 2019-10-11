@@ -399,6 +399,20 @@ Enjoy!
 - The *Gum.DarwinModule* API is now part of the cross-platform Gum API. Useful
   for parsing Mach-O files on non-Apple systems.
 
+### Changes in 12.7.7
+
+- Eternalized agents are now kept around when the last session gets closed,
+  which means they can be reused for as long as the *HostSession* side, e.g.
+  frida-server, sticks around. This means that additional copies of frida-agent
+  can be avoided in a lot of cases. Kudos to [@mrmacete][] for this awesome
+  improvement.
+- Java bridge no longer triggers a use-after-free when a method returns *this*.
+- Our Android SELinux policy patcher no longer prints a warning on older
+  versions of Android. This harmless but confusing regression was introduced
+  by the previous release' fix for Samsung S10 ROMs.
+- Better SELinux-related error messages.
+- Rudimentary support for iOS/arm64e.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
