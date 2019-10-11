@@ -413,6 +413,20 @@ Enjoy!
 - Better SELinux-related error messages.
 - Rudimentary support for iOS/arm64e.
 
+### Changes in 12.7.8
+
+- Android 10 support just landed in our Java bridge thanks to a brilliant
+  contribution by [@Alien-AV][].
+- Better spawn()-handling for Android apps, where the *activity* parameter can
+  be used in cases where the app doesn't have a launcher activity. This neat
+  improvement was contributed by [@muhzii][].
+- Android linker seeking logic was made future-proof thanks to an elegant
+  contribution by [@timstrazz][].
+- Massively improved fault-tolerance on iOS: our launchd agent now kills pending
+  processes when unloaded. This means that frida-server dying won't leave
+  processes stuck in a suspended state. Kudos to [@mrmacete][] for this awesome
+  improvement.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -428,3 +442,6 @@ Enjoy!
 [@cbayet]: https://github.com/cbayet
 [@mrmacete]: https://twitter.com/bezjaje
 [@alvaro_fe]: https://twitter.com/alvaro_fe
+[@Alien-AV]: https://github.com/Alien-AV
+[@muhzii]: https://github.com/muhzii
+[@timstrazz]: https://twitter.com/timstrazz
