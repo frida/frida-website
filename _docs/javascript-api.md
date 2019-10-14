@@ -606,14 +606,6 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
 
 ## MemoryAccessMonitor
 
-<div class="note info">
-  <h5>MemoryAccessMonitor is only available on Windows for now</h5>
-  <p>
-    We would love to support this on the other platforms too, so if you find
-    this useful and would like to help out, please get in touch.
-  </p>
-</div>
-
 +   `MemoryAccessMonitor.enable(ranges, callbacks)`: monitor one or more memory
     ranges for access, and notify on the first access of each contained memory
     page. `ranges` is either a single range object or an array of such objects,
