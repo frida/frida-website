@@ -432,6 +432,17 @@ Enjoy!
 - We are back in business on macOS after a last-minute build regression snuck
   into the previous release.
 
+### Changes in 12.7.10
+
+- *MemoryAccessMonitor* is now available on all platforms, and even the Duktape
+  runtime. Kudos to [@alvaro_fe][] for these awesome improvements.
+- Android linker detection working properly again. (Regression introduced in
+  12.7.8.)
+- Gadget was improved to support passing a config through its constructor
+  function on i/macOS.
+- Gadget's system loop integration – only implemented on i/macOS – was removed
+  to avoid undefined behavior in some scenarios.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
