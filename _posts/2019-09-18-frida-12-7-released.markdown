@@ -452,6 +452,16 @@ Enjoy!
   [@alvaro_fe][]!
 - CModule's header for JSON-GLib is now self-contained, as it should be.
 
+### Changes in 12.7.12
+
+- Full-featured iOS lockdown integration and unified devices, so Frida-based
+  tools don't need to worry as much about jailed vs jailbroken. When interacting
+  with a jailed iOS device, Gadget is now injected automatically and there is no
+  need to repackage the app, it only has to be debuggable.
+- Frida is finally able to detect recent iOS devices on Windows.
+- Bug in V8 was tracked down and fix backported from upstream. Kudos to
+  [@mrmacete][] for tracking this one down!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
