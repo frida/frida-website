@@ -443,6 +443,15 @@ Enjoy!
 - Gadget's system loop integration – only implemented on i/macOS – was removed
   to avoid undefined behavior in some scenarios.
 
+### Changes in 12.7.11
+
+- Frida no longer crashes in Android processes without a vDSO. (Regression
+  introduced in 12.7.8.)
+- Better error-handling when parsing Mach-O images.
+- ARM vs Thumb properly handled when restoring exception on i/macOS. Thanks
+  [@alvaro_fe][]!
+- CModule's header for JSON-GLib is now self-contained, as it should be.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
