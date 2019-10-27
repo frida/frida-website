@@ -480,6 +480,8 @@ Enjoy!
   able to instrument system processes means that early instrumentation – i.e.
   spawn() – works, and starting frida-server doesn't crash *system_server* due
   to the attempt it makes at preloading so the first *spawn()* will be fast.
+  Kudos to [@Alien-AV][] and [@esanfelix][] for the painful research that made
+  the solution possible to implement in one late Saturday evening. :-)
 
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
@@ -499,3 +501,4 @@ Enjoy!
 [@Alien-AV]: https://github.com/Alien-AV
 [@muhzii]: https://github.com/muhzii
 [@timstrazz]: https://twitter.com/timstrazz
+[@esanfelix]: https://twitter.com/esanfelix
