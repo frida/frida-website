@@ -462,6 +462,17 @@ Enjoy!
 - Bug in V8 was tracked down and fix backported from upstream. Kudos to
   [@mrmacete][] for tracking this one down!
 
+### Changes in 12.7.13
+
+- Better handling of structs and unions in *frida-objc-bridge*. Thanks
+  [@gebing][]!
+- Our Node.js bindings now also expose type definitions for *Crash* and
+  *CrashParameters*.
+- Attempts to attach to the system session on jailed iOS throw early and
+  with a clearer error message.
+- The iOS Developer Disk Image-related error messages were tweaked for
+  consistency.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
