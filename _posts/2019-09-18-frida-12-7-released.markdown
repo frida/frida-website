@@ -473,6 +473,14 @@ Enjoy!
 - The iOS Developer Disk Image-related error messages were tweaked for
   consistency.
 
+### Changes in 12.7.14
+
+- Frida now ensures code is readable before accessing it on Android >= 10.
+  This was the last missing piece for full-featured Android 10 support. Being
+  able to instrument system processes means that early instrumentation – i.e.
+  spawn() – works, and starting frida-server doesn't crash *system_server* due
+  to the attempt it makes at preloading so the first *spawn()* will be fast.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
