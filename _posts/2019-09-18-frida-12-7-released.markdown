@@ -487,6 +487,12 @@ Enjoy!
 
 - Node.js bindings also expose the “summary” field of the *Crash* typing.
 
+### Changes in 12.7.16
+
+- The *frida-gadget-ios* meta-package comes with type definitions so it can be
+  consumed from TypeScript.
+- Node.js bindings provide proper typings for *Stdio* and *ChildOrigin*.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
