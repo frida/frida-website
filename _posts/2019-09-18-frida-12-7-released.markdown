@@ -483,6 +483,10 @@ Enjoy!
   Kudos to [@Alien-AV][] and [@esanfelix][] for the painful research that made
   the solution possible to implement in one late Saturday evening. :-)
 
+### Changes in 12.7.15
+
+- Node.js bindings also expose the “summary” field of the *Crash* typing.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
