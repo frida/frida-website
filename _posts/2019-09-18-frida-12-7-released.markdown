@@ -493,6 +493,27 @@ Enjoy!
   consumed from TypeScript.
 - Node.js bindings provide proper typings for *Stdio* and *ChildOrigin*.
 
+### Changes in 12.7.17
+
+- More robust support for jailed iOS: calling kill() before resume() but after
+  attach() is now working properly.
+- Frida now communicates directly with the remote iOS/Android agent when
+  possible. We achieve this by establishing a fresh TCP connection to the
+  frida-server and having its file-descriptor passed to the agent. This means
+  frida-server can remove itself from the data path, improving performance and
+  reliability.
+- Clients connecting to frida-server to spawn() a process, but getting
+  disconnected before they get a chance to resume() or kill() said process,
+  will no longer leave such orphans in limbo. We now keep track of spawned
+  processes and kill() them if the client suddenly gets disconnected.
+- We no longer crash Zygote on Android 10. Turns out an SELinux rule was
+  missing.
+- Our TCP sockets now have *TCP_NODELAY* set, and we also support communicating
+  with a remote frida-server or frida-gadget using UNIX sockets in addition to
+  TCP.
+- NativeFunction now supports variadic functions, to avoid needing to
+  create one instance per unique argument list signature. Thanks [@gebing][]!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
