@@ -527,6 +527,14 @@ Enjoy!
 - NativeFunction's handling of optional args in call() and apply() now behaves
   like the builtin counterparts.
 
+### Changes in 12.7.20
+
+- Frida now supports both cleartext and encrypted iOS lockdown channels,
+  retaining support for “cleartext after TLS handshake”-style channels by
+  appending “?tls=handshake-only” to the channel address. Kudos, [@mrmacete][]!
+- The paired lockdown channel itself can be accessed by using “lockdown:” as the
+  channel address. Thanks [@mrmacete][]!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
