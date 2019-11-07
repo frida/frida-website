@@ -520,6 +520,13 @@ Enjoy!
   relying on luck where we'd usually end up in processes with another OpenSSL
   already loaded that's globally visible *and* ABI-compatible (!).
 
+### Changes in 12.7.19
+
+- We now properly handle apply() on NativeFunction w/o args in the V8 runtime
+  also. Kudos to [@taviso][] for reporting this long-standing bug.
+- NativeFunction's handling of optional args in call() and apply() now behaves
+  like the builtin counterparts.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -539,3 +546,4 @@ Enjoy!
 [@muhzii]: https://github.com/muhzii
 [@timstrazz]: https://twitter.com/timstrazz
 [@esanfelix]: https://twitter.com/esanfelix
+[@taviso]: https://twitter.com/taviso
