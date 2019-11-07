@@ -514,6 +514,12 @@ Enjoy!
 - NativeFunction now supports variadic functions, to avoid needing to
   create one instance per unique argument list signature. Thanks [@gebing][]!
 
+### Changes in 12.7.18
+
+- Node.js bindings finally link in needed OpenSSL symbols on UNIX, instead of
+  relying on luck where we'd usually end up in processes with another OpenSSL
+  already loaded that's globally visible *and* ABI-compatible (!).
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
