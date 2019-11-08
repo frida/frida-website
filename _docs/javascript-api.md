@@ -2045,7 +2045,9 @@ Interceptor.attach(NSSound.play.implementation, {
     -   `protocols`: (optional) Array of protocols this class conforms to.
     -   `methods`: (optional) Object specifying methods to implement.
     -   `events`: (optional) Object specifying callbacks for getting notified
-        about events. For now there's just one event:
+        about events:
+        -   `dealloc: function ()`: Called right after the object has been
+            deallocated. This is where you might clean up any associated state.
         -   `forward: function (name)`: Called with `name` specifying the
             method name that we're about to forward a call to. This might be
             where you'd start out with a temporary callback that just logs the
