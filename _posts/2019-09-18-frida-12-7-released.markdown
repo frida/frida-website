@@ -540,6 +540,11 @@ Enjoy!
 - We now support iOS 13 on the checkra1n jailbreak. (Jailed iOS 13 was already
   supported.)
 
+### Changes in 12.7.22
+
+- Our iOS package scripts launch daemon logic is now compatible with checkra1n,
+  so frida-server won't have to be started/stopped manually.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
