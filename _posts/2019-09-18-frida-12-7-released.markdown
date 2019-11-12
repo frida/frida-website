@@ -535,6 +535,11 @@ Enjoy!
 - The paired lockdown channel itself can be accessed by using “lockdown:” as the
   channel address. Thanks [@mrmacete][]!
 
+### Changes in 12.7.21
+
+- We now support iOS 13 on the checkra1n jailbreak. (Jailed iOS 13 was already
+  supported.)
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
