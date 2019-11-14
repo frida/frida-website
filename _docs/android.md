@@ -28,8 +28,13 @@ significantly less testing.)
 You will also need the `adb` tool from the Android SDK.
 
 First off, download the latest `frida-server` for Android from our [releases
-page](https://github.com/frida/frida/releases) and get it running on your
-device:
+page](https://github.com/frida/frida/releases) and uncompress it.
+
+{% highlight bash %}
+unxz frida-server.xz
+{% highlight bash %}
+
+Now, let's get it running on your device:
 
 {% highlight bash %}
 $ adb root # might be required
