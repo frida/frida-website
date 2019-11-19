@@ -27,6 +27,23 @@ Note that you can name the Gadget binary whatever you want, which is useful for
 dodging anti-Frida detection schemes that look for a loaded library with "Frida"
 in its name.
 
+On Android, the package manager will only copy files from a non-debuggable
+application's `/lib` folder if their name matches the following conditions:
+- It starts with the prefix `lib`
+- It ends with the suffix `.so`
+- It's `gdbserver`
+
+Frida is well-aware of this limitation and will accept a config file with those
+changes. Example:
+```
+lib
+└── arm64-v8a
+    ├── libgadget.config.so
+    ├── libgadget.so
+```
+For more information, please check
+[this article](https://lief.quarkslab.com/doc/latest/tutorials/09_frida_lief.html#id9).
+
 The config file should be a UTF-8 encoded text file with a JSON object as its
 root. It supports four different keys at the root level:
 
