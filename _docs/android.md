@@ -32,7 +32,7 @@ page](https://github.com/frida/frida/releases) and uncompress it.
 
 {% highlight bash %}
 unxz frida-server.xz
-{% highlight bash %}
+{% endhighlight %}
 
 Now, let's get it running on your device:
 
