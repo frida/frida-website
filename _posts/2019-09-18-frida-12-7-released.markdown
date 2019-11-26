@@ -545,6 +545,20 @@ Enjoy!
 - Our iOS package scripts launch daemon logic is now compatible with checkra1n,
   so frida-server won't have to be started/stopped manually.
 
+### Changes in 12.7.23
+
+- Enhanced support for the checkra1n jailbreak: Stalker is now way faster as it
+  makes use of RWX pages.
+- Stability improvements when using Stalker on iOS on jailbreaks without RWX
+  support. Thanks [@mrmacete][]!
+- CModule is now compatible with additional iOS jailbreak flavors. Kudos,
+  [@mrmacete][]!
+- CModule runtime support for working with ModuleMap objects.
+- Support for ARMBE8 thanks to awesome contributions by [Jon Wilson][].
+- Frida now makes parent file-descriptors available to child processes when
+  spawn()ing on i/macOS. This is consistent with the current behavior on Linux.
+  Thanks [@wizche][]!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -565,3 +579,5 @@ Enjoy!
 [@timstrazz]: https://twitter.com/timstrazz
 [@esanfelix]: https://twitter.com/esanfelix
 [@taviso]: https://twitter.com/taviso
+[Jon Wilson]: https://github.com/jonwilson030981
+[@wizche]: https://twitter.com/wizche
