@@ -559,6 +559,10 @@ Enjoy!
   spawn()ing on i/macOS. This is consistent with the current behavior on Linux.
   Thanks [@wizche][]!
 
+### Changes in 12.7.24
+
+- Node.js prebuilds also provided for Node.js v13.
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
