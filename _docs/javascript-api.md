@@ -2379,6 +2379,10 @@ Java.perform(function () {
     Uses the app's class loader by default, but you may customize this by
     assigning a different loader instance to `Java.classFactory.loader`.
 
++   `Java.use(className, { cache: 'skip' })`: just like the above, but skipping
+    the class wrapper cache. Useful when dealing with multiple class-loaders
+    and colliding class names.
+
 +   `Java.openClassFile(filePath)`: open the .dex file at `filePath`, returning
     an object with the following methods:
 
