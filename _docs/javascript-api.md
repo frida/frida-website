@@ -441,6 +441,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
         -   `protection`: protection like in `Process.enumerateRanges()`
     -   `name`: symbol name as a string
     -   `address`: absolute address as a `NativePointer`
+    -   `size`: if present, a number specifying the symbol's size in bytes
 
 <div class="note info">
   <h5>enumerateSymbols() is only available on i/macOS and Linux-based OSes</h5>
