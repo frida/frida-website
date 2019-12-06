@@ -563,6 +563,20 @@ Enjoy!
 
 - Node.js prebuilds also provided for Node.js v13.
 
+### Changes in 12.7.25
+
+- Log handler APIs got an overhaul in the Python and Node.js bindings, as part
+  of a critical fix: the Node.js setter's type wasn't the same as the getter,
+  as it also allowed *null*. This inconsistency resulted in recent TypeScript
+  compiler versions choking on it. Thanks [@mrmacete][]!
+- No more timestamp truncations in the V8 platform integration. Thanks for
+  reporting, [@DaveManouchehri][]!
+- Our *Module.enumerateSymbols()* API provides a “size” property when available,
+  i.e. only on Linux/Android for now. Thanks [@DaveManouchehri][]!
+- *Java.use(name, { cache: 'skip' })* can now be used to bypass caching. Useful
+  when dealing with multiple class-loaders and colliding class names. Thanks
+  [@ChaosData][] and [@H4oK3][]!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
@@ -585,3 +599,6 @@ Enjoy!
 [@taviso]: https://twitter.com/taviso
 [Jon Wilson]: https://github.com/jonwilson030981
 [@wizche]: https://twitter.com/wizche
+[@DaveManouchehri]: https://twitter.com/DaveManouchehri
+[@ChaosData]: https://github.com/ChaosData
+[@H4oK3]: https://github.com/H4oK3
