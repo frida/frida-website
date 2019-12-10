@@ -945,6 +945,13 @@ friendlyFunctionName(returnValue, thisPtr);
         -   propagate: Let the application deal with any native exceptions that
                        occur during the function call. (Or, the handler
                        installed through `Process.setExceptionHandler()`.)
+    -   `traps`: code traps to be enabled, as a string. Supported values are:
+        -   default: Interceptor.attach() callbacks will be called if any hooks
+                     are triggered by a function call.
+        -   all: In addition to Interceptor callbacks, Stalker may also be
+                 temporarily reactivated for the duration of each function call.
+                 This is useful for e.g. measuring code coverage while guiding a
+                 fuzzer, implementing "step into" in a debugger, etc.
 
 
 ## NativeCallback
