@@ -577,6 +577,15 @@ Enjoy!
   when dealing with multiple class-loaders and colliding class names. Thanks
   [@ChaosData][] and [@H4oK3][]!
 
+### Changes in 12.7.26
+
+- Stalker now supports temporary reactivation, to allow stalking code from
+  inside an excluded memory range.
+- NativeFunction got a brand new option `traps: 'all'` to allow calls to be
+  stalked even when Frida's own memory range is marked as excluded.
+- Thread enumeration on Linux is finally working when using Yama. Thanks
+  [Jon Wilson][]!
+
 
 [frida-java-bridge]: https://github.com/frida/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
