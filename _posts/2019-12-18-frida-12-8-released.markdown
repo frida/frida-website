@@ -114,7 +114,7 @@ Java.perform(function () {
 
 Yay. That said, these examples are barely scratching the surface of what's
 possible using Stalker. One of the really cool use-cases is in-process fuzzing,
-which [frida-fuzz][] is a great example of. There's also a bunch of others
+which [frida-fuzz][] is a great example of. There's also a bunch of other
 use-cases, such as reversing, measuring code coverage, fault injection for
 testing purposes, hooking inline syscalls, etc.
 
