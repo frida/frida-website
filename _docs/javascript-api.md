@@ -1713,7 +1713,7 @@ Stalker.follow(mainThread.id, {
 +   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
     between each time the event queue is drained. Defaults to 250 ms, which
     means that the event queue is drained four times per second. You may also
-    set this property to zero to disable periodic draining and instead call
+    set this property to zero to disable periodic draining, and instead call
     `Stalker.flush()` when you would like the queue to be drained.
 
 
@@ -2416,11 +2416,11 @@ Java.perform(function () {
 });
 {% endhighlight %}
 
-    Uses the app's class loader by default, but you may customize this by
-    assigning a different loader instance to `Java.classFactory.loader`.
-
-    Note that all method wrappers provide a `clone(options)` API to create a new
-    method wrapper with custom [NativeFunction](#nativefunction) options.
+>   Uses the app's class loader by default, but you may customize this by
+>   assigning a different loader instance to `Java.classFactory.loader`.
+>
+>   Note that all method wrappers provide a `clone(options)` API to create a new
+>   method wrapper with custom [NativeFunction](#nativefunction) options.
 
 +   `Java.use(className, { cache: 'skip' })`: just like the above, but skipping
     the class wrapper cache. Useful when dealing with multiple class-loaders
