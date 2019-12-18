@@ -1947,7 +1947,13 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
     for direct access to a big portion of the Objective-C runtime API.
 
 +   `ObjC.classes`: an object mapping class names to `ObjC.Object` JavaScript
-    bindings for each of the currently registered classes. You can interact with objects by using dot notation and replacing colons with underscores, i.e.: `[NSString stringWithString:@"Hello World"]` becomes `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`. Note the underscore after the method name. Refer to iOS Examples section for more details.
+    bindings for each of the currently registered classes. You can interact with
+    objects by using dot notation and replacing colons with underscores, i.e.:
+    `[NSString stringWithString:@"Hello World"]`
+    becomes
+    `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`.
+    Note the underscore after the method name. Refer to iOS Examples section for
+    more details.
 
 +   `ObjC.protocols`: an object mapping protocol names to `ObjC.Protocol`
     JavaScript bindings for each of the currently registered protocols.
