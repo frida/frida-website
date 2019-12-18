@@ -19,6 +19,7 @@ permalink: /docs/javascript-api/
   1. [Int64](#int64)
   1. [UInt64](#uint64)
   1. [NativePointer](#nativepointer)
+  1. [ArrayBuffer](#arraybuffer)
   1. [NativeFunction](#nativefunction)
   1. [NativeCallback](#nativecallback)
   1. [SystemFunction](#systemfunction)
