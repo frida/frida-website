@@ -150,7 +150,7 @@ using an existing module such as [frida-fs][] where you get an ArrayBuffer that
 you then want to pass to native code.
 
 Kudos to [@DaveManouchehri][] for contributing the first draft of the
-ArrayBuffer.wrap() API, and also big thanks to [CodeColorist][] for suggesting
+ArrayBuffer.wrap() API, and also big thanks to [@CodeColorist][] for suggesting
 and helping shape the unwrap() feature.
 
 ### Changes in 12.8.0
