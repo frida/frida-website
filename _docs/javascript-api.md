@@ -840,6 +840,19 @@ Interceptor.attach(f, {
     Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
 
+## ArrayBuffer
+
++   `wrap(address, size)`: creates an ArrayBuffer backed by an existing memory
+    region, where `address` is a `NativePointer` specifying the base address of
+    the region, and `size` is a number specifying its size. Unlike the
+    `NativePointer` read/write APIs, no validation is performed on access,
+    meaning a bad pointer will crash the process.
+
+-   `unwrap()`: returns a `NativePointer` specifying the base address of the
+    ArrayBuffer's backing store. It is the caller's responsibility to keep the
+    buffer alive while the backing store is still being used.
+
+
 ## NativeFunction
 
 +   `new NativeFunction(address, returnType, argTypes[, abi])`: create a new
@@ -952,6 +965,10 @@ friendlyFunctionName(returnValue, thisPtr);
                  temporarily reactivated for the duration of each function call.
                  This is useful for e.g. measuring code coverage while guiding a
                  fuzzer, implementing "step into" in a debugger, etc.
+                 Note that this is also possible when using the [Java](#java)
+                 and [ObjC](#objc) APIs, as method wrappers also provide a
+                 `clone(options)` API to create a new method wrapper with custom
+                 NativeFunction options.
 
 
 ## NativeCallback
@@ -1694,7 +1711,9 @@ Stalker.follow(mainThread.id, {
 
 +   `Stalker.queueDrainInterval`: an integer specifying the time in milliseconds
     between each time the event queue is drained. Defaults to 250 ms, which
-    means that the event queue is drained four times per second.
+    means that the event queue is drained four times per second. You may also
+    set this property to zero to disable periodic draining and instead call
+    `Stalker.flush()` when you would like the queue to be drained.
 
 
 ## ApiResolver
@@ -1982,17 +2001,24 @@ Interceptor.attach(myFunction.implementation, {
 >
 >   There is also an `equals(other)` method for checking whether two instances
 >   refer to the same underlying object.
+>
+>   Note that all method wrappers provide a `clone(options)` API to create a new
+>   method wrapper with custom [NativeFunction](#nativefunction) options.
 
 +   `new ObjC.Protocol(handle)`: create a JavaScript binding given the existing
     protocol at `handle` (a NativePointer).
 
-+   `new ObjC.Block(target)`: create a JavaScript binding given the existing
-    block at `target` (a NativePointer), or, to define a new block, `target`
-    should be an object specifying the type signature and JavaScript function to
-    call whenever the block is invoked. The function is specified with an
-    `implementation` key, and the signature is specified either through a
-    `types` key, or through the `retType` and `argTypes` keys. See
++   `new ObjC.Block(target[, options])`: create a JavaScript binding given the
+    existing block at `target` (a NativePointer), or, to define a new block,
+    `target` should be an object specifying the type signature and JavaScript
+    function to call whenever the block is invoked. The function is specified
+    with an `implementation` key, and the signature is specified either through
+    a `types` key, or through the `retType` and `argTypes` keys. See
     `ObjC.registerClass()` for details.
+
+    You may also provide an `options` object with the same options as supported
+    by [NativeFunction](#nativefunction), e.g. to pass `traps: 'all'` in order
+    to `Stalker.follow()` the execution when calling the block.
 
     The most common use-case is hooking an existing block, which for a block
     expecting two arguments would look something like:
@@ -2385,6 +2411,9 @@ Java.perform(function () {
 
     Uses the app's class loader by default, but you may customize this by
     assigning a different loader instance to `Java.classFactory.loader`.
+
+    Note that all method wrappers provide a `clone(options)` API to create a new
+    method wrapper with custom [NativeFunction](#nativefunction) options.
 
 +   `Java.use(className, { cache: 'skip' })`: just like the above, but skipping
     the class wrapper cache. Useful when dealing with multiple class-loaders
