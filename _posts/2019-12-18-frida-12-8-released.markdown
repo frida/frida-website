@@ -146,7 +146,7 @@ pointers won't result in a JS exception, and will crash the process.
 
 We now also allow you to access the backing store of any ArrayBuffer, through
 the new `unwrap()` method on ArrayBuffer. An example use-case for this is when
-using an existing module such as [frida-js][] where you get an ArrayBuffer that
+using an existing module such as [frida-fs][] where you get an ArrayBuffer that
 you then want to pass to native code.
 
 Kudos to [@DaveManouchehri][] for contributing the first draft of the
