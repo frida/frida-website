@@ -23,9 +23,9 @@ following execution inside e.g. our private heap, and end up needing to allocate
 memory for the instrumentation itself... all kinds of fun scenarios that are
 mind-boggling to reason about.
 
-The way we dealt with this was to ask Stalker to exclude certain memory ranges,
-so that if it sees a call going to such a location it will simply emit a call
-instruction there instead of following execution. So what we did was to
+The way we dealt with this was to teach Stalker to exclude certain memory
+ranges, so that if it sees a call going to such a location it will simply emit
+a call instruction there instead of following execution. So what we did was to
 automatically exclude frida-agent's own memory range, and that way we didn't
 have to deal with any of the reentrancy madness.
 
