@@ -57,7 +57,7 @@ var fd = open(Memory.allocUtf8String('/foo/bar'), 0);
 console.log('open() =>', fd);
 {% endhighlight %}
 
-By settings the `traps: 'all'` option on the NativeFunction, it will re-activate
+By setting the `traps: 'all'` option on the NativeFunction, it will re-activate
 Stalker when called from a thread where Stalker is temporarily paused because
 it's calling out to an excluded range – which is the case here because all of
 frida-agent's code is marked as excluded.
