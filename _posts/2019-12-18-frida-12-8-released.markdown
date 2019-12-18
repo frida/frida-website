@@ -7,10 +7,10 @@ version: 12.8
 categories: [release]
 ---
 
-Get ready for an exciting new release, just in time for the holiday season.
-This time around we're giving some long overdue love to our [Stalker][] engine.
-It's been around for roughly ten years, but it wasn't until Frida 10.5 in late
-2017 that we [started][] unleashing its massive potential.
+Get ready for an exciting new release. This time around we're giving some long
+overdue love to our [Stalker][] engine. It's been around for roughly ten years,
+but it wasn't until Frida 10.5 in late 2017 that we [started][] unleashing its
+massive potential.
 
 Up until now we were able to Stalker.follow() existing threads and not only
 observe them, but also mutate their instruction streams any way we'd like. It
