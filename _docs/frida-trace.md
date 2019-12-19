@@ -101,9 +101,9 @@ and from the remote device and trace accordingly.
 ## -I, -X: include/exclude module
 
 These options allow you to include or exclude **all** functions in a particular 
-module (e.g., *.so, *.dll) in one, single option.  The option expects a regular
-expression for matching one or more modules.  Any module that matches the
-regular expression will either be included or excluded in its entirety.
+module (e.g., *.so, *.dll) in one, single option.  The option expects a filename
+glob for matching one or more modules.  Any module that matches the glob pattern
+will be either included or excluded in its entirety.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
 by the `-I` option.
@@ -120,8 +120,8 @@ your needs.  This is a flexible option, allowing a granularity ranging from
 by the `-i` option.
 
 The `-i / -x` options differ syntactically from their uppercase counterparts 
-in that they accept any of the following forms (MODULE and FUNCTION are
-regular expressions):
+in that they accept any of the following forms (MODULE and FUNCTION are both
+glob patterns):
 
 <pre style="font-family: monospace;">
 - MODULE!FUNCTION
