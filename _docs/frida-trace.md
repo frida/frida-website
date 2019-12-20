@@ -24,7 +24,7 @@ $ frida-trace -U -i "Java_*" com.samsung.faceservice
 $ frida-trace -p 1372 -i "msvcrt.dll!*mem*"
 
 # Trace all functions matching "*open*" in the process except
-# in mscvrt.dll
+# in msvcrt.dll
 $ frida-trace -p 1372 -i "*open*" -x "msvcrt.dll!*open*"
 
 # Trace an unexported function in libjpeg.so
@@ -110,7 +110,7 @@ by the `-I` option.
 
 To exclude specific functions after including an entire module, see the `-i` option.
 
-## -i, -x: include/exclude function (given name)
+## -i, -x: include/exclude function (glob-based)
 
 These options enable you to include or exclude matching functions according to 
 your needs.  This is a flexible option, allowing a granularity ranging from 
@@ -142,7 +142,7 @@ Here are some examples and their descriptions:
   <tbody>
     <tr>
       <td style="text-align: left; font-family: monospace;">-i "msvcrt.dll!*cpy*"</td>
-      <td style="text-align: left">Matches all functions with 'cpy' in its name, only in msvcrt.dll</td>
+      <td style="text-align: left">Matches all functions with 'cpy' in its name, ONLY in msvcrt.dll</td>
     </tr>
     <tr>
       <td style="text-align: left; font-family: monospace;">-i "*free*"</td>
@@ -159,7 +159,51 @@ Here are some examples and their descriptions:
   </tbody>
   </table>
 
-## -a: include function (given offset)
+<div class="note info">
+  <h5>frida-trace's working set and the order of inclusions and exclusions</h5>
+  <p>frida-trace has an internal concept of a "working set", i.e., a set of 
+  "module:function" pairs whose handlers will be traced at runtime.  The contents of the
+  working set can be changed by an include / exclude command line option 
+  (-I / -X / -i / -x).</p>
+  <p>It is important to understand that the order of the include / exclude 
+  options is important.  Each such option works on the current state of the
+  working set, and different orderings of options can lead to 
+  different results.  In other words, the include/exclude options are procedural
+  (i.e., order counts) rather than simply declarative.</p>
+  <p>For example, suppose we want to trace all "str*" and "mem*" functions in
+  all modules in a running process.  In our example, these functions are found
+  in  three modules: <i>ucrtbase.dll, ntdll.dll, and msvcrt.dll</i>.  To reduce the 
+  noise, however, we do not want to trace any functions found in the msvcrt.dll
+  module.</p>
+  <p>We will describe three different option orders on the command line and 
+  show that they produce different results.</p>
+  <ul>
+    <li><div style="font-family: monospace">-i "str*" -i "mem*" -X "msvcrt.dll"</div></li>
+      <ul>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, working set has 98 entries</li>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" and 6 "mem" functions originating in 
+        msvcrt.dll, <b>final working set has 64 entries</b>.</li>
+      </ul>
+    <li><div style="font-family: monospace">-i "str*" -X "msvcrt.dll" -i "mem*"</div></li>
+      <ul>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" functions originating in 
+        msvcrt.dll, working set has 52 entries.</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules including msvcrt.dll, <b>
+        final working set has 70 entries</b></li>
+      </ul>
+    <li><div style="font-family: monospace">-X "msvcrt.dll" -i "str*" -i "mem*"</div></li>
+      <ul>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> tries to remove the 28 "str" and 6 "mem" functions originating in 
+        msvcrt.dll.  Since the working set is empty, there is nothing to remove, working set has 0 entries.</li>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, <b>final working set has 98 entries</b></li>
+      </ul>
+  </ul>
+</div>
+
+## -a: include function (offset-based)
 
 This option enables tracing functions whose names are not exported by their 
 modules (e.g., a static C/C++ function).  This should not prevent you from 
@@ -184,8 +228,8 @@ handler scripts.  By default, a handler's `onEnter` function looks like this:
 },
 </code>
 
-The drawback is that, if there are multiple modules containing the same function 
-name, it will be difficult to differentiate between traces.  The `--decorate` 
+The drawback is that, if the same function name exists in multiple modules, 
+it will be difficult to differentiate between function traces.  The `--decorate` 
 function instructs `frida-trace` to insert the module name in the default
 `onEnter` trace instruction:
 
