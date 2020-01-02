@@ -178,6 +178,9 @@ and helping shape the unwrap() feature.
   system processes on Android 10.
 - GumJS devkit on i/macOS supports V8 once again.
 
+### Changes in 12.8.1
+
+- The CModule Stalker integration is back in business.
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
