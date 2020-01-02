@@ -182,6 +182,13 @@ and helping shape the unwrap() feature.
 
 - The CModule Stalker integration is back in business.
 
+### Changes in 12.8.2
+
+- Thumb IT blocks are finally relocated correctly. This means we are able to
+  hook a lot more functions on 32-bit ARM targets, e.g. Android. Thanks
+  [@bigboysun][]!
+
+
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
 [AirSpy]: https://github.com/nowsecure/airspy
@@ -191,3 +198,4 @@ and helping shape the unwrap() feature.
 [@DaveManouchehri]: https://twitter.com/DaveManouchehri
 [@CodeColorist]: https://twitter.com/CodeColorist
 [@gebing]: https://github.com/gebing
+[@bigboysun]: https://github.com/bigboysun
