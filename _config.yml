@@ -23,7 +23,7 @@ twitter:
 
 exclude: ["COPYING", "README.md"]
 
-gems:
+plugins:
   - jekyll-feed
   - jekyll-redirect-from
   - jemoji
