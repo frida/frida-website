@@ -1,9 +1,3 @@
----
-layout: docs
-title: iOS
-permalink: /docs/ios/
----
-
 Frida supports two modes of operation, depending on whether your iOS device
 is jailbroken or not.
 

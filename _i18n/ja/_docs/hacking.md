@@ -1,9 +1,3 @@
----
-layout: docs
-title: Hacking
-permalink: /docs/hacking/
----
-
 ## Architecture
 
 <div class="mxgraph" style="position:relative;overflow:auto;width:100%;">

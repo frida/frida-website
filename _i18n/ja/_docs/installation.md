@@ -1,9 +1,3 @@
----
-layout: docs
-title: Installation
-permalink: /docs/installation/
----
-
 Getting Frida installed and ready-to-go should only take a few minutes. If it
 ever becomes a pain in the ass, please [file an
 issue]({{ site.organization_url }}/frida-website/issues/new) (or submit a pull request)

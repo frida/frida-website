@@ -1,9 +1,3 @@
----
-layout: docs
-title: Windows
-permalink: /docs/examples/windows/
----
-
 ## Example tool for directly monitoring a jvm.dll
 
 Shows how to monitor a jvm.dll which is being executed by a process called

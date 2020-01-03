@@ -1,9 +1,3 @@
----
-layout: docs
-title: Presentations
-permalink: /docs/presentations/
----
-
 ## Presentations of Frida
 
 We have presented Frida at various conferences around the world. As presentation
@@ -166,7 +160,7 @@ material becomes available, we will try to put it here.
 - [Ekoparty 2016](https://www.ekoparty.org/):
   [Getting fun with Frida](https://www.coresecurity.com/publication/getting-fun-frida)
 
-  Do you know what's Frida? Do you know what's about? What's useful for?. No, I'm not talking about the famous painter. I'm talking about a new hooking and dynamic binary instrumentation framework. 
+  Do you know what's Frida? Do you know what's about? What's useful for?. No, I'm not talking about the famous painter. I'm talking about a new hooking and dynamic binary instrumentation framework.
 
   In this turbo talk, I pretend to show you this newly available framework to facilitate some daily reverse engineering tasks. I'm going to teach you which are it basic parts, why it could be useful for you, which are the advantages and disadvantages over other similar frameworks and how to use it trough some demos and code snippets.
 
@@ -181,7 +175,7 @@ material becomes available, we will try to put it here.
 
   This talk will introduce Frida and show how it can be used to aid in analysis
   of binary applications. It will be packed with demos.
-  
+
 - [GPN 2018](https://entropia.de/GPN18):
   [Frida - (Game)Hacking mit JavaScript](https://www.youtube.com/watch?v=6QpRD3tkw48) (German presentation)
 

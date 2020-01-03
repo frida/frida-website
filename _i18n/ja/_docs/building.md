@@ -1,10 +1,3 @@
----
-layout: docs
-title: Building
-permalink: /docs/building/
----
-
-
 ## Table of contents
 
 1. Building Frida

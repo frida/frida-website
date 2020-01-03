@@ -1,9 +1,3 @@
----
-layout: docs
-title: frida-ps
-permalink: /docs/frida-ps/
----
-
 This is a command-line tool for listing processes, which is very useful
 when interacting with a remote system.
 

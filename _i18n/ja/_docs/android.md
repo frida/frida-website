@@ -1,9 +1,3 @@
----
-layout: docs
-title: Android
-permalink: /docs/android/
----
-
 In this tutorial we show how to do function tracing on your Android device.
 
 ## Setting up your Android device
@@ -38,7 +32,7 @@ Now, let's get it running on your device:
 
 {% highlight bash %}
 $ adb root # might be required
-$ adb push frida-server /data/local/tmp/ 
+$ adb push frida-server /data/local/tmp/
 $ adb shell "chmod 755 /data/local/tmp/frida-server"
 $ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}

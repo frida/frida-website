@@ -1,9 +1,3 @@
----
-layout: docs
-title: GSoC Ideas 2015
-permalink: /docs/gsoc-ideas-2015/
----
-
 ## Make Android a first-class Frida citizen
 
 ### Update 2015: This is now implemented in Frida thanks to [NowSecure][].
