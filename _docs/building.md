@@ -4,4 +4,4 @@ title: Building
 permalink: /docs/building/
 ---
 
-{% tf building.md %}
+{% tf _docs/building.md %}

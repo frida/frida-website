@@ -1,9 +1,3 @@
----
-layout: docs
-title: Functions
-permalink: /docs/functions/
----
-
 We show how to use Frida to inspect functions as they are called, modify their
 arguments, and do custom calls to functions inside a target process.
 

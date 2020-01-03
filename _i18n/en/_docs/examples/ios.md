@@ -1,9 +1,3 @@
----
-layout: docs
-title: iOS
-permalink: /docs/examples/ios/
----
-
 ## Recipes
 
 1. Inject script into process on host via REPL

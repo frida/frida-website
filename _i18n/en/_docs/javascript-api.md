@@ -1,9 +1,3 @@
----
-layout: docs
-title: JavaScript API
-permalink: /docs/javascript-api/
----
-
 ## Table of contents
   1. [Global](#global)
   1. [console](#console)
@@ -1672,7 +1666,7 @@ Stalker.follow(mainThread.id, {
       annotate: true, // to display the type of event
       stringify: true
         // to format pointer values as strings instead of `NativePointer`
-        // values, i.e. less overhead if you're just going to `send()` the 
+        // values, i.e. less overhead if you're just going to `send()` the
         // thing not actually parse the data agent-side
     }));
   },

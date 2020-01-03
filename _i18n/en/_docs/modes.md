@@ -1,9 +1,3 @@
----
-layout: docs
-title: Modes of Operation
-permalink: /docs/modes/
----
-
 Frida provides dynamic instrumentation through its powerful instrumentation core
 Gum, which is written in C. Because such instrumentation logic is prone to
 change, you usually want to write it in a scripting language so you get a short

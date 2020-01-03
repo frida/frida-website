@@ -4,4 +4,4 @@ title: frida-ps
 permalink: /docs/frida-ps/
 ---
 
-{% tf frida-ps.md %}
+{% tf _docs/frida-ps.md %}

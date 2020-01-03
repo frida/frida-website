@@ -4,4 +4,4 @@ title: Swift API
 permalink: /docs/swift-api/
 ---
 
-{% tf swift-api.md %}
+{% tf _docs/swift-api.md %}

@@ -1,9 +1,3 @@
----
-layout: docs
-title: Troubleshooting
-permalink: /docs/troubleshooting/
----
-
 If you ever run into problems installing or using Frida, here's a few tips
 that might be of help. If the problem you’re experiencing isn’t covered below,
 please [report an issue]({{ site.organization_url }}/frida-website/issues/new) so the

@@ -1,9 +1,3 @@
----
-layout: docs
-title: Linux
-permalink: /docs/examples/linux/
----
-
 # Linux on Docker
 In order to run Frida using Linux in Docker, you will need to start the container without seccomp, e.g:
 ```

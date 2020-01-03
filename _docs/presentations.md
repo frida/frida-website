@@ -4,4 +4,4 @@ title: Presentations
 permalink: /docs/presentations/
 ---
 
-{% tf presentations.md %}
+{% tf _docs/presentations.md %}

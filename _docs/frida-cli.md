@@ -4,4 +4,4 @@ title: Frida CLI
 permalink: /docs/frida-cli/
 ---
 
-{% tf frida-cli.md %}
+{% tf _docs/frida-cli.md %}

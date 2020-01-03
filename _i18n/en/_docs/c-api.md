@@ -1,9 +1,3 @@
----
-layout: docs
-title: C API
-permalink: /docs/c-api/
----
-
 ## Getting Started
 
 The functionality that provides you the JavaScript API for injection, function manipulation, memory reading, and more is also available from C.

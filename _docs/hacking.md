@@ -4,4 +4,4 @@ title: Hacking
 permalink: /docs/hacking/
 ---
 
-{% tf hacking.md %}
+{% tf _docs/hacking.md %}

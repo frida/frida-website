@@ -5,4 +5,4 @@ permalink: /docs/home/
 redirect_from: /docs/index.html
 ---
 
-{% tf index.md %}
+{% tf _docs/index.md %}

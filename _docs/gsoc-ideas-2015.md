@@ -4,4 +4,4 @@ title: GSoC Ideas 2015
 permalink: /docs/gsoc-ideas-2015/
 ---
 
-{% tf gsoc-ideas-2015.md %}
+{% tf _docs/gsoc-ideas-2015.md %}

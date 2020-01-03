@@ -4,4 +4,4 @@ title: Gadget
 permalink: /docs/gadget/
 ---
 
-{% tf gadget.md %}
+{% tf _docs/gadget.md %}

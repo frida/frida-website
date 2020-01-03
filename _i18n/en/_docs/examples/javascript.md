@@ -1,9 +1,3 @@
----
-layout: docs
-title: JavaScript
-permalink: /docs/examples/javascript/
----
-
 ## Connect to a Node.js process' V8 VM to inject arbitrary JS
 
 {% highlight js %}

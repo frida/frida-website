@@ -4,4 +4,4 @@ title: Messages
 permalink: /docs/messages/
 ---
 
-{% tf messages.md %}
+{% tf _docs/messages.md %}

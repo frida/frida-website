@@ -4,4 +4,4 @@ title: History
 permalink: "/docs/history/"
 ---
 
-{% tf history.md %}
+{% tf _docs/history.md %}

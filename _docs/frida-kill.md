@@ -4,4 +4,4 @@ title: frida-kill
 permalink: /docs/frida-kill/
 ---
 
-{% tf frida-kill.md %}
+{% tf _docs/frida-kill.md %}

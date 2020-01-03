@@ -4,4 +4,4 @@ title: Troubleshooting
 permalink: /docs/troubleshooting/
 ---
 
-{% tf troubleshooting.md %}
+{% tf _docs/troubleshooting.md %}

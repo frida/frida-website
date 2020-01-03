@@ -4,4 +4,4 @@ title: Modes of Operation
 permalink: /docs/modes/
 ---
 
-{% tf modes.md %}
+{% tf _docs/modes.md %}

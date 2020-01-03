@@ -1,10 +1,3 @@
----
-layout: docs
-title: Welcome
-permalink: /docs/home/
-redirect_from: /docs/index.html
----
-
 This site aims to be a comprehensive guide to Frida. We’ll cover topics such
 as doing interactive function tracing from the command-line, building your own
 tools on top of Frida's APIs, and give you some advice on participating in the

@@ -1,9 +1,3 @@
----
-layout: docs
-title: Quick-start guide
-permalink: /docs/quickstart/
----
-
 For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}

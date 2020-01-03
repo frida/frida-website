@@ -4,4 +4,4 @@ title: JavaScript API
 permalink: /docs/javascript-api/
 ---
 
-{% tf javascript-api.md %}
+{% tf _docs/javascript-api.md %}

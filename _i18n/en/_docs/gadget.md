@@ -1,9 +1,3 @@
----
-layout: docs
-title: Gadget
-permalink: /docs/gadget/
----
-
 Frida's Gadget is a shared library meant to be loaded by programs to be
 instrumented when the [Injected][] mode of operation isn't suitable.
 

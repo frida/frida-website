@@ -1,9 +1,3 @@
----
-layout: docs
-title: Swift API
-permalink: /docs/swift-api/
----
-
 ## Getting Started
 
 Download the Swift release from https://github.com/frida/frida/releases.

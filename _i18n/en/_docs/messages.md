@@ -1,9 +1,3 @@
----
-layout: docs
-title: Messages
-permalink: /docs/messages/
----
-
 In this tutorial we show how to send messages to and from a target process.
 
 ## Setting up the experiment

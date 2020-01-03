@@ -1,9 +1,3 @@
----
-layout: docs
-title: frida-trace
-permalink: /docs/frida-trace/
----
-
 frida-trace is a tool for dynamically tracing function calls.
 
 {% highlight bash %}
@@ -78,29 +72,29 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
 
 ## -U, --usb: connect to USB device
 
-This option tells `frida-trace` to perform tracing on a remote device 
+This option tells `frida-trace` to perform tracing on a remote device
 connected via the host machine's USB connection.
 
 Example: You want to trace an application running on an Android device
-from your host Windows machine.  If you specify `-U / --usb`, 
-frida-trace will perform the necessary work to transfer all data to 
+from your host Windows machine.  If you specify `-U / --usb`,
+frida-trace will perform the necessary work to transfer all data to
 and from the remote device and trace accordingly.
 
 <div class="note">
   <h5>Copy frida-server binary to remote device</h5>
-  <p>When tracing a remote device, remember to copy the 
+  <p>When tracing a remote device, remember to copy the
   <a href="https://github.com/frida/frida/releases">platform-appropriate frida-server binary</a>
   to the remote device.  Once copied, be sure to run the frida-server binary before
   beginning the tracing session.</p>
-  <p>For example, to trace a remote Android application, you would copy the 
-  'frida-server-12.8.0-android-arm' binary to the Android's /data/local/tmp 
-  folder.  Using adb shell, you would run the server in the background 
+  <p>For example, to trace a remote Android application, you would copy the
+  'frida-server-12.8.0-android-arm' binary to the Android's /data/local/tmp
+  folder.  Using adb shell, you would run the server in the background
   (e.g. frida-server-12.8.0-android-arm &).</p>
 </div>
 
 ## -I, -X: include/exclude module
 
-These options allow you to include or exclude **all** functions in a particular 
+These options allow you to include or exclude **all** functions in a particular
 module (e.g., *.so, *.dll) in one, single option.  The option expects a filename
 glob for matching one or more modules.  Any module that matches the glob pattern
 will be either included or excluded in its entirety.
@@ -112,14 +106,14 @@ To exclude specific functions after including an entire module, see the `-i` opt
 
 ## -i, -x: include/exclude function (glob-based)
 
-These options enable you to include or exclude matching functions according to 
-your needs.  This is a flexible option, allowing a granularity ranging from 
+These options enable you to include or exclude matching functions according to
+your needs.  This is a flexible option, allowing a granularity ranging from
 **all** functions in **all** modules down to a single function in a specific module.
 
-`frida-trace` will generate a JavaScript handler file for each function matched 
+`frida-trace` will generate a JavaScript handler file for each function matched
 by the `-i` option.
 
-The `-i / -x` options differ syntactically from their uppercase counterparts 
+The `-i / -x` options differ syntactically from their uppercase counterparts
 in that they accept any of the following forms (MODULE and FUNCTION are both
 glob patterns):
 
@@ -161,41 +155,41 @@ Here are some examples and their descriptions:
 
 <div class="note info">
   <h5>frida-trace's working set and the order of inclusions and exclusions</h5>
-  <p>frida-trace has an internal concept of a "working set", i.e., a set of 
+  <p>frida-trace has an internal concept of a "working set", i.e., a set of
   "module:function" pairs whose handlers will be traced at runtime.  The contents of the
-  working set can be changed by an include / exclude command line option 
+  working set can be changed by an include / exclude command line option
   (-I / -X / -i / -x).</p>
-  <p>It is important to understand that the order of the include / exclude 
+  <p>It is important to understand that the order of the include / exclude
   options is important.  Each such option works on the current state of the
-  working set, and different orderings of options can lead to 
+  working set, and different orderings of options can lead to
   different results.  In other words, the include/exclude options are procedural
   (i.e., order counts) rather than simply declarative.</p>
   <p>For example, suppose we want to trace all "str*" and "mem*" functions in
   all modules in a running process.  In our example, these functions are found
-  in  three modules: <i>ucrtbase.dll, ntdll.dll, and msvcrt.dll</i>.  To reduce the 
+  in  three modules: <i>ucrtbase.dll, ntdll.dll, and msvcrt.dll</i>.  To reduce the
   noise, however, we do not want to trace any functions found in the msvcrt.dll
   module.</p>
-  <p>We will describe three different option orders on the command line and 
+  <p>We will describe three different option orders on the command line and
   show that they produce different results.</p>
   <ul>
     <li><div style="font-family: monospace">-i "str*" -i "mem*" -X "msvcrt.dll"</div></li>
       <ul>
         <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
         <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, working set has 98 entries</li>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" and 6 "mem" functions originating in 
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" and 6 "mem" functions originating in
         msvcrt.dll, <b>final working set has 64 entries</b>.</li>
       </ul>
     <li><div style="font-family: monospace">-i "str*" -X "msvcrt.dll" -i "mem*"</div></li>
       <ul>
         <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" functions originating in 
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" functions originating in
         msvcrt.dll, working set has 52 entries.</li>
         <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules including msvcrt.dll, <b>
         final working set has 70 entries</b></li>
       </ul>
     <li><div style="font-family: monospace">-X "msvcrt.dll" -i "str*" -i "mem*"</div></li>
       <ul>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> tries to remove the 28 "str" and 6 "mem" functions originating in 
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> tries to remove the 28 "str" and 6 "mem" functions originating in
         msvcrt.dll.  Since the working set is empty, there is nothing to remove, working set has 0 entries.</li>
         <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
         <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, <b>final working set has 98 entries</b></li>
@@ -205,8 +199,8 @@ Here are some examples and their descriptions:
 
 ## -a: include function (offset-based)
 
-This option enables tracing functions whose names are not exported by their 
-modules (e.g., a static C/C++ function).  This should not prevent you from 
+This option enables tracing functions whose names are not exported by their
+modules (e.g., a static C/C++ function).  This should not prevent you from
 tracing such functions, so long as you know that absolute offset of the
 function's entry point.
 
@@ -228,8 +222,8 @@ handler scripts.  By default, a handler's `onEnter` function looks like this:
 },
 </code>
 
-The drawback is that, if the same function name exists in multiple modules, 
-it will be difficult to differentiate between function traces.  The `--decorate` 
+The drawback is that, if the same function name exists in multiple modules,
+it will be difficult to differentiate between function traces.  The `--decorate`
 function instructs `frida-trace` to insert the module name in the default
 `onEnter` trace instruction:
 

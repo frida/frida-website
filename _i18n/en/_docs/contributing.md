@@ -1,9 +1,3 @@
----
-layout: docs
-title: Contributing
-permalink: /docs/contributing/
----
-
 Aunt Frida needs you!
 
 You would make her very happy if you for example:

@@ -4,4 +4,4 @@ title: Quick-start guide
 permalink: /docs/quickstart/
 ---
 
-{% tf quickstart.md %}
+{% tf _docs/quickstart.md %}

@@ -4,4 +4,4 @@ title: frida-discover
 permalink: /docs/frida-discover/
 ---
 
-{% tf frida-discover.md %}
+{% tf _docs/frida-discover.md %}

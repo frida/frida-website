@@ -4,4 +4,4 @@ title: C API
 permalink: /docs/c-api/
 ---
 
-{% tf c-api.md %}
+{% tf _docs/c-api.md %}

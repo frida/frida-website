@@ -4,4 +4,4 @@ title: Best Practices
 permalink: /docs/best-practices/
 ---
 
-{% tf best-practices.md %}
+{% tf _docs/best-practices.md %}

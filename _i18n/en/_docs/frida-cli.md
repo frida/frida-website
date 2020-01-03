@@ -1,9 +1,3 @@
----
-layout: docs
-title: Frida CLI
-permalink: /docs/frida-cli/
----
-
 Frida CLI is a REPL interface that aims to emulate a lot of the nice
 features of IPython (or Cycript), which tries to get you closer to
 your code for rapid prototyping and easy debugging.

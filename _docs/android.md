@@ -4,4 +4,4 @@ title: Android
 permalink: /docs/android/
 ---
 
-{% tf android.md %}
+{% tf _docs/android.md %}

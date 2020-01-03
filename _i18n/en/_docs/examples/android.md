@@ -1,9 +1,3 @@
----
-layout: docs
-title: Android
-permalink: /docs/examples/android/
----
-
 ## Example tool built for an Android CTF
 
 For this particular example, using an Android 4.4 x86 emulator image is highly

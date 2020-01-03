@@ -4,4 +4,4 @@ title: Installation
 permalink: /docs/installation/
 ---
 
-{% tf installation.md %}
+{% tf _docs/installation.md %}

@@ -4,4 +4,4 @@ title: iOS
 permalink: /docs/ios/
 ---
 
-{% tf ios.md %}
+{% tf _docs/ios.md %}

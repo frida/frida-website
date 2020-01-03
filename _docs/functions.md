@@ -4,4 +4,4 @@ title: Functions
 permalink: /docs/functions/
 ---
 
-{% tf functions.md %}
+{% tf _docs/functions.md %}

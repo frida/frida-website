@@ -1,9 +1,3 @@
----
-layout: docs
-title: History
-permalink: "/docs/history/"
----
-
 Frida was born after [@oleavr][] and [@hsorbo][] had been casually
 brainstorming about how they wish they could turn tedious manual
 reverse-engineering into something much more fun, productive, and interactive.
