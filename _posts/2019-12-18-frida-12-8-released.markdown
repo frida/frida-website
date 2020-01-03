@@ -188,6 +188,17 @@ and helping shape the unwrap() feature.
   hook a lot more functions on 32-bit ARM targets, e.g. Android. Thanks
   [@bigboysun][]!
 
+### Changes in 12.8.3
+
+- Java.ClassFactory.get() introduced to be able to work with multiple class
+  loaders without worrying about colliding class names. This means that
+  assigning to the *loader* property is now considered deprecated. We still
+  keep it around for backwards compatibility, but using it alongside the new
+  API is not supported.
+- Java.enumerateLoadedClasses() also provides class handles and not just names.
+- The JNI GetByteArrayRegion() function is now part of the Env wrapper. Thanks
+  [@iddoeldor][]!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -199,3 +210,4 @@ and helping shape the unwrap() feature.
 [@CodeColorist]: https://twitter.com/CodeColorist
 [@gebing]: https://github.com/gebing
 [@bigboysun]: https://github.com/bigboysun
+[@iddoeldor]: https://github.com/iddoeldor
