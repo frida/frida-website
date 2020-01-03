@@ -21,6 +21,8 @@ url: https://www.frida.re
 twitter:
   username: fridadotre
 
+languages: ["en" , "ja"]
+
 exclude: ["COPYING", "README.md"]
 
 plugins:
