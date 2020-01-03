@@ -31,3 +31,4 @@ plugins:
   - jekyll-seo-tag
   - jekyll-avatar
   - jekyll-gist
+  - jekyll-multiple-languages-plugin
