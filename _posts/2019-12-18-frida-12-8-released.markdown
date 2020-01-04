@@ -199,6 +199,11 @@ and helping shape the unwrap() feature.
 - The JNI GetByteArrayRegion() function is now part of the Env wrapper. Thanks
   [@iddoeldor][]!
 
+### Changes in 12.8.4
+
+- Internal hooks no longer result in crashes on Linux when PLT/GOT entries
+  haven't been warmed up.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
