@@ -201,8 +201,8 @@ and helping shape the unwrap() feature.
 
 ### Changes in 12.8.4
 
-- Internal hooks no longer result in crashes on Linux when PLT/GOT entries
-  haven't been warmed up.
+- Internal hooks no longer result in crashes on Linux/ELF targets when PLT/GOT
+  entries haven't been warmed up.
 
 
 [Stalker]: /docs/javascript-api/#stalker
