@@ -204,6 +204,10 @@ and helping shape the unwrap() feature.
 - Internal hooks no longer result in crashes on Linux/ELF targets when PLT/GOT
   entries haven't been warmed up.
 
+### Changes in 12.8.5
+
+- Python bindings finally provide properly encoded error messages on Python 2.x.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
