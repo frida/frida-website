@@ -208,6 +208,12 @@ and helping shape the unwrap() feature.
 
 - Python bindings finally provide properly encoded error messages on Python 2.x.
 
+### Changes in 12.8.6
+
+- Android linker detection is finally working again in sandboxed processes.
+  This was a regression introduced in 12.7.8. Kudos to [@DaveManouchehri][]
+  for reporting and helping track this one down!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
