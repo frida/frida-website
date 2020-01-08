@@ -178,6 +178,42 @@ and helping shape the unwrap() feature.
   system processes on Android 10.
 - GumJS devkit on i/macOS supports V8 once again.
 
+### Changes in 12.8.1
+
+- The CModule Stalker integration is back in business.
+
+### Changes in 12.8.2
+
+- Thumb IT blocks are finally relocated correctly. This means we are able to
+  hook a lot more functions on 32-bit ARM targets, e.g. Android. Thanks
+  [@bigboysun][]!
+
+### Changes in 12.8.3
+
+- Java.ClassFactory.get() introduced to be able to work with multiple class
+  loaders without worrying about colliding class names. This means that
+  assigning to the *loader* property is now considered deprecated. We still
+  keep it around for backwards compatibility, but using it alongside the new
+  API is not supported.
+- Java.enumerateLoadedClasses() also provides class handles and not just names.
+- The JNI GetByteArrayRegion() function is now part of the Env wrapper. Thanks
+  [@iddoeldor][]!
+
+### Changes in 12.8.4
+
+- Internal hooks no longer result in crashes on Linux/ELF targets when PLT/GOT
+  entries haven't been warmed up.
+
+### Changes in 12.8.5
+
+- Python bindings finally provide properly encoded error messages on Python 2.x.
+
+### Changes in 12.8.6
+
+- Android linker detection is finally working again in sandboxed processes.
+  This was a regression introduced in 12.7.8. Kudos to [@DaveManouchehri][]
+  for reporting and helping track this one down!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -188,3 +224,5 @@ and helping shape the unwrap() feature.
 [@DaveManouchehri]: https://twitter.com/DaveManouchehri
 [@CodeColorist]: https://twitter.com/CodeColorist
 [@gebing]: https://github.com/gebing
+[@bigboysun]: https://github.com/bigboysun
+[@iddoeldor]: https://github.com/iddoeldor
