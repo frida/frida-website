@@ -214,6 +214,14 @@ and helping shape the unwrap() feature.
   This was a regression introduced in 12.7.8. Kudos to [@DaveManouchehri][]
   for reporting and helping track this one down!
 
+### Changes in 12.8.7
+
+- Our Node.js *IOStream* bindings received two critical stability improvements.
+  Turns out the cancellation logic had a race-condition that resulted in the
+  cancellable not always being used. There was also a bug in the teardown logic
+  that could result in a stream being closed before all I/O operations had
+  completed. Kudos to [@mrmacete][] for these awesome fixes!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -226,3 +234,4 @@ and helping shape the unwrap() feature.
 [@gebing]: https://github.com/gebing
 [@bigboysun]: https://github.com/bigboysun
 [@iddoeldor]: https://github.com/iddoeldor
+[@mrmacete]: https://twitter.com/bezjaje
