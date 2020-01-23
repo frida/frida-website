@@ -222,6 +222,14 @@ and helping shape the unwrap() feature.
   that could result in a stream being closed before all I/O operations had
   completed. Kudos to [@mrmacete][] for these awesome fixes!
 
+### Changes in 12.8.8
+
+- Gadget no longer deadlocks on Android/Linux during early instrumentation
+  use-cases where Gadget's entrypoint gets called with dynamic linker lock(s)
+  held. Due to Exceptor now using *dlsym()* to avoid running into PLT/GOT issues
+  during early instrumentation, we need to ensure that Exceptor gets initialized
+  from the entrypoint thread, and not the Gadget thread.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
