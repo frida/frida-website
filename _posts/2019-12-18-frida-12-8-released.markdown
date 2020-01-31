@@ -235,6 +235,11 @@ and helping shape the unwrap() feature.
 - Stalker's JavaScript integration is no longer performing a use-after-free in
   *EventSink::stop()*, i.e. after *Stalker.unfollow()*.
 
+### Changes in 12.8.10
+
+- Gadget is once again able to run on iOS without a debugger present. This was a
+  regression introduced in 12.8.8. Kudos to [@ddzobov][] for reporting!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -248,3 +253,4 @@ and helping shape the unwrap() feature.
 [@bigboysun]: https://github.com/bigboysun
 [@iddoeldor]: https://github.com/iddoeldor
 [@mrmacete]: https://twitter.com/bezjaje
+[@ddzobov]: https://github.com/ddzobov
