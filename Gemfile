@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem 'jekyll', '~> 3.8'
+gem 'jekyll-feed'
+gem 'jekyll-redirect-from'
+gem 'jemoji'
+gem 'jekyll-sitemap'
+gem 'jekyll-seo-tag'
+gem 'jekyll-avatar'
+gem 'jekyll-gist'
+gem 'jekyll-multiple-languages-plugin'
+gem 'pygments.rb'
