@@ -240,6 +240,15 @@ and helping shape the unwrap() feature.
 - Gadget is once again able to run on iOS without a debugger present. This was a
   regression introduced in 12.8.8. Kudos to [@ddzobov][] for reporting!
 
+### Changes in 12.8.11
+
+- The i/macOS Exceptor's API hooks no longer perform an OOB write when a
+  user of the Mach exception handling APIs only requests a subset of the
+  handlers. Such a user would typically be a crash reporter or analytics
+  framework.
+- Electron prebuilds are now provided for v8 (stable) and v9 (beta). We no
+  longer provide prebuilds for v7.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
