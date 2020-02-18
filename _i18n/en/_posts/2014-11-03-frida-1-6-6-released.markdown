@@ -8,4 +8,4 @@ categories: [release]
 ---
 
 **This release introduced a serious regression and was quickly pulled and
-replaced by [1.6.7]({% post_url 2014-11-03-frida-1-6-7-released %}).**
+replaced by [1.6.7]({% post_url _i18n/en/2014-11-03-frida-1-6-7-released %}).**

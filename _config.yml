@@ -21,9 +21,12 @@ url: https://www.frida.re
 twitter:
   username: fridadotre
 
-exclude: ["COPYING", "README.md"]
+languages: ["en", "ja"]
 
-gems:
+exclude: ["COPYING", "Gemfile", "Gemfile.lock", "README.md"]
+exclude_from_localizations: ["img", "js", "news", "slides", "favicon.ico", "keybase.txt"]
+
+plugins:
   - jekyll-feed
   - jekyll-redirect-from
   - jemoji
@@ -31,3 +34,4 @@ gems:
   - jekyll-seo-tag
   - jekyll-avatar
   - jekyll-gist
+  - jekyll-multiple-languages-plugin

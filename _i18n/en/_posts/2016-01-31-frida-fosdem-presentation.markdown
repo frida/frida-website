@@ -17,5 +17,5 @@ on our [presentations][] page. No videos of the talk yet.
 [karltk]: https://github.com/karltk
 [FOSDEM]: https://fosdem.org/2016
 [Testing and Automation]: https://fosdem.org/2016/schedule/track/testing_and_automation/
-[Slides]: /docs/presentations/fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf
+[Slides]: {{ site.baseurl_root }}/slides/fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf
 [presentations]: /docs/presentations/
