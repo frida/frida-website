@@ -1899,6 +1899,82 @@ Interceptor.attach(f, {
 -   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
     modules when waiting for a future garbage collection isn't desirable.
 
+### Examples
+
+{% highlight js %}
+var source = [
+  '#include <stdio.h>',
+  '',
+  'void hello(void) {',
+  '  printf("Hello World from CModule\\n");',
+  '}',
+].join('\n');
+
+var cm = new CModule(source);
+
+console.log(JSON.stringify(cm));
+
+var hello = new NativeFunction(cm.hello, 'void', []);
+hello();
+{% endhighlight %}
+
+Which you might load using Frida's REPL:
+
+{% highlight sh %}
+$ frida -p 0 -l example.js
+{% endhighlight %}
+
+(The REPL monitors the file on disk and reloads the script on change.)
+
+You can then type `hello()` in the REPL to call the C function.
+
+The same example can be simplified by using modern JavaScript syntax:
+
+{% highlight js %}
+const source = `
+#include <stdio.h>
+
+void hello(void) {
+  printf("Hello World from CModule\\n");
+}
+`;
+
+const cm = new CModule(source);
+
+const hello = new NativeFunction(cm.hello, 'void', []);
+hello();
+{% endhighlight %}
+
+Which our V8-based runtime supports:
+
+{% highlight sh %}
+$ frida -p 0 --runtime=v8 -l example.js
+{% endhighlight %}
+
+Another option is to use [frida-compile](https://github.com/oleavr/frida-agent-example)
+to compile the JavaScript code to ES5, so it can be run on our Duktape-based
+runtime.
+
+For prototyping we recommend using Frida's REPL:
+
+{% highlight sh %}
+$ frida -p 0 -C example.c
+{% endhighlight %}
+
+You may also add `-l example.js` to load some JavaScript next to it.
+The JavaScript code may use the global variable named `cm` to access
+the CModule object, but only after `rpc.exports.init()` has been called,
+so do any initialization depending on the CModule there. You may also
+inject symbols by assigning to the global object named `cs`, but this
+must be done *before* `rpc.exports.init()` gets called.
+
+Here's an example:
+
+![CModule REPL example](https://pbs.twimg.com/media/EEyxQzwXoAAqoAw?format=jpg&name=small)
+
+More details on CModule can be found in the [Frida 12.7 release notes]({{
+site.baseurl_root }}/news/2019/09/18/frida-12-7-released/).
+
 
 ## Instruction
 
