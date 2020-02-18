@@ -1,4 +1,17 @@
+## Getting started
+
+To be more productive, we highly recommend using our [TypeScript](https://www.typescriptlang.org/)
+bindings. This means you get code completion, type checking, inline docs,
+refactoring tools, etc.
+
+Here's a short teaser video showing the editor experience:
+
+[![Frida TypeScript demo](https://i.ytimg.com/vi/9cr4gOPFN4o/sddefault.jpg)](https://youtu.be/9cr4gOPFN4o)
+
+Clone [this repo](https://github.com/oleavr/frida-agent-example) to get started.
+
 ## Table of contents
+
   1. [Global](#global)
   1. [console](#console)
   1. [rpc](#rpc)
