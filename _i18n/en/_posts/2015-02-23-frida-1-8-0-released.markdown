@@ -9,4 +9,4 @@ categories: [release]
 
 **This release introduced a serious regression on iOS and was quickly pulled
 from our Cydia repo, though it was available for Mac, Linux and Android while
-waiting to be replaced by [2.0.0]({% post_url 2015-03-01-frida-2-0-0-released %}).**
+waiting to be replaced by [2.0.0]({% post_url _i18n/en/2015-03-01-frida-2-0-0-released %}).**
