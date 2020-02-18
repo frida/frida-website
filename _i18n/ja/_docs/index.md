@@ -2,20 +2,15 @@
 例えば、コマンドラインから対話的に関数のトレースを行う方法や
 FridaのAPIを用いて独自のツールを開発する方法について紹介していきます。
 
-## So what is Frida, exactly?
+## Fridaとは
 
-It's
-[Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) for
-native apps, or, put in more technical terms, it's a dynamic code
-instrumentation toolkit. It lets you inject snippets of JavaScript or your own
-library into native apps on Windows, macOS, GNU/Linux, iOS, Android, and QNX.
-Frida also provides you with some simple tools built on top of the Frida API.
-These can be used as-is, tweaked to your needs, or serve as examples of how to
-use the API.
+Fridaは[Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)のネイティブアプリケーション版です。より技術的な用語で言うとするならば、動的解析ツールキットです。
+Fridaを使うことで、Windows、macOS、GNU/Linux、iOS、AndroidやQNXのネイティブアプリケーションに対してJavascriptコードやライブラリをインジェクトすることができます。また、FridaはFrida API上に構築されたいくつかのツールを提供します。
+これらをそのまま使用するのももちろんこと、必要に応じて調整したり、Frida APIの使用例として使うこともできます。
 
-## Why do I need this?
+## なぜこれが必要なの？
 
-Great question. We'll try to clarify with some use-cases:
+良い質問ですね！いくつかのユースケースを使用して明確にしていきます:
 
 - There's this new hot app everybody's so excited about, but it's only
   available for iOS and you'd love to interop with it. You realize it's
