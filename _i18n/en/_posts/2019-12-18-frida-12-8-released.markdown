@@ -214,6 +214,41 @@ and helping shape the unwrap() feature.
   This was a regression introduced in 12.7.8. Kudos to [@DaveManouchehri][]
   for reporting and helping track this one down!
 
+### Changes in 12.8.7
+
+- Our Node.js *IOStream* bindings received two critical stability improvements.
+  Turns out the cancellation logic had a race-condition that resulted in the
+  cancellable not always being used. There was also a bug in the teardown logic
+  that could result in a stream being closed before all I/O operations had
+  completed. Kudos to [@mrmacete][] for these awesome fixes!
+
+### Changes in 12.8.8
+
+- Gadget no longer deadlocks on Android/Linux during early instrumentation
+  use-cases where Gadget's entrypoint gets called with dynamic linker lock(s)
+  held. Due to Exceptor now using *dlsym()* to avoid running into PLT/GOT issues
+  during early instrumentation, we need to ensure that Exceptor gets initialized
+  from the entrypoint thread, and not the Gadget thread.
+
+### Changes in 12.8.9
+
+- Stalker's JavaScript integration is no longer performing a use-after-free in
+  *EventSink::stop()*, i.e. after *Stalker.unfollow()*.
+
+### Changes in 12.8.10
+
+- Gadget is once again able to run on iOS without a debugger present. This was a
+  regression introduced in 12.8.8. Kudos to [@ddzobov][] for reporting!
+
+### Changes in 12.8.11
+
+- The i/macOS Exceptor's API hooks no longer perform an OOB write when a
+  user of the Mach exception handling APIs only requests a subset of the
+  handlers. Such a user would typically be a crash reporter or analytics
+  framework.
+- Electron prebuilds are now provided for v8 (stable) and v9 (beta). We no
+  longer provide prebuilds for v7.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -226,3 +261,5 @@ and helping shape the unwrap() feature.
 [@gebing]: https://github.com/gebing
 [@bigboysun]: https://github.com/bigboysun
 [@iddoeldor]: https://github.com/iddoeldor
+[@mrmacete]: https://twitter.com/bezjaje
+[@ddzobov]: https://github.com/ddzobov
