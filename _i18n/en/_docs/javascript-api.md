@@ -55,6 +55,12 @@
   1. [MipsRelocator](#mipsrelocator)
   1. [MIPS enum types](#mipsenums)
 
+To be more productive, you could add "@types/frida-gum":"^15.0.0" into
+"devDependencies" block in package.json then run "npm install", this will
+gives you a TypeScript facade for this api.
+
+See [this sample](https://github.com/oleavr/frida-agent-example) for more details.
+
 ## Global
 
 +   `hexdump(target[, options])`: generate a hexdump from the provided
