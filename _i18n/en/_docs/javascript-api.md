@@ -552,7 +552,10 @@ In the example above we used `script.on('message', on_message)` to monitor for a
             fully scanned
 
 -   `Memory.scanSync(address, size, pattern)`: synchronous version of `scan()`
-    that returns the matches in an array.
+    that returns an array of objects containing the following properties:
+
+    -   `address`: absolute address as a `NativePointer`.
+    -   `size`: size in bytes
 
 +   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap, or, if
     `size` is a multiple of `Process.pageSize`, one or more raw memory pages
