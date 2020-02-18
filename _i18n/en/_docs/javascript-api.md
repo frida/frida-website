@@ -622,6 +622,8 @@ console.log('Memory.scanSync() result:\n' +
     of memory, where `protection` is a string of the same format as
     `Process.enumerateRanges()`.
 
+    Returns a boolean indicating whether the operation completed successfully.
+
     For example:
 
 {% highlight js %}
