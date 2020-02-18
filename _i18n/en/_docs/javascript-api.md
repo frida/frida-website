@@ -585,7 +585,10 @@ console.log("Memory.scanSync() result = \n" + JSON.stringify(results));
     gone. This means you need to keep a reference to it while the pointer is
     being used by code outside the JavaScript runtime.
 
-+   `Memory.copy(dst, src, n)`: just like memcpy.
++   `Memory.copy(dst, src, n)`: just like memcpy, return nothing.
+    - dst: a `NativePointer` as the destination's address.
+    - src: a `NativePointer` as the source's address.
+    - n: size in byte to be copy
 
 +   `Memory.dup(address, size)`: short-hand for `Memory.alloc()` followed by
     `Memory.copy()`.
