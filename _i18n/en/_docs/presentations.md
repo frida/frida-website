@@ -5,7 +5,7 @@ material becomes available, we will try to put it here.
 
 - [OSDC 2015](https://act.osdc.no/osdc2015no/):
   [Putting the open back into closed software](https://act.osdc.no/osdc2015no/talk/6165)
-  ([PDF](osdc-2015-putting-the-open-back-into-closed-software.pdf) · [Recording](https://youtu.be/tmpjftTHzH8))
+  ([PDF]({{ site.baseurl_root }}/slides/osdc-2015-putting-the-open-back-into-closed-software.pdf) · [Recording](https://youtu.be/tmpjftTHzH8))
 
   Have this black box process that you’re just dying to peek inside of? Is
   this process perhaps running on your cell phone, or on a closed-source OS,
@@ -23,7 +23,7 @@ material becomes available, we will try to put it here.
 
 - [OSDC 2015](https://act.osdc.no/osdc2015no/):
   [The engineering behind the reverse engineering](https://act.osdc.no/osdc2015no/talk/6195)
-  ([PDF](osdc-2015-the-engineering-behind-the-reverse-engineering.pdf) · [Recording](https://youtu.be/uc1mbN9EJKQ))
+  ([PDF]({{ site.baseurl_root }}/slides/osdc-2015-the-engineering-behind-the-reverse-engineering.pdf) · [Recording](https://youtu.be/uc1mbN9EJKQ))
 
   Ever wondered how to build your own debugger? Did you complete that assembly
   tutorial as a teenager, but never found any real life use for low-level
@@ -62,7 +62,7 @@ material becomes available, we will try to put it here.
 
 - [ZeroNights 2015](http://2015.zeronights.org/):
   [Cross-platform reversing with Frida](http://2015.zeronights.org/workshops.html)
-  ([PDF](zeronights-2015-cross-platform-reversing-with-frida.pdf)
+  ([PDF]({{ site.baseurl_root }}/slides/zeronights-2015-cross-platform-reversing-with-frida.pdf)
   · [Demos](https://github.com/frida/frida-presentations/tree/master/ZeroNights2015))
 
   Frida is a scriptable dynamic binary instrumentation toolkit aiming to
@@ -87,7 +87,7 @@ material becomes available, we will try to put it here.
 
 - [No cON Name 2015](https://www.noconname.org/):
   [Cross-platform reversing with Frida](https://www.noconname.org/)
-  ([PDF](ncn-2015-cross-platform-reversing-with-frida.pdf)
+  ([PDF]({{ site.baseurl_root }}/slides/ncn-2015-cross-platform-reversing-with-frida.pdf)
   · [Demos](https://github.com/frida/frida-presentations/tree/master/NcN2015))
 
   Frida is a scriptable dynamic binary instrumentation toolkit aiming to
@@ -112,7 +112,7 @@ material becomes available, we will try to put it here.
 
 - [FOSDEM 2016](https://fosdem.org/2016/schedule/track/testing_and_automation/):
   [Testing interoperability with closed-source software through scriptable diplomacy](https://fosdem.org/2016/schedule/event/closed_source_interop/)
-  ([PDF](fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf))
+  ([PDF]({{ site.baseurl_root }}/slides/fosdem-2016-testing-interoperability-with-closed-source-software-through-scriptable-diplomacy.pdf))
 
   You, of course, write open-source software. They didn’t. And for the sake of
   your mobile users, you both need to be friends. Enter Frida, the diplomat
