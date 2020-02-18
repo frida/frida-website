@@ -24,7 +24,7 @@ twitter:
 languages: ["en", "ja"]
 
 exclude: ["COPYING", "Gemfile", "Gemfile.lock", "README.md"]
-exclude_from_localizations: ["img", "js", "news", "slides", "favicon.ico", "keybase.txt"]
+exclude_from_localizations: ["fonts", "img", "js", "news", "slides", "favicon.ico", "keybase.txt"]
 
 plugins:
   - jekyll-feed
