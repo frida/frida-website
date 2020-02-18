@@ -1873,6 +1873,20 @@ Interceptor.attach(f, {
 -   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
     modules when waiting for a future garbage collection isn't desirable.
 
+    For example:
+
+{% highlight js %}
+var source =
+    "#include <stdio.h>" +
+    "void functionFromCModule(){" +
+    "   printf(\"Print from CModule\n\");" +
+    "}";
+var cModule = new CModule(source);
+console.log(JSON.stringify(cModule));
+var ptrFunctionFromCModule = cModule['functionFromCModule'];
+var functionFromCModule = new NativeFunction(ptrFunctionFromCModule, 'void', []);
+functionFromCModule();
+{% endhighlight %}
 
 ## Instruction
 
