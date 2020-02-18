@@ -596,6 +596,7 @@ console.log("Memory.scanSync() result = \n" + JSON.stringify(results));
 +   `Memory.protect(address, size, protection)`: update protection on a region
     of memory, where `protection` is a string of the same format as
     `Process.enumerateRanges()`.
+    Return a boolean indicating whether the operation is done successfully or not.
 
     For example:
 
