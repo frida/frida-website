@@ -557,6 +557,27 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     -   `address`: absolute address as a `NativePointer`.
     -   `size`: size in bytes
 
+    For example:
+
+{% highlight js %}
+var m = Process.enumerateModules()[0];// enumerate loaded modules and take the first one
+// var m = Module.load('win32u.dll'); // or load module by name
+console.log(JSON.stringify(m));// print its properties
+console.log(hexdump(m.base));// dump it form its base address
+var pattern = '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00';// the pattern that you are interested in
+Memory.scan(/*NativePointer*/ m.base, /*number*/ m.size, /*string*/ pattern, {
+    onMatch: function (address, size) {// called when pattern matches
+        console.log("Memory.scan() found at " + address + " with size " + size);
+        return 'stop';// optional, stop scanning early
+    },
+    onComplete: function () {
+        console.log("Memory.scan() complete");
+    }
+});
+var results = Memory.scanSync(m.base, m.size, pattern);
+console.log("Memory.scanSync() result = \n" + JSON.stringify(results));
+{% endhighlight %}
+
 +   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap, or, if
     `size` is a multiple of `Process.pageSize`, one or more raw memory pages
     managed by the OS. The returned value is a `NativePointer` and the
