@@ -591,7 +591,7 @@ console.log("Memory.scanSync() result = \n" + JSON.stringify(results));
     - n: size in byte to be copy
 
 +   `Memory.dup(address, size)`: short-hand for `Memory.alloc()` followed by
-    `Memory.copy()`.
+    `Memory.copy()`, return a `NativePointer` as the duplicated memory's address.
 
 +   `Memory.protect(address, size, protection)`: update protection on a region
     of memory, where `protection` is a string of the same format as
