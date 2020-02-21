@@ -2348,8 +2348,9 @@ function isAppModule(m) {
 +   `Java.enumerateLoadedClasses(callbacks)`: enumerate classes loaded right
     now, where `callbacks` is an object specifying:
 
-    -   `onMatch: function (className)`: called for each loaded class with
-        `className` that may be passed to `use()` to get a JavaScript wrapper.
+    -   `onMatch: function (name, handle)`: called for each loaded class with
+        `name` that may be passed to `use()` to get a JavaScript wrapper.
+        You may also `Java.cast()` the `handle` to `java.lang.Class`.
 
     -   `onComplete: function ()`: called when all classes have been enumerated.
 
@@ -2365,9 +2366,8 @@ function isAppModule(m) {
     -   `onComplete: function ()`: called when all class loaders have been
         enumerated.
 
-    You may assign such a loader to `Java.classFactory.loader` to make
-    `Java.use()` look for classes on a specific loader instead of the default
-    loader used by the app.
+    You may pass such a loader to `Java.ClassFactory.get()` to be able to
+    `.use()` classes on the specified class loader.
 
 +   `Java.enumerateClassLoadersSync()`: synchronous version of
     `enumerateClassLoaders()` that returns the class loaders in an array.
@@ -2415,10 +2415,6 @@ Java.perform(function () {
 >
 >   Note that all method wrappers provide a `clone(options)` API to create a new
 >   method wrapper with custom [NativeFunction](#nativefunction) options.
-
-+   `Java.use(className, { cache: 'skip' })`: just like the above, but skipping
-    the class wrapper cache. Useful when dealing with multiple class-loaders
-    and colliding class names.
 
 +   `Java.openClassFile(filePath)`: open the .dex file at `filePath`, returning
     an object with the following methods:
@@ -2562,20 +2558,46 @@ var MyWeirdTrustManager = Java.registerClass({
     -   `tryGetEnv()`: tries to get a wrapper for the current thread's `JNIEnv`.
         Returns `null` if the current thread is not attached to the VM.
 
-+   `Java.classFactory`: object with the following properties:
++   `Java.classFactory`: the default class factory used to implement e.g.
+    `Java.use()`. Uses the application's main class loader.
 
-    -   `loader`: wrapper for the class loader currently being used. Typically
-        updated by the first call to `Java.perform()`.
++   `Java.ClassFactory`: class with the following properties:
 
-        You may assign a different `java.lang.ClassLoader` to make `Java.use()`
-        look for classes on a specific loader instead of the default loader used
-        by the app.
+    +   `get(classLoader)`: Gets the class factory instance for a given class
+        loader. The default class factory used behind the scenes only interacts
+        with the application's main class loader. Other class loaders can be
+        discovered through `Java.enumerateClassLoaders()` and interacted with
+        through this API.
+
+    -   `loader`: read-only property providing a wrapper for the class loader
+        currently being used. For the default class factory this is updated by
+        the first call to `Java.perform()`.
 
     -   `cacheDir`: string containing path to cache directory currently being
-        used. Typically updated by the first call to `Java.perform()`.
+        used. For the default class factory this is updated by the first call
+        to `Java.perform()`.
 
     -   `tempFileNaming`: object specifying naming convention to use for
         temporary files. Defaults to `{ prefix: 'frida', suffix: 'dat' }`.
+
+    -   `use(className)`: like `Java.use()` but for a specific class loader.
+
+    -   `openClassFile(filePath)`: like `Java.openClassFile()` but for a
+        specific class loader.
+
+    -   `choose(className, callbacks)`: like `Java.choose()` but for a
+        specific class loader.
+
+    -   `retain(obj)`: like `Java.retain()` but for a specific class loader.
+
+    -   `cast(handle, klass)`: like `Java.cast()` but for a specific class
+        loader.
+
+    -   `array(type, elements)`: like `Java.array()` but for a specific class
+        loader.
+
+    -   `registerClass(spec)`: like `Java.registerClass()` but for a specific
+         class loader.
 
 
 ## WeakRef
