@@ -279,6 +279,13 @@ and helping shape the unwrap() feature.
   faster code. This was previously only done to the Duktape one.
 - Better Linux process name heuristics in *enumerate_processes()*.
 
+### Changes in 12.8.13
+
+- *Java.performNow()* is back in working order.
+- Python bindings' setup.py now looks for a local *.egg* before attempting to
+  download one, and expects the download to complete within two minutes.
+  Kudos to [@XieEDeHeiShou][] for these nice improvements!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -293,3 +300,4 @@ and helping shape the unwrap() feature.
 [@iddoeldor]: https://github.com/iddoeldor
 [@mrmacete]: https://twitter.com/bezjaje
 [@ddzobov]: https://github.com/ddzobov
+[@XieEDeHeiShou]: https://github.com/XieEDeHeiShou
