@@ -249,6 +249,36 @@ and helping shape the unwrap() feature.
 - Electron prebuilds are now provided for v8 (stable) and v9 (beta). We no
   longer provide prebuilds for v7.
 
+### Changes in 12.8.12
+
+- Massively overhauled Android Java integration, now using Proxy objects and
+  CModule to lazily resolve things. And no more *eval*-usage to dynamically
+  generate method and field wrappers – i.e. less memory required per wrapper
+  generated. All of these changes reduce memory usage and allow *Java.use()*
+  to complete much faster.
+- Android Java integration provides uncensored access to methods and fields on
+  Android versions that attempt to hide private APIs, i.e. Android >= 9.
+- Way faster Android device enumeration. No longer running any *adb shell*
+  commands to determine the device name when the locally running ADB daemon is
+  new enough (i.e. ADB >= sometime during 2017).
+- The Python bindings allow obtaining a file-descriptor from a Cancellable in
+  order to integrate it into event loops and other *poll()*-style use-cases.
+  Worth noting that frida-tools 7.0.1 is out with a major improvement built on
+  this: The CLI tools no longer delay for up to 500 ms before exiting. So
+  short-lived programs like *frida-ls-devices* and *frida-ps* now feel very
+  snappy.
+- Duktape source-map handling now also works with scripts loaded by the REPL –
+  where the inline source-map isn't the last line of the script due to the REPL
+  appending its own code. This means stack-traces always contain meaningful
+  filenames and line numbers.
+- Duktape: the baked in JavaScript runtime – i.e. GumJS' glue code, ObjC, and
+  Java – is now Babelified with the *loose* option enabled, to reduce bloat and
+  improve performance. No modern JavaScript data structures leak out through the
+  APIs, so there's no need to have Babel be spec-compliant.
+- V8: the baked in JavaScript runtime is compressed, for a smaller footprint and
+  faster code. This was previously only done to the Duktape one.
+- Better Linux process name heuristics in *enumerate_processes()*.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
