@@ -261,6 +261,15 @@ and helping shape the unwrap() feature.
 - Way faster Android device enumeration. No longer running any *adb shell*
   commands to determine the device name when the locally running ADB daemon is
   new enough (i.e. ADB >= sometime during 2017).
+- We've finally eliminated a long-standing memory leak on Linux-based OSes,
+  affecting restricted processes such as *zygote* and *system_server* on newer
+  versions of Android. This was a bug in our logic that garbage-collects
+  thread-local data shortly after a given thread has exited. However, the
+  mechanism that determines that the thread has indeed exited would fail and
+  never consider the threads gone. This would result in more and more garbage
+  accumulating, with a longer and longer collection of garbage to iterate over.
+  So not only would we be spending increasingly more time on futile GC attempts,
+  we would also be eating CPU retrying a GC every 50 ms.
 - The Python bindings allow obtaining a file-descriptor from a Cancellable in
   order to integrate it into event loops and other *poll()*-style use-cases.
   Worth noting that frida-tools 7.0.1 is out with a major improvement built on
