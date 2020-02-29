@@ -264,9 +264,9 @@ and helping shape the unwrap() feature.
 - We've finally eliminated a long-standing memory leak on Linux-based OSes,
   affecting restricted processes such as *zygote* and *system_server* on newer
   versions of Android. This was a bug in our logic that garbage-collects
-  thread-local data shortly after a given thread has exited. However, the
-  mechanism that determines that the thread has indeed exited would fail and
-  never consider the threads gone. This would result in more and more garbage
+  thread-local data shortly after a given thread has exited. The mechanism that
+  determines that the thread has indeed finished exiting would fail and never
+  consider the thread gone. This would result in more and more garbage
   accumulating, with a longer and longer collection of garbage to iterate over.
   So not only would we be spending increasingly more time on futile GC attempts,
   we would also be eating CPU retrying a GC every 50 ms.
