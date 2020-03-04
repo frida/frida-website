@@ -21,6 +21,13 @@ Note that you can name the Gadget binary whatever you want, which is useful for
 dodging anti-Frida detection schemes that look for a loaded library with "Frida"
 in its name.
 
+It's also worth noting that when using Xcode to add a .config to an iOS app, you
+might find that it's inclined to put *FridaGadget.dylib* in a subdirectory named
+“Frameworks”, and the “.config” in the directory above it – next to the app's
+executable and any resource files. Because of this, Gadget will also look for
+the .config in the parent directory in this case. But only if it's put in a
+directory named “Frameworks”.
+
 On Android, the package manager will only copy files from a non-debuggable
 application's `/lib` folder if their name matches the following conditions:
 - It starts with the prefix `lib`
