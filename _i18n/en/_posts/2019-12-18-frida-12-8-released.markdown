@@ -295,6 +295,15 @@ and helping shape the unwrap() feature.
   download one, and expects the download to complete within two minutes.
   Kudos to [@XieEDeHeiShou][] for these nice improvements!
 
+### Changes in 12.8.14
+
+- The iOS Simulator is now properly supported, both in Gadget form and attaching
+  to a running Simulator process from macOS. Kudos to [@insitusec][] for helping
+  fix these issues!
+- Gadget now also looks for its .config in the directory above on iOS, but only
+  if its parent directory is named “Frameworks”. Kudos to [@insitusec][] for
+  the suggestion!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -310,3 +319,4 @@ and helping shape the unwrap() feature.
 [@mrmacete]: https://twitter.com/bezjaje
 [@ddzobov]: https://github.com/ddzobov
 [@XieEDeHeiShou]: https://github.com/XieEDeHeiShou
+[@insitusec]: https://twitter.com/insitusec
