@@ -304,6 +304,34 @@ and helping shape the unwrap() feature.
   if its parent directory is named “Frameworks”. Kudos to [@insitusec][] for
   the suggestion!
 
+### Changes in 12.8.15
+
+- Brand new feature-complete support for iOS/arm64e, including new
+  *NativePointer* methods: *sign()*, *strip()*, *blend()*.
+- Latest iOS Unc0ver jailbreak is now supported. Kudos to [@mrmacete][] for
+  the pull-request, and [@Pwn20wnd][] for the assistance! ❤️
+- Improved support for the Chimera jailbreak, making sure its
+  *pspawn_payload-stg2.dylib* is initialized. Thanks [@mrmacete][]!
+- The i/macOS injector no longer fails when an agent entrypoint returns
+  instantly.
+- Better error message about needing Gadget for jailed iOS.
+- Fix target crash when Windows DLL injection fails. Kudos [@dasraf9][]!
+- Fix injection into live newborn targets on i/macOS, and bug where we'd treat
+  suspended processes as needing to be prepared for injection, regardless of
+  whether they actually need it.
+- Improved iOS fault tolerance, handling frontmost iOS app name query failing.
+- Improved Android fault tolerance, handling *zygote* and *system_server*
+  processes dying without having to restart *frida-server*.
+- Now able to launch *frida-server* during boot on Android 10, as
+  *LD_LIBRARY_PATH* no longer interferes with the spawning of *frida-helper-32*.
+  Kudos to [@enovella][] for helping track this one down!
+- No more infinite loop when failing to handle *SIGABRT* on UNIXy platforms.
+- Handle nested signals in Exceptor's POSIX backend. Kudos [@bannsec][]!
+- Fix handling of invalid Windows ANSI strings. Thanks, [@clouds56][]!
+- Fix *Java.perform()* on Android < 5.
+- Promote *NativeFunction* varargs smaller than int. Thanks for reporting,
+  [@0x410c][]!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -320,3 +348,9 @@ and helping shape the unwrap() feature.
 [@ddzobov]: https://github.com/ddzobov
 [@XieEDeHeiShou]: https://github.com/XieEDeHeiShou
 [@insitusec]: https://twitter.com/insitusec
+[@Pwn20wnd]: https://twitter.com/Pwn20wnd
+[@dasraf9]: https://github.com/dasraf9
+[@enovella]: https://twitter.com/enovella_
+[@bannsec]: https://twitter.com/bannsec
+[@clouds56]: https://github.com/clouds56
+[@0x410c]: https://github.com/0x410c
