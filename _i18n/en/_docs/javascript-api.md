@@ -794,6 +794,33 @@ Interceptor.attach(f, {
 
 -   `not()`: makes a new NativePointer with this NativePointer's bits inverted
 
+-   `sign([key, data])`: makes a new NativePointer by taking this
+    NativePointer's bits and adding pointer authentication bits, creating a
+    signed pointer. This is a no-op if the current process does not support
+    pointer authentication, returning this NativePointer instead of a new value.
+
+    Optionally, `key` may be specified as a string. Supported values are:
+    -   ia: The IA key, for signing code pointers. This is the default.
+    -   ib: The IB key, for signing code pointers.
+    -   da: The DA key, for signing data pointers.
+    -   db: The DB key, for signing data pointers.
+
+    The `data` argument may also be specified as a NativePointer/number-like
+    value to provide extra data used for the signing, and defaults to `0`.
+
+-   `strip([key])`: makes a new NativePointer by taking this NativePointer's
+    bits and removing its pointer authentication bits, creating a raw pointer.
+    This is a no-op if the current process does not support pointer
+    authentication, returning this NativePointer instead of a new value.
+
+    Optionally, `key` may be passed to specify which key was used to sign the
+    pointer being stripped. Defaults to `ia`. (See `sign()` for supported
+    values.)
+
+-   `blend(smallInteger)`: makes a new NativePointer by taking this
+    NativePointer's bits and blending them with a constant, which may in turn be
+    passed to `sign()` as `data`.
+
 -   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
     this one; i.e. it has the same pointer value
 
