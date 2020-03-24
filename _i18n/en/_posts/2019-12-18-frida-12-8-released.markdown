@@ -315,10 +315,11 @@ and helping shape the unwrap() feature.
 - The i/macOS injector no longer fails when an agent entrypoint returns
   instantly.
 - Better error message about needing Gadget for jailed iOS.
-- Fix target crash when Windows DLL injection fails. Kudos [@dasraf9][]!
-- Fix injection into live newborn targets on i/macOS, and bug where we'd treat
-  suspended processes as needing to be prepared for injection, regardless of
-  whether they actually need it.
+- Improved error-handling in the Windows injector to avoid crashing the target
+  process when our DLL injection fails. Kudos [@dasraf9][]!
+- Support for injection into live newborn targets on i/macOS, and also no longer
+  treating suspended processes as needing to be prepared for injection,
+  regardless of whether they actually need it.
 - Improved iOS fault tolerance, handling frontmost iOS app name query failing.
 - Improved Android fault tolerance, handling *zygote* and *system_server*
   processes dying without having to restart *frida-server*.
@@ -326,11 +327,11 @@ and helping shape the unwrap() feature.
   *LD_LIBRARY_PATH* no longer interferes with the spawning of *frida-helper-32*.
   Kudos to [@enovella][] for helping track this one down!
 - No more infinite loop when failing to handle *SIGABRT* on UNIXy platforms.
-- Handle nested signals in Exceptor's POSIX backend. Kudos [@bannsec][]!
-- Fix handling of invalid Windows ANSI strings. Thanks, [@clouds56][]!
-- Fix *Java.perform()* on Android < 5.
-- Promote *NativeFunction* varargs smaller than int. Thanks for reporting,
-  [@0x410c][]!
+- We now support nested signals in Exceptor's POSIX backend. Kudos [@bannsec][]!
+- Proper handling of invalid Windows ANSI strings. Thanks, [@clouds56][]!
+- *Java.perform()* working properly again on Android < 5.
+- Improved varargs-handling in *NativeFunction*, now promoting varargs smaller
+  than int. Thanks for reporting, [@0x410c][]!
 
 
 [Stalker]: /docs/javascript-api/#stalker
