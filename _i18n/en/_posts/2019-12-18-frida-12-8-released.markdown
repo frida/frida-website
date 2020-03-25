@@ -340,6 +340,13 @@ and helping shape the unwrap() feature.
 - Stalker also works in arm64 processes on iOS/arm64e. Kudos to [@AeonLucid][]
   for reporting and helping track this one down!
 
+### Changes in 12.8.17
+
+- Support for injection into live newborn targets on i/macOS turned out to cause
+  regressions, so we've reverted it for now. Specifically, *notifyd* on iOS 12.4
+  is a case where *libSystemInitialized* is not getting set. Need to dig deeper
+  to figure out why, so decided to walk back this logic for now.
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
