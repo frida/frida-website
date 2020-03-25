@@ -333,6 +333,13 @@ and helping shape the unwrap() feature.
 - Improved varargs-handling in *NativeFunction*, now promoting varargs smaller
   than int. Thanks for reporting, [@0x410c][]!
 
+### Changes in 12.8.16
+
+- Large CModule instances now working on iOS systems with 16K pages. Kudos to
+  [@mrmacete][] for discovering and fixing this long-standing issue!
+- Stalker also works in arm64 processes on iOS/arm64e. Kudos to [@AeonLucid][]
+  for reporting and helping track this one down!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -355,3 +362,4 @@ and helping shape the unwrap() feature.
 [@bannsec]: https://twitter.com/bannsec
 [@clouds56]: https://github.com/clouds56
 [@0x410c]: https://github.com/0x410c
+[@AeonLucid]: https://twitter.com/AeonLucid
