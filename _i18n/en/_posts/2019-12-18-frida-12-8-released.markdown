@@ -347,6 +347,13 @@ and helping shape the unwrap() feature.
   is a case where *libSystemInitialized* is not getting set. Need to dig deeper
   to figure out why, so decided to walk back this logic for now.
 
+### Changes in 12.8.18
+
+- New and improved *Java.scheduleOnMainThread()* to allow calling APIs such as
+  *getApplicationContext()*. Kudos to [@giantpune][] for reporting!
+- Ability to hook CriticalNative methods on newer versions of Android. Kudos to
+  [@abdawoud][] for reporting!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
@@ -370,3 +377,5 @@ and helping shape the unwrap() feature.
 [@clouds56]: https://github.com/clouds56
 [@0x410c]: https://github.com/0x410c
 [@AeonLucid]: https://twitter.com/AeonLucid
+[@giantpune]: https://twitter.com/giantpune
+[@abdawoud]: https://github.com/abdawoud
