@@ -37,7 +37,7 @@ these gum methods on their behalf. The [typescript type
 definitions](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/frida-gum/index.d.ts)
 for gum are well commented and provide a little more detail still.
 
-The main API to stalker from JavaScript is:
+The main API to Stalker from JavaScript is:
 
 ```
 Stalker.follow([threadId, options])
