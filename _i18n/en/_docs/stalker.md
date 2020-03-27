@@ -174,7 +174,7 @@ Finally, if a block of code ends with a deterministic branch (e.g. the destinati
 BR x0
 ```
 
-This sort of instruction is common when calling a function pointer, or class method. Whilst the value of x0 can change, quite often it will actually always be the same. In this case, we can replace the final branch instruction with code which compares the value of x0 against our known function, and if it matches branches to the address of the instrumented copy of the code. This can then be followed by an unconditional branch back to the stalker engine if it doesn't match. So if the value of the function pointer say is changed, then the code will still work and we will re-enter stalker and instrument wherever we end up, however, if as we expect it remains unchanged then we can bypass the stalker engine altogether and go straight to the instrumented function.
+This sort of instruction is common when calling a function pointer, or class method. Whilst the value of x0 can change, quite often it will actually always be the same. In this case, we can replace the final branch instruction with code which compares the value of x0 against our known function, and if it matches branches to the address of the instrumented copy of the code. This can then be followed by an unconditional branch back to the Stalker engine if it doesn't match. So if the value of the function pointer say is changed, then the code will still work and we will re-enter Stalker and instrument wherever we end up. However, if as we expect it remains unchanged then we can bypass the Stalker engine altogether and go straight to the instrumented function.
 
 
 ## Options
@@ -1852,6 +1852,5 @@ ret lr
 The `pacia` instruction combines the values of `LR`, `SP` and the key to generate a version of `LR` with the authentication code `LR'` and stores back into the `LR` register. This value is stored in the stack and later restored at the end of the function. The `autia` instruction validates the value of `LR'`. This is possible since the PAC in the high bits of `LR` can be stripped to give the original `LR` value and the pointer authentication code can be regenerated as it was before using `SP` and the key. The result is checked against `LR'`. If the value doesn't match then the instruction generates a fault. Thus if the value of `LR` stored in the stack is modified, or the stack pointer itself is corrupted then the validation will fail. This is useful to prevent the building of ROP chains which require return addresses to be stored in the stack. Since `LR'` is now stored in the stack instead of `LR`, valid return addresses cannot be forged without the key.
 
 FRIDA needs to take this into account also when generating code. When reading pointers from registers used by the application (e.g. to determine the destination of an indirect branch or return), it is necessary to strip these pointer authentication codes from the address before it is used. This is achieved using the function `gum_arm64_writer_put_xpaci_reg`.
-
 
 
