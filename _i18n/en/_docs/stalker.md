@@ -1150,7 +1150,6 @@ void last_stack_pop_and_go_helper(gpointer x16) {
     gum_exec_ctx_replace_current_block_from_ret(ctx, x1)
     last_epilogue_minimal()
     goto exec_generated_code
-
 }
 
 void exec_generated_code() {
