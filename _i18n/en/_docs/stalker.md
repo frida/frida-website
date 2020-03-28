@@ -633,7 +633,8 @@ static void gum_exec_ctx_write_full_prolog_helper (
 static void gum_exec_ctx_write_full_epilog_helper (
     GumExecCtx * ctx, GumArm64Writer * cw);
 ```
-Finally, note that in AARCH64 architecture, it is only possible to make a direct
+
+Finally, note that in AArch64 architecture, it is only possible to make a direct
 branch to code within ±128 MB of the caller, and using an
 indirect branch is more expensive (both in terms of code size and performance).
 Therefore, as we write more and more instrumented blocks, we will get further
