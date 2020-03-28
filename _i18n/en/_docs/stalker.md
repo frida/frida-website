@@ -76,13 +76,13 @@ under the hood, it is all managed by the same simple API for the user,
 
 ## Following
 
-When the user calls `Stalker.follow`, under the hood, the javascript engine
-calls through to either `gum_stalker_follow_me` to follow the current thread, or
+When the user calls `Stalker.follow`, under the hood, the JavaScript engine
+calls through to either `gum_stalker_follow_me()` to follow the current thread, or
 `gum_stalker_follow(thread_id)` to follow another thread in the process.
 
-### gum_stalker_follow_me
+### gum_stalker_follow_me()
 
-In the case of `gum_stalker_follow_me`, the Link Register is used to determine
+In the case of `gum_stalker_follow_me()`, the Link Register is used to determine
 the instruction at which to start stalking. In AARCH64 architecture, the Link
 Register (LR) is set to the address of the instruction to continue execution
 following the return from a function call, it is set to the address of the next
@@ -92,8 +92,9 @@ LR must be stored (typically this will be on the stack). This value will
 subsequently be loaded back from the stack into a register and the RET
 instruction used to return control back to the caller.
 
-Let's look at the code for `gum_stalker_follow_me`. This is the function
+Let's look at the code for `gum_stalker_follow_me()`. This is the function
 prototype:
+
 ```
 GUM_API void gum_stalker_follow_me (GumStalker * self,
     GumStalkerTransformer * transformer, GumEventSink * sink);
@@ -125,7 +126,7 @@ gum_stalker_follow_me:
 #endif
   ldp x29, x30, [sp], 16
   br x0
-  ```
+```
 
 We can see that the first instruction STP stores a pair of registers onto the
 stack. We can notice the expression `[sp, -16]!`. This is a
@@ -167,9 +168,9 @@ _gum_stalker_do_follow_me (GumStalker * self,
                            gpointer ret_addr)
 ```
 
-### gum_stalker_follow
+### gum_stalker_follow()
 
-This routine has a very similar prototype to `gum_stalker_follow_me`, but has
+This routine has a very similar prototype to `gum_stalker_follow_me()`, but has
 the additional thread_id parameter. Indeed, if asked to follow the current
 thread, then is will call that function. Let's look at the case when another
 thread id is specified though.
@@ -240,13 +241,13 @@ writing them back to the process on demand. Oh and then there is
 `PR_SET_DUMPABLE` and `PR_SET_PTRACER` which control the permissions of who is
 allowed to ptrace our original process.
 
-Now you will see that the functionality of `gum_stalker_infect` is actually
-quite similar to that of `_gum_stalker_do_follow_me` we mentioned earlier. Both
-function carry out essentially the same job, although
-`_gum_stalker_do_follow_me` is running on the target thread, but
-`gum_stalker_infect` is not, so it must write some code to be called by the
+Now you will see that the functionality of `gum_stalker_infect()` is actually
+quite similar to that of `_gum_stalker_do_follow_me()` we mentioned earlier.
+Both function carry out essentially the same job, although
+`_gum_stalker_do_follow_me()` is running on the target thread, but
+`gum_stalker_infect()` is not, so it must write some code to be called by the
 target thread using the
-[gum_arm64_writer](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64writer.c)
+[GumArm64Writer](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64writer.c)
 rather than calling functions directly.
 
 We will cover these functions in more detail shortly, but first we need a little
@@ -261,7 +262,7 @@ encounter an instruction which causes (or can cause) execution to continue with
 an instruction other than the one immediately following it in memory.
 
 Stalker works on one block at a time. It starts with either the block after the
-return to the call to `gum_stalker_follow_me` or the block of code to which the
+return to the call to `gum_stalker_follow_me()` or the block of code to which the
 instruction pointer of the target thread is pointing when `gum_stalker_follow`
 is called.
 
@@ -290,7 +291,7 @@ If this instruction is copied to a different location in memory and executed,
 then because the address of the label is calculated by adding an offset to the
 current instruction pointer, then the value would be different. Fortunately, gum
 has a
-[relocator](https://github.com/frida/frida-gum/blob/76b583fb2cd30628802a6e0ca8599858431ee717/gum/arch-arm64/gumarm64relocator.c)
+[relocator](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64relocator.c)
 for just this purpose which is capable of modifying the instruction given its
 new location so that the correct address is calculated.
 
@@ -759,6 +760,8 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
 
   return slab;
 }
+```
+
 Here, we can see that the `data` field points to the start of the tail where
 instructions can be written after the header. The `offset` field keeps track of our
 offset into the tail. The `size` field keeps track of the total number of bytes
@@ -821,6 +824,8 @@ gum_exec_block_new (GumExecCtx * ctx)
 
   return gum_exec_block_new (ctx);
 }
+```
+
 The function first checks if there is space for a minimally sized block in the
 tail of the slab (1024 bytes) and whether there is space in the array of
 `GumExecBlocks` in the slab header for a new entry. If it does then a new entry
@@ -945,6 +950,8 @@ single instruction prefixed.
 gum_arm64_writer_put_ldp_reg_reg_reg_offset (cw, ARM64_REG_X16,
     ARM64_REG_X17, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
     GUM_INDEX_POST_ADJUST);
+```
+
 This instruction is the restoration prolog (denoted by
 `GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you will
 note this constant is added on by `_gum_stalker_do_follow_me()` and
@@ -961,6 +968,7 @@ later.
 
 Secondly, we can see `gum_exec_ctx_obtain_block_for()` does the
 following after the instrumented block is written:
+
 ```
 gum_arm64_writer_put_brk_imm (cw, 14);
 ```
@@ -1093,6 +1101,7 @@ void last_stack_push_helper(gpointer x0, gpointer x1) {
   return
 }
 ```
+
 As we can see, this helper is actually a simple function which takes two
 arguments, the `real_address` and the `code_address` to store in the next
 `GumExecFrame` structure. Note that our stack is written backwards from the end
@@ -1166,6 +1175,7 @@ this helper is used to optimize passing control back to the caller. ret_reg
 contains the address of the block to which we are intending to return.
 
 Lets take a look at the definition of the return instruction:
+
 ```
 RET
 Return from subroutine, branches unconditionally to an address
@@ -1773,6 +1783,8 @@ gum_exec_ctx_load_real_register_into (GumExecCtx * ctx,
 
   g_assert_not_reached ();
 }
+```
+
 Reading registers from the full frame is actually the simplest. We can see the
 code closely matches the structure used to pass the context to callouts etc.
 Remember that in each case register `x20` points to the base of the context
@@ -1884,6 +1896,7 @@ gum_exec_ctx_load_real_register_from_minimal_frame_into (
 ## Control flow
 
 Execution of stalker begins at one of 3 entry points:
+
 * `_gum_stalker_do_follow_me()`
 * `gum_stalker_infect()`
 * `gum_exec_ctx_replace_current_block_with()`
@@ -2104,9 +2117,9 @@ detail next.
 
 If we look at the function which generates the instrumented code to check if we
 are being asked to unfollow, we can see it cause the thread to call
-`gum_exec_ctx_maybe_unfollow` passing the address of the next instruction to be
-instrumented. We can see that if the state has been set to stop following, then
-we simply branch back to the original code.
+`gum_exec_ctx_maybe_unfollow()` passing the address of the next instruction to
+be instrumented. We can see that if the state has been set to stop following,
+then we simply branch back to the original code.
 
 ```
 static void
@@ -2342,8 +2355,8 @@ though, which may be of interest.
 ### Exclusive Store
 
 The AArch64 architecture has support for [exclusive load/store
-instructions](https://static.docs.arm.com/100934/0100/armv8_a_synchronization_primitives_100934_0100_en.pdf)
-. These instructions are intended to be used for synchronization. If an exclusive
+instructions](https://static.docs.arm.com/100934/0100/armv8_a_synchronization_primitives_100934_0100_en.pdf).
+These instructions are intended to be used for synchronization. If an exclusive
 load is performed from a given address, then later attempts an exclusive store
 to the same location, then the CPU is able to detect any other stores (exclusive
 or otherwise) to the same location in the intervening period and the store
@@ -2423,8 +2436,8 @@ Here, we can see that the iterator records when it sees an exclusive load and
 tracks how many instructions have passed since. This is continued for up to four
 instructions – as this was determined by empirical testing based on how many
 instructions would be needed to load, test, modify and store the value. This is
-then used to
-prevent any instrumentation being emitted which isn't strictly necessary:
+then used to prevent any instrumentation being emitted which isn't strictly
+necessary:
 
 ```
   if ((ec->sink_mask & GUM_EXEC) != 0 &&
@@ -2447,9 +2460,9 @@ event, checking for excluded ranges, virtualizing instructions found at the end
 of the block etc.). Also, trying to allow for the instrumented code to be
 non-sequential is fraught with difficulty. So the approach taken is to ensure
 that each time we read a new instruction from the iterator there is at least
-1024 bytes of space in the slab for our output. If it is not the case, then we store the
-current address in `continuation_real_address` and return `FALSE` so that the
-iterator ends.
+1024 bytes of space in the slab for our output. If it is not the case, then we
+store the current address in `continuation_real_address` and return `FALSE` so
+that the iterator ends.
 
 ```
 #define GUM_EXEC_BLOCK_MIN_SIZE 1024
@@ -2507,6 +2520,7 @@ gum_exec_ctx_obtain_block_for (GumExecCtx * ctx,
 
 It is as if the following instructions had been encountered in the input right
 before the instruction which would have not had sufficient space:
+
 ```
   B label
 label:
@@ -2580,8 +2594,7 @@ from stalker.
 
 Last of all, we should note that newer versions of iOS have
 [introduced](https://ivrodriguez.com/pointer-authentication-on-armv8-3/)
-[pointer authentication
-codes](https://events.static.linuxfound.org/sites/events/files/slides/slides_23.pdf).
+[pointer authentication codes](https://events.static.linuxfound.org/sites/events/files/slides/slides_23.pdf).
 Pointer authentication codes (PACs) make use of unused bits in pointers (the
 high bits of virtual addresses are commonly unused as most systems have a
 maximum of 48-bits of virtual address space) to store authentication values.
