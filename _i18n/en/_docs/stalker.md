@@ -1983,6 +1983,7 @@ gum_stalker_dump_counters (void)
   GUM_PRINT_ENTRYGATE_COUNTER (jmp_continuation);
 }
 ```
+
 ## Virtualize functions
 
 Let's now look in more detail at the *virtualizing* we have for replacing the
