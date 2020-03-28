@@ -1165,7 +1165,7 @@ void ret_transfer_code(arm64_reg ret_reg) {
   goto last_stack_pop_and_go_helper
 }
 
-void last_stack_pop_and_go_helper(gpointer X16) {
+void last_stack_pop_and_go_helper(gpointer x16) {
   GumExecFrame** x0 = &ctx->current_frame
   GumExecFrame* x1 = *x0
   gpointer x17 = x0.real_address
@@ -1230,10 +1230,10 @@ branch to this landing pad. We don't need to re-enter the Stalker engine each
 time we see a return instruction and get a nice performance boost. Simple!
 
 However, we must bear in mind that not all calls will result in a return. A
-common technique for hostile or specialize code is to make a call in order to
+common technique for hostile or specialized code is to make a call in order to
 use the `LR` to determine the current position of the instruction pointer. This
 value may then be used for introspection purposes (e.g. to validate code to
-detect modification, to decrypt or unscramble code etc).
+detect modification, to decrypt or unscramble code, etc.).
 
 Also, remember that the user can use a custom transform to modify
 instructions as they see fit, they can insert instructions which modify register
@@ -1242,12 +1242,12 @@ which allows them to modify register values as they like. Now consider what if
 they modify the value in the return register!
 
 So we can see that the helper checks the value of the return register against
-the value of the `real_address` stored in the stack frame. If it matches, then
-all is well and we can simply branch directly back to the landing pad. Recall on
-the first instance, this likely simply re-enters Stalker to instrument the next
-block and branches to it, but at a later point backpatching may be used to
-directly branch to this instrumented block and avoid re-entering Stalker all
-together.
+the value of the `real_address` stored in the `GumExecFrame`. If it matches,
+then all is well and we can simply branch directly back to the landing pad.
+Recall on the first instance, this simply re-enters Stalker to instrument the
+next block and branches to it, but at a later point backpatching may be used to
+directly branch to this instrumented block and avoid re-entering Stalker
+altogether.
 
 Otherwise, we follow a different path. First the array of `GumExecFrame` is
 cleared, now our control-flow has deviated, we will start again building our
@@ -1358,7 +1358,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   gint immediate_for_sp = 16 + GUM_RED_ZONE_SIZE;
 
   // This instruction is used to store the CPU flags into X15.
-  const guint32 mrs_X15_nzcv = 0xd53b420f;
+  const guint32 mrs_x15_nzcv = 0xd53b420f;
 
   // Note that only the full prolog has to look like the C struct
   // definition, since this is the data structure passed to
@@ -1543,7 +1543,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // original stack pointer may have changed the flags, AArch64 has
   // an ADD instruction which doesn't modify the condition flags
   // and an ADDS instruction which does.
-  gum_arm64_writer_put_instruction (cw, mrs_X15_nzcv);
+  gum_arm64_writer_put_instruction (cw, mrs_x15_nzcv);
 
   /* conveniently point X20 at the beginning of the saved
      registers */
@@ -1581,7 +1581,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
 {
   // This instruction is used to restore the value of X15 back into
   // the ALU flags.
-  const guint32 msr_nzcv_X15 = 0xd51b420f;
+  const guint32 msr_nzcv_x15 = 0xd51b420f;
 
   /* padding + status */
   // Note that we don't restore the flags yet, since we must wait
@@ -1607,7 +1607,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     /* restore status */
     // We have completed all of our instructions which may alter the
     // flags.
-    gum_arm64_writer_put_instruction (cw, msr_nzcv_X15);
+    gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
 
     // Restore all of the registers we saved in the context. We
     // pushed X30 earlier as padding, but we will
@@ -1658,7 +1658,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     /* restore status */
     // Again, we have finished any flag affecting operations now that the
     // above addition has been completed.
-    gum_arm64_writer_put_instruction (cw, msr_nzcv_X15);
+    gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
 
     /* GumCpuContext.x[29] + fp + lr + padding */
     gum_arm64_writer_put_pop_reg_reg (cw,
@@ -1887,7 +1887,7 @@ Reading from the minimal context is actually a little harder. `X0` through `X18`
 are simple, they are stored in the context block. After `X18` is 8 bytes padding
 (to make a total of 10 pairs of registers) followed by `X29` and `X30`. This
 makes a total of 11 pairs of registers. Immediately following this is the
-NEON/floating point registers (totallng 128 bytes). Finally `X19` and `X20`, are
+NEON/floating point registers (totaling 128 bytes). Finally `X19` and `X20`, are
 stored above this as they are restored by the inline epilogue code written by
 `gum_exec_ctx_write_epilog()`.
 
@@ -2114,7 +2114,7 @@ loading the target register using
 `gum_exec_ctx_load_real_register_into()` which we covered ealier to read the
 context) and emitting code to call
 `gum_exec_block_check_address_for_exclusion()` whose implementation is quite
-self explanatory. If it is excluded then a branch is taken and similar code to
+self-explanatory. If it is excluded then a branch is taken and similar code to
 that described when handling excluded immediate calls discussed above is used.
 
 Next we emit code to call the entry gate and generate the instrumented block of
@@ -2382,7 +2382,7 @@ original value. The `infect_thunk` is created by `gum_stalker_infect()` which is
 the callback used by `gum_stalker_follow()` to modify the context. Recall that
 whilst some of the setup can be carried out on behalf of the target thread, some
 has to be done in the context of the target thread itself (in particular setting
-variables in thread local storage). Well, it is the `infect_thunk` which
+variables in thread-local storage). Well, it is the `infect_thunk` which
 contains that code.
 
 ## Miscellaneous
@@ -2607,11 +2607,11 @@ necessary instrumented code to deal with such a syscall. We will look at the
 pseudo code below:
 
 ```
-if X8 == __NR_clone:
-  X0 = do_original_syscall()
-  if X0 == 0:
+if x8 == __NR_clone:
+  x0 = do_original_syscall()
+  if x0 == 0:
     goto gc->instruction->begin
-  return X0
+  return x0
 else:
   return do_original_syscall()
 ```
