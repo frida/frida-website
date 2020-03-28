@@ -1884,9 +1884,9 @@ gum_exec_ctx_load_real_register_from_minimal_frame_into (
 ## Control flow
 
 Execution of stalker begins at one of 3 entry points:
-* `_gum_stalker_do_follow_me`
-* `gum_stalker_infect`
-* `gum_exec_ctx_replace_current_block_with`
+* `_gum_stalker_do_follow_me()`
+* `gum_stalker_infect()`
+* `gum_exec_ctx_replace_current_block_with()`
 
 The first two we have already covered, these initialize the stalker engine and
 start instrumenting the first block of execution.
