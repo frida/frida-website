@@ -646,7 +646,9 @@ use. This gives us a very reasonable tradeoff.
 
 Finally, there are a series of counters which you can see kept recording the
 number of each type of instructions encountered at the end of an instrumented
-block. These appear to only be used by the unit testing framework.
+block. These are only used by the test-suite to guide the developer during
+performance tuning, indicating which branch types most commonly require
+a full context-switch into Stalker to resolve the target.
 
 ## Slabs
 
