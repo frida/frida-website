@@ -821,7 +821,6 @@ gum_exec_block_new (GumExecCtx * ctx)
 
   return gum_exec_block_new (ctx);
 }
-```
 The function first checks if there is space for a minimally sized block in the
 tail of the slab (1024 bytes) and whether there is space in the array of
 `GumExecBlocks` in the slab header for a new entry. If it does then a new entry
