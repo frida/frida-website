@@ -1522,6 +1522,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
 ```
 
 Now let's look at the epilogue:
+
 ```
 static void
 gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
