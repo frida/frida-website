@@ -2553,12 +2553,12 @@ code below:
 
 ```
 if x8 == __NR_clone:
-  return do_original_syscall()
-else:
   x0 = do_original_syscall()
   if x0 == 0:
     goto gc->instruction->begin
   return x0
+else:
+  return do_original_syscall()
 ```
 
 We can see that it first checks if we are dealing with a `clone` syscall,
