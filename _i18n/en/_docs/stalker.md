@@ -2225,7 +2225,6 @@ stalker. In this case, we are just vectoring back to an original uninstrumented
 block:
 
 ```
-
 static gpointer gum_unfollow_me_address;
 
 static void
