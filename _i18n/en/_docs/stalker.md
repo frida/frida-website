@@ -246,7 +246,7 @@ function carry out essentially the same job, although
 `_gum_stalker_do_follow_me` is running on the target thread, but
 `gum_stalker_infect` is not, so it must write some code to be called by the
 target thread using the
-[gum_arm64_writer](https://github.com/frida/frida-gum/blob/76b583fb2cd30628802a6e0ca8599858431ee717/gum/arch-arm64/gumarm64writer.c)
+[gum_arm64_writer](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64writer.c)
 rather than calling functions directly.
 
 We will cover these functions in more detail shortly, but first we need a little
@@ -379,14 +379,14 @@ the design.
 ### Probes
 
 Whilst a thread is running outside of stalker, you may be familiar with using
-`Interceptor.attach` to get a callback when a given function is called. When a
-thread is running in stalker, however, these interceptors won't work. These
+`Interceptor.attach()` to get a callback when a given function is called. When a
+thread is running in stalker, however, these interceptors may not work. These
 interceptors work by patching the first few instructions (prologue) of the
 target function to re-direct execution into FRIDA. Frida copies and relocates
 these first few instructions somewhere else so that after the `onEnter` callback
 has been completed, it can re-direct control flow back to the original function.
 
-The reasons these won't work within stalker is simple, the original function is
+The reasons these may not work within stalker is simple, the original function is
 never called. Each block, before it is executed is instrumented elsewhere in
 memory and it is this copy which is executed. Stalker supports the API function
 `Stalker.addCallProbe(address, callback[, data])` to provide this functionality
@@ -403,14 +403,14 @@ blocks are all destroyed and so all code has to be re-instrumented.
 ### Trust Threshold
 
 Recall that one of the simple optimizations we apply is that if we attempt to
-execute a block more than once, on subsequent occassions, we can simply call the
+execute a block more than once, on subsequent occasions, we can simply call the
 instrumented block we created last time around? Well, that only works if the
 code we are instrumenting hasn't changed. In the case of self-modifying code
 (which is quite often used as an anti-debugging/anti-disassembly technique to
 attempt to frustrate analysis of security critical code) the code may change,
 and hence the instrumented block cannot be re-used. So, how do we detect if a
 block has changed? We simply keep a copy of the original code in the
-data-structure along with the instrumented version. Then when we encounted a
+data-structure along with the instrumented version. Then when we encounter a
 block again, we can compare the code we are going to instrument with the version
 we instrumented last time and if they match, we can re-use the block. But
 performing the comparison every time a block runs may slow things down. So
@@ -425,40 +425,40 @@ In actual fact, the value of N is the number of times the block needs to be
 re-executed and match the previously instrumented block (e.g. be unchanged)
 before we stop performing the comparison. Note that the original copy of the
 code block is still stored even when the trust threshold is set to `-1` or `0`.
-Whilst it is not actually needed for these values, it is expected it has been
-retained to keep things simple, or perhaps to allow the setting to be
-dynamically changed whilst stalker is running. In any case, neither of these is
+Whilst it is not actually needed for these values, it has been
+retained to keep things simple.
+In any case, neither of these is
 the default setting.
 
-### Excluded ranges.
+### Excluded Ranges
 
-Stalker also has the API `Stalker.exclude(range)` consist of a base and limit
-and are used to prevent Stalker from instrumenting code within these regions.
-Consider, for example, you thread calls a `malloc` inside `libc`. You most
+Stalker also has the API `Stalker.exclude(range)` that's passed a base and limit
+used to prevent Stalker from instrumenting code within these regions.
+Consider, for example, your thread calls `malloc()` inside `libc`. You most
 likely don't care about the inner workings of the heap and this is not only
 going to slow down performance, but also generate a whole lot of extraneous
 events you don't care about. One thing to consider, however, is that as soon as
 a call is made to an excluded range, stalking of that thread is stopped until it
 returns. That means, if that thread were to call a function which is not inside
 a restricted range, a callback perhaps, then this would not be captured by
-stalker. Just as this can be used to stop the stalking of whole library, it can
+stalker. Just as this can be used to stop the stalking of a whole library, it can
 be used to stop stalking a given function (and its callees) too. This can be
 particularly useful if your target application is statically linked. Here, was
 cannot simply ignore all calls to `libc`, but we can find the symbol for
-`malloc` using `Module.enumerateSymbols()` and ignore that single function.
+`malloc()` using `Module.enumerateSymbols()` and ignore that single function.
 
-### Freeze/Thaw.
+### Freeze/Thaw
 
-As an extension to DEP, some systems, prevent pages from being marked writeable
+As an extension to DEP, some systems prevent pages from being marked writable
 and executable at the same time. Thus FRIDA must toggle the page permissions
-between writeable and executable to write instrumented code, and allow that code
+between writable and executable to write instrumented code, and allow that code
 to execute respectively. When pages are executable, they are said to be frozen
 (as they cannot be changed) and when they are made writeable again, they are
 considered thawed.
 
 ### Call Instructions
 
-AARCH64, unlike Intel doesn't have an single explicit `call` instruction, which
+AArch64, unlike Intel doesn't have an single explicit `call` instruction, which
 has different forms to cope with all supported scenarios. Instead, it uses a
 number of different instructions to offer support for function calls. These
 instructions all branch to a given location and update the Link register, `LR`,
@@ -472,13 +472,13 @@ with the return address:
 * `BLRABZ`
 
 For simplicity, in the remainder of this article, we will refer to this
-collection of instructions as "call instructions".
+collection of instructions as “call instructions”.
 
 ### Frames
 
 Whenever stalker encounters a call, it stores the return address and the address
-of the intstumented return block in a structure and adds these to a stack stored
-in a data-structure of its own. It uses when emitting call and return events as
+of the instrumented return block forwarder in a structure and adds these to a stack stored
+in a data-structure of its own. It uses this as a speculative optimization, and also as a heuristic to approximate the call depth when emitting call and return events.
 well as tracking call depth.
 
 ```
@@ -510,13 +510,13 @@ gum_default_stalker_transformer_transform_block (
 ```
 
 It is called by the function responsible for generating instrumented code,
-`gum_exec_ctx_obtain_block_for` and its job is to generate the instrumented
-code. We can see that it does this using a loop to process on instruction at a
+`gum_exec_ctx_obtain_block_for()` and its job is to generate the instrumented
+code. We can see that it does this using a loop to process one instruction at a
 time. First retrieving an instruction from the iterator, then telling stalker to
 instrument the instruction as is (without modification). These two functions are
 implemented inside stalker itself. The first is responsible for parsing a
 `cs_insn` and updating the internal state. This `cs_insn` type is a datatype
-used by the internal [capstone](http://www.capstone-engine.org/) disassembler to
+used by the internal [Capstone](http://www.capstone-engine.org/) disassembler to
 represent an instruction. The second is responsible for writing out the
 instrumented instruction (or set of instructions). We will cover these in more
 detail later.
@@ -529,8 +529,8 @@ documentation](https://frida.re/docs/javascript-api/#stalker).
 ### Callouts
 
 Transformers can also make callouts. That is they instruct stalker to emit
-instructions to make a call to a javascript (or CModule) function passing the
-cpu context and an optional context parameter. This function is then able to
+instructions to make a call to a JavaScript (or CModule) function passing the
+CPU context and an optional context parameter. This function is then able to
 modify or inspect registers at will. This information is stored in a
 ```GumCallOutEntry```.
 
@@ -555,7 +555,7 @@ struct _GumCalloutEntry
 ### EOB/EOI
 
 Recall that the
-[relocator](https://github.com/frida/frida-gum/blob/76b583fb2cd30628802a6e0ca8599858431ee717/gum/arch-arm64/gumarm64relocator.c)
+[Relocator](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64relocator.c)
 is heavily involved in generating the instrumented code. It has two important
 properties which control its state.
 
@@ -564,24 +564,24 @@ occurs when we encounter *any* branch instruction. A branch, a call, or a return
 instruction.
 
 End of Input (EOI) indicates that not only have we reached the end of a block,
-but we have possibly reached the end of the input. e.g. what follows this
+but we have possibly reached the end of the input, i.e. what follows this
 instruction may not be another instruction. Whilst this is not the case for a
-call instruction as code control will pass back when the callee returns and so
+call instruction as code control will (typically) pass back when the callee returns and so
 more instructions must follow (note that a compiler will typically generate a
-branch instruction for a call to a non-returning function like `exit`), if we
+branch instruction for a call to a non-returning function like `exit()`), if we
 encounter a branch instruction, or a return instruction, we have no guarantee
 that code will follow afterwards.
 
 ### Prologues/Epilogues
 
-When control flow is re-directed from the program into the stalker engine, the
+When control flow is redirected from the program into the stalker engine, the
 registers of the CPU must be saved so that stalker can run and make use of the
 registers and restore them before control is passed back to the program so that
 no state is lost.
 
 The [Procedure Call
-Standard](https://static.docs.arm.com/den0024/a/DEN0024A_v8_architecture_PG.pdf]
-for AARCH 64 states that some regsiters (notably x19 to x29) are callee saved
+Standard](https://static.docs.arm.com/den0024/a/DEN0024A_v8_architecture_PG.pdf)
+for AArch64 states that some registers (notably x19 to x29) are callee saved
 registers. This means that when the compiler generates code which makes use of
 these registers, it must store them first. Hence it is not strictly necessary to
 save these registers to the context structure, since they will be restored if
@@ -589,10 +589,10 @@ they are used by the code within the stalker engine. This *"minimal"* context is
 sufficient for most purposes.
 
 However, if the Stalker engine is to call a probe registered by
-`Stalker.addCallProbe`, or a callout created by `iterator.putCallout` (called by
-a Transformer), then these callbacks will expect to receive the full cpu context
+`Stalker.addCallProbe()`, or a callout created by `iterator.putCallout()` (called by
+a Transformer), then these callbacks will expect to receive the full CPU context
 as an argument. And they will expect to be able to modify this context and for
-the changes to take effect when control is passed back tot he application code.
+the changes to take effect when control is passed back to the application code.
 Thus for these instances, we must write a *"full"* context and its layout must
 match the expected format dictated by the structure `GumArm64CpuContext`.
 
@@ -610,7 +610,7 @@ struct _GumArm64CpuContext
 };
 ```
 
-Note however, that the code necessary to write out the necessary cpu registers
+Note however, that the code necessary to write out the necessary CPU registers
 (the prologue) in either case is quite long (tens of instructions). And the code
 to restore them afterwards (the epilogue) is similar in length. We don't want to
 write these at the beginning and end of every block we instrument. Therefore we
@@ -634,11 +634,11 @@ static void gum_exec_ctx_write_full_epilog_helper (
     GumExecCtx * ctx, GumArm64Writer * cw);
 ```
 Finally, note that in AARCH64 architecture, it is only possible to make a direct
-branch to code within 128Mb of the caller (in either direction) and using an
+branch to code within ±128 MB of the caller, and using an
 indirect branch is more expensive (both in terms of code size and performance).
 Therefore, as we write more and more instrumented blocks, we will get further
 and further away from the shared prologue and epilogue. If we get more than
-128Mb away, we simply write out another copy of these prologues and epilogues to
+128 MB away, we simply write out another copy of these prologues and epilogues to
 use. This gives us a very reasonable tradeoff.
 
 ### Counters
@@ -689,7 +689,7 @@ enum _GumExecBlockFlags
 };
 ```
 
-Now lets look at some code when stalker is initialized which configures their
+Now let's look at some code when stalker is initialized which configures their
 size:
 
 ```
@@ -713,7 +713,7 @@ gum_stalker_init (GumStalker * self)
 }
 ```
 
-So we can see that each slab is 4Mb in size. A 12th of this slab is reserved for
+So we can see that each slab is 4 MB in size. A 12th of this slab is reserved for
 its header, the `GumSlab` structure itself including its `GumExecBlock` array.
 Note that this is defined as a zero length array at the end of the `GumSlab`
 structure, but the actual number of these which can fit in the header of the
@@ -727,8 +727,8 @@ as the tail) of the slab is used for the instrumented instructions themselves
 So why is a 12th of the slab allocated for the header and the remainder for the
 instructions? Well the length of each block to be instrumented will vary
 considerably and may be affected by the compiler being used and its optimization
-settings. Presumably empirical testing showed that given the average length of
-each block this was the best ratio to ensure we didn't run out of space for new
+settings. Some rough empirical testing showed that given the average length of
+each block this might be a reasonable ratio to ensure we didn't run out of space for new
 `GumExecBlock` entries before we ran out of space for new instrumented blocks in
 the tail and vice versa.
 
@@ -758,7 +758,7 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
 }
 ```
 Here, we can see that the `data` field points to the start of the tail where
-instructions can be written after the header. The `offset` field keeps track our
+instructions can be written after the header. The `offset` field keeps track of our
 offset into the tail. The `size` field keeps track of the total number of bytes
 available in the tail. The `num_blocks` field keeps track of how many
 instrumented blocks have been written to the slab.
@@ -823,11 +823,11 @@ gum_exec_block_new (GumExecCtx * ctx)
 The function first checks if there is space for a minimally sized block in the
 tail of the slab (1024 bytes) and whether there is space in the array of
 `GumExecBlocks` in the slab header for a new entry. If it does then a new entry
-is created in the array its pointers are set to reference the `GumExecCtx` (the
+is created in the array and its pointers are set to reference the `GumExecCtx` (the
 main stalker session context) and the `GumSlab`, The `code_begin` and `code_end`
 pointers are both set to the first free byte in the tail. The `recycle_count`
 used by the trust threshold mechanism to determine how many times the block has
-been encountered unmodified is reset to zero and the remainder of the tail is
+been encountered unmodified is reset to zero, and the remainder of the tail is
 thawed to allow code to be written to it.
 
 Next if the trust threshold is set to less than zero (recall -1 means blocks are
@@ -837,49 +837,49 @@ instrumented code written for any blocks within the slab will be overwritten.
 
 Finally, as there is no space left in the current slab and we can't overwrite it
 because the trust threshold means blocks may be re-used, then we must allocate a
-new slab by calling the `gum_exec_ctx_add_slab` function we looked at above. We
-then call `gum_exec_ctx_ensure_inline_helpers_reachable`, more on that in a
+new slab by calling `gum_exec_ctx_add_slab()`, which we looked at above. We
+then call `gum_exec_ctx_ensure_inline_helpers_reachable()`, more on that in a
 moment, and then we allocate our block from the new slab.
 
 Recall, that we use *helpers* (such as the prologues and epilogues that save and
-restore the cpu context) to prevent having to duplicate these instructions at
+restore the CPU context) to prevent having to duplicate these instructions at
 the beginning and end of every block. As we need to be able to call these from
 instrumented code we are writing to the slab, and we do so with a direct branch
-that can only reach 128Mb from the call site, we need to ensure we can get to
+that can only reach ±128 MB from the call site, we need to ensure we can get to
 them. If we haven't written them before, then we write them to our current slab.
 Note that these helper funtions need to be reachable from any instrumented
-instruction written in the tail of the slab. Because our slab is only 4Mb in
+instruction written in the tail of the slab. Because our slab is only 4 MB in
 size, then if our helpers are written in our current slab then they will be
 reachable just fine. If we are allocating a subsequent slab and it is close
 enough to the previous slab (we only retain the location we last wrote the
 helper functions to) then we might not need to write them out again and can just
 rely upon the previous copy in the nearby slab. Note that we are at the mercy of
-`mmap` for where our slab is allocated in virtual memory and ASLR may dictate
+`mmap()` for where our slab is allocated in virtual memory and ASLR may dictate
 that our slab ends up nowhere near the previous one.
 
 We can only assume that either this is unlikely to be a problem, or that this
 has been factored into the size of the slabs to ensure that writing the helpers
 to each slab isn't much of an overhead because it doesn't use a significant
-proportion of their space. An alternative could be to store the location of
+proportion of their space. An alternative could be to store every location
 every time we have written out a helper function so that we have more candidates
 to choose from (maybe our slab isn't allocated nearby the one previously
 allocated, but perhaps it is close enough to one of the others). Otherwise, we
-could consider making a customer allocater using `mmap` to reserve a large (e.g.
-128Mb) region of virtual address space and then use `mmap` again to commit the
-memory one slab at a time as needed. But these are perhaps both overkill.
+could consider making a custom allocator using `mmap()` to reserve a large (e.g.
+128 MB) region of virtual address space and then use `mmap()` again to commit the
+memory one slab at a time as needed. But these ideas are perhaps both overkill.
 
 ## Instrumenting Blocks
 
 The main function which instruments a code block is called
-`gum_exec_ctx_obtain_block_for`. It first looks for an existing block in the
-hashtable which is indexed on the address of the original block which was
-instrumented. If it finds one and the afforementioned constraints around the
-trust thresold are met then it can simply be returned.
+`gum_exec_ctx_obtain_block_for()`. It first looks for an existing block in the
+hash table which is indexed on the address of the original block which was
+instrumented. If it finds one and the aforementioned constraints around the
+trust threshold are met then it can simply be returned.
 
 The fields of the `GumExecBlock` are used as follows. The `real_begin` is set to
 the start of the original block of code to be instrumented. The `code_begin`
-field is points to the first free byte of the tail (remember this was set by the
-`gum_exec_block_new` function discussed above). A `GumArm64Relocator` is
+field points to the first free byte of the tail (remember this was set by the
+`gum_exec_block_new()` function discussed above). A `GumArm64Relocator` is
 initialized to read code from the original code at `real_begin` and a
 `GumArm64Writer` is initialized to write its output to the slab starting at
 `code_begin`. Each of these items is packaged into a `GumGeneratorContext` and
@@ -902,19 +902,19 @@ gum_default_stalker_transformer_transform_block (
 }
 ```
 
-We will gloss over the details of `gum_stalker_iterator_next` and
-`gum_stalker_iterator_keep` for new. But in essence, this causes the iterator to
-read code one instruction at a time from the relocator and write the relocated
+We will gloss over the details of `gum_stalker_iterator_next()` and
+`gum_stalker_iterator_keep()` for now. But in essence, this causes the iterator to
+read code one instruction at a time from the relocator, and write the relocated
 instruction out using the writer. Following this process, the `GumExecBlock`
 structure can be updated. It's field `real_end` can be set to the address where
 the relocator read up to, and its field `code_end` can be set to the address
 which the writer wrote up to. Thus `real_begin` and `real_end` mark the limits
-of the original block and `code_begin` and `code_end` mark the limits of the
-newly instrumented block. Finally, `gum_exec_ctx_obtain_block_for` calls
-`gum_exec_block_commit` which takes a copy of the original block and places it
+of the original block, and `code_begin` and `code_end` mark the limits of the
+newly instrumented block. Finally, `gum_exec_ctx_obtain_block_for()` calls
+`gum_exec_block_commit()` which takes a copy of the original block and places it
 immediately after the instrumented copy. The field `real_snapshot` points to
 this (and is thus identical to `code_end`). Next the slab's `offset` field is
-update to reflect the space used by our instrumented block and our copy of the
+updated to reflect the space used by our instrumented block and our copy of the
 original code. Finally, the block is frozen to allow it to be executed.
 
 ```
@@ -937,29 +937,29 @@ gum_exec_block_commit (GumExecBlock * block)
 ```
 
 Now let's just return to a few more details of the function
-`gum_exec_ctx_obtain_block_for`. First we should note that each block has a
+`gum_exec_ctx_obtain_block_for()`. First we should note that each block has a
 single instruction prefixed.
 
 ```
 gum_arm64_writer_put_ldp_reg_reg_reg_offset (cw, ARM64_REG_X16,
-  ARM64_REG_X17, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
-  GUM_INDEX_POST_ADJUST);
+    ARM64_REG_X17, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
+    GUM_INDEX_POST_ADJUST);
 ```
 This instruction is the restoration prolog (denoted by
-`GUM_RESTORATION_PROLOG_SIZE`). This skipped in normal usage (hence you will
-note this constant is added on by the functions `_gum_stalker_do_follow_me` and
-`gum_stalker_infect` when returning the address of the instrumented code. When
+`GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you will
+note this constant is added on by `_gum_stalker_do_follow_me()` and
+`gum_stalker_infect()` when returning the address of the instrumented code. When
 return instructions are instrumented, however, if the return is to a block which
 has already been instrumented, then we can simply return to that block rather
 than returning back into the stalker engine. This requires a couple of registers
 to be used in the generated assembly to figure out though and this means they
 have to be stored on the stack (written by
-`gum_exec_block_write_ret_transfer_code`), in the event that we can return
+`gum_exec_block_write_ret_transfer_code()`). In the event that we can return
 directly to an instrumented block, we return to this first instruction which
 restores these registers from the stack. This will be covered in more detail
 later.
 
-Secondly, we can see the function `gum_exec_ctx_obtain_block_for` does the
+Secondly, we can see `gum_exec_ctx_obtain_block_for()` does the
 following after the instrumented block is written:
 ```
 gum_arm64_writer_put_brk_imm (cw, 14);
@@ -967,12 +967,12 @@ gum_arm64_writer_put_brk_imm (cw, 14);
 
 This inserts a break instruction which is intended to simplify debugging.
 
-Lastly, if stalker is configured to, `gum_exec_ctx_obtain_block_for` will
+Lastly, if stalker is configured to, `gum_exec_ctx_obtain_block_for()` will
 generate an event of type `GUM_COMPILE` when compiling the block.
 
 ## Helpers
 
-We can see from the function `gum_exec_ctx_ensure_inline_helpers_reachable` that
+We can see from `gum_exec_ctx_ensure_inline_helpers_reachable()` that
 we have a total of 6 helpers. These helpers are common fragments of code which
 are needed repeatedly by our instrumented blocks. Rather than emitting the code
 they contain repeatedly, we instead write it once and place a call or branch
@@ -981,8 +981,8 @@ are written into the same slabs we are writing our instrumented code into and
 that if possible we can re-use the helper written into a previous nearby slab
 rather than putting a copy in each one.
 
-This function calls `gum_exec_ctx_ensure_helper_reachable` for each helper which
-in turn calls `gum_exec_ctx_is_helper_reachable` to check if the helper is
+This function calls `gum_exec_ctx_ensure_helper_reachable()` for each helper which
+in turn calls `gum_exec_ctx_is_helper_reachable()` to check if the helper is
 within range, or otherwise calls the callback passed as the second argument to
 write out a new copy.
 
@@ -1017,7 +1017,7 @@ gum_exec_ctx_ensure_inline_helpers_reachable (GumExecCtx * ctx)
 ```
 
 So, what are our 6 helpers. We have 2 for writing prologues which store register
-context, one for a fully context and one for a minimal context. We will cover
+context, one for a full context and one for a minimal context. We will cover
 these later. We also have 2 for their corresponding epilogues for restoring the
 registers. The other two, the `last_stack_push` and `last_stack_pop_and_go` are
 used when instrumenting call instructions.
@@ -1070,10 +1070,10 @@ gum_stalker_create_exec_ctx (GumStalker * self,
 
 ### last_stack_push
 
-Much of the complexity in understanding Stalker and the helpers is particular is
-that some functions (let's call then writers) write code which is executed at a
+Much of the complexity in understanding Stalker and the helpers in particular is
+that some functions – let's call them writers – write code which is executed at a
 later point. These writers have branches in themselves which determine exactly
-what code to write and the written can also sometime have branches too. The
+what code to write, and the written code can also sometimes have branches too. The
 approach I will take for these two helpers therefore is to show pseudo code for
 the assembly which is emitted into the slab which will be called by instrumented
 blocks.
@@ -1082,7 +1082,7 @@ The pseudo code for this helper is shown below:
 
 ```
 void last_stack_push_helper(gpointer x0, gpointer x1) {
-  GumExecFrame **x16 = &ctx->current_frame
+  GumExecFrame** x16 = &ctx->current_frame
   GumExecFrame* x17 = *x16
   void* x2 = x17 & (ctx->stalker->page_size - 1)
   if x2 != 0:
@@ -1104,7 +1104,7 @@ space for more entries (we have space for 512) then we simply do nothing. If we
 have space, we write the values from the parameters into the entry and retard
 the `current_frame` pointer to point to it.
 
-This helper is used when *virtualizing* branch instructions. Virtualizing is the
+This helper is used when *virtualizing* call instructions. Virtualizing is the
 name given to the replacement of an instruction typically those relating to
 branching with a series of instructions which instead of executing the intended
 block allow stalker to manage the control-flow. Recall as our transformer walks
@@ -1119,9 +1119,9 @@ the return.
 ### last_stack_pop_and_go
 
 Now lets look at the `last_stack_pop_and_go` helper. To understand this, we also
-need to understand the code written by  `gum_exec_block_write_ret_transfer_code`
-also (the code that calls it) as well as that written by
-`gum_exec_block_write_exec_generated_code` which it calls. We will skip over
+need to understand the code written by `gum_exec_block_write_ret_transfer_code()`
+(the code that calls it), as well as that written by
+`gum_exec_block_write_exec_generated_code()` which it calls. We will skip over
 pointer authentication for now.
 
 ```
@@ -1131,7 +1131,7 @@ void ret_transfer_code(arm64_reg ret_reg) {
 }
 
 void last_stack_pop_and_go_helper(gpointer x16) {
-  GumExecFrame **x0 = &ctx->current_frame
+  GumExecFrame** x0 = &ctx->current_frame
   GumExecFrame* x1 = *x0
   gpointer x17 = x0.real_address
   if x17 == x16:
@@ -1143,7 +1143,7 @@ void last_stack_pop_and_go_helper(gpointer x16) {
     x1 = ctx->first_frame
     *x0 = x1
     gpointer* x0 = &ctx->return_at
-    *x0=x16
+    *x0 = x16
     last_prologue_minimal()
     x0 = &ctx->return_at
     x1 = *x0
@@ -1161,8 +1161,8 @@ void exec_generated_code() {
 ```
 
 So this code is a little harder. It isn't really a function and the actual
-assembly written it is muddied a little by the need to save and restore
-registers. But the essence of it is this. When virtualizing a return instruction
+assembly written by it is muddied a little by the need to save and restore
+registers. But the essence of it is this: When virtualizing a return instruction
 this helper is used to optimize passing control back to the caller. ret_reg
 contains the address of the block to which we are intending to return.
 
@@ -1206,15 +1206,15 @@ cleared, now our control-flow has deviated, we will start again building our
 stack again. We accept that we will take this same slower path for any previous
 frames in the call-stack we recorded so far if we ever return to them, but will
 have the possibility of using the fast path for new calls we encounter from here
-on out (assuming that the return address isn't modified by stalker again).
+on out (until the next time a call instruction is used in an unconventional manner).
 
 We make a minimal prologue (our instrumented code is now going to have to
-re-enter stalker) and we need to be able to restore the applications registers
+re-enter stalker) and we need to be able to restore the application's registers
 before we return control back to it. We call the entry gate for return,
-`gum_exec_ctx_replace_current_block_from_ret` (more on entry gates later). We
-then execute the corresponding epilogue before branching the the
-`ctx->resume_at` which is set by stalker during the above call to
-`gum_exec_ctx_replace_current_block_from_ret` to point to the new instrumented
+`gum_exec_ctx_replace_current_block_from_ret()` (more on entry gates later). We
+then execute the corresponding epilogue before branching to the
+`ctx->resume_at` pointer which is set by stalker during the above call to
+`gum_exec_ctx_replace_current_block_from_ret()` to point to the new instrumented
 block.
 
 ## Context
@@ -1271,10 +1271,10 @@ stored.
 
 Note also the offset at which these registers are placed. They are stored at
 `16` bytes + `GUM_RED_ZONE_SIZE` beyond the top of the stack. Note that our
-stack on AARCH64 is full and descending. This means that the stack grows toward
+stack on AArch64 is full and descending. This means that the stack grows toward
 lower addresses and the stack pointer points to the last item pushed (not to the
 next empty space). So, if we subtract 16 bytes from the stack pointer, then this
-gives us enough space to store the two 64bit registers. Note that the stack
+gives us enough space to store the two 64-bit registers. Note that the stack
 pointer must be decremented before the store (pre-decrement) and incremented
 after the load (post-increment).
 
@@ -1290,7 +1290,7 @@ the stack to store information for the stalker engine.
 
 ## Context Helpers
 
-Now we have looked at how these helpers are called, let us now have a look at
+Now that we have looked at how these helpers are called, let us now have a look at
 the helpers themselves. Although there are two prologues and two epilogues (full
 and minimal), they are both written by the same function as they have much in
 common. The version which is written is based on the function parameters. The
@@ -1308,7 +1308,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // the red zone and stored LR and X19.
   gint immediate_for_sp = 16 + GUM_RED_ZONE_SIZE;
 
-  // This insruction is used to store the flags into x15.
+  // This instruction is used to store the CPU flags into x15.
   const guint32 mrs_x15_nzcv = 0xd53b420f;
 
   // Note that only the full prolog has to look like the C struct
@@ -1318,23 +1318,23 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // Save Return address to our instrumented block in X19. We will
   // preserve this throughout and branch back there at the end.
   // This will take us back to the code written by
-  // gum_exec_ctx_write_prolog
+  // gum_exec_ctx_write_prolog()
   gum_arm64_writer_put_mov_reg_reg (cw, ARM64_REG_X19, ARM64_REG_LR);
 
   // LR = SP[8] Save return address of previous block (or user-code)
   // in LR. This was pushed there by the code written by
-  // gum_exec_ctx_write_prolog. This is the one which will remain in
+  // gum_exec_ctx_write_prolog(). This is the one which will remain in
   // LR once we have returned to our instrumented code block. Note
-  // the use of SP+8 is a little asymmetric on entry (prolog) is it
-  // used to pass LR. One exit (epilog) it is used to pass x20
-  // accordingly gum_exec_ctx_write_epilog restores it there.
+  // the use of SP+8 is a little asymmetric on entry (prolog) as it is
+  // used to pass LR. On exit (epilog) it is used to pass x20
+  // and accordingly gum_exec_ctx_write_epilog() restores it there.
   gum_arm64_writer_put_ldr_reg_reg_offset (cw,
       ARM64_REG_LR, ARM64_REG_SP, 8);
 
   // Store SP[8] = X20. We have read the value of LR which was put
-  // there by  gum_exec_ctx_write_prolog and are writing x20 there
-  // so that it can be  restored by code written by
-  // gum_exec_ctx_write_epilog
+  // there by gum_exec_ctx_write_prolog() and are writing x20 there
+  // so that it can be restored by code written by
+  // gum_exec_ctx_write_epilog()
   gum_arm64_writer_put_str_reg_reg_offset (cw,
       ARM64_REG_X20, ARM64_REG_SP, 8);
 
@@ -1358,7 +1358,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     immediate_for_sp += 4 * 32;
 
     // x29 is Frame Pointer
-    // x30 is the link register
+    // x30 is the Link Register
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X29, ARM64_REG_X30);
 
@@ -1368,10 +1368,10 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     /* X19 - X28 are callee-saved registers */
 
     // If we are only calling compiled C code, then the compiler
-    // should ensure that should a function use registers x19
+    // will ensure that should a function use registers x19
     // through x28 then their values will be preserved. Hence,
     // we don't need to store them here as they will not be
-    // modified. If however, we make a call out, then we want
+    // modified. If however, we make a callout, then we want
     // the stalker end user to have visibility of the full
     // register set and to be able to make any modifications
     // they see fit to them.
@@ -1411,7 +1411,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
 
     /* GumCpuContext.x[29] + fp + lr + padding */
     // x29 is Frame Pointer
-    // x30 is the link register
+    // x30 is the Link Register
     // x15 is pushed just for padding again
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X30, ARM64_REG_X15);
@@ -1428,22 +1428,22 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
 
     // Store x19 (currently holding the LR value for this function
     // to return to, the address of the caller written by
-    // gum_exec_ctx_write_prolog) in x20 temporarily. We have
+    // gum_exec_ctx_write_prolog()) in x20 temporarily. We have
     // already pushed x20 so we can use it freely, but we want to
-    // push the apps value of x19 into the context. This was
+    // push the app's value of x19 into the context. This was
     // pushed onto the stack by the code in
-    // gum_exec_ctx_write_prolog so we can restore it from there
+    // gum_exec_ctx_write_prolog() so we can restore it from there
     // before we push it.
     gum_arm64_writer_put_mov_reg_reg (cw,
         ARM64_REG_X20, ARM64_REG_X19);
 
     // Restore X19 from the value pushed by the prolog before the
-    // call to the elper
+    // call to the helper.
     gum_arm64_writer_put_ldr_reg_reg_offset (cw,
         ARM64_REG_X19, ARM64_REG_SP,
         (6 * 16) + (4 * 32));
 
-    // Push the apps values of x18 and x19. x18 was unmodified. We
+    // Push the app's values of x18 and x19. x18 was unmodified. We
     // have corrected x19 above.
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X18, ARM64_REG_X19);
@@ -1476,8 +1476,8 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     // We are going to store the PC and SP here. The PC is set to
     // zero, for the SP, we have to calculate the original SP
     // before we stored all of this context information. Note we
-    // use the zero register here (a special register in aarch64
-    // which always has the value 0)
+    // use the zero register here (a special register in AArch64
+    // which always has the value 0).
     gum_arm64_writer_put_mov_reg_reg (cw,
         ARM64_REG_X0, ARM64_REG_XZR);
     gum_arm64_writer_put_add_reg_reg_imm (cw,
@@ -1491,16 +1491,16 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
 
   // Store the Arithmetic Logic Unit flags into x15. Whilst it might
   // appear that the above add instruction used to calculate the
-  // original stack pointer may have changed the flags, AARCH64 has
-  // and ADD instruction which doesn't modify the condition flags
+  // original stack pointer may have changed the flags, AArch64 has
+  // an ADD instruction which doesn't modify the condition flags
   // and an ADDS instruction which does.
   gum_arm64_writer_put_instruction (cw, mrs_x15_nzcv);
 
   /* conveniently point X20 at the beginning of the saved
      registers */
   // X20 is used later by functions such as
-  // gum_exec_ctx_load_real_register_from_full_frame_into to emit
-  // code which refrences the saved frame.
+  // gum_exec_ctx_load_real_register_from_full_frame_into() to emit
+  // code which references the saved frame.
   gum_arm64_writer_put_mov_reg_reg (cw, ARM64_REG_X20, ARM64_REG_SP);
 
   /* padding + status */
@@ -1510,9 +1510,9 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
       ARM64_REG_X14, ARM64_REG_X15);
   immediate_for_sp += 1 * 16;
 
-  // We saved our LR into R19 on entry so that we could branch back
+  // We saved our LR into x19 on entry so that we could branch back
   // to the instrumented code once this helper has run. Although
-  // the instrumented code called us, We restored LR to its previous
+  // the instrumented code called us, we restored LR to its previous
   // value before the helper was called (the app code). Although the
   // LR is not callee-saved (e.g. it is not our responsibility to
   // save and restore it on return, but rather that of our caller),
@@ -1529,7 +1529,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
                                   GumPrologType type,
                                   GumArm64Writer * cw)
 {
-  // this instruction is used to restore the value of x15 back into
+  // This instruction is used to restore the value of x15 back into
   // the ALU flags.
   const guint32 msr_nzcv_x15 = 0xd51b420f;
 
@@ -1537,7 +1537,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
   // Note that we don't restore the flags yet, since we must wait
   // until we have finished all operations (e.g. additions,
   // subtractions etc) which may modify the flags. However, we
-  // must do so before we restore X15 back to its original value.
+  // must do so before we restore x15 back to its original value.
   gum_arm64_writer_put_pop_reg_reg (cw,
       ARM64_REG_X14, ARM64_REG_X15);
 
@@ -1556,13 +1556,13 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
 
     /* restore status */
     // We have completed all of our instructions which may alter the
-    // flags
+    // flags.
     gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
 
     // Restore all of the registers we saved in the context. We
-    // pushed the ARM64_REG_X30 earlier as padding, but we will
+    // pushed x30 earlier as padding, but we will
     // pop it back there before we pop the actual pushed value
-    // of x30 immediately after
+    // of x30 immediately after.
     gum_arm64_writer_put_pop_reg_reg (cw,
         ARM64_REG_X0, ARM64_REG_X1);
     gum_arm64_writer_put_pop_reg_reg (cw,
@@ -1601,13 +1601,13 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     // We stored the stack pointer and PC in the stack, but we don't
     // want to restore the PC back to the user code, and our stack
     // pointer should be naturally restored as all of the data
-    // pushed onto it are popped back off
+    // pushed onto it are popped back off.
     gum_arm64_writer_put_add_reg_reg_imm (cw,
         ARM64_REG_SP, ARM64_REG_SP, 16);
 
     /* restore status */
-    // Again, we have finished any flag affecting operations now the
-    // above addition has been completed
+    // Again, we have finished any flag affecting operations now that the
+    // above addition has been completed.
     gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
 
     /* GumCpuContext.x[29] + fp + lr + padding */
@@ -1670,7 +1670,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     // Recall that X15 was also pushed as padding alongside X30 when
     // building the prolog. However, the stalker end user can modify
     // the context and hence the value of X15. However this would
-    // not effect the duplicate stashed here as padding and hence
+    // not affect the duplicate stashed here as padding and hence
     // X15 would be clobbered. Therefore we copy the now restored
     // value of X15 to the location where this copy was stored for
     // padding before restoring both registers from the stack.
@@ -1705,14 +1705,14 @@ hopefully it all now makes sense.
 
 ## Reading/Writing Context
 
-Now we have our context saved, whether it was a full context, or just the
+Now that we have our context saved, whether it was a full context, or just the
 minimal one, Stalker may need to read registers from the context to see what
 state of the application code was. For example to find the address which a
 branch or return instruction was going to branch to so that we can instrument
 the block.
 
 When stalker writes the prologue and epilogue code, it does so by calling
-`gum_exec_block_open_prolog` and `gum_exec_block_close_prolog`. These store the
+`gum_exec_block_open_prolog()` and `gum_exec_block_close_prolog()`. These store the
 type of prologue which has been written in `gc->opened_prolog`.
 
 ```
@@ -1747,7 +1747,7 @@ gum_exec_block_close_prolog (GumExecBlock * block,
 ```
 
 Therefore when we want to read a register, this can be achieved with the single
-function `gum_exec_ctx_load_real_register_into`. This determines which kind of
+function `gum_exec_ctx_load_real_register_into()`. This determines which kind of
 prologue is in use and calls the relevant routine accordingly. Note that these
 routines don't actually read the registers, they emit code which reads them.
 
@@ -1838,7 +1838,7 @@ are simple, they are stored in the context block. After `x18` is 8 bytes padding
 makes a total of 11 pairs of registers. Immediately following this is the
 NEON/floating point registers (totallng 128 bytes). Finally `x19` and `x20`, are
 stored above this as they are restored by the inline epilogue code written by
-`gum_exec_ctx_write_epilog`.
+`gum_exec_ctx_write_epilog()`.
 
 ```
 static void
@@ -1891,27 +1891,27 @@ Execution of stalker begins at one of 3 entry points:
 
 The first two we have already covered, these initialize the stalker engine and
 start instrumenting the first block of execution.
-`gum_exec_ctx_replace_current_block_with` is used to instrument subsequent
-blocks. In fact, the main difference between this function and the preceeding
+`gum_exec_ctx_replace_current_block_with()` is used to instrument subsequent
+blocks. In fact, the main difference between this function and the preceding
 two is that the stalker engine has already been initialized and hence this work
-doesn't need to be repeated. All three call `gum_exec_ctx_obtain_block_for` to
+doesn't need to be repeated. All three call `gum_exec_ctx_obtain_block_for()` to
 generate the instrumented block.
 
-We covered `gum_exec_ctx_obtain_block_for` previously in our section on
+We covered `gum_exec_ctx_obtain_block_for()` previously in our section on
 transformers. It calls the transformed implementation in use, which by default
-calls `gum_stalker_iterator_next` which calls the relocator using
-`gum_arm64_relocator_read_one` to read the next relocated instruction. Then it
-calls `gum_stalker_iterator_keep` to generate the instrumented copy. It does
-this in a loop until `gum_stalker_iterator_next` returns false as it has reached
+calls `gum_stalker_iterator_next()` which calls the relocator using
+`gum_arm64_relocator_read_one()` to read the next relocated instruction. Then it
+calls `gum_stalker_iterator_keep()` to generate the instrumented copy. It does
+this in a loop until `gum_stalker_iterator_next()` returns `FALSE` as it has reached
 the end of the block.
 
-Most of the time `gum_stalker_iterator_keep` will simply call
-`gum_arm64_relocator_write_one` to emit the relocated instruction as is.
+Most of the time `gum_stalker_iterator_keep()` will simply call
+`gum_arm64_relocator_write_one()` to emit the relocated instruction as is.
 However, if the instruction is a branch or return instruction it will call
-`gum_exec_block_virtualize_branch_insn` or `gum_exec_block_virtualize_ret_insn`
+`gum_exec_block_virtualize_branch_insn()` or `gum_exec_block_virtualize_ret_insn()`
 respectively. These two virtualization functions which we will cover in more
 detail later, emit code to transfer control back into
-`gum_exec_ctx_replace_current_block_with` via an entry gate ready to process the
+`gum_exec_ctx_replace_current_block_with()` via an entry gate ready to process the
 next block (unless there is an optimization where we can bypass stalker and go
 direct to the next instrumented block, or we are entering into an excluded
 range).
@@ -1921,10 +1921,10 @@ range).
 Entry gates are generated by macro, one for each of the different instruction
 types found at the end of a block. When we virtualize each of these types of
 instruction, we direct control flow back to the
-`gum_exec_ctx_replace_current_block_with` function via one of these gates. We
+`gum_exec_ctx_replace_current_block_with()` function via one of these gates. We
 can see that the implementation of the gate is quite simple, it updates a
-counter of how many times it has been called and passed control to
-`gum_exec_ctx_replace_current_block_with` passing through the parameters it was
+counter of how many times it has been called and passes control to
+`gum_exec_ctx_replace_current_block_with()` passing through the parameters it was
 called with, the `GumExecCtx` and the `start_address` of the next block to be
 instrumented.
 
@@ -1986,7 +1986,7 @@ gum_stalker_dump_counters (void)
 ```
 ## Virtualize functions
 
-Let's now look in more detail at the *virtaulizing* we have for replacing the
+Let's now look in more detail at the *virtualizing* we have for replacing the
 branch instruction we find at the end of each block. We have four of these
 functions:
 * `gum_exec_block_virtualize_branch_insn`
@@ -1998,7 +1998,7 @@ We can see that two of these relate to to syscalls (and in fact, one calls the
 other), we will cover these later. Let's look at the ones for branches and
 returns.
 
-### gum_exec_block_virtualize_branch_insn
+### gum_exec_block_virtualize_branch_insn()
 
 This routine first determines whether the destination of the branch comes from
 an immediate offset in the instruction, or a register. In the case of the
@@ -2014,8 +2014,8 @@ gates which will be used to handle the branch. The former is used to hold the
 gate used for non-conditional branches and `cond_entry_func` holds the gate to
 be used for a conditional branch (whether it is taken or not).
 
-The function `gum_exec_block_write_jmp_transfer_code` is used to write the code
-required to branch the the entry gate. For non-conditional branches this is
+The function `gum_exec_block_write_jmp_transfer_code()` is used to write the code
+required to branch to the entry gate. For non-conditional branches this is
 simple, we call the function passing the `target` and the `regular_entry_func`.
 For conditional branches things are slightly more complicated. Our output looks
 like the following pseudo-code:
@@ -2031,31 +2031,31 @@ Here, we can see that we first write a branch instruction into our instrumented
 block, as in our instrumented block, we also need to determine whether we should
 take the branch or not. But instead of branching directly to the target, just
 like for the non-conditional branches we use
-`gum_exec_block_write_jmp_transfer_code` to write code to jump back into stalker
+`gum_exec_block_write_jmp_transfer_code()` to write code to jump back into stalker
 via the relevant entry gate passing the real address we would have branched to.
 Note, however that the branch is inverted from the original (e.g. `CBZ` would be
 replaced by `CBNZ`).
 
-Now, lets look at how `gum_exec_block_virtualize_branch_insn` handles calls.
+Now, let's look at how `gum_exec_block_virtualize_branch_insn()` handles calls.
 First we emit code to generate the call event if we are configured to. Next we
 check if there are any probes in use. If there are, then we call
-`gum_exec_block_write_call_probe_code` to emit the code necessary to call any
+`gum_exec_block_write_call_probe_code()` to emit the code necessary to call any
 registered probe callback. Next, we check if the call is to an excluded range
 (note that we can only do this if the call is to an immediate address), if it is
 then we emit the instruction as is. But we follow this by using
-`gum_exec_block_write_jmp_transfer_code` as we did when handling branches to
+`gum_exec_block_write_jmp_transfer_code()` as we did when handling branches to
 emit code to call back into Stalker right after to instrument the block at the
 return address. Note that here we use the `excluded_call_imm` entry gate.
 
 Finally, if it is just a normal call expression, then we use the function
-`gum_exec_block_write_call_invoke_code` to emit the code to handle the call.
+`gum_exec_block_write_call_invoke_code()` to emit the code to handle the call.
 This function is pretty complicated as a result of all of the optimization for
 backpatching, so we will only look at the basics.
 
-Remember earlier that in `gum_exec_block_virtualize_branch_insn`, we could only
+Remember earlier that in `gum_exec_block_virtualize_branch_insn()`, we could only
 check if our call was to an excluded range if the target was specified in an
 immediate? Well if the target was specified in a register, then here we emit
-code to check whether the target was in an excluded range. This is done by
+code to check whether the target is in an excluded range. This is done by
 loading the target regsiter using
 `gum_exec_ctx_write_push_branch_target_address` (which in turn calls
 `gum_exec_ctx_load_real_register_into` which we covered ealier to read the
@@ -2068,18 +2068,18 @@ Next we emit code to call the entry gate and generate the instrumented block of
 the callee. Then call the helper `last_stack_push` to add our `GumExecFrame` to
 our context containing the original and instrumented block address. The real and
 instrumented code addresses are read from the current cursor positions of the
-GeneratorContext and CodeWriter respectively and we then generate the required
+GeneratorContext and CodeWriter respectively, and we then generate the required
 instrumented block for the return address (this is the optimization we covered
 earlier, we can jump straight to this block when executing the virtualized
 return statement rather than re-entering stalker). Lastly we use
-`gum_exec_block_write_exec_generated_code` to emit code to branch to the
+`gum_exec_block_write_exec_generated_code()` to emit code to branch to the
 instrumented callee.
 
-### gum_exec_block_virtualize_ret_insn
+### gum_exec_block_virtualize_ret_insn()
 
 After looking at the virtualization of call instructions, you will be pleased to
 know that this one is relatively simple! If configured, this function calls
-`gum_exec_block_write_ret_event_code` to generate an event for the return
+`gum_exec_block_write_ret_event_code()` to generate an event for the return
 statement. Then calls `gum_exec_block_write_ret_transfer_code` to generate the
 code required to handle the return instruction. This one is simple too, it emits
 code to call the `last_stack_pop_and_go` helper we covered earlier.
@@ -2095,17 +2095,17 @@ following functions. Their implementation again is quite self-explanatory:
 * `gum_exec_ctx_emit_block_event`
 
 One thing to note with each of these functions, however, is that they all call
-`gum_exec_block_write_unfollow_check_code` to generate code for checking if
+`gum_exec_block_write_unfollow_check_code()` to generate code for checking if
 stalker is to stop following the thread. We'll have a look at this in more
 detail next.
 
 ## Unfollow and tidy up
 
 If we look at the function which generates the instrumented code to check if we
-are being unfollowed, we can see it cause the thread to call
+are being asked to unfollow, we can see it cause the thread to call
 `gum_exec_ctx_maybe_unfollow` passing the address of the next instruction to be
 instrumented. We can see that if the state has been set to stop following, then
-simply branch back to the original code.
+we simply branch back to the original code.
 
 ```
 static void
@@ -2263,7 +2263,7 @@ gum_exec_ctx_replace_current_block_with (GumExecCtx * ctx,
 }
 ```
 
-Let's look at `gum_stalker_unfollow` now:
+Let's look at `gum_stalker_unfollow()` now:
 
 ```
 void
@@ -2328,10 +2328,10 @@ original value. The `infect_thunk` is created by `gum_stalker_infect` which is
 the callback used by `gum_stalker_follow` to modify the context. Recall that
 whilst some of the setup can be carried out on behalf of the target thread, some
 has to be done in the context of the target thread itself (in particular
-settings variables in thread local storage)? Well, it is the `infect_thunk`
+setting variables in thread local storage). Well, it is the `infect_thunk`
 which contains that code.
 
-## Miscelaneous
+## Miscellaneous
 
 Hopefully we have now covered the most important aspects of stalker and have
 provided a good background on how it works. We do have a few other observations
@@ -2339,9 +2339,9 @@ though, which may be of interest.
 
 ### Exclusive Store
 
-The AARCH64 architecture has support for [exclusive load/store
-instruction](https://static.docs.arm.com/100934/0100/armv8_a_synchronization_primitives_100934_0100_en.pdf)
-these instructions are intended to be used for synchronization. If an exclusive
+The AArch64 architecture has support for [exclusive load/store
+instructions](https://static.docs.arm.com/100934/0100/armv8_a_synchronization_primitives_100934_0100_en.pdf)
+. These instructions are intended to be used for synchronization. If an exclusive
 load is performed from a given address, then later attempts an exclusive store
 to the same location, then the CPU is able to detect any other stores (exclusive
 or otherwise) to the same location in the intervening period and the store
@@ -2351,7 +2351,7 @@ Obviously, these types of primitives are likely to be used for constructs such
 as mutexes and semaphores. Multiple threads may attempt to load the current
 count of the semaphore, test whether is it already full, then increment and
 store the new value back to take the semaphore. These exclusive operations are
-ideal for just such a scenario. Consider though what would happen if mulitiple
+ideal for just such a scenario. Consider though what would happen if multiple
 threads are competing for the same resource. If one of those threads were being
 traced by stalker, it would always lose the race. Stalker, however, deals with
 such a scenario:
@@ -2389,7 +2389,7 @@ gum_stalker_iterator_next (GumStalkerIterator * self,
   }
 
   ...
-
+  ...
 }
 
 void
@@ -2441,10 +2441,10 @@ are likely to encounter in our input block. Nor is it simple to detemine exactly
 how many instructions in output we will need to write the necessary
 instrumentation (we have possible code for emitting the different types of
 event, checking for excluded ranges, virtualizing instructions found at the end
-of the block etc). Also, trying to allow for the instrumented code to be
+of the block etc.). Also, trying to allow for the instrumented code to be
 non-sequential is fraught with difficulty. So the approach taken is to ensure
-that each time we read a new instruction from the interator there is at least
-1024 bytes of space in the slab for our output. If it is not, then we store the
+that each time we read a new instruction from the iterator there is at least
+1024 bytes of space in the slab for our output. If it is not the case, then we store the
 current address in `continuation_real_address` and return `FALSE` so that the
 iterator ends.
 ```
@@ -2462,7 +2462,7 @@ gboolean
 gum_stalker_iterator_next (GumStalkerIterator * self,
                            const cs_insn ** insn)
 {
-    ...
+  ...
 
     if (gum_exec_block_is_full (block))
     {
@@ -2470,11 +2470,11 @@ gum_stalker_iterator_next (GumStalkerIterator * self,
       return FALSE;
     }
 
-    ...
+  ...
 }
 ```
 
-Our caller `gum_exec_ctx_obtain_block_for` which is walking the iterator to
+Our caller `gum_exec_ctx_obtain_block_for()` which is walking the iterator to
 generate the block then acts exactly as if there was a branch instruction to the
 next instruction, essentially terminating the current block and starting the
 next one.
@@ -2511,8 +2511,8 @@ label:
 ### Syscall Virtualization
 
 Syscalls are entry points from user-mode into kernel-mode. It is how
-applications ask the kernel carry out operations on it's behalf, whether that be
-opening files or reading network sockets. On AARCH64 systems, this is carried
+applications ask the kernel carry out operations on its behalf, whether that be
+opening files or reading network sockets. On AArch64 systems, this is carried
 out using the `SVC` instruction, whereas on Intel the instruction is `sysenter`.
 Hence the terms syscall and sysenter here are used synonymously.
 
@@ -2538,11 +2538,11 @@ a new thread. But the current thread is being traced by stalker, and clone is
 going to create an exact replica of it. Given that stalker contexts are on a
 per-thread basis, we should not be stalking this new child.
 
-Note that for syscalls in AARCH64 the first 8 arguments are passed in registers
+Note that for syscalls in AArch64 the first 8 arguments are passed in registers
 `x0` through `x7` and the syscall number is passed in `x8`, additional arguments
 are passed on the stack. The return value for the syscall is returned in `x0`.
-The function `gum_exec_block_virtualize_linux_sysenter` generates the necessary
-instrumented assembly to deal with such a syscall. We will look at the pseudo
+The function `gum_exec_block_virtualize_linux_sysenter()` generates the necessary
+instrumented code to deal with such a syscall. We will look at the pseudo
 code below:
 
 ```
@@ -2561,7 +2561,7 @@ syscall instruction is copied from the original block). Otherwise if it is a
 clone syscall, then we again perform the original syscall. At this point, we
 have two threads of execution, the syscall determines that each thread will
 [return a different value](http://man7.org/linux/man-pages/man2/clone.2.html).
-The original thread will receive the child's PID as it's return value, whereas
+The original thread will receive the child's PID as its return value, whereas
 the child will receive the value of 0.
 
 If we receive a non-zero value, we can simply continue as we were. We want to
@@ -2617,4 +2617,4 @@ FRIDA needs to take this into account also when generating code. When reading
 pointers from registers used by the application (e.g. to determine the
 destination of an indirect branch or return), it is necessary to strip these
 pointer authentication codes from the address before it is used. This is
-achieved using the function `gum_arm64_writer_put_xpaci_reg`.
+achieved using the function `gum_arm64_writer_put_xpaci_reg()`.
