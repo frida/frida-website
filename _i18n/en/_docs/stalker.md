@@ -1989,10 +1989,11 @@ gum_stalker_dump_counters (void)
 Let's now look in more detail at the *virtualizing* we have for replacing the
 branch instruction we find at the end of each block. We have four of these
 functions:
-* `gum_exec_block_virtualize_branch_insn`
-* `gum_exec_block_virtualize_ret_insn`
-* `gum_exec_block_virtualize_sysenter_insn`
-* `gum_exec_block_virtualize_linux_sysenter`
+
+* `gum_exec_block_virtualize_branch_insn()`
+* `gum_exec_block_virtualize_ret_insn()`
+* `gum_exec_block_virtualize_sysenter_insn()`
+* `gum_exec_block_virtualize_linux_sysenter()`
 
 We can see that two of these relate to to syscalls (and in fact, one calls the
 other), we will cover these later. Let's look at the ones for branches and
