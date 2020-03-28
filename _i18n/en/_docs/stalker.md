@@ -2081,7 +2081,7 @@ instrumented callee.
 After looking at the virtualization of call instructions, you will be pleased to
 know that this one is relatively simple! If configured, this function calls
 `gum_exec_block_write_ret_event_code()` to generate an event for the return
-statement. Then calls `gum_exec_block_write_ret_transfer_code` to generate the
+statement. Then it calls `gum_exec_block_write_ret_transfer_code()` to generate the
 code required to handle the return instruction. This one is simple too, it emits
 code to call the `last_stack_pop_and_go` helper we covered earlier.
 
