@@ -116,24 +116,24 @@ _gum_stalker_follow_me:
   .type gum_stalker_follow_me, %function
 gum_stalker_follow_me:
 #endif
-  stp X29, X30, [sp, -16]!
-  mov X29, sp
-  mov X3, X30
+  stp x29, x30, [sp, -16]!
+  mov x29, sp
+  mov x3, x30
 #ifdef __APPLE__
   bl __gum_stalker_do_follow_me
 #else
   bl _gum_stalker_do_follow_me
 #endif
-  ldp X29, X30, [sp], 16
-  br X0
+  ldp x29, x30, [sp], 16
+  br x0
 ```
 
 We can see that the first instruction STP stores a pair of registers onto the
 stack. We can notice the expression `[sp, -16]!`. This is a
 [pre-decrement](https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/)
 which means that the stack is advanced first by 16 bytes, then the two 8 byte
-register values are stored. We can see the corresponding instruction `ldp X29,
-X30, [sp], 16` at the bottom of the function. This is restoring these two
+register values are stored. We can see the corresponding instruction `ldp x29,
+x30, [sp], 16` at the bottom of the function. This is restoring these two
 register values from the stack back into the registers. But what are these two
 registers?
 
@@ -150,7 +150,7 @@ register, so we need to store the value which our caller put in there and
 restore it before we return. Indeed you can see in the next instruction `mov
 X29, sp` that we set the frame pointer to the current stack pointer.
 
-We can see the next instruction `mov X3, X30`, puts the value of the link
+We can see the next instruction `mov x3, x30`, puts the value of the link
 register into X3. The first 8 arguments on AArch64 are passed in the registers
 X0-X7. So this is being put into the register used for the fourth argument. We
 then call (branch with link) the function `_gum_stalker_do_follow_me()`. So we
