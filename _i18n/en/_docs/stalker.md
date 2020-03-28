@@ -403,11 +403,11 @@ is never called. Each block, before it is executed is instrumented elsewhere in
 memory and it is this copy which is executed. Stalker supports the API function
 `Stalker.addCallProbe(address, callback[, data])` to provide this functionality
 instead. If our `Interceptor` has been attached before the block is
-instrumented, or Stalker's `trustThresold` is configured so that our block will
+instrumented, or Stalker's `trustThreshold` is configured so that our block will
 be re-instrumented then our `Interceptor` will work (as the patched instructions
 will be copied across to the new instrumented block). Otherwise it won't. Of
 course, we want to be able to support hooking functions when these conditions
-aren't met and the average user of the API might not be familiar with this level
+aren't met. The average user of the API might not be familiar with this level
 of detail of the design and so call probes solve this problem.
 
 The optional data parameter is passed when the probe callback is
@@ -419,9 +419,9 @@ multiple functions may call the one to which you add the probe, many
 instrumented blocks may contain additional instructions to call the probe
 function. Thus whenever a probe is added or removed, the cached instrumented
 blocks are all destroyed and so all code has to be re-instrumented. Note that
-this data parameter is only used if the `callback` is a `CModule` as when
-JavaScript is used, it is simpler to use a closure to capture any required
-state.
+this data parameter is only used if the `callback` is a C callback – e.g.
+implemented using `CModule` – as when JavaScript is used, it is simpler to use
+a closure to capture any required state.
 
 ### Trust Threshold
 
@@ -520,7 +520,7 @@ implementation of the default transformer looks like this:
 
 ```
 static void
-gum_default_Stalker_transformer_transform_block (
+gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
     GumStalkerWriter * output)
@@ -547,15 +547,15 @@ detail later.
 Rather than using the default transformer, the user can instead provide a custom
 implementation which can replace and insert instructions at will. A good example
 is provided in the [API
-documentation](https://frida.re/docs/javascript-api/#Stalker).
+documentation](https://frida.re/docs/javascript-api/#stalker).
 
 ### Callouts
 
 Transformers can also make callouts. That is they instruct Stalker to emit
-instructions to make a call to a JavaScript (or CModule) function passing the
-CPU context and an optional context parameter. This function is then able to
-modify or inspect registers at will. This information is stored in a
-```GumCallOutEntry```.
+instructions to make a call to a JavaScript function – or plain C callback,
+e.g. implemented using CModule – passing the CPU context and an optional
+context parameter. This function is then able to modify or inspect registers at
+will. This information is stored in a `GumCallOutEntry`.
 
 ```
 typedef void (* GumStalkerCallout) (GumCpuContext * cpu_context,
@@ -590,9 +590,9 @@ End of Input (EOI) indicates that not only have we reached the end of a block,
 but we have possibly reached the end of the input, i.e. what follows this
 instruction may not be another instruction. Whilst this is not the case for a
 call instruction as code control will (typically) pass back when the callee
-returns and so more instructions must follow (Note that a compiler will
+returns and so more instructions must follow. (Note that a compiler will
 typically generate a branch instruction for a call to a non-returning function
-like `exit()`). Whilst there is no guarantee of valid instructions following
+like `exit()`.) Whilst there is no guarantee of valid instructions following
 call instructions, we can speculatively optimize for this being the case. If we
 encounter a non-conditional branch instruction, or a return instruction, it is
 quite possible that there will be no code following afterwards.
@@ -770,13 +770,13 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
   GumSlab * slab;
   GumStalker * stalker = ctx->stalker;
 
-  slab = gum_memory_allocate (NULL, Stalker->slab_size,
-      Stalker->page_size,
-      Stalker->is_rwx_supported ? GUM_PAGE_RWX : GUM_PAGE_RW);
+  slab = gum_memory_allocate (NULL, stalker->slab_size,
+      stalker->page_size,
+      stalker->is_rwx_supported ? GUM_PAGE_RWX : GUM_PAGE_RW);
 
-  slab->data = (guint8 *) slab + Stalker->slab_header_size;
+  slab->data = (guint8 *) slab + stalker->slab_header_size;
   slab->offset = 0;
-  slab->size = Stalker->slab_size - Stalker->slab_header_size;
+  slab->size = stalker->slab_size - stalker->slab_header_size;
   slab->next = ctx->code_slab;
 
   slab->num_blocks = 0;
@@ -817,7 +817,7 @@ gum_exec_block_new (GumExecCtx * ctx)
 
   available = (slab != NULL) ? slab->size - slab->offset : 0;
   if (available >= GUM_EXEC_BLOCK_MIN_SIZE &&
-      slab->num_blocks != Stalker->slab_max_blocks)
+      slab->num_blocks != stalker->slab_max_blocks)
   {
     GumExecBlock * block = slab->blocks + slab->num_blocks;
 
@@ -836,7 +836,7 @@ gum_exec_block_new (GumExecCtx * ctx)
     return block;
   }
 
-  if (Stalker->trust_threshold < 0 && slab != NULL)
+  if (stalker->trust_threshold < 0 && slab != NULL)
   {
     slab->offset = 0;
 
@@ -921,7 +921,7 @@ implementations is as follows:
 
 ```
 static void
-gum_default_Stalker_transformer_transform_block (
+gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
     GumStalkerWriter * output)
