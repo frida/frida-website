@@ -482,6 +482,7 @@ in a data-structure of its own. It uses this as a speculative optimization, and 
 
 ```
 typedef struct _GumExecFrame GumExecFrame;
+
 struct _GumExecFrame
 {
   gpointer real_address;
