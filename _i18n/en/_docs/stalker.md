@@ -2523,6 +2523,7 @@ Hence the terms syscall and sysenter here are used synonymously.
 
 Syscall virtualization is carried out by the following routine. We can see we
 only do anything on Linux systems:
+
 ```
 static GumVirtualizationRequirements
 gum_exec_block_virtualize_sysenter_insn (GumExecBlock * block,
