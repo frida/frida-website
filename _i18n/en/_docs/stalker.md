@@ -2223,6 +2223,7 @@ handling differs from excluded ranges as for those we retain the original call
 instruction in an instrumented block, but then follow it with a call back into
 stalker. In this case, we are just vectoring back to an original uninstrumented
 block:
+
 ```
 
 static gpointer gum_unfollow_me_address;
