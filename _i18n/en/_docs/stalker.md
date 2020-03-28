@@ -116,28 +116,28 @@ _gum_Stalker_follow_me:
   .type gum_Stalker_follow_me, %function
 gum_Stalker_follow_me:
 #endif
-  stp x29, x30, [sp, -16]!
-  mov x29, sp
-  mov x3, x30
+  stp X29, X30, [sp, -16]!
+  mov X29, sp
+  mov X3, X30
 #ifdef __APPLE__
   bl __gum_Stalker_do_follow_me
 #else
   bl _gum_Stalker_do_follow_me
 #endif
-  ldp x29, x30, [sp], 16
-  br x0
+  ldp X29, X30, [sp], 16
+  br X0
 ```
 
 We can see that the first instruction STP stores a pair of registers onto the
 stack. We can notice the expression `[sp, -16]!`. This is a
 [pre-decrement](https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/)
 which means that the stack is advanced first by 16 bytes, then the two 8 byte
-register values are stored. We can see the corresponding instruction `ldp x29,
-x30, [sp], 16` at the bottom of the function. This is restoring these two
+register values are stored. We can see the corresponding instruction `ldp X29,
+X30, [sp], 16` at the bottom of the function. This is restoring these two
 register values from the stack back into the registers. But what are these two
 registers?
 
-Well, `x30` is the Link Register and `x29` is the Frame Pointer register. Recall
+Well, `X30` is the Link Register and `X29` is the Frame Pointer register. Recall
 that we must store the link register to the stack if we wish to call another
 function as this will cause it to be overwritten and we need this value in order
 that we can return to our caller.
@@ -148,17 +148,17 @@ local variables can be access at a fixed offset from the frame pointer. Again we
 need to save and restore this as each function will have its value for this
 register, so we need to store the value which our caller put in there and
 restore it before we return. Indeed you can see in the next instruction `mov
-x29, sp` that we set the frame pointer to the current stack pointer.
+X29, sp` that we set the frame pointer to the current stack pointer.
 
-We can see the next instruction `mov x3, x30`, puts the value of the link
-register into x3. The first 8 arguments on AArch64 are passed in the registers
-x0-x7. So this is being put into the register used for the fourth argument. We
+We can see the next instruction `mov X3, X30`, puts the value of the link
+register into X3. The first 8 arguments on AArch64 are passed in the registers
+X0-X7. So this is being put into the register used for the fourth argument. We
 then call (branch with link) the function `_gum_Stalker_do_follow_me()`. So we
-can see that we pass the first three arguments in x0-x2 untouched, so that
+can see that we pass the first three arguments in X0-X2 untouched, so that
 `_gum_Stalker_do_follow_me()` receives the same values we were called with.
 Finally, we can see after this function returns, we branch to the address we
 receive as its return value. (In AArch64 the return value of a function is
-returned in x0).
+returned in X0).
 
 ```
 gpointer
@@ -348,13 +348,13 @@ instrumented block. We can also deal partially with branches where the target is
 not static. Say our branch is something like:
 
 ```
-BR x0
+BR X0
 ```
 
 This sort of instruction is common when calling a function pointer, or class
-method. Whilst the value of x0 can change, quite often it will actually always
+method. Whilst the value of X0 can change, quite often it will actually always
 be the same. In this case, we can replace the final branch instruction with code
-which compares the value of x0 against our known function, and if it matches
+which compares the value of X0 against our known function, and if it matches
 branches to the address of the instrumented copy of the code. This can then be
 followed by an unconditional branch back to the Stalker engine if it doesn't
 match. So if the value of the function pointer say is changed, then the code
@@ -606,7 +606,7 @@ no state is lost.
 
 The [Procedure Call
 Standard](https://static.docs.arm.com/den0024/a/DEN0024A_v8_architecture_PG.pdf)
-for AArch64 states that some registers (notably x19 to x29) are callee saved
+for AArch64 states that some registers (notably X19 to X29) are callee saved
 registers. This means that when the compiler generates code which makes use of
 these registers, it must store them first. Hence it is not strictly necessary to
 save these registers to the context structure, since they will be restored if
@@ -628,10 +628,10 @@ typedef struct _GumArm64CpuContext GumArm64CpuContext;
 struct _GumArm64CpuContext
 {
   guint64 pc;
-  guint64 sp; /* x31 */
+  guint64 sp; /* X31 */
   guint64 x[29];
-  guint64 fp; /* x29 - frame pointer */
-  guint64 lr; /* x30 */
+  guint64 fp; /* X29 - frame pointer */
+  guint64 lr; /* X30 */
   guint8 q[128]; /* FPU, NEON (SIMD), CRYPTO regs */
 };
 ```
@@ -1115,15 +1115,15 @@ instrumented blocks.
 The pseudo code for this helper is shown below:
 
 ```
-void last_stack_push_helper(gpointer x0, gpointer x1) {
-  GumExecFrame** x16 = &ctx->current_frame
-  GumExecFrame* x17 = *x16
-  void* x2 = x17 & (ctx->Stalker->page_size - 1)
-  if x2 != 0:
-    x17--
-    x17.real_address = x0
-    x17.code_address = x1
-    *x16 = x17
+void last_stack_push_helper(gpointer X0, gpointer X1) {
+  GumExecFrame** X16 = &ctx->current_frame
+  GumExecFrame* X17 = *X16
+  void* X2 = X17 & (ctx->Stalker->page_size - 1)
+  if X2 != 0:
+    X17--
+    X17.real_address = X0
+    X17.code_address = X1
+    *X16 = X17
   return
 }
 ```
@@ -1161,36 +1161,36 @@ will skip over pointer authentication for now.
 
 ```
 void ret_transfer_code(arm64_reg ret_reg) {
-  gpointer x16 = ret_reg
+  gpointer X16 = ret_reg
   goto last_stack_pop_and_go_helper
 }
 
-void last_stack_pop_and_go_helper(gpointer x16) {
-  GumExecFrame** x0 = &ctx->current_frame
-  GumExecFrame* x1 = *x0
-  gpointer x17 = x0.real_address
-  if x17 == x16:
-    x17 = x0.code_address
-    x1++
-    *x0 = x1
-    goto x17
+void last_stack_pop_and_go_helper(gpointer X16) {
+  GumExecFrame** X0 = &ctx->current_frame
+  GumExecFrame* X1 = *X0
+  gpointer X17 = X0.real_address
+  if X17 == X16:
+    X17 = X0.code_address
+    X1++
+    *X0 = X1
+    goto X17
   else:
-    x1 = ctx->first_frame
-    *x0 = x1
-    gpointer* x0 = &ctx->return_at
-    *x0 = x16
+    X1 = ctx->first_frame
+    *X0 = X1
+    gpointer* X0 = &ctx->return_at
+    *X0 = X16
     last_prologue_minimal()
-    x0 = &ctx->return_at
-    x1 = *x0
-    gum_exec_ctx_replace_current_block_from_ret(ctx, x1)
+    X0 = &ctx->return_at
+    X1 = *X0
+    gum_exec_ctx_replace_current_block_from_ret(ctx, X1)
     last_epilogue_minimal()
     goto exec_generated_code
 }
 
 void exec_generated_code() {
-  gpointer *x16 = &ctx->resume_at
-  gpointer x17 = *x16
-  goto x17
+  gpointer *X16 = &ctx->resume_at
+  gpointer X17 = *X16
+  goto X17
 }
 ```
 
@@ -1307,9 +1307,9 @@ gum_exec_ctx_write_epilog (GumExecCtx * ctx,
 ```
 
 We can see that these do little other than call the corresponding prologue or
-epilogue helpers. We can see that the prologue will store `x19` and the link
-register onto the stack. These are then restored into `x19` and `x20` at the end
-of the epilogue.  This is because `x19` is needed as scratch space to write the
+epilogue helpers. We can see that the prologue will store `X19` and the link
+register onto the stack. These are then restored into `X19` and `X20` at the end
+of the epilogue.  This is because `X19` is needed as scratch space to write the
 context blocks and the link register needs to be preserved as it will be
 clobbered by the call to the helper.
 
@@ -1357,8 +1357,8 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // the red zone and stored LR and X19.
   gint immediate_for_sp = 16 + GUM_RED_ZONE_SIZE;
 
-  // This instruction is used to store the CPU flags into x15.
-  const guint32 mrs_x15_nzcv = 0xd53b420f;
+  // This instruction is used to store the CPU flags into X15.
+  const guint32 mrs_X15_nzcv = 0xd53b420f;
 
   // Note that only the full prolog has to look like the C struct
   // definition, since this is the data structure passed to
@@ -1375,13 +1375,13 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // gum_exec_ctx_write_prolog(). This is the one which will remain in
   // LR once we have returned to our instrumented code block. Note
   // the use of SP+8 is a little asymmetric on entry (prolog) as it is
-  // used to pass LR. On exit (epilog) it is used to pass x20
+  // used to pass LR. On exit (epilog) it is used to pass X20
   // and accordingly gum_exec_ctx_write_epilog() restores it there.
   gum_arm64_writer_put_ldr_reg_reg_offset (cw,
       ARM64_REG_LR, ARM64_REG_SP, 8);
 
   // Store SP[8] = X20. We have read the value of LR which was put
-  // there by gum_exec_ctx_write_prolog() and are writing x20 there
+  // there by gum_exec_ctx_write_prolog() and are writing X20 there
   // so that it can be restored by code written by
   // gum_exec_ctx_write_epilog()
   gum_arm64_writer_put_str_reg_reg_offset (cw,
@@ -1406,8 +1406,8 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
 
     immediate_for_sp += 4 * 32;
 
-    // x29 is Frame Pointer
-    // x30 is the Link Register
+    // X29 is Frame Pointer
+    // X30 is the Link Register
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X29, ARM64_REG_X30);
 
@@ -1417,8 +1417,8 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     /* X19 - X28 are callee-saved registers */
 
     // If we are only calling compiled C code, then the compiler
-    // will ensure that should a function use registers x19
-    // through x28 then their values will be preserved. Hence,
+    // will ensure that should a function use registers X19
+    // through X28 then their values will be preserved. Hence,
     // we don't need to store them here as they will not be
     // modified. If however, we make a callout, then we want
     // the Stalker end user to have visibility of the full
@@ -1459,9 +1459,9 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
         ARM64_REG_Q0, ARM64_REG_Q1);
 
     /* GumCpuContext.x[29] + fp + lr + padding */
-    // x29 is Frame Pointer
-    // x30 is the Link Register
-    // x15 is pushed just for padding again
+    // X29 is Frame Pointer
+    // X30 is the Link Register
+    // X15 is pushed just for padding again
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X30, ARM64_REG_X15);
     gum_arm64_writer_put_push_reg_reg (cw,
@@ -1475,11 +1475,11 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X20, ARM64_REG_X21);
 
-    // Store x19 (currently holding the LR value for this function
+    // Store X19 (currently holding the LR value for this function
     // to return to, the address of the caller written by
-    // gum_exec_ctx_write_prolog()) in x20 temporarily. We have
-    // already pushed x20 so we can use it freely, but we want to
-    // push the app's value of x19 into the context. This was
+    // gum_exec_ctx_write_prolog()) in X20 temporarily. We have
+    // already pushed X20 so we can use it freely, but we want to
+    // push the app's value of X19 into the context. This was
     // pushed onto the stack by the code in
     // gum_exec_ctx_write_prolog() so we can restore it from there
     // before we push it.
@@ -1492,12 +1492,12 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
         ARM64_REG_X19, ARM64_REG_SP,
         (6 * 16) + (4 * 32));
 
-    // Push the app's values of x18 and x19. x18 was unmodified. We
-    // have corrected x19 above.
+    // Push the app's values of X18 and X19. X18 was unmodified. We
+    // have corrected X19 above.
     gum_arm64_writer_put_push_reg_reg (cw,
         ARM64_REG_X18, ARM64_REG_X19);
 
-    // Restore x19 from x20
+    // Restore X19 from X20
     gum_arm64_writer_put_mov_reg_reg (cw,
         ARM64_REG_X19, ARM64_REG_X20);
 
@@ -1538,12 +1538,12 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
     immediate_for_sp += sizeof (GumCpuContext) + 8;
   }
 
-  // Store the Arithmetic Logic Unit flags into x15. Whilst it might
+  // Store the Arithmetic Logic Unit flags into X15. Whilst it might
   // appear that the above add instruction used to calculate the
   // original stack pointer may have changed the flags, AArch64 has
   // an ADD instruction which doesn't modify the condition flags
   // and an ADDS instruction which does.
-  gum_arm64_writer_put_instruction (cw, mrs_x15_nzcv);
+  gum_arm64_writer_put_instruction (cw, mrs_X15_nzcv);
 
   /* conveniently point X20 at the beginning of the saved
      registers */
@@ -1559,7 +1559,7 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
       ARM64_REG_X14, ARM64_REG_X15);
   immediate_for_sp += 1 * 16;
 
-  // We saved our LR into x19 on entry so that we could branch back
+  // We saved our LR into X19 on entry so that we could branch back
   // to the instrumented code once this helper has run. Although
   // the instrumented code called us, we restored LR to its previous
   // value before the helper was called (the app code). Although the
@@ -1579,15 +1579,15 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
                                   GumPrologType type,
                                   GumArm64Writer * cw)
 {
-  // This instruction is used to restore the value of x15 back into
+  // This instruction is used to restore the value of X15 back into
   // the ALU flags.
-  const guint32 msr_nzcv_x15 = 0xd51b420f;
+  const guint32 msr_nzcv_X15 = 0xd51b420f;
 
   /* padding + status */
   // Note that we don't restore the flags yet, since we must wait
   // until we have finished all operations (e.g. additions,
   // subtractions etc) which may modify the flags. However, we
-  // must do so before we restore x15 back to its original value.
+  // must do so before we restore X15 back to its original value.
   gum_arm64_writer_put_pop_reg_reg (cw,
       ARM64_REG_X14, ARM64_REG_X15);
 
@@ -1607,12 +1607,12 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     /* restore status */
     // We have completed all of our instructions which may alter the
     // flags.
-    gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
+    gum_arm64_writer_put_instruction (cw, msr_nzcv_X15);
 
     // Restore all of the registers we saved in the context. We
-    // pushed x30 earlier as padding, but we will
+    // pushed X30 earlier as padding, but we will
     // pop it back there before we pop the actual pushed value
-    // of x30 immediately after.
+    // of X30 immediately after.
     gum_arm64_writer_put_pop_reg_reg (cw,
         ARM64_REG_X0, ARM64_REG_X1);
     gum_arm64_writer_put_pop_reg_reg (cw,
@@ -1658,7 +1658,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
     /* restore status */
     // Again, we have finished any flag affecting operations now that the
     // above addition has been completed.
-    gum_arm64_writer_put_instruction (cw, msr_nzcv_x15);
+    gum_arm64_writer_put_instruction (cw, msr_nzcv_X15);
 
     /* GumCpuContext.x[29] + fp + lr + padding */
     gum_arm64_writer_put_pop_reg_reg (cw,
@@ -1827,7 +1827,7 @@ gum_exec_ctx_load_real_register_into (GumExecCtx * ctx,
 
 Reading registers from the full frame is actually the simplest. We can see the
 code closely matches the structure used to pass the context to callouts etc.
-Remember that in each case register `x20` points to the base of the context
+Remember that in each case register `X20` points to the base of the context
 structure.
 
 ```
@@ -1883,11 +1883,11 @@ gum_exec_ctx_load_real_register_from_full_frame_into (
 }
 ```
 
-Reading from the minimal context is actually a little harder. `x0` through `x18`
-are simple, they are stored in the context block. After `x18` is 8 bytes padding
-(to make a total of 10 pairs of registers) followed by `x29` and `x30`. This
+Reading from the minimal context is actually a little harder. `X0` through `X18`
+are simple, they are stored in the context block. After `X18` is 8 bytes padding
+(to make a total of 10 pairs of registers) followed by `X29` and `X30`. This
 makes a total of 11 pairs of registers. Immediately following this is the
-NEON/floating point registers (totallng 128 bytes). Finally `x19` and `x20`, are
+NEON/floating point registers (totallng 128 bytes). Finally `X19` and `X20`, are
 stored above this as they are restored by the inline epilogue code written by
 `gum_exec_ctx_write_epilog()`.
 
@@ -2122,7 +2122,7 @@ the callee. Then call the helper `last_stack_push` to add our `GumExecFrame` to
 our context containing the original and instrumented block address. The real and
 instrumented code addresses are read from the current cursor positions of the
 GeneratorContext and CodeWriter respectively, and we then generate the required
-instrumented block for the return address (this is the optimization we covered
+landing pad for the return address (this is the optimization we covered
 earlier, we can jump straight to this block when executing the virtualized
 return statement rather than re-entering Stalker). Lastly we use
 `gum_exec_block_write_exec_generated_code()` to emit code to branch to the
@@ -2407,8 +2407,11 @@ count of the semaphore, test whether is it already full, then increment and
 store the new value back to take the semaphore. These exclusive operations are
 ideal for just such a scenario. Consider though what would happen if multiple
 threads are competing for the same resource. If one of those threads were being
-traced by Stalker, it would always lose the race. Stalker, however, deals with
-such a scenario:
+traced by Stalker, it would always lose the race. Also these instructions are
+easily disturbed by other kinds of CPU operations and so if we do something
+complex like emit an event between a load and a store we are going to cause it
+to fail every time, and end up looping indefinitely. Stalker, however, deals
+with such a scenario:
 
 ```
 gboolean
@@ -2597,18 +2600,18 @@ going to create an exact replica of it. Given that Stalker contexts are on a
 per-thread basis, we should not be stalking this new child.
 
 Note that for syscalls in AArch64 the first 8 arguments are passed in registers
-`x0` through `x7` and the syscall number is passed in `x8`, additional arguments
-are passed on the stack. The return value for the syscall is returned in `x0`.
+`X0` through `X7` and the syscall number is passed in `X8`, additional arguments
+are passed on the stack. The return value for the syscall is returned in `X0`.
 The function `gum_exec_block_virtualize_linux_sysenter()` generates the
 necessary instrumented code to deal with such a syscall. We will look at the
 pseudo code below:
 
 ```
-if x8 == __NR_clone:
-  x0 = do_original_syscall()
-  if x0 == 0:
+if X8 == __NR_clone:
+  X0 = do_original_syscall()
+  if X0 == 0:
     goto gc->instruction->begin
-  return x0
+  return X0
 else:
   return do_original_syscall()
 ```
