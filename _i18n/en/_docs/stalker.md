@@ -945,7 +945,6 @@ single instruction prefixed.
 gum_arm64_writer_put_ldp_reg_reg_reg_offset (cw, ARM64_REG_X16,
     ARM64_REG_X17, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
     GUM_INDEX_POST_ADJUST);
-```
 This instruction is the restoration prolog (denoted by
 `GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you will
 note this constant is added on by `_gum_stalker_do_follow_me()` and
