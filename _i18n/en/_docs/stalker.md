@@ -759,7 +759,6 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
 
   return slab;
 }
-```
 Here, we can see that the `data` field points to the start of the tail where
 instructions can be written after the header. The `offset` field keeps track of our
 offset into the tail. The `size` field keeps track of the total number of bytes
