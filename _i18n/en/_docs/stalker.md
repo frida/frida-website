@@ -1949,7 +1949,6 @@ static guint total_transitions = 0;
   }
 #define GUM_PRINT_ENTRYGATE_COUNTER(name) \
   g_printerr ("\t" G_STRINGIFY (name) "s: %u\n", total_##name##s)
-
 ```
 
 These counters can be displayed by the following routine. They are only meant
