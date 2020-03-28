@@ -2057,7 +2057,7 @@ Remember earlier that in `gum_exec_block_virtualize_branch_insn()`, we could onl
 check if our call was to an excluded range if the target was specified in an
 immediate? Well if the target was specified in a register, then here we emit
 code to check whether the target is in an excluded range. This is done by
-loading the target regsiter using
+loading the target register using
 `gum_exec_ctx_write_push_branch_target_address` (which in turn calls
 `gum_exec_ctx_load_real_register_into` which we covered ealier to read the
 context) and emitting code to call `gum_exec_block_check_address_for_exclusion`
