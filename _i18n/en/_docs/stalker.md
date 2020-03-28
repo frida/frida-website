@@ -31,11 +31,11 @@ However, it is hoped it will prove to be a very useful head-start.
 
 To start to understand the implementation of Stalker, we must first understand
 in detail what it offers to the user. Whilst Stalker can be invoked directly
-through its native gum interface, most users will instead call it via the
+through its native Gum interface, most users will instead call it via the
 [JavaScript API](https://frida.re/docs/javascript-api/#stalker) which will call
-these gum methods on their behalf. The [typescript type
+these Gum methods on their behalf. The [typescript type
 definitions](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/frida-gum/index.d.ts)
-for gum are well commented and provide a little more detail still.
+for Gum are well commented and provide a little more detail still.
 
 The main API to Stalker from JavaScript is:
 
@@ -148,7 +148,7 @@ local variables can be access at a fixed offset from the frame pointer. Again we
 need to save and restore this as each function will have its value for this
 register, so we need to store the value which our caller put in there and
 restore it before we return. Indeed you can see in the next instruction `mov
-X29, sp` that we set the frame pointer to the current stack pointer.
+x29, sp` that we set the frame pointer to the current stack pointer.
 
 We can see the next instruction `mov x3, x30`, puts the value of the link
 register into X3. The first 8 arguments on AArch64 are passed in the registers
@@ -200,7 +200,7 @@ gum_stalker_follow (GumStalker * self,
 ```
 
 We can see that this calls the function `gum_process_modify_thread()`. This
-isn't part of Stalker, but part of gum itself. This function takes a callback
+isn't part of Stalker, but part of Gum itself. This function takes a callback
 with a context parameter to call passing the thread context structure. This
 callback can then modify the `GumCpuContext` structure and
 `gum_process_modify_thread()` will then write the changes back. We can see the
