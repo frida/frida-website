@@ -58,8 +58,8 @@ int pthread_getname_np(pthread_t thread,
 ```
 
 Using this along with the
-[Thread.backtrace()](https://frida.re/docs/javascript-api/#thread) to dump thread
-stacks can give you a really good overview of what a process is doing.
+[Thread.backtrace()](https://frida.re/docs/javascript-api/#thread) to dump
+thread stacks can give you a really good overview of what a process is doing.
 
 The other scenario where you might call `Stalker.follow()` is perhaps from a
 function which has been
@@ -77,8 +77,8 @@ under the hood, it is all managed by the same simple API for the user,
 ## Following
 
 When the user calls `Stalker.follow()`, under the hood, the JavaScript engine
-calls through to either `gum_stalker_follow_me()` to follow the current thread, or
-`gum_stalker_follow(thread_id)` to follow another thread in the process.
+calls through to either `gum_stalker_follow_me()` to follow the current thread,
+or `gum_stalker_follow(thread_id)` to follow another thread in the process.
 
 ### gum_stalker_follow_me()
 
@@ -153,8 +153,8 @@ x29, sp` that we set the frame pointer to the current stack pointer.
 We can see the next instruction `mov x3, x30`, puts the value of the link
 register into x3. The first 8 arguments on AArch64 are passed in the registers
 x0-x7. So this is being put into the register used for the fourth argument. We
-then call (branch with link) the function `_gum_stalker_do_follow_me()`. So we can
-see that we pass the first three arguments in x0-x2 untouched, so that
+then call (branch with link) the function `_gum_stalker_do_follow_me()`. So we
+can see that we pass the first three arguments in x0-x2 untouched, so that
 `_gum_stalker_do_follow_me()` receives the same values we were called with.
 Finally, we can see after this function returns, we branch to the address we
 receive as its return value. (In AArch64 the return value of a function is
@@ -199,13 +199,14 @@ gum_stalker_follow (GumStalker * self,
 }
 ```
 
-We can see that this calls the function `gum_process_modify_thread()`. This isn't
-part of Stalker, but part of gum itself. This function takes a callback with a
-context parameter to call passing the thread context structure. This callback
-can then modify the `GumCpuContext` structure and `gum_process_modify_thread()`
-will then write the changes back. We can see the context structure below, as you
-can see it contains fields for all of the registers in the AArch64 CPU. We can
-also see below the function prototype of our callback.
+We can see that this calls the function `gum_process_modify_thread()`. This
+isn't part of Stalker, but part of gum itself. This function takes a callback
+with a context parameter to call passing the thread context structure. This
+callback can then modify the `GumCpuContext` structure and
+`gum_process_modify_thread()` will then write the changes back. We can see the
+context structure below, as you can see it contains fields for all of the
+registers in the AArch64 CPU. We can also see below the function prototype of
+our callback.
 
 ```
 typedef GumArm64CpuContext GumCpuContext;
@@ -229,15 +230,15 @@ gum_stalker_infect (GumThreadId thread_id,
                     gpointer user_data)
 ```
 
-So, how does `gum_process_modify_thread()` work? Well it depends on the platform.
-On Linux (and Android) it uses the `ptrace` API (the same one used by GDB) to
-attach to the thread and read and write registers. But there are a host of
-complexities. On Linux, you cannot ptrace your own process (or indeed any in the
-same process group), so FRIDA creates a clone of the current process in its own
-process group and shares the same memory space. It communicates with it using a
-UNIX socket. This cloned process acts as a debugger, reading the registers of
-the original target process and storing them in the shared memory space and then
-writing them back to the process on demand. Oh and then there is
+So, how does `gum_process_modify_thread()` work? Well it depends on the
+platform. On Linux (and Android) it uses the `ptrace` API (the same one used by
+GDB) to attach to the thread and read and write registers. But there are a host
+of complexities. On Linux, you cannot ptrace your own process (or indeed any in
+the same process group), so FRIDA creates a clone of the current process in its
+own process group and shares the same memory space. It communicates with it
+using a UNIX socket. This cloned process acts as a debugger, reading the
+registers of the original target process and storing them in the shared memory
+space and then writing them back to the process on demand. Oh and then there is
 `PR_SET_DUMPABLE` and `PR_SET_PTRACER` which control the permissions of who is
 allowed to ptrace our original process.
 
@@ -262,9 +263,9 @@ encounter an instruction which causes (or can cause) execution to continue with
 an instruction other than the one immediately following it in memory.
 
 Stalker works on one block at a time. It starts with either the block after the
-return to the call to `gum_stalker_follow_me()` or the block of code to which the
-instruction pointer of the target thread is pointing when `gum_stalker_follow()`
-is called.
+return to the call to `gum_stalker_follow_me()` or the block of code to which
+the instruction pointer of the target thread is pointing when
+`gum_stalker_follow()` is called.
 
 Stalker works by allocating some memory and writing to it a new instrumented
 copy of the original block. Instructions may be added to generate events, or
@@ -338,8 +339,8 @@ both blocks of code (the one if the branch is taken and the one if it isn't)
 then we can replace the original conditional branch with one conditional branch
 which directs control flow to instrumented version of the block encountered when
 the branch was taken, followed by a unconditional branch to the other
-instrumented block. We can also deal partially with branches where the
-target is not static. Say our branch is something like:
+instrumented block. We can also deal partially with branches where the target is
+not static. Say our branch is something like:
 
 ```
 BR x0
@@ -392,8 +393,8 @@ target function to re-direct execution into FRIDA. Frida copies and relocates
 these first few instructions somewhere else so that after the `onEnter` callback
 has been completed, it can re-direct control flow back to the original function.
 
-The reasons these may not work within stalker is simple, the original function is
-never called. Each block, before it is executed is instrumented elsewhere in
+The reasons these may not work within stalker is simple, the original function
+is never called. Each block, before it is executed is instrumented elsewhere in
 memory and it is this copy which is executed. Stalker supports the API function
 `Stalker.addCallProbe(address, callback[, data])` to provide this functionality
 instead. The optional data parameter is passed when the probe callback is
@@ -431,27 +432,25 @@ In actual fact, the value of N is the number of times the block needs to be
 re-executed and match the previously instrumented block (e.g. be unchanged)
 before we stop performing the comparison. Note that the original copy of the
 code block is still stored even when the trust threshold is set to `-1` or `0`.
-Whilst it is not actually needed for these values, it has been
-retained to keep things simple.
-In any case, neither of these is
-the default setting.
+Whilst it is not actually needed for these values, it has been retained to keep
+things simple. In any case, neither of these is the default setting.
 
 ### Excluded Ranges
 
 Stalker also has the API `Stalker.exclude(range)` that's passed a base and limit
-used to prevent Stalker from instrumenting code within these regions.
-Consider, for example, your thread calls `malloc()` inside `libc`. You most
-likely don't care about the inner workings of the heap and this is not only
-going to slow down performance, but also generate a whole lot of extraneous
-events you don't care about. One thing to consider, however, is that as soon as
-a call is made to an excluded range, stalking of that thread is stopped until it
-returns. That means, if that thread were to call a function which is not inside
-a restricted range, a callback perhaps, then this would not be captured by
-stalker. Just as this can be used to stop the stalking of a whole library, it can
-be used to stop stalking a given function (and its callees) too. This can be
-particularly useful if your target application is statically linked. Here, was
-cannot simply ignore all calls to `libc`, but we can find the symbol for
-`malloc()` using `Module.enumerateSymbols()` and ignore that single function.
+used to prevent Stalker from instrumenting code within these regions. Consider,
+for example, your thread calls `malloc()` inside `libc`. You most likely don't
+care about the inner workings of the heap and this is not only going to slow
+down performance, but also generate a whole lot of extraneous events you don't
+care about. One thing to consider, however, is that as soon as a call is made to
+an excluded range, stalking of that thread is stopped until it returns. That
+means, if that thread were to call a function which is not inside a restricted
+range, a callback perhaps, then this would not be captured by stalker. Just as
+this can be used to stop the stalking of a whole library, it can be used to stop
+stalking a given function (and its callees) too. This can be particularly useful
+if your target application is statically linked. Here, was cannot simply ignore
+all calls to `libc`, but we can find the symbol for `malloc()` using
+`Module.enumerateSymbols()` and ignore that single function.
 
 ### Freeze/Thaw
 
@@ -483,8 +482,10 @@ collection of instructions as “call instructions”.
 ### Frames
 
 Whenever stalker encounters a call, it stores the return address and the address
-of the instrumented return block forwarder in a structure and adds these to a stack stored
-in a data-structure of its own. It uses this as a speculative optimization, and also as a heuristic to approximate the call depth when emitting call and return events.
+of the instrumented return block forwarder in a structure and adds these to a
+stack stored in a data-structure of its own. It uses this as a speculative
+optimization, and also as a heuristic to approximate the call depth when
+emitting call and return events.
 
 ```
 typedef struct _GumExecFrame GumExecFrame;
@@ -572,11 +573,11 @@ instruction.
 End of Input (EOI) indicates that not only have we reached the end of a block,
 but we have possibly reached the end of the input, i.e. what follows this
 instruction may not be another instruction. Whilst this is not the case for a
-call instruction as code control will (typically) pass back when the callee returns and so
-more instructions must follow (note that a compiler will typically generate a
-branch instruction for a call to a non-returning function like `exit()`), if we
-encounter a branch instruction, or a return instruction, we have no guarantee
-that code will follow afterwards.
+call instruction as code control will (typically) pass back when the callee
+returns and so more instructions must follow (note that a compiler will
+typically generate a branch instruction for a call to a non-returning function
+like `exit()`), if we encounter a branch instruction, or a return instruction,
+we have no guarantee that code will follow afterwards.
 
 ### Prologues/Epilogues
 
@@ -595,12 +596,13 @@ they are used by the code within the stalker engine. This *"minimal"* context is
 sufficient for most purposes.
 
 However, if the Stalker engine is to call a probe registered by
-`Stalker.addCallProbe()`, or a callout created by `iterator.putCallout()` (called by
-a Transformer), then these callbacks will expect to receive the full CPU context
-as an argument. And they will expect to be able to modify this context and for
-the changes to take effect when control is passed back to the application code.
-Thus for these instances, we must write a *"full"* context and its layout must
-match the expected format dictated by the structure `GumArm64CpuContext`.
+`Stalker.addCallProbe()`, or a callout created by `iterator.putCallout()`
+(called by a Transformer), then these callbacks will expect to receive the full
+CPU context as an argument. And they will expect to be able to modify this
+context and for the changes to take effect when control is passed back to the
+application code. Thus for these instances, we must write a *"full"* context and
+its layout must match the expected format dictated by the structure
+`GumArm64CpuContext`.
 
 ```
 typedef struct _GumArm64CpuContext GumArm64CpuContext;
@@ -641,20 +643,20 @@ static void gum_exec_ctx_write_full_epilog_helper (
 ```
 
 Finally, note that in AArch64 architecture, it is only possible to make a direct
-branch to code within ±128 MB of the caller, and using an
-indirect branch is more expensive (both in terms of code size and performance).
-Therefore, as we write more and more instrumented blocks, we will get further
-and further away from the shared prologue and epilogue. If we get more than
-128 MB away, we simply write out another copy of these prologues and epilogues to
-use. This gives us a very reasonable tradeoff.
+branch to code within ±128 MB of the caller, and using an indirect branch is
+more expensive (both in terms of code size and performance). Therefore, as we
+write more and more instrumented blocks, we will get further and further away
+from the shared prologue and epilogue. If we get more than 128 MB away, we
+simply write out another copy of these prologues and epilogues to use. This
+gives us a very reasonable tradeoff.
 
 ### Counters
 
 Finally, there are a series of counters which you can see kept recording the
 number of each type of instructions encountered at the end of an instrumented
 block. These are only used by the test-suite to guide the developer during
-performance tuning, indicating which branch types most commonly require
-a full context-switch into Stalker to resolve the target.
+performance tuning, indicating which branch types most commonly require a full
+context-switch into Stalker to resolve the target.
 
 ## Slabs
 
@@ -722,11 +724,11 @@ gum_stalker_init (GumStalker * self)
 }
 ```
 
-So we can see that each slab is 4 MB in size. A 12th of this slab is reserved for
-its header, the `GumSlab` structure itself including its `GumExecBlock` array.
-Note that this is defined as a zero length array at the end of the `GumSlab`
-structure, but the actual number of these which can fit in the header of the
-slab is calculated and stored in `slab_max_blocks`.
+So we can see that each slab is 4 MB in size. A 12th of this slab is reserved
+for its header, the `GumSlab` structure itself including its `GumExecBlock`
+array. Note that this is defined as a zero length array at the end of the
+`GumSlab` structure, but the actual number of these which can fit in the header
+of the slab is calculated and stored in `slab_max_blocks`.
 
 So what is the remainder of the slab used for? Whilst the header of the slab is
 used for all the accounting information, the remainder (henceforth referred to
@@ -737,9 +739,9 @@ So why is a 12th of the slab allocated for the header and the remainder for the
 instructions? Well the length of each block to be instrumented will vary
 considerably and may be affected by the compiler being used and its optimization
 settings. Some rough empirical testing showed that given the average length of
-each block this might be a reasonable ratio to ensure we didn't run out of space for new
-`GumExecBlock` entries before we ran out of space for new instrumented blocks in
-the tail and vice versa.
+each block this might be a reasonable ratio to ensure we didn't run out of space
+for new `GumExecBlock` entries before we ran out of space for new instrumented
+blocks in the tail and vice versa.
 
 Let's now look at the code which creates them:
 
@@ -768,9 +770,9 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
 ```
 
 Here, we can see that the `data` field points to the start of the tail where
-instructions can be written after the header. The `offset` field keeps track of our
-offset into the tail. The `size` field keeps track of the total number of bytes
-available in the tail. The `num_blocks` field keeps track of how many
+instructions can be written after the header. The `offset` field keeps track of
+our offset into the tail. The `size` field keeps track of the total number of
+bytes available in the tail. The `num_blocks` field keeps track of how many
 instrumented blocks have been written to the slab.
 
 Note that where possible we allocate the slab with RWX permissions so that we
@@ -834,12 +836,12 @@ gum_exec_block_new (GumExecCtx * ctx)
 The function first checks if there is space for a minimally sized block in the
 tail of the slab (1024 bytes) and whether there is space in the array of
 `GumExecBlocks` in the slab header for a new entry. If it does then a new entry
-is created in the array and its pointers are set to reference the `GumExecCtx` (the
-main stalker session context) and the `GumSlab`, The `code_begin` and `code_end`
-pointers are both set to the first free byte in the tail. The `recycle_count`
-used by the trust threshold mechanism to determine how many times the block has
-been encountered unmodified is reset to zero, and the remainder of the tail is
-thawed to allow code to be written to it.
+is created in the array and its pointers are set to reference the `GumExecCtx`
+(the main stalker session context) and the `GumSlab`, The `code_begin` and
+`code_end` pointers are both set to the first free byte in the tail. The
+`recycle_count` used by the trust threshold mechanism to determine how many
+times the block has been encountered unmodified is reset to zero, and the
+remainder of the tail is thawed to allow code to be written to it.
 
 Next if the trust threshold is set to less than zero (recall -1 means blocks are
 never trusted and always re-written) then we reset the slab `offset` (the
@@ -848,9 +850,9 @@ instrumented code written for any blocks within the slab will be overwritten.
 
 Finally, as there is no space left in the current slab and we can't overwrite it
 because the trust threshold means blocks may be re-used, then we must allocate a
-new slab by calling `gum_exec_ctx_add_slab()`, which we looked at above. We
-then call `gum_exec_ctx_ensure_inline_helpers_reachable()`, more on that in a
-moment, and then we allocate our block from the new slab.
+new slab by calling `gum_exec_ctx_add_slab()`, which we looked at above. We then
+call `gum_exec_ctx_ensure_inline_helpers_reachable()`, more on that in a moment,
+and then we allocate our block from the new slab.
 
 Recall, that we use *helpers* (such as the prologues and epilogues that save and
 restore the CPU context) to prevent having to duplicate these instructions at
@@ -871,12 +873,12 @@ that our slab ends up nowhere near the previous one.
 We can only assume that either this is unlikely to be a problem, or that this
 has been factored into the size of the slabs to ensure that writing the helpers
 to each slab isn't much of an overhead because it doesn't use a significant
-proportion of their space. An alternative could be to store every location
-every time we have written out a helper function so that we have more candidates
-to choose from (maybe our slab isn't allocated nearby the one previously
-allocated, but perhaps it is close enough to one of the others). Otherwise, we
-could consider making a custom allocator using `mmap()` to reserve a large (e.g.
-128 MB) region of virtual address space and then use `mmap()` again to commit the
+proportion of their space. An alternative could be to store every location every
+time we have written out a helper function so that we have more candidates to
+choose from (maybe our slab isn't allocated nearby the one previously allocated,
+but perhaps it is close enough to one of the others). Otherwise, we could
+consider making a custom allocator using `mmap()` to reserve a large (e.g. 128
+MB) region of virtual address space and then use `mmap()` again to commit the
 memory one slab at a time as needed. But these ideas are perhaps both overkill.
 
 ## Instrumenting Blocks
@@ -914,19 +916,20 @@ gum_default_stalker_transformer_transform_block (
 ```
 
 We will gloss over the details of `gum_stalker_iterator_next()` and
-`gum_stalker_iterator_keep()` for now. But in essence, this causes the iterator to
-read code one instruction at a time from the relocator, and write the relocated
-instruction out using the writer. Following this process, the `GumExecBlock`
-structure can be updated. It's field `real_end` can be set to the address where
-the relocator read up to, and its field `code_end` can be set to the address
-which the writer wrote up to. Thus `real_begin` and `real_end` mark the limits
-of the original block, and `code_begin` and `code_end` mark the limits of the
-newly instrumented block. Finally, `gum_exec_ctx_obtain_block_for()` calls
-`gum_exec_block_commit()` which takes a copy of the original block and places it
-immediately after the instrumented copy. The field `real_snapshot` points to
-this (and is thus identical to `code_end`). Next the slab's `offset` field is
-updated to reflect the space used by our instrumented block and our copy of the
-original code. Finally, the block is frozen to allow it to be executed.
+`gum_stalker_iterator_keep()` for now. But in essence, this causes the iterator
+to read code one instruction at a time from the relocator, and write the
+relocated instruction out using the writer. Following this process, the
+`GumExecBlock` structure can be updated. It's field `real_end` can be set to the
+address where the relocator read up to, and its field `code_end` can be set to
+the address which the writer wrote up to. Thus `real_begin` and `real_end` mark
+the limits of the original block, and `code_begin` and `code_end` mark the
+limits of the newly instrumented block. Finally,
+`gum_exec_ctx_obtain_block_for()` calls `gum_exec_block_commit()` which takes a
+copy of the original block and places it immediately after the instrumented
+copy. The field `real_snapshot` points to this (and is thus identical to
+`code_end`). Next the slab's `offset` field is updated to reflect the space used
+by our instrumented block and our copy of the original code. Finally, the block
+is frozen to allow it to be executed.
 
 ```
 static void
@@ -958,8 +961,8 @@ gum_arm64_writer_put_ldp_reg_reg_reg_offset (cw, ARM64_REG_X16,
 ```
 
 This instruction is the restoration prolog (denoted by
-`GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you will
-note this constant is added on by `_gum_stalker_do_follow_me()` and
+`GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you
+will note this constant is added on by `_gum_stalker_do_follow_me()` and
 `gum_stalker_infect()` when returning the address of the instrumented code. When
 return instructions are instrumented, however, if the return is to a block which
 has already been instrumented, then we can simply return to that block rather
@@ -971,8 +974,8 @@ directly to an instrumented block, we return to this first instruction which
 restores these registers from the stack. This will be covered in more detail
 later.
 
-Secondly, we can see `gum_exec_ctx_obtain_block_for()` does the
-following after the instrumented block is written:
+Secondly, we can see `gum_exec_ctx_obtain_block_for()` does the following after
+the instrumented block is written:
 
 ```
 gum_arm64_writer_put_brk_imm (cw, 14);
@@ -985,19 +988,19 @@ generate an event of type `GUM_COMPILE` when compiling the block.
 
 ## Helpers
 
-We can see from `gum_exec_ctx_ensure_inline_helpers_reachable()` that
-we have a total of 6 helpers. These helpers are common fragments of code which
-are needed repeatedly by our instrumented blocks. Rather than emitting the code
-they contain repeatedly, we instead write it once and place a call or branch
+We can see from `gum_exec_ctx_ensure_inline_helpers_reachable()` that we have a
+total of 6 helpers. These helpers are common fragments of code which are needed
+repeatedly by our instrumented blocks. Rather than emitting the code they
+contain repeatedly, we instead write it once and place a call or branch
 instruction to have our instrumented code execute it. Recall that the helpers
 are written into the same slabs we are writing our instrumented code into and
 that if possible we can re-use the helper written into a previous nearby slab
 rather than putting a copy in each one.
 
-This function calls `gum_exec_ctx_ensure_helper_reachable()` for each helper which
-in turn calls `gum_exec_ctx_is_helper_reachable()` to check if the helper is
-within range, or otherwise calls the callback passed as the second argument to
-write out a new copy.
+This function calls `gum_exec_ctx_ensure_helper_reachable()` for each helper
+which in turn calls `gum_exec_ctx_is_helper_reachable()` to check if the helper
+is within range, or otherwise calls the callback passed as the second argument
+to write out a new copy.
 
 ```
 static void
@@ -1084,12 +1087,12 @@ gum_stalker_create_exec_ctx (GumStalker * self,
 ### last_stack_push
 
 Much of the complexity in understanding Stalker and the helpers in particular is
-that some functions – let's call them writers – write code which is executed at a
-later point. These writers have branches in themselves which determine exactly
-what code to write, and the written code can also sometimes have branches too. The
-approach I will take for these two helpers therefore is to show pseudo code for
-the assembly which is emitted into the slab which will be called by instrumented
-blocks.
+that some functions – let's call them writers – write code which is executed at
+a later point. These writers have branches in themselves which determine exactly
+what code to write, and the written code can also sometimes have branches too.
+The approach I will take for these two helpers therefore is to show pseudo code
+for the assembly which is emitted into the slab which will be called by
+instrumented blocks.
 
 The pseudo code for this helper is shown below:
 
@@ -1133,10 +1136,10 @@ the return.
 ### last_stack_pop_and_go
 
 Now lets look at the `last_stack_pop_and_go` helper. To understand this, we also
-need to understand the code written by `gum_exec_block_write_ret_transfer_code()`
-(the code that calls it), as well as that written by
-`gum_exec_block_write_exec_generated_code()` which it calls. We will skip over
-pointer authentication for now.
+need to understand the code written by
+`gum_exec_block_write_ret_transfer_code()` (the code that calls it), as well as
+that written by `gum_exec_block_write_exec_generated_code()` which it calls. We
+will skip over pointer authentication for now.
 
 ```
 void ret_transfer_code(arm64_reg ret_reg) {
@@ -1220,14 +1223,15 @@ cleared, now our control-flow has deviated, we will start again building our
 stack again. We accept that we will take this same slower path for any previous
 frames in the call-stack we recorded so far if we ever return to them, but will
 have the possibility of using the fast path for new calls we encounter from here
-on out (until the next time a call instruction is used in an unconventional manner).
+on out (until the next time a call instruction is used in an unconventional
+manner).
 
 We make a minimal prologue (our instrumented code is now going to have to
 re-enter stalker) and we need to be able to restore the application's registers
 before we return control back to it. We call the entry gate for return,
 `gum_exec_ctx_replace_current_block_from_ret()` (more on entry gates later). We
-then execute the corresponding epilogue before branching to the
-`ctx->resume_at` pointer which is set by stalker during the above call to
+then execute the corresponding epilogue before branching to the `ctx->resume_at`
+pointer which is set by stalker during the above call to
 `gum_exec_ctx_replace_current_block_from_ret()` to point to the new instrumented
 block.
 
@@ -1304,10 +1308,10 @@ the stack to store information for the stalker engine.
 
 ## Context Helpers
 
-Now that we have looked at how these helpers are called, let us now have a look at
-the helpers themselves. Although there are two prologues and two epilogues (full
-and minimal), they are both written by the same function as they have much in
-common. The version which is written is based on the function parameters. The
+Now that we have looked at how these helpers are called, let us now have a look
+at the helpers themselves. Although there are two prologues and two epilogues
+(full and minimal), they are both written by the same function as they have much
+in common. The version which is written is based on the function parameters. The
 easiest way to present these is with annotated code:
 
 ```
@@ -1727,8 +1731,8 @@ branch or return instruction was going to branch to so that we can instrument
 the block.
 
 When stalker writes the prologue and epilogue code, it does so by calling
-`gum_exec_block_open_prolog()` and `gum_exec_block_close_prolog()`. These store the
-type of prologue which has been written in `gc->opened_prolog`.
+`gum_exec_block_open_prolog()` and `gum_exec_block_close_prolog()`. These store
+the type of prologue which has been written in `gc->opened_prolog`.
 
 ```
 static void
@@ -1909,8 +1913,8 @@ Execution of stalker begins at one of 3 entry points:
 The first two we have already covered, these initialize the stalker engine and
 start instrumenting the first block of execution.
 `gum_exec_ctx_replace_current_block_with()` is used to instrument subsequent
-blocks. In fact, the main difference between this function and the preceding
-two is that the stalker engine has already been initialized and hence this work
+blocks. In fact, the main difference between this function and the preceding two
+is that the stalker engine has already been initialized and hence this work
 doesn't need to be repeated. All three call `gum_exec_ctx_obtain_block_for()` to
 generate the instrumented block.
 
@@ -1919,19 +1923,19 @@ transformers. It calls the transformed implementation in use, which by default
 calls `gum_stalker_iterator_next()` which calls the relocator using
 `gum_arm64_relocator_read_one()` to read the next relocated instruction. Then it
 calls `gum_stalker_iterator_keep()` to generate the instrumented copy. It does
-this in a loop until `gum_stalker_iterator_next()` returns `FALSE` as it has reached
-the end of the block.
+this in a loop until `gum_stalker_iterator_next()` returns `FALSE` as it has
+reached the end of the block.
 
 Most of the time `gum_stalker_iterator_keep()` will simply call
 `gum_arm64_relocator_write_one()` to emit the relocated instruction as is.
 However, if the instruction is a branch or return instruction it will call
-`gum_exec_block_virtualize_branch_insn()` or `gum_exec_block_virtualize_ret_insn()`
-respectively. These two virtualization functions which we will cover in more
-detail later, emit code to transfer control back into
-`gum_exec_ctx_replace_current_block_with()` via an entry gate ready to process the
-next block (unless there is an optimization where we can bypass stalker and go
-direct to the next instrumented block, or we are entering into an excluded
-range).
+`gum_exec_block_virtualize_branch_insn()` or
+`gum_exec_block_virtualize_ret_insn()` respectively. These two virtualization
+functions which we will cover in more detail later, emit code to transfer
+control back into `gum_exec_ctx_replace_current_block_with()` via an entry gate
+ready to process the next block (unless there is an optimization where we can
+bypass stalker and go direct to the next instrumented block, or we are entering
+into an excluded range).
 
 ## Gates
 
@@ -1941,9 +1945,9 @@ instruction, we direct control flow back to the
 `gum_exec_ctx_replace_current_block_with()` function via one of these gates. We
 can see that the implementation of the gate is quite simple, it updates a
 counter of how many times it has been called and passes control to
-`gum_exec_ctx_replace_current_block_with()` passing through the parameters it was
-called with, the `GumExecCtx` and the `start_address` of the next block to be
-instrumented.
+`gum_exec_ctx_replace_current_block_with()` passing through the parameters it
+was called with, the `GumExecCtx` and the `start_address` of the next block to
+be instrumented.
 
 ```
 static gboolean counters_enabled = FALSE;
@@ -1969,9 +1973,8 @@ static guint total_transitions = 0;
   g_printerr ("\t" G_STRINGIFY (name) "s: %u\n", total_##name##s)
 ```
 
-These counters can be displayed by the following routine. They are only meant
-to be used by the test-suite rather than being exposed to the user through the
-API.
+These counters can be displayed by the following routine. They are only meant to
+be used by the test-suite rather than being exposed to the user through the API.
 
 ```
 #define GUM_PRINT_ENTRYGATE_COUNTER(name) \
@@ -2033,8 +2036,8 @@ gates which will be used to handle the branch. The former is used to hold the
 gate used for non-conditional branches and `cond_entry_func` holds the gate to
 be used for a conditional branch (whether it is taken or not).
 
-The function `gum_exec_block_write_jmp_transfer_code()` is used to write the code
-required to branch to the entry gate. For non-conditional branches this is
+The function `gum_exec_block_write_jmp_transfer_code()` is used to write the
+code required to branch to the entry gate. For non-conditional branches this is
 simple, we call the function passing the `target` and the `regular_entry_func`.
 For conditional branches things are slightly more complicated. Our output looks
 like the following pseudo-code:
@@ -2050,10 +2053,10 @@ Here, we can see that we first write a branch instruction into our instrumented
 block, as in our instrumented block, we also need to determine whether we should
 take the branch or not. But instead of branching directly to the target, just
 like for the non-conditional branches we use
-`gum_exec_block_write_jmp_transfer_code()` to write code to jump back into stalker
-via the relevant entry gate passing the real address we would have branched to.
-Note, however that the branch is inverted from the original (e.g. `CBZ` would be
-replaced by `CBNZ`).
+`gum_exec_block_write_jmp_transfer_code()` to write code to jump back into
+stalker via the relevant entry gate passing the real address we would have
+branched to. Note, however that the branch is inverted from the original (e.g.
+`CBZ` would be replaced by `CBNZ`).
 
 Now, let's look at how `gum_exec_block_virtualize_branch_insn()` handles calls.
 First we emit code to generate the call event if we are configured to. Next we
@@ -2071,17 +2074,17 @@ Finally, if it is just a normal call expression, then we use the function
 This function is pretty complicated as a result of all of the optimization for
 backpatching, so we will only look at the basics.
 
-Remember earlier that in `gum_exec_block_virtualize_branch_insn()`, we could only
-check if our call was to an excluded range if the target was specified in an
-immediate? Well if the target was specified in a register, then here we emit
+Remember earlier that in `gum_exec_block_virtualize_branch_insn()`, we could
+only check if our call was to an excluded range if the target was specified in
+an immediate? Well if the target was specified in a register, then here we emit
 code to check whether the target is in an excluded range. This is done by
 loading the target register using
 `gum_exec_ctx_write_push_branch_target_address()` (which in turn calls
 `gum_exec_ctx_load_real_register_into()` which we covered ealier to read the
-context) and emitting code to call `gum_exec_block_check_address_for_exclusion()`
-whose implementation is quite self explanatory. If it is excluded then a branch
-is taken and similar code to that described when handling excluded immediate
-calls discussed above is used.
+context) and emitting code to call
+`gum_exec_block_check_address_for_exclusion()` whose implementation is quite
+self explanatory. If it is excluded then a branch is taken and similar code to
+that described when handling excluded immediate calls discussed above is used.
 
 Next we emit code to call the entry gate and generate the instrumented block of
 the callee. Then call the helper `last_stack_push` to add our `GumExecFrame` to
@@ -2099,9 +2102,9 @@ instrumented callee.
 After looking at the virtualization of call instructions, you will be pleased to
 know that this one is relatively simple! If configured, this function calls
 `gum_exec_block_write_ret_event_code()` to generate an event for the return
-statement. Then it calls `gum_exec_block_write_ret_transfer_code()` to generate the
-code required to handle the return instruction. This one is simple too, it emits
-code to call the `last_stack_pop_and_go` helper we covered earlier.
+statement. Then it calls `gum_exec_block_write_ret_transfer_code()` to generate
+the code required to handle the return instruction. This one is simple too, it
+emits code to call the `last_stack_pop_and_go` helper we covered earlier.
 
 ## Emitting events
 
@@ -2228,19 +2231,19 @@ gum_stalker_unfollow_me (GumStalker * self)
 }
 ```
 
-We notice here that we pass `NULL` as the address to `gum_exec_ctx_maybe_unfollow()`
-which may seem odd, but we can see that in this instance it isn't used as when
-we instrument a block (remember `gum_exec_ctx_replace_current_block_with()` is
-where the entry gates direct us to instrument subsequent blocks) we check to see
-if we are about to call `gum_unfollow_me()`, and if so then we return the original
-block from the function rather than the address of the instrumented block
-generated by `gum_exec_ctx_obtain_block_for()`. Therefore we can see that this is
-a special case and this function isn't stalked. We simply jump to the real
-function so at this point we have stopped stalking the thread forever. This
-handling differs from excluded ranges as for those we retain the original call
-instruction in an instrumented block, but then follow it with a call back into
-stalker. In this case, we are just vectoring back to an original uninstrumented
-block:
+We notice here that we pass `NULL` as the address to
+`gum_exec_ctx_maybe_unfollow()` which may seem odd, but we can see that in this
+instance it isn't used as when we instrument a block (remember
+`gum_exec_ctx_replace_current_block_with()` is where the entry gates direct us
+to instrument subsequent blocks) we check to see if we are about to call
+`gum_unfollow_me()`, and if so then we return the original block from the
+function rather than the address of the instrumented block generated by
+`gum_exec_ctx_obtain_block_for()`. Therefore we can see that this is a special
+case and this function isn't stalked. We simply jump to the real function so at
+this point we have stopped stalking the thread forever. This handling differs
+from excluded ranges as for those we retain the original call instruction in an
+instrumented block, but then follow it with a call back into stalker. In this
+case, we are just vectoring back to an original uninstrumented block:
 
 ```
 static gpointer gum_unfollow_me_address;
@@ -2347,9 +2350,9 @@ to point to the `infect_thunk` and resets the program pointer back to its
 original value. The `infect_thunk` is created by `gum_stalker_infect()` which is
 the callback used by `gum_stalker_follow()` to modify the context. Recall that
 whilst some of the setup can be carried out on behalf of the target thread, some
-has to be done in the context of the target thread itself (in particular
-setting variables in thread local storage). Well, it is the `infect_thunk`
-which contains that code.
+has to be done in the context of the target thread itself (in particular setting
+variables in thread local storage). Well, it is the `infect_thunk` which
+contains that code.
 
 ## Miscellaneous
 
@@ -2565,9 +2568,9 @@ per-thread basis, we should not be stalking this new child.
 Note that for syscalls in AArch64 the first 8 arguments are passed in registers
 `x0` through `x7` and the syscall number is passed in `x8`, additional arguments
 are passed on the stack. The return value for the syscall is returned in `x0`.
-The function `gum_exec_block_virtualize_linux_sysenter()` generates the necessary
-instrumented code to deal with such a syscall. We will look at the pseudo
-code below:
+The function `gum_exec_block_virtualize_linux_sysenter()` generates the
+necessary instrumented code to deal with such a syscall. We will look at the
+pseudo code below:
 
 ```
 if x8 == __NR_clone:
@@ -2599,7 +2602,8 @@ from stalker.
 
 Last of all, we should note that newer versions of iOS have
 [introduced](https://ivrodriguez.com/pointer-authentication-on-armv8-3/)
-[pointer authentication codes](https://events.static.linuxfound.org/sites/events/files/slides/slides_23.pdf).
+[pointer authentication
+codes](https://events.static.linuxfound.org/sites/events/files/slides/slides_23.pdf).
 Pointer authentication codes (PACs) make use of unused bits in pointers (the
 high bits of virtual addresses are commonly unused as most systems have a
 maximum of 48-bits of virtual address space) to store authentication values.
