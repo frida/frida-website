@@ -830,7 +830,7 @@ gum_exec_block_new (GumExecCtx * ctx)
     block->flags = 0;
     block->recycle_count = 0;
 
-    gum_stalker_thaw (Stalker, block->code_begin, available);
+    gum_stalker_thaw (stalker, block->code_begin, available);
     slab->num_blocks++;
 
     return block;
@@ -937,7 +937,7 @@ We will gloss over the details of `gum_stalker_iterator_next()` and
 `gum_stalker_iterator_keep()` for now. But in essence, this causes the iterator
 to read code one instruction at a time from the relocator, and write the
 relocated instruction out using the writer. Following this process, the
-`GumExecBlock` structure can be updated. It's field `real_end` can be set to the
+`GumExecBlock` structure can be updated. Its field `real_end` can be set to the
 address where the relocator read up to, and its field `code_end` can be set to
 the address which the writer wrote up to. Thus `real_begin` and `real_end` mark
 the limits of the original block, and `code_begin` and `code_end` mark the
@@ -985,9 +985,9 @@ will note this constant is added on by `_gum_stalker_do_follow_me()` and
 return instructions are instrumented, however, if the return is to a block which
 has already been instrumented, then we can simply return to that block rather
 than returning back into the Stalker engine. This code is written by
-`gum_exec_block_write_ret_transfer_code()`. In a worst-case scenario, we may
-need to use registers to perform the final branch to the instrumented block this
-function stores them into the stack, and the code to restore these from the
+`gum_exec_block_write_ret_transfer_code()`. In a worst-case scenario, where we
+may need to use registers to perform the final branch to the instrumented block,
+this function stores them into the stack, and the code to restore these from the
 stack is prefixed in the block itself. Hence, in the event that we can return
 directly to an instrumented block, we return to this first instruction rather
 than skipping `GUM_RESTORATION_PROLOG_SIZE` bytes.
@@ -1115,15 +1115,15 @@ instrumented blocks.
 The pseudo code for this helper is shown below:
 
 ```
-void last_stack_push_helper(gpointer X0, gpointer X1) {
-  GumExecFrame** X16 = &ctx->current_frame
-  GumExecFrame* X17 = *X16
-  void* X2 = X17 & (ctx->stalker->page_size - 1)
-  if X2 != 0:
-    X17--
-    X17.real_address = X0
-    X17.code_address = X1
-    *X16 = X17
+void last_stack_push_helper(gpointer x0, gpointer x1) {
+  GumExecFrame** x16 = &ctx->current_frame
+  GumExecFrame* x17 = *x16
+  void* x2 = x17 & (ctx->stalker->page_size - 1)
+  if x2 != 0:
+    x17--
+    x17.real_address = x0
+    x17.code_address = x1
+    *x16 = x17
   return
 }
 ```
@@ -1161,36 +1161,36 @@ will skip over pointer authentication for now.
 
 ```
 void ret_transfer_code(arm64_reg ret_reg) {
-  gpointer X16 = ret_reg
+  gpointer x16 = ret_reg
   goto last_stack_pop_and_go_helper
 }
 
 void last_stack_pop_and_go_helper(gpointer X16) {
-  GumExecFrame** X0 = &ctx->current_frame
-  GumExecFrame* X1 = *X0
-  gpointer X17 = X0.real_address
-  if X17 == X16:
-    X17 = X0.code_address
-    X1++
-    *X0 = X1
-    goto X17
+  GumExecFrame** x0 = &ctx->current_frame
+  GumExecFrame* x1 = *x0
+  gpointer x17 = x0.real_address
+  if x17 == x16:
+    x17 = x0.code_address
+    x1++
+    *x0 = x1
+    goto x17
   else:
-    X1 = ctx->first_frame
-    *X0 = X1
-    gpointer* X0 = &ctx->return_at
-    *X0 = X16
+    x1 = ctx->first_frame
+    *x0 = x1
+    gpointer* x0 = &ctx->return_at
+    *x0 = x16
     last_prologue_minimal()
-    X0 = &ctx->return_at
-    X1 = *X0
-    gum_exec_ctx_replace_current_block_from_ret(ctx, X1)
+    x0 = &ctx->return_at
+    x1 = *x0
+    gum_exec_ctx_replace_current_block_from_ret(ctx, x1)
     last_epilogue_minimal()
     goto exec_generated_code
 }
 
 void exec_generated_code() {
-  gpointer *X16 = &ctx->resume_at
-  gpointer X17 = *X16
-  goto X17
+  gpointer *x16 = &ctx->resume_at
+  gpointer x17 = *x16
+  goto x17
 }
 ```
 
