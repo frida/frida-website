@@ -2421,10 +2421,10 @@ gum_stalker_iterator_keep (GumStalkerIterator * self)
 ```
 
 Here, we can see that the iterator records when it sees an exclusive load and
-tracks how many instructions have passed since. It seems that this is continued
-for up to four instructions, presumably this was determined by empirical
-testing, although it does make some sense as this is about how many instructions
-would be needed to load, test, modify and store the value. This is then used to
+tracks how many instructions have passed since. This is continued for up to four
+instructions – as this was determined by empirical testing based on how many
+instructions would be needed to load, test, modify and store the value. This is
+then used to
 prevent any instrumentation being emitted which isn't strictly necessary:
 
 ```
