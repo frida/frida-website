@@ -190,7 +190,7 @@ gum_stalker_follow (GumStalker * self,
   {
     GumInfectContext ctx;
 
-    ctx.Stalker = self;
+    ctx.stalker = self;
     ctx.transformer = transformer;
     ctx.sink = sink;
 
@@ -768,7 +768,7 @@ static GumSlab *
 gum_exec_ctx_add_slab (GumExecCtx * ctx)
 {
   GumSlab * slab;
-  GumStalker * Stalker = ctx->Stalker;
+  GumStalker * stalker = ctx->stalker;
 
   slab = gum_memory_allocate (NULL, Stalker->slab_size,
       Stalker->page_size,
@@ -811,7 +811,7 @@ to the tail. Let's look at the code to allocate a new block:
 static GumExecBlock *
 gum_exec_block_new (GumExecCtx * ctx)
 {
-  GumStalker * Stalker = ctx->Stalker;
+  GumStalker * stalker = ctx->stalker;
   GumSlab * slab = ctx->code_slab;
   gsize available;
 
@@ -963,7 +963,7 @@ gum_exec_block_commit (GumExecBlock * block)
   memcpy (block->real_snapshot, block->real_begin, real_size);
   block->slab->offset += real_size;
 
-  gum_stalker_freeze (block->ctx->Stalker, block->code_begin,
+  gum_stalker_freeze (block->ctx->stalker, block->code_begin,
       code_size);
 }
 ```
@@ -1118,7 +1118,7 @@ The pseudo code for this helper is shown below:
 void last_stack_push_helper(gpointer X0, gpointer X1) {
   GumExecFrame** X16 = &ctx->current_frame
   GumExecFrame* X17 = *X16
-  void* X2 = X17 & (ctx->Stalker->page_size - 1)
+  void* X2 = X17 & (ctx->stalker->page_size - 1)
   if X2 != 0:
     X17--
     X17.real_address = X0
@@ -2217,7 +2217,7 @@ gum_exec_ctx_unfollow (GumExecCtx * ctx,
 
   ctx->resume_at = resume_at;
 
-  gum_tls_key_set_value (ctx->Stalker->exec_ctx, NULL);
+  gum_tls_key_set_value (ctx->stalker->exec_ctx, NULL);
 
   ctx->destroy_pending_since = g_get_monotonic_time ();
   g_atomic_int_set (&ctx->state, GUM_EXEC_CTX_DESTROY_PENDING);
