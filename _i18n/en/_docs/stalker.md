@@ -58,10 +58,10 @@ int pthread_getname_np(pthread_t thread,
 ```
 
 Using this along with the
-[Thread.backtrace](https://frida.re/docs/javascript-api/#thread) to dump thread
+[Thread.backtrace()](https://frida.re/docs/javascript-api/#thread) to dump thread
 stacks can give you a really good overview of what a process is doing.
 
-The other scenario where you might call `Stalker.follow` is perhaps from a
+The other scenario where you might call `Stalker.follow()` is perhaps from a
 function which has been
 [intercepted](https://frida.re/docs/javascript-api/#interceptor) or replaced. In
 this scenario, you have found a function of interest and you want to understand
@@ -72,11 +72,11 @@ input to see if you can get the code to take a particular path.
 
 In either of these scenarios, although Stalker has to work slightly differently
 under the hood, it is all managed by the same simple API for the user,
-`Stalker.follow`.
+`Stalker.follow()`.
 
 ## Following
 
-When the user calls `Stalker.follow`, under the hood, the JavaScript engine
+When the user calls `Stalker.follow()`, under the hood, the JavaScript engine
 calls through to either `gum_stalker_follow_me()` to follow the current thread, or
 `gum_stalker_follow(thread_id)` to follow another thread in the process.
 
@@ -100,12 +100,12 @@ GUM_API void gum_stalker_follow_me (GumStalker * self,
     GumStalkerTransformer * transformer, GumEventSink * sink);
 ```
 
-So we can see the function is called by the v8 or duktape runtime passing 3
-arguments. The first is a context of the Stalker object. Note that there may be
-multiple of these if multiple threads are being stalked at once. The second is a
+So we can see the function is called by the Duktape or V8 runtime passing 3
+arguments. The first is the Stalker instance itself. Note that there may be
+multiple of these if multiple scripts are loaded at once. The second is a
 transformer, this can be used to transform the instrumented code as it is being
 written (more on this later). The last parameter is the event sink, this is
-where the generated events are passed as the stalker engine runs.
+where the generated events are passed as the Stalker engine runs.
 
 ```
 #ifdef __APPLE__
@@ -130,15 +130,15 @@ gum_stalker_follow_me:
 
 We can see that the first instruction STP stores a pair of registers onto the
 stack. We can notice the expression `[sp, -16]!`. This is a
-(pre-decrement)[https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/]
+[pre-decrement](https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/)
 which means that the stack is advanced first by 16 bytes, then the two 8 byte
 register values are stored. We can see the corresponding instruction `ldp x29,
 x30, [sp], 16` at the bottom of the function. This is restoring these two
 register values from the stack back into the registers. But what are these two
 registers?
 
-Well, `x30` is the Link register and `x29` is the Frame Pointer register. Recall
-that we must store the link regsiter to the stack is we wish to call another
+Well, `x30` is the Link Register and `x29` is the Frame Pointer register. Recall
+that we must store the link register to the stack if we wish to call another
 function as this will cause it to be overwritten and we need this value in order
 that we can return to our caller.
 
@@ -151,13 +151,13 @@ restore it before we return. Indeed you can see in the next instruction `mov
 x29, sp` that we set the frame pointer to the current stack pointer.
 
 We can see the next instruction `mov x3, x30`, puts the value of the link
-register into x3. The first 8 arguments on AARCH64 are passed in the registers
-x0-x8. So this is being put into the register used for the fourth argument. We
-then call (branch with link) the function `_gum_stalker_do_follow_me`. So we can
+register into x3. The first 8 arguments on AArch64 are passed in the registers
+x0-x7. So this is being put into the register used for the fourth argument. We
+then call (branch with link) the function `_gum_stalker_do_follow_me()`. So we can
 see that we pass the first three arguments in x0-x2 untouched, so that
-`_gum_stalker_do_follow_me` receives the same values we were called with.
+`_gum_stalker_do_follow_me()` receives the same values we were called with.
 Finally, we can see after this function returns, we branch to the address we
-receive as its return value. (In AARCH64 the return value of a function is
+receive as its return value. (In AArch64 the return value of a function is
 returned in x0).
 
 ```
@@ -171,9 +171,9 @@ _gum_stalker_do_follow_me (GumStalker * self,
 ### gum_stalker_follow()
 
 This routine has a very similar prototype to `gum_stalker_follow_me()`, but has
-the additional thread_id parameter. Indeed, if asked to follow the current
-thread, then is will call that function. Let's look at the case when another
-thread id is specified though.
+the additional `thread_id` parameter. Indeed, if asked to follow the current
+thread, then it will call that function. Let's look at the case when another
+thread ID is specified though.
 
 ```
 void
@@ -199,12 +199,12 @@ gum_stalker_follow (GumStalker * self,
 }
 ```
 
-We can see that this calls the function `gum_process_modify_thread`. This isn't
-part of stalker, but part of gum itself. This function takes a callback with a
+We can see that this calls the function `gum_process_modify_thread()`. This isn't
+part of Stalker, but part of gum itself. This function takes a callback with a
 context parameter to call passing the thread context structure. This callback
-can then modify the `GumCpuContext` structure and `gum_process_modify_thread`
+can then modify the `GumCpuContext` structure and `gum_process_modify_thread()`
 will then write the changes back. We can see the context structure below, as you
-can see it contains fields for all of the registers in the AARCH64 CPU. We can
+can see it contains fields for all of the registers in the AArch64 CPU. We can
 also see below the function prototype of our callback.
 
 ```
@@ -229,7 +229,7 @@ gum_stalker_infect (GumThreadId thread_id,
                     gpointer user_data)
 ```
 
-So, how does `gum_process_modify_thread` work? Well it depends on the platform.
+So, how does `gum_process_modify_thread()` work? Well it depends on the platform.
 On Linux (and Android) it uses the `ptrace` API (the same one used by GDB) to
 attach to the thread and read and write registers. But there are a host of
 complexities. On Linux, you cannot ptrace your own process (or indeed any in the
@@ -263,12 +263,12 @@ an instruction other than the one immediately following it in memory.
 
 Stalker works on one block at a time. It starts with either the block after the
 return to the call to `gum_stalker_follow_me()` or the block of code to which the
-instruction pointer of the target thread is pointing when `gum_stalker_follow`
+instruction pointer of the target thread is pointing when `gum_stalker_follow()`
 is called.
 
 Stalker works by allocating some memory and writing to it a new instrumented
 copy of the original block. Instructions may be added to generate events, or
-carry out any of the other features the stalker engine offers. Stalker must also
+carry out any of the other features the Stalker engine offers. Stalker must also
 relocate instructions as necessary. Consider the following instruction:
 
 ```
@@ -289,9 +289,9 @@ in the range ±1MB.
 
 If this instruction is copied to a different location in memory and executed,
 then because the address of the label is calculated by adding an offset to the
-current instruction pointer, then the value would be different. Fortunately, gum
+current instruction pointer, then the value would be different. Fortunately, Gum
 has a
-[relocator](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64relocator.c)
+[Relocator](https://github.com/frida/frida-gum/blob/master/gum/arch-arm64/gumarm64relocator.c)
 for just this purpose which is capable of modifying the instruction given its
 new location so that the correct address is calculated.
 
@@ -305,37 +305,40 @@ next.
 
 Now, this process can be a little slow, so there are a few optimizations which
 we can apply. First of all, if we execute the same block of code more than once
-(e.g a loop, or maybe just a function called multiple times) we don't have to
+(e.g. a loop, or maybe just a function called multiple times) we don't have to
 re-instrument it all over again. We can just re-execute the same instrumented
 code. For this reason, a hashtable is kept of all of the blocks which we have
 encountered before and where we put the instrumented copy of the block.
 
-Secondly, we can instrument blocks ahead of time. For example, if we encounter a
-call instruction, it is pretty likely (unless it throws an exception) that the
-callee will eventually return and block immediately following the call will be
-executed. So we can instrument this block at the same time we instrument the
-block which is being called. Whilst we may still return into stalker following
-the call before we are re-directed to the already instrumented block, we may not
-need to store quite so much of the CPU state when entering and exiting the
-engine and so may some time. This doesn't work for all branches, however, many
-branches may never be taken. Consider all the error handling code in a normal
-program. Assuming the input is valid none of it will run, or the first problem
-with the input will be detected and only that error handler will run. So if we
-were to instrument both paths of every branch instruction, we would end un
-instrumenting a lot of code which is never run. This would take up valuable time
-and memory.
+Secondly, a call instruction is not considered to be the end of input (EOI) by
+the relocator, so after it has been instrumented, then providing that the
+subsequent instructions can be parsed, then instrumentation continues until such
+an EOI instruction is encountered. Stalker builds a side-stack, using
+`GumExecFrame` structures which record the true return address (`real_address`)
+and the instrumented code for that address (`code_address`). When a function
+returns, it will check the return address in the side-stack against the
+`real_address` and if it matches, it can simply return to the `code_address`
+without re-entering the runtime. If it doesn't match, or we run out of space in
+the side-stack, we simply starting bulding a new one again from scratch. We need
+to preserve the value of LR whilst the application code is executing so that the
+application cannot use this to detect the presence of Stalker (anti-debugging)
+or in case it is using it for any other purpose besides simply returning (e.g.
+to reference inline data in the code section). Also, we want Stalker to be able
+to unfollow at any time, so we don't want to be having to go back up our stack
+correcting LR values which we have modified along the way.
 
-Finally, if a block of code ends with a deterministic branch (e.g. the
-destination is fixed and the branch is not conditional) then rather than
-replacing that last branch with a call back to Stalker to instrument the next
-block, we can instrument the next block ahead of time and direct control flow
-there without having to re-enter the stalker engine. This process is called
-backpatching. In actual fact, we can deal with conditional branches too, if we
-instrument both blocks of code (the one if the branch is taken and the one if it
-isn't) then we can replace the original conditional branch with one conditional
-branch which directs control flow to instrumented version of the block
-encountered when the branch was taken, followed by a unconditional branch to the
-other instrumented block. We can also deal partially with branches where the
+Finally, whilst we always output a replace branches with a call back to Stalker
+to instrument the next block, depending on the configuration of
+`Stalker.trustThreshold`, we may *backpatch* this instrumented code to replace
+this call with a direct branch to the next instrumented block instead.
+Deterministic branches (e.g. the destination is fixed and the branch is not
+conditional) are simple, we can just replace the branch to Stalker with one to
+the next block. But we can deal with conditional branches too, if we instrument
+both blocks of code (the one if the branch is taken and the one if it isn't)
+then we can replace the original conditional branch with one conditional branch
+which directs control flow to instrumented version of the block encountered when
+the branch was taken, followed by a unconditional branch to the other
+instrumented block. We can also deal partially with branches where the
 target is not static. Say our branch is something like:
 
 ```
@@ -357,11 +360,13 @@ engine altogether and go straight to the instrumented function.
 
 Now let's look at the options when we follow a thread with Stalker. Stalker
 generates events when a followed thread is being executed, these are placed onto
-a queue and flushed either periodically or manually by the user. The size and
-time period can be configured by the options. Events can be generated on a
-per-instruction basis either for calls, returns or all instructions. Or they can
-be generated on a block basis, either when a block is executed, or when it is
-instrumented by the Stalker engine.
+a queue and flushed either periodically or manually by the user. This isn't done
+by stalker itself, but the `EventSink::process` vfunc as re-entering the
+JavaScript runtime to process events one at a time would be prohibitively
+expensive. The size and time period can be configured by the options. Events can
+be generated on a per-instruction basis either for calls, returns or all
+instructions. Or they can be generated on a block basis, either when a block is
+executed, or when it is instrumented by the Stalker engine.
 
 We can also provide one of two callbacks `onReceive` or `onCallSummary`. The
 former will quite simply deliver a binary blob containing the raw events
