@@ -2182,8 +2182,8 @@ Now we can see how a running thread gracefully goes back to running normal
 uninstrumented code, let's see how we stop stalking in the first place. We have
 two possible ways to stop stalking:
 
-* `gum_stalker_unfollow_me`
-* `gum_stalker_unfollow`
+* `gum_stalker_unfollow_me()`
+* `gum_stalker_unfollow()`
 
 The first is quite simple, we set the state to stop following. Then call
 `gum_exec_ctx_maybe_unfollow` to attempt to stop the current thread from being
