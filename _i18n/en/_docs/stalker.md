@@ -313,7 +313,7 @@ encountered before and where we put the instrumented copy of the block.
 
 Secondly, when a call instruction is encountered, after emitting the
 instrumented call, we then emit a landing pad which we can return to without
-having to re-enter stalker. Stalker builds a side-stack, using `GumExecFrame`
+having to re-enter Stalker. Stalker builds a side-stack, using `GumExecFrame`
 structures which record the true return address (`real_address`) and this
 landing pad (`code_address`). When a function returns, we emit code that will
 check the return address in the side-stack against the `real_address` and if it
@@ -321,13 +321,13 @@ matches, it can simply return to the `code_address` without re-entering the
 runtime. This landing pad initially will contain code which enters the Stalker
 engine to instrument the next block, but it can later be backpatched to branch
 directly to this block. This means that the entire return sequence can be
-handled without the expense of entering and leaving stalker.
+handled without the expense of entering and leaving Stalker.
 
 If the return address doesn't match that stored the `real_address` of the
-`GumExecFrame`, or we run out of space in the side-stack, we simply starting
-bulding a new one again from scratch. We need to preserve the value of LR whilst
-the application code is executing so that the application cannot use this to
-detect the presence of Stalker (anti-debugging) or in case it is using it for
+`GumExecFrame`, or we run out of space in the side-stack, we simply start
+building a new one again from scratch. We need to preserve the value of LR
+whilst the application code is executing so that the application cannot use this
+to detect the presence of Stalker (anti-debugging) or in case it is using it for
 any other purpose besides simply returning (e.g. to reference inline data in the
 code section). Also, we want Stalker to be able to unfollow at any time, so we
 don't want to be having to go back up our stack correcting LR values which we
@@ -348,7 +348,7 @@ instrumented block. We can also deal partially with branches where the target is
 not static. Say our branch is something like:
 
 ```
-BR X0
+br x0
 ```
 
 This sort of instruction is common when calling a function pointer, or class
