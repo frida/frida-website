@@ -1951,9 +1951,10 @@ static guint total_transitions = 0;
   g_printerr ("\t" G_STRINGIFY (name) "s: %u\n", total_##name##s)
 
 ```
-These counters can be displayed by the following routine. They appear to only be
-used by the unit testing framework rather than being exposed to the user through
-the API.
+
+These counters can be displayed by the following routine. They are only meant
+to be used by the test-suite rather than being exposed to the user through the
+API.
 
 ```
 #define GUM_PRINT_ENTRYGATE_COUNTER(name) \
