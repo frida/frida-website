@@ -1773,7 +1773,6 @@ gum_exec_ctx_load_real_register_into (GumExecCtx * ctx,
 
   g_assert_not_reached ();
 }
-```
 Reading registers from the full frame is actually the simplest. We can see the
 code closely matches the structure used to pass the context to callouts etc.
 Remember that in each case register `x20` points to the base of the context
