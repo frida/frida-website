@@ -2451,6 +2451,7 @@ that each time we read a new instruction from the iterator there is at least
 1024 bytes of space in the slab for our output. If it is not the case, then we store the
 current address in `continuation_real_address` and return `FALSE` so that the
 iterator ends.
+
 ```
 #define GUM_EXEC_BLOCK_MIN_SIZE 1024
 
