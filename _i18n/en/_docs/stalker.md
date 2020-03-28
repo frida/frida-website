@@ -2435,6 +2435,7 @@ prevent any instrumentation being emitted which isn't strictly necessary:
         GUM_CODE_INTERRUPTIBLE);
   }
 ```
+
 ### Exhausted Blocks
 
 Whilst we check to ensure a minimum amount of space for our current instrumented
