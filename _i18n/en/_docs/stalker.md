@@ -2090,10 +2090,10 @@ code to call the `last_stack_pop_and_go` helper we covered earlier.
 Events are one of the key outputs of the stalker engine. They are emitted by the
 following functions. Their implementation again is quite self-explanatory:
 
-* `gum_exec_ctx_emit_call_event`
-* `gum_exec_ctx_emit_ret_event`
-* `gum_exec_ctx_emit_exec_event`
-* `gum_exec_ctx_emit_block_event`
+* `gum_exec_ctx_emit_call_event()`
+* `gum_exec_ctx_emit_ret_event()`
+* `gum_exec_ctx_emit_exec_event()`
+* `gum_exec_ctx_emit_block_event()`
 
 One thing to note with each of these functions, however, is that they all call
 `gum_exec_block_write_unfollow_check_code()` to generate code for checking if
