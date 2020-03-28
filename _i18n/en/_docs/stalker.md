@@ -479,7 +479,6 @@ collection of instructions as “call instructions”.
 Whenever stalker encounters a call, it stores the return address and the address
 of the instrumented return block forwarder in a structure and adds these to a stack stored
 in a data-structure of its own. It uses this as a speculative optimization, and also as a heuristic to approximate the call depth when emitting call and return events.
-well as tracking call depth.
 
 ```
 typedef struct _GumExecFrame GumExecFrame;
