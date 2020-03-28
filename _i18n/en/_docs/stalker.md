@@ -333,17 +333,17 @@ code section). Also, we want Stalker to be able to unfollow at any time, so we
 don't want to be having to go back up our stack correcting LR values which we
 have modified along the way.
 
-Finally, whilst we always output a replace branches with a call back to Stalker
-to instrument the next block, depending on the configuration of
-`Stalker.trustThreshold`, we may *backpatch* this instrumented code to replace
-this call with a direct branch to the next instrumented block instead.
+Finally, whilst we always replace branches with calls back to Stalker to
+instrument the next block, depending on the configuration of
+`Stalker.trustThreshold`, we may *backpatch* such instrumented code to replace
+the call with a direct branch to the next instrumented block instead.
 Deterministic branches (e.g. the destination is fixed and the branch is not
 conditional) are simple, we can just replace the branch to Stalker with one to
 the next block. But we can deal with conditional branches too, if we instrument
-both blocks of code (the one if the branch is taken and the one if it isn't)
-then we can replace the original conditional branch with one conditional branch
+both blocks of code (the one if the branch is taken and the one if it isn't).
+Then we can replace the original conditional branch with one conditional branch
 which directs control flow to instrumented version of the block encountered when
-the branch was taken, followed by a unconditional branch to the other
+the branch was taken, followed by an unconditional branch to the other
 instrumented block. We can also deal partially with branches where the target is
 not static. Say our branch is something like:
 
