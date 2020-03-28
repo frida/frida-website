@@ -2186,8 +2186,9 @@ two possible ways to stop stalking:
 * `gum_stalker_unfollow()`
 
 The first is quite simple, we set the state to stop following. Then call
-`gum_exec_ctx_maybe_unfollow` to attempt to stop the current thread from being
-follow and then dispose of the stalker context.
+`gum_exec_ctx_maybe_unfollow()` to attempt to stop the current thread from being
+followed, and then dispose of the stalker context.
+
 ```
 void
 gum_stalker_unfollow_me (GumStalker * self)
