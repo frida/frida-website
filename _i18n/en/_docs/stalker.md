@@ -90,7 +90,7 @@ Stalker.follow([threadId, options])
 > start stalking `threadId` (or the current thread if omitted)
 
 Let's consider when these calls may be used. Stalking where you provide a thread
-id is likely to be used where you have a thread of interest and are wondering
+ID is likely to be used where you have a thread of interest and are wondering
 what it is doing. Perhaps it has an interesting name? Thread names can be found
 using `cat /proc/PID/tasks/TID/comm`. Or perhaps you walked the threads in your
 process using the Frida JavaScript API `Process.enumerateThreads()` and then
