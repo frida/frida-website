@@ -27,21 +27,65 @@ the implementation left for the reader to discover by reading the [source
 code](https://github.com/frida/frida-gum/blob/master/gum/backend-arm64/gumstalker-arm64.c).
 However, it is hoped it will prove to be a very useful head-start.
 
+## Table of contents
+
+  1. [Introduction](#introduction)
+  1. [Disclaimer](#disclaimer)
+  1. [Use Cases](#use-cases)
+  1. [Following](#following)
+     1. [gum_stalker_follow_me](#follow-me)
+     1. [gum_stalker_follow](#follow)
+  1. [Basic Operation](#basic-operation)
+  1. [Options](#options)
+  1. [Terminology](#terminology)
+     1. [Probes](#probes)
+     1. [Trust Threshold](#trust-threshold)
+     1. [Excluded Ranges](#excluded-ranges)
+     1. [Freeze/Thaw](#freeze-thaw)
+     1. [Call Instructions](#call-instructions)
+     1. [Frames](#frames)
+     1. [Transformer](#transformer)
+     1. [Callouts](#callouts)
+     1. [EOB/EOI](#eob-eoi)
+     1. [Prologues/Epilogues](#prologues-epilogues)
+     1. [Counters](#counters)
+  1. [Slabs](#slabs)
+  1. [Blocks](#blocks)
+  1. [Instrumenting Blocks](#instrumenting-blocks)
+  1. [Helpers](#helpers)
+     1. [last_stack_push](#last-stack-push)
+     1. [last_stack_pop_and_go](#last-stack-pop-and-go)
+  1. [Context](#context)
+  1. [Context Helpers](#context-helpers)
+  1. [Reading/Writing Context](#reading-writing-context)
+  1. [Control flow](#control-flow)
+  1. [Gates](#gates)
+  1. [Virtualize functions](#virtualize-functions)
+     1. [gum_exec_block_virtualize_branch_insn](#virtualize-branch-insn)
+     1. [gum_exec_block_virtualize_ret_insn](#virtualize-ret-insn)
+  1. [Emitting events](#events)
+  1. [Unfollow and tidy up](#unfollow)
+  1. [Miscellaneous](#miscellaneous)
+     1. [Exclusive Store](#exclusive-store)
+     1. [Exhausted Blocks](#exhausted-blocks)
+     1. [Syscall Virtualization](#syscall-virtualization)
+     1. [Pointer Authentication](#pointer-authentication)
+
 ## Use Cases
 
 To start to understand the implementation of Stalker, we must first understand
 in detail what it offers to the user. Whilst Stalker can be invoked directly
 through its native Gum interface, most users will instead call it via the
 [JavaScript API](https://frida.re/docs/javascript-api/#stalker) which will call
-these Gum methods on their behalf. The [typescript type
+these Gum methods on their behalf. The [TypeScript type
 definitions](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/frida-gum/index.d.ts)
 for Gum are well commented and provide a little more detail still.
 
 The main API to Stalker from JavaScript is:
 
-```
+{% highlight js %}
 Stalker.follow([threadId, options])
-```
+{% endhighlight %}
 
 > start stalking `threadId` (or the current thread if omitted)
 
@@ -52,10 +96,10 @@ using `cat /proc/PID/tasks/TID/comm`. Or perhaps you walked the threads in your
 process using the Frida JavaScript API `Process.enumerateThreads()` and then
 used a NativeFunction to call:
 
-```
+{% highlight c %}
 int pthread_getname_np(pthread_t thread,
                        char *name, size_t len);
-```
+{% endhighlight %}
 
 Using this along with the
 [Thread.backtrace()](https://frida.re/docs/javascript-api/#thread) to dump
@@ -80,7 +124,7 @@ When the user calls `Stalker.follow()`, under the hood, the JavaScript engine
 calls through to either `gum_stalker_follow_me()` to follow the current thread,
 or `gum_stalker_follow(thread_id)` to follow another thread in the process.
 
-### gum_stalker_follow_me()
+### gum_stalker_follow_me
 
 In the case of `gum_stalker_follow_me()`, the Link Register is used to determine
 the instruction at which to start stalking. In AArch64 architecture, the Link
@@ -95,10 +139,10 @@ instruction used to return control back to the caller.
 Let's look at the code for `gum_stalker_follow_me()`. This is the function
 prototype:
 
-```
+{% highlight c %}
 GUM_API void gum_stalker_follow_me (GumStalker * self,
     GumStalkerTransformer * transformer, GumEventSink * sink);
-```
+{% endhighlight %}
 
 So we can see the function is called by the Duktape or V8 runtime passing 3
 arguments. The first is the Stalker instance itself. Note that there may be
@@ -107,7 +151,7 @@ transformer, this can be used to transform the instrumented code as it is being
 written (more on this later). The last parameter is the event sink, this is
 where the generated events are passed as the Stalker engine runs.
 
-```
+{% highlight asm %}
 #ifdef __APPLE__
   .globl _gum_stalker_follow_me
 _gum_stalker_follow_me:
@@ -126,16 +170,16 @@ gum_stalker_follow_me:
 #endif
   ldp x29, x30, [sp], 16
   br x0
-```
+{% endhighlight %}
 
 We can see that the first instruction STP stores a pair of registers onto the
 stack. We can notice the expression `[sp, -16]!`. This is a
 [pre-decrement](https://thinkingeek.com/2017/05/29/exploring-aarch64-assembler-chapter-8/)
 which means that the stack is advanced first by 16 bytes, then the two 8 byte
-register values are stored. We can see the corresponding instruction `ldp x29,
-x30, [sp], 16` at the bottom of the function. This is restoring these two
-register values from the stack back into the registers. But what are these two
-registers?
+register values are stored. We can see the corresponding instruction
+`ldp x29, x30, [sp], 16` at the bottom of the function. This is restoring these
+two register values from the stack back into the registers. But what are these
+two registers?
 
 Well, `X30` is the Link Register and `X29` is the Frame Pointer register. Recall
 that we must store the link register to the stack if we wish to call another
@@ -147,8 +191,8 @@ function was called so that all the stack passed arguments and the stack based
 local variables can be access at a fixed offset from the frame pointer. Again we
 need to save and restore this as each function will have its value for this
 register, so we need to store the value which our caller put in there and
-restore it before we return. Indeed you can see in the next instruction `mov
-x29, sp` that we set the frame pointer to the current stack pointer.
+restore it before we return. Indeed you can see in the next instruction
+`mov x29, sp` that we set the frame pointer to the current stack pointer.
 
 We can see the next instruction `mov x3, x30`, puts the value of the link
 register into X3. The first 8 arguments on AArch64 are passed in the registers
@@ -160,22 +204,22 @@ Finally, we can see after this function returns, we branch to the address we
 receive as its return value. (In AArch64 the return value of a function is
 returned in X0).
 
-```
+{% highlight c %}
 gpointer
 _gum_stalker_do_follow_me (GumStalker * self,
                            GumStalkerTransformer * transformer,
                            GumEventSink * sink,
                            gpointer ret_addr)
-```
+{% endhighlight %}
 
-### gum_stalker_follow()
+### gum_stalker_follow
 
 This routine has a very similar prototype to `gum_stalker_follow_me()`, but has
 the additional `thread_id` parameter. Indeed, if asked to follow the current
 thread, then it will call that function. Let's look at the case when another
 thread ID is specified though.
 
-```
+{% highlight c %}
 void
 gum_stalker_follow (GumStalker * self,
                     GumThreadId thread_id,
@@ -197,7 +241,7 @@ gum_stalker_follow (GumStalker * self,
     gum_process_modify_thread (thread_id, gum_stalker_infect, &ctx);
   }
 }
-```
+{% endhighlight %}
 
 We can see that this calls the function `gum_process_modify_thread()`. This
 isn't part of Stalker, but part of Gum itself. This function takes a callback
@@ -208,7 +252,7 @@ context structure below, as you can see it contains fields for all of the
 registers in the AArch64 CPU. We can also see below the function prototype of
 our callback.
 
-```
+{% highlight c %}
 typedef GumArm64CpuContext GumCpuContext;
 
 struct _GumArm64CpuContext
@@ -221,14 +265,14 @@ struct _GumArm64CpuContext
   guint64 lr;
   guint8 q[128];
 };
-```
+{% endhighlight %}
 
-```
+{% highlight c %}
 static void
 gum_stalker_infect (GumThreadId thread_id,
                     GumCpuContext * cpu_context,
                     gpointer user_data)
-```
+{% endhighlight %}
 
 So, how does `gum_process_modify_thread()` work? Well it depends on the
 platform. On Linux (and Android) it uses the `ptrace` API (the same one used by
@@ -272,21 +316,19 @@ copy of the original block. Instructions may be added to generate events, or
 carry out any of the other features the Stalker engine offers. Stalker must also
 relocate instructions as necessary. Consider the following instruction:
 
-```
-ADR
-Address of label at a PC-relative offset.
-
-ADR  Xd, label
-
-Xd
-Is the 64-bit name of the general-purpose destination
-register, in the range 0 to 31.
-
-label
-Is the program label whose address is to be calculated.
-It is an offset from the address of this instruction,
-in the range ±1MB.
-```
+> ADR
+> Address of label at a PC-relative offset.
+>
+> ADR  Xd, label
+>
+> Xd
+> Is the 64-bit name of the general-purpose destination
+> register, in the range 0 to 31.
+>
+> label
+> Is the program label whose address is to be calculated.
+> It is an offset from the address of this instruction,
+> in the range ±1MB.
 
 If this instruction is copied to a different location in memory and executed,
 then because the address of the label is calculated by adding an offset to the
@@ -347,9 +389,9 @@ the branch was taken, followed by an unconditional branch to the other
 instrumented block. We can also deal partially with branches where the target is
 not static. Say our branch is something like:
 
-```
+{% highlight asm %}
 br x0
-```
+{% endhighlight %}
 
 This sort of instruction is common when calling a function pointer, or class
 method. Whilst the value of X0 can change, quite often it will actually always
@@ -503,7 +545,7 @@ stack stored in a data-structure of its own. It uses this as a speculative
 optimization, and also as a heuristic to approximate the call depth when
 emitting call and return events.
 
-```
+{% highlight c %}
 typedef struct _GumExecFrame GumExecFrame;
 
 struct _GumExecFrame
@@ -511,14 +553,14 @@ struct _GumExecFrame
   gpointer real_address;
   gpointer code_address;
 };
-```
+{% endhighlight %}
 
 ### Transformer
 
 A `GumStalkerTransformer` type is used to generate the instrumented code. The
 implementation of the default transformer looks like this:
 
-```
+{% highlight c %}
 static void
 gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
@@ -530,7 +572,7 @@ gum_default_stalker_transformer_transform_block (
     gum_stalker_iterator_keep (iterator);
   }
 }
-```
+{% endhighlight %}
 
 It is called by the function responsible for generating instrumented code,
 `gum_exec_ctx_obtain_block_for()` and its job is to generate the instrumented
@@ -557,7 +599,7 @@ e.g. implemented using CModule – passing the CPU context and an optional
 context parameter. This function is then able to modify or inspect registers at
 will. This information is stored in a `GumCallOutEntry`.
 
-```
+{% highlight c %}
 typedef void (* GumStalkerCallout) (GumCpuContext * cpu_context,
     gpointer user_data);
 
@@ -573,7 +615,7 @@ struct _GumCalloutEntry
 
   GumExecCtx * exec_context;
 };
-```
+{% endhighlight %}
 
 ### EOB/EOI
 
@@ -622,7 +664,7 @@ application code. Thus for these instances, we must write a *"full"* context and
 its layout must match the expected format dictated by the structure
 `GumArm64CpuContext`.
 
-```
+{% highlight c %}
 typedef struct _GumArm64CpuContext GumArm64CpuContext;
 
 struct _GumArm64CpuContext
@@ -634,7 +676,7 @@ struct _GumArm64CpuContext
   guint64 lr; /* X30 */
   guint8 q[128]; /* FPU, NEON (SIMD), CRYPTO regs */
 };
-```
+{% endhighlight %}
 
 Note however, that the code necessary to write out the necessary CPU registers
 (the prologue) in either case is quite long (tens of instructions). And the code
@@ -646,7 +688,7 @@ each instrumented block to call these functions. These common memory locations
 are referred to as *helpers*. The following functions create these prologues and
 epilogues.
 
-```
+{% highlight c %}
 static void gum_exec_ctx_write_minimal_prolog_helper (
     GumExecCtx * ctx, GumArm64Writer * cw);
 
@@ -658,7 +700,7 @@ static void gum_exec_ctx_write_full_prolog_helper (
 
 static void gum_exec_ctx_write_full_epilog_helper (
     GumExecCtx * ctx, GumArm64Writer * cw);
-```
+{% endhighlight %}
 
 Finally, note that in the AArch64 architecture, it is only possible to make a
 direct branch to code within ±128 MB of the caller, and using an indirect branch
@@ -681,7 +723,7 @@ context-switch into Stalker to resolve the target.
 Let's now take a look at where Stalker stores its instrumented code, in slabs.
 Below are the data-structures used to hold it all:
 
-```
+{% highlight c %}
 typedef guint8 GumExecBlockFlags;
 typedef struct _GumExecBlock GumExecBlock;
 typedef struct _GumSlab GumSlab;
@@ -716,12 +758,12 @@ enum _GumExecBlockFlags
 {
   GUM_EXEC_ACTIVATION_TARGET = (1 << 0),
 };
-```
+{% endhighlight %}
 
 Now let's look at some code when Stalker is initialized which configures their
 size:
 
-```
+{% highlight c %}
 #define GUM_CODE_SLAB_MAX_SIZE  (4 * 1024 * 1024)
 #define GUM_EXEC_BLOCK_MIN_SIZE 1024
 
@@ -740,7 +782,7 @@ gum_stalker_init (GumStalker * self)
 
   ...
 }
-```
+{% endhighlight %}
 
 So we can see that each slab is 4 MB in size. A 12th of this slab is reserved
 for its header, the `GumSlab` structure itself including its `GumExecBlock`
@@ -763,7 +805,7 @@ blocks in the tail and vice versa.
 
 Let's now look at the code which creates them:
 
-```
+{% highlight c %}
 static GumSlab *
 gum_exec_ctx_add_slab (GumExecCtx * ctx)
 {
@@ -785,7 +827,7 @@ gum_exec_ctx_add_slab (GumExecCtx * ctx)
 
   return slab;
 }
-```
+{% endhighlight %}
 
 Here, we can see that the `data` field points to the start of the tail where
 instructions can be written after the header. The `offset` field keeps track of
@@ -807,7 +849,7 @@ Now we understand how the slabs work. Let's look in more detail at the blocks.
 As we know, we can store multiple blocks in a slab and write their instructions
 to the tail. Let's look at the code to allocate a new block:
 
-```
+{% highlight c %}
 static GumExecBlock *
 gum_exec_block_new (GumExecCtx * ctx)
 {
@@ -849,7 +891,7 @@ gum_exec_block_new (GumExecCtx * ctx)
 
   return gum_exec_block_new (ctx);
 }
-```
+{% endhighlight %}
 
 The function first checks if there is space for a minimally sized block in the
 tail of the slab (1024 bytes) and whether there is space in the array of
@@ -919,7 +961,7 @@ finally this is used to construct a `GumStalkerIterator`.
 This iterator is then passed to the transformer. Recall the default
 implementations is as follows:
 
-```
+{% highlight c %}
 static void
 gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
@@ -931,7 +973,7 @@ gum_default_stalker_transformer_transform_block (
     gum_stalker_iterator_keep (iterator);
   }
 }
-```
+{% endhighlight %}
 
 We will gloss over the details of `gum_stalker_iterator_next()` and
 `gum_stalker_iterator_keep()` for now. But in essence, this causes the iterator
@@ -949,7 +991,7 @@ copy. The field `real_snapshot` points to this (and is thus identical to
 by our instrumented block and our copy of the original code. Finally, the block
 is frozen to allow it to be executed.
 
-```
+{% highlight c %}
 static void
 gum_exec_block_commit (GumExecBlock * block)
 {
@@ -966,17 +1008,17 @@ gum_exec_block_commit (GumExecBlock * block)
   gum_stalker_freeze (block->ctx->stalker, block->code_begin,
       code_size);
 }
-```
+{% endhighlight %}
 
 Now let's just return to a few more details of the function
 `gum_exec_ctx_obtain_block_for()`. First we should note that each block has a
 single instruction prefixed.
 
-```
+{% highlight c %}
 gum_arm64_writer_put_ldp_reg_reg_reg_offset (cw, ARM64_REG_X16,
     ARM64_REG_X17, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
     GUM_INDEX_POST_ADJUST);
-```
+{% endhighlight %}
 
 This instruction is the restoration prolog (denoted by
 `GUM_RESTORATION_PROLOG_SIZE`). This is skipped in “bootstrap” usage – hence you
@@ -995,9 +1037,9 @@ than skipping `GUM_RESTORATION_PROLOG_SIZE` bytes.
 Secondly, we can see `gum_exec_ctx_obtain_block_for()` does the following after
 the instrumented block is written:
 
-```
+{% highlight c %}
 gum_arm64_writer_put_brk_imm (cw, 14);
-```
+{% endhighlight %}
 
 This inserts a break instruction which is intended to simplify debugging.
 
@@ -1020,7 +1062,7 @@ which in turn calls `gum_exec_ctx_is_helper_reachable()` to check if the helper
 is within range, or otherwise calls the callback passed as the second argument
 to write out a new copy.
 
-```
+{% highlight c %}
 static void
 gum_exec_ctx_ensure_inline_helpers_reachable (GumExecCtx * ctx)
 {
@@ -1048,7 +1090,7 @@ gum_exec_ctx_ensure_inline_helpers_reachable (GumExecCtx * ctx)
       &ctx->last_stack_pop_and_go,
       gum_exec_ctx_write_stack_pop_and_go_helper);
 }
-```
+{% endhighlight %}
 
 So, what are our 6 helpers. We have 2 for writing prologues which store register
 context, one for a full context and one for a minimal context. We will cover
@@ -1063,7 +1105,7 @@ the page like an array and are populated starting with the entry at the end of
 the page. Each frame contains the address of the original block and the address
 of the instrumented block which we generated to replace it:
 
-```
+{% highlight c %}
 typedef struct _GumExecFrame GumExecFrame;
 typedef struct _GumExecCtx GumExecCtx;
 
@@ -1100,7 +1142,7 @@ gum_stalker_create_exec_ctx (GumStalker * self,
 
   return ctx;
 }
-```
+{% endhighlight %}
 
 ### last_stack_push
 
@@ -1114,19 +1156,22 @@ instrumented blocks.
 
 The pseudo code for this helper is shown below:
 
-```
-void last_stack_push_helper(gpointer x0, gpointer x1) {
-  GumExecFrame** x16 = &ctx->current_frame
-  GumExecFrame* x17 = *x16
-  void* x2 = x17 & (ctx->stalker->page_size - 1)
+{% highlight c %}
+void
+last_stack_push_helper (gpointer x0,
+                        gpointer x1)
+{
+  GumExecFrame ** x16 = &ctx->current_frame
+  GumExecFrame * x17 = *x16
+  gpointer x2 = x17 & (ctx->stalker->page_size - 1)
   if x2 != 0:
     x17--
-    x17.real_address = x0
-    x17.code_address = x1
+    x17->real_address = x0
+    x17->code_address = x1
     *x16 = x17
   return
 }
-```
+{% endhighlight %}
 
 As we can see, this helper is actually a simple function which takes two
 arguments, the `real_address` and the `code_address` to store in the next
@@ -1159,25 +1204,29 @@ need to understand the code written by
 that written by `gum_exec_block_write_exec_generated_code()` which it calls. We
 will skip over pointer authentication for now.
 
-```
-void ret_transfer_code(arm64_reg ret_reg) {
+{% highlight c %}
+void
+ret_transfer_code (arm64_reg ret_reg)
+{
   gpointer x16 = ret_reg
   goto last_stack_pop_and_go_helper
 }
 
-void last_stack_pop_and_go_helper(gpointer x16) {
-  GumExecFrame** x0 = &ctx->current_frame
-  GumExecFrame* x1 = *x0
+void
+last_stack_pop_and_go_helper (gpointer x16)
+{
+  GumExecFrame ** x0 = &ctx->current_frame
+  GumExecFrame * x1 = *x0
   gpointer x17 = x0.real_address
   if x17 == x16:
-    x17 = x0.code_address
+    x17 = x0->code_address
     x1++
     *x0 = x1
     goto x17
   else:
     x1 = ctx->first_frame
     *x0 = x1
-    gpointer* x0 = &ctx->return_at
+    gpointer * x0 = &ctx->return_at
     *x0 = x16
     last_prologue_minimal()
     x0 = &ctx->return_at
@@ -1187,12 +1236,14 @@ void last_stack_pop_and_go_helper(gpointer x16) {
     goto exec_generated_code
 }
 
-void exec_generated_code() {
-  gpointer *x16 = &ctx->resume_at
+void
+exec_generated_code (void)
+{
+  gpointer * x16 = &ctx->resume_at
   gpointer x17 = *x16
   goto x17
 }
-```
+{% endhighlight %}
 
 So this code is a little harder. It isn't really a function and the actual
 assembly written by it is muddied a little by the need to save and restore
@@ -1202,19 +1253,17 @@ contains the address of the block to which we are intending to return.
 
 Lets take a look at the definition of the return instruction:
 
-```
-RET
-Return from subroutine, branches unconditionally to an address
-in a register, with a hint that this is a subroutine return.
-
-RET  {Xn}
-Where:
-
-Xn
-Is the 64-bit name of the general-purpose register holding the
-address to be branched to, in the range 0 to 31. Defaults to
-X30 if absent.
-```
+> RET
+> Return from subroutine, branches unconditionally to an address
+> in a register, with a hint that this is a subroutine return.
+>
+> RET  {Xn}
+> Where:
+>
+> Xn
+> Is the 64-bit name of the general-purpose register holding the
+> address to be branched to, in the range 0 to 31. Defaults to
+> X30 if absent.
 
 As we can see, we are going to return to an address passed in a register.
 Typically, we can predict the register value and where we will return to, as the
@@ -1270,7 +1319,7 @@ block.
 
 Let's look at the prologues and epilogues now.
 
-```c
+{% highlight c %}
 static void
 gum_exec_ctx_write_prolog (GumExecCtx * ctx,
                            GumPrologType type,
@@ -1304,7 +1353,7 @@ gum_exec_ctx_write_epilog (GumExecCtx * ctx,
       ARM64_REG_X20, ARM64_REG_SP, 16 + GUM_RED_ZONE_SIZE,
       GUM_INDEX_POST_ADJUST);
 }
-```
+{% endhighlight %}
 
 We can see that these do little other than call the corresponding prologue or
 epilogue helpers. We can see that the prologue will store `X19` and the link
@@ -1345,7 +1394,7 @@ at the helpers themselves. Although there are two prologues and two epilogues
 in common. The version which is written is based on the function parameters. The
 easiest way to present these is with annotated code:
 
-```
+{% highlight c %}
 static void
 gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
                                   GumPrologType type,
@@ -1569,11 +1618,11 @@ gum_exec_ctx_write_prolog_helper (GumExecCtx * ctx,
   // the instrumented block.
   gum_arm64_writer_put_br_reg_no_auth (cw, ARM64_REG_X19);
 }
-```
+{% endhighlight %}
 
 Now let's look at the epilogue:
 
-```
+{% highlight c %}
 static void
 gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
                                   GumPrologType type,
@@ -1745,7 +1794,7 @@ gum_exec_ctx_write_epilog_helper (GumExecCtx * ctx,
   // app code.
   gum_arm64_writer_put_br_reg_no_auth (cw, ARM64_REG_X19)
 }
-```
+{% endhighlight %}
 
 This is all quite complicated. Partly this is because we have only a single
 register to use as scratch space, partly because we want to keep the prologue
@@ -1765,7 +1814,7 @@ When Stalker writes the prologue and epilogue code, it does so by calling
 `gum_exec_block_open_prolog()` and `gum_exec_block_close_prolog()`. These store
 the type of prologue which has been written in `gc->opened_prolog`.
 
-```
+{% highlight c %}
 static void
 gum_exec_block_open_prolog (GumExecBlock * block,
                             GumPrologType type,
@@ -1794,14 +1843,14 @@ gum_exec_block_close_prolog (GumExecBlock * block,
 
   gc->opened_prolog = GUM_PROLOG_NONE;
 }
-```
+{% endhighlight %}
 
 Therefore when we want to read a register, this can be achieved with the single
 function `gum_exec_ctx_load_real_register_into()`. This determines which kind of
 prologue is in use and calls the relevant routine accordingly. Note that these
 routines don't actually read the registers, they emit code which reads them.
 
-```
+{% highlight c %}
 static void
 gum_exec_ctx_load_real_register_into (GumExecCtx * ctx,
                                       arm64_reg target_register,
@@ -1823,14 +1872,14 @@ gum_exec_ctx_load_real_register_into (GumExecCtx * ctx,
 
   g_assert_not_reached ();
 }
-```
+{% endhighlight %}
 
 Reading registers from the full frame is actually the simplest. We can see the
 code closely matches the structure used to pass the context to callouts etc.
 Remember that in each case register `X20` points to the base of the context
 structure.
 
-```
+{% highlight c %}
 typedef GumArm64CpuContext GumCpuContext;
 
 struct _GumArm64CpuContext
@@ -1881,7 +1930,7 @@ gum_exec_ctx_load_real_register_from_full_frame_into (
         target_register, source_register);
   }
 }
-```
+{% endhighlight %}
 
 Reading from the minimal context is actually a little harder. `X0` through `X18`
 are simple, they are stored in the context block. After `X18` is 8 bytes padding
@@ -1891,7 +1940,7 @@ NEON/floating point registers (totaling 128 bytes). Finally `X19` and `X20`, are
 stored above this as they are restored by the inline epilogue code written by
 `gum_exec_ctx_write_epilog()`.
 
-```
+{% highlight c %}
 static void
 gum_exec_ctx_load_real_register_from_minimal_frame_into (
     GumExecCtx * ctx,
@@ -1931,7 +1980,7 @@ gum_exec_ctx_load_real_register_from_minimal_frame_into (
         target_register, source_register);
   }
 }
-```
+{% endhighlight %}
 
 ## Control flow
 
@@ -1980,7 +2029,7 @@ counter of how many times it has been called and passes control to
 was called with, the `GumExecCtx` and the `start_address` of the next block to
 be instrumented.
 
-```
+{% highlight c %}
 static gboolean counters_enabled = FALSE;
 static guint total_transitions = 0;
 
@@ -2002,12 +2051,12 @@ static guint total_transitions = 0;
   }
 #define GUM_PRINT_ENTRYGATE_COUNTER(name) \
   g_printerr ("\t" G_STRINGIFY (name) "s: %u\n", total_##name##s)
-```
+{% endhighlight %}
 
 These counters can be displayed by the following routine. They are only meant to
 be used by the test-suite rather than being exposed to the user through the API.
 
-```
+{% highlight c %}
 #define GUM_PRINT_ENTRYGATE_COUNTER(name) \
   g_printerr ("\t" G_STRINGIFY (name) "s: %u\n", total_##name##s)
 
@@ -2034,7 +2083,7 @@ gum_stalker_dump_counters (void)
 
   GUM_PRINT_ENTRYGATE_COUNTER (jmp_continuation);
 }
-```
+{% endhighlight %}
 
 ## Virtualize functions
 
@@ -2051,7 +2100,7 @@ We can see that two of these relate to to syscalls (and in fact, one calls the
 other), we will cover these later. Let's look at the ones for branches and
 returns.
 
-### gum_exec_block_virtualize_branch_insn()
+### gum_exec_block_virtualize_branch_insn
 
 This routine first determines whether the destination of the branch comes from
 an immediate offset in the instruction, or a register. In the case of the
@@ -2073,12 +2122,12 @@ simple, we call the function passing the `target` and the `regular_entry_func`.
 For conditional branches things are slightly more complicated. Our output looks
 like the following pseudo-code:
 
-```
+{% highlight c %}
   INVERSE_OF_ORIGINAL_BRANCH(is_false)
   jmp_transfer_code(target, cond_entry_func)
 is_false:
   jmp_transfer_code(cond_target, cond_entry_func)
-```
+{% endhighlight %}
 
 Here, we can see that we first write a branch instruction into our instrumented
 block, as in our instrumented block, we also need to determine whether we should
@@ -2128,7 +2177,7 @@ return statement rather than re-entering Stalker). Lastly we use
 `gum_exec_block_write_exec_generated_code()` to emit code to branch to the
 instrumented callee.
 
-### gum_exec_block_virtualize_ret_insn()
+### gum_exec_block_virtualize_ret_insn
 
 After looking at the virtualization of call instructions, you will be pleased to
 know that this one is relatively simple! If configured, this function calls
@@ -2160,7 +2209,7 @@ are being asked to unfollow, we can see it cause the thread to call
 be instrumented. We can see that if the state has been set to stop following,
 then we simply branch back to the original code.
 
-```
+{% highlight c %}
 static void
 gum_exec_block_write_unfollow_check_code (GumExecBlock * block,
                                           GumGeneratorContext * gc,
@@ -2222,7 +2271,7 @@ gum_exec_ctx_unfollow (GumExecCtx * ctx,
   ctx->destroy_pending_since = g_get_monotonic_time ();
   g_atomic_int_set (&ctx->state, GUM_EXEC_CTX_DESTROY_PENDING);
 }
-```
+{% endhighlight %}
 
 A quick note about pending calls. If we have a call to an excluded range, then
 we emit the original call in the instrumented code followed by a call back to
@@ -2241,7 +2290,7 @@ The first is quite simple, we set the state to stop following. Then call
 `gum_exec_ctx_maybe_unfollow()` to attempt to stop the current thread from being
 followed, and then dispose of the Stalker context.
 
-```
+{% highlight c %}
 void
 gum_stalker_unfollow_me (GumStalker * self)
 {
@@ -2260,7 +2309,7 @@ gum_stalker_unfollow_me (GumStalker * self)
 
   gum_stalker_destroy_exec_ctx (self, ctx);
 }
-```
+{% endhighlight %}
 
 We notice here that we pass `NULL` as the address to
 `gum_exec_ctx_maybe_unfollow()` which may seem odd, but we can see that in this
@@ -2276,7 +2325,7 @@ from excluded ranges as for those we retain the original call instruction in an
 instrumented block, but then follow it with a call back into Stalker. In this
 case, we are just vectoring back to an original uninstrumented block:
 
-```
+{% highlight c %}
 static gpointer gum_unfollow_me_address;
 
 static void
@@ -2315,11 +2364,11 @@ gum_exec_ctx_replace_current_block_with (GumExecCtx * ctx,
 
   ...
 }
-```
+{% endhighlight %}
 
 Let's look at `gum_stalker_unfollow()` now:
 
-```
+{% highlight c %}
 void
 gum_stalker_unfollow (GumStalker * self,
                       GumThreadId thread_id)
@@ -2366,7 +2415,7 @@ gum_stalker_unfollow (GumStalker * self,
     GUM_STALKER_UNLOCK (self);
   }
 }
-```
+{% endhighlight %}
 
 This function looks through the list of contexts looking for the one for the
 requested thread. Again, it sets the state of the context to
@@ -2413,7 +2462,7 @@ complex like emit an event between a load and a store we are going to cause it
 to fail every time, and end up looping indefinitely. Stalker, however, deals
 with such a scenario:
 
-```
+{% highlight c %}
 gboolean
 gum_stalker_iterator_next (GumStalkerIterator * self,
                            const cs_insn ** insn)
@@ -2472,7 +2521,7 @@ gum_stalker_iterator_keep (GumStalkerIterator * self)
 
   ...
 }
-```
+{% endhighlight %}
 
 Here, we can see that the iterator records when it sees an exclusive load and
 tracks how many instructions have passed since. This is continued for up to four
@@ -2481,14 +2530,14 @@ instructions would be needed to load, test, modify and store the value. This is
 then used to prevent any instrumentation being emitted which isn't strictly
 necessary:
 
-```
+{% highlight c %}
   if ((ec->sink_mask & GUM_EXEC) != 0 &&
       gc->exclusive_load_offset == GUM_INSTRUCTION_OFFSET_NONE)
   {
     gum_exec_block_write_exec_event_code (block, gc,
         GUM_CODE_INTERRUPTIBLE);
   }
-```
+{% endhighlight %}
 
 ### Exhausted Blocks
 
@@ -2506,7 +2555,7 @@ that each time we read a new instruction from the iterator there is at least
 store the current address in `continuation_real_address` and return `FALSE` so
 that the iterator ends.
 
-```
+{% highlight c %}
 #define GUM_EXEC_BLOCK_MIN_SIZE 1024
 
 static gboolean
@@ -2531,14 +2580,14 @@ gum_stalker_iterator_next (GumStalkerIterator * self,
 
   ...
 }
-```
+{% endhighlight %}
 
 Our caller `gum_exec_ctx_obtain_block_for()` which is walking the iterator to
 generate the block then acts exactly as if there was a branch instruction to the
 next instruction, essentially terminating the current block and starting the
 next one.
 
-```
+{% highlight c %}
 static GumExecBlock *
 gum_exec_ctx_obtain_block_for (GumExecCtx * ctx,
                                gpointer real_address,
@@ -2558,15 +2607,15 @@ gum_exec_ctx_obtain_block_for (GumExecCtx * ctx,
 
   ...
 }
-```
+{% endhighlight %}
 
 It is as if the following instructions had been encountered in the input right
 before the instruction which would have not had sufficient space:
 
-```
+{% highlight asm %}
   B label
 label:
-```
+{% endhighlight %}
 
 ### Syscall Virtualization
 
@@ -2579,7 +2628,7 @@ Hence the terms syscall and sysenter here are used synonymously.
 Syscall virtualization is carried out by the following routine. We can see we
 only do anything on Linux systems:
 
-```
+{% highlight c %}
 static GumVirtualizationRequirements
 gum_exec_block_virtualize_sysenter_insn (GumExecBlock * block,
                                          GumGeneratorContext * gc)
@@ -2590,7 +2639,7 @@ gum_exec_block_virtualize_sysenter_insn (GumExecBlock * block,
   return GUM_REQUIRE_RELOCATION;
 #endif
 }
-```
+{% endhighlight %}
 
 This is required because of the `clone` syscall. This syscall creates a new
 process which shares execution context with the parent, such as file handles,
@@ -2606,7 +2655,7 @@ The function `gum_exec_block_virtualize_linux_sysenter()` generates the
 necessary instrumented code to deal with such a syscall. We will look at the
 pseudo code below:
 
-```
+{% highlight c %}
 if x8 == __NR_clone:
   x0 = do_original_syscall()
   if x0 == 0:
@@ -2614,7 +2663,7 @@ if x8 == __NR_clone:
   return x0
 else:
   return do_original_syscall()
-```
+{% endhighlight %}
 
 We can see that it first checks if we are dealing with a `clone` syscall,
 otherwise it simply performs the original syscall and that is all (the original
@@ -2648,7 +2697,7 @@ pointer authentication code cannot be guessed without having access to it.
 
 Let's look at the following fragment of code:
 
-```
+{% highlight asm %}
 pacia lr, sp
 stp fp, lr, [sp, #-FRAME_SIZE]!
 mov fp, sp
@@ -2658,7 +2707,7 @@ mov fp, sp
 ldp fp, lr, [sp], #FRAME_SIZE
 autia lr, sp
 ret lr
-```
+{% endhighlight %}
 
 The `pacia` instruction combines the values of `LR`, `SP` and the key to
 generate a version of `LR` with the authentication code `LR'` and stores back
