@@ -521,7 +521,7 @@ considered thawed.
 
 ### Call Instructions
 
-AArch64, unlike Intel doesn't have an single explicit `call` instruction, which
+AArch64, unlike Intel doesn't have an single explicit `CALL` instruction, which
 has different forms to cope with all supported scenarios. Instead, it uses a
 number of different instructions to offer support for function calls. These
 instructions all branch to a given location and update the Link register, `LR`,
