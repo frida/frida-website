@@ -363,6 +363,12 @@ and helping shape the unwrap() feature.
   the Exceptor thread remaining in the target process. Kudos to [@mrmacete][]
   for discovering and fixing this long-standing issue!
 
+### Changes in 12.8.20
+
+- The *remove_remote_device()* API is back in working order. This was an
+  unfortunate regression introduced in 12.7.17. Thanks for reporting,
+  [@CodeColorist][]!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
