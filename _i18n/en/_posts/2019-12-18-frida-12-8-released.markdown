@@ -354,6 +354,15 @@ and helping shape the unwrap() feature.
 - Ability to hook CriticalNative methods on newer versions of Android. Kudos to
   [@abdawoud][] for reporting!
 
+### Changes in 12.8.19
+
+- Scripts are now properly cleaned up if destroyed without first being loaded.
+  This ensures that ultimately when the script core is disposed, it in turn
+  disposes its reference to the Exceptor. Failing to do so causes indefinite
+  hang when attaching after detaching in presence of unloaded scripts, due to
+  the Exceptor thread remaining in the target process. Kudos to [@mrmacete][]
+  for discovering and fixing this long-standing issue!
+
 
 [Stalker]: /docs/javascript-api/#stalker
 [started]: /news/2017/08/25/frida-10-5-released/
