@@ -1687,7 +1687,7 @@ Stalker.follow(mainThread.id, {
   //  *
   //  * void
   //  * transform (GumStalkerIterator * iterator,
-  //  *            GumStalkerWriter * output,
+  //  *            GumStalkerOutput * output,
   //  *            gpointer user_data)
   //  * {
   //  *   cs_insn * insn;
@@ -1696,7 +1696,7 @@ Stalker.follow(mainThread.id, {
   //  *   {
   //  *     if (insn->id == X86_INS_RET)
   //  *     {
-  //  *       gum_x86_writer_put_nop (output);
+  //  *       gum_x86_writer_put_nop (output->writer.x86);
   //  *       gum_stalker_iterator_put_callout (iterator,
   //  *           on_ret, NULL, NULL);
   //  *     }

@@ -565,7 +565,7 @@ static void
 gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
-    GumStalkerWriter * output)
+    GumStalkerOutput * output)
 {
   while (gum_stalker_iterator_next (iterator, NULL))
   {
@@ -966,7 +966,7 @@ static void
 gum_default_stalker_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
-    GumStalkerWriter * output)
+    GumStalkerOutput * output)
 {
   while (gum_stalker_iterator_next (iterator, NULL))
   {

@@ -278,7 +278,7 @@ static void on_ret (GumCpuContext * cpu_context,
 
 void
 transform (GumStalkerIterator * iterator,
-           GumStalkerWriter * output,
+           GumStalkerOutput * output,
            gpointer user_data)
 {
   cs_insn * insn;
@@ -287,7 +287,7 @@ transform (GumStalkerIterator * iterator,
   {
     if (insn->id == X86_INS_RET)
     {
-      gum_x86_writer_put_nop (output);
+      gum_x86_writer_put_nop (output->writer.x86);
       gum_stalker_iterator_put_callout (iterator,
           on_ret, NULL, NULL);
     }
