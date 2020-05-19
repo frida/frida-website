@@ -3124,9 +3124,11 @@ var MyWeirdTrustManager = Java.registerClass({
     each element is either a string specifying the register, or a Number or
     NativePointer specifying the immediate value.
 
--   `putBranchAddress(address)`: put a BRANCH instruction
+-   `putBranchAddress(address)`: put code needed for branching/jumping to the
+    given address
 
--   `canBranchDirectlyBetween(from, to)`: 
+-   `canBranchDirectlyBetween(from, to)`: determine whether a direct branch is
+    possible between the two given memory locations
 
 -   `putBImm(target)`: put a B instruction
 
@@ -3283,7 +3285,9 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putLabel(id)`: put a label at the current position, where `id` is a string
     that may be referenced in past and future `put*Label()` calls
 
--   `commitLabel(id)`: 
+-   `commitLabel(id)`: commit the first pending reference to the given label,
+    returning `true` on success. Returns `false` if the given label hasn't been
+    defined yet, or there are no more pending references to it.
 
 -   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
@@ -3447,7 +3451,9 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `writeOne()`: write the next buffered instruction
 
--   `copyOne()`: 
+-   `copyOne()`: copy out the next buffered instruction without advancing the
+    output cursor, allowing the same instruction to be written out multiple
+    times
 
 -   `writeAll()`: write all buffered instructions
 
@@ -3506,9 +3512,11 @@ var MyWeirdTrustManager = Java.registerClass({
     each element is either a string specifying the register, or a Number or
     NativePointer specifying the immediate value.
 
--   `putBranchAddress(address)`: put a BRANCH instruction
+-   `putBranchAddress(address)`: put code needed for branching/jumping to the
+    given address
 
--   `canBranchDirectlyBetween(from, to)`: 
+-   `canBranchDirectlyBetween(from, to)`: determine whether a direct branch is
+    possible between the two given memory locations
 
 -   `putBImm(address)`: put a B instruction
 
@@ -3525,11 +3533,13 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putBrReg(reg)`: put a BR instruction
 
--   `putBrRegNoAuth(reg)`: put a BR NO AUTH instruction
+-   `putBrRegNoAuth(reg)`: put a BR instruction expecting a raw pointer
+    without any authentication bits
 
 -   `putBlrReg(reg)`: put a BLR instruction
 
--   `putBlrRegNoAuth(reg)`: put a BLR NO AUTH instruction
+-   `putBlrRegNoAuth(reg)`: put a BLR instruction expecting a raw pointer
+    without any authentication bits
 
 -   `putRet()`: put a RET instruction
 
@@ -3608,7 +3618,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
--   `sign(value)`: 
+-   `sign(value)`: sign the given pointer value
 
 
 ## Arm64Relocator
@@ -3779,7 +3789,8 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putBreak()`: put a BREAK instruction
 
--   `putPrologueTrampoline(reg, address)`: put a PROLOGUE TRAMPOLINE instruction
+-   `putPrologueTrampoline(reg, address)`: put a minimal sized trampoline for
+    vectoring to the given address
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
