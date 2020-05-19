@@ -3119,24 +3119,87 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putLabel(id)`: put a label at the current position, where `id` is a string
     that may be referenced in past and future `put*Label()` calls
 
+-   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
+-   `putBranchAddress(address)`: put a BRANCH instruction
+
+-   `canBranchDirectlyBetween(from, to)`: 
+
 -   `putBImm(target)`: put a B instruction
 
--   `putBxReg(reg)`: put a BX instruction
+-   `putBCondImm(cc, target)`: put a B COND instruction
 
 -   `putBLabel(labelId)`: put a B instruction
     referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBCondLabel(cc, labelId)`: put a B COND instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBlImm(target)`: put a BL instruction
+
+-   `putBlxImm(target)`: put a BLX instruction
+
+-   `putBlLabel(labelId)`: put a BL instruction
+    referencing `labelId`, defined by a past or future `putLabel()`
+
+-   `putBxReg(reg)`: put a BX instruction
+
+-   `putBlxReg(reg)`: put a BLX instruction
+
+-   `putRet()`: put a RET instruction
 
 -   `putLdrRegAddress(reg, address)`: put an LDR instruction
 
 -   `putLdrRegU32(reg, val)`: put an LDR instruction
 
+-   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
+
+-   `putLdrCondRegRegOffset(cc, dstReg, srcReg, srcOffset)`: put an LDR COND instruction
+
+-   `putLdmiaRegMask(reg, mask)`: put an LDMIA MASK instruction
+
+-   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
+
+-   `putStrCondRegRegOffset(cc, srcReg, dstReg, dstOffset)`: put a STR COND instruction
+
+-   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegRegShift(dstReg, srcReg, shift, shiftValue)`: put a MOV SHIFT instruction
+
+-   `putMovRegCpsr(reg)`: put a MOV CPSR instruction
+
+-   `putMovCpsrReg(reg)`: put a MOV CPSR instruction
+
+-   `putAddRegU16(dstReg, val)`: put an ADD U16 instruction
+
+-   `putAddRegU32(dstReg, val)`: put an ADD instruction
+
 -   `putAddRegRegImm(dstReg, srcReg, immVal)`: put an ADD instruction
 
--   `putLdrRegRegImm(dstReg, srcReg, immVal)`: put an LDR instruction
+-   `putAddRegRegReg(dstReg, srcReg1, srcReg2)`: put an ADD instruction
+
+-   `putAddRegRegRegShift(dstReg, srcReg1, srcReg2, shift, shiftValue)`: put an ADD SHIFT instruction
+
+-   `putSubRegU16(dstReg, val)`: put a SUB U16 instruction
+
+-   `putSubRegU32(dstReg, val)`: put a SUB instruction
+
+-   `putSubRegRegImm(dstReg, srcReg, immVal)`: put a SUB instruction
+
+-   `putSubRegRegReg(dstReg, srcReg1, srcReg2)`: put a SUB instruction
+
+-   `putAndsRegRegImm(dstReg, srcReg, immVal)`: put an ANDS instruction
+
+-   `putCmpRegImm(dstReg, immVal)`: put a CMP instruction
 
 -   `putNop()`: put a NOP instruction
 
 -   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
+
+-   `putBrkImm(imm)`: put a BRK instruction
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
@@ -3220,6 +3283,8 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putLabel(id)`: put a label at the current position, where `id` is a string
     that may be referenced in past and future `put*Label()` calls
 
+-   `commitLabel(id)`: 
+
 -   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
@@ -3283,6 +3348,12 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
 
+-   `putLdrbRegReg(dstReg, srcReg)`: put an LDRB instruction
+
+-   `putVldrRegRegOffset(dstReg, srcReg, srcOffset)`: put a VLDR instruction
+
+-   `putLdmiaRegMask(reg, mask)`: put an LDMIA MASK instruction
+
 -   `putStrRegReg(srcReg, dstReg)`: put a STR instruction
 
 -   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
@@ -3290,6 +3361,10 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
 
 -   `putMovRegU8(dstReg, immValue)`: put a MOV instruction
+
+-   `putMovRegCpsr(reg)`: put a MOV CPSR instruction
+
+-   `putMovCpsrReg(reg)`: put a MOV CPSR instruction
 
 -   `putAddRegImm(dstReg, immValue)`: put an ADD instruction
 
@@ -3306,6 +3381,12 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putSubRegRegReg(dstReg, leftReg, rightReg)`: put a SUB instruction
 
 -   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
+
+-   `putAndRegRegImm(dstReg, leftReg, rightValue)`: put an AND instruction
+
+-   `putLslsRegRegImm(dstReg, leftReg, rightValue)`: put a LSLS instruction
+
+-   `putLsrsRegRegImm(dstReg, leftReg, rightValue)`: put a LSRS instruction
 
 -   `putMrsRegReg(dstReg, srcReg)`: put a MRS instruction
 
@@ -3366,6 +3447,8 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `writeOne()`: write the next buffered instruction
 
+-   `copyOne()`: 
+
 -   `writeAll()`: write all buffered instructions
 
 
@@ -3376,6 +3459,8 @@ var MyWeirdTrustManager = Java.registerClass({
 -   SystemRegister: `apsr-nzcvq`
 -   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
     `gt` `le` `al`
+-   Shifter: `asr` `lsl` `lsr` `ror` `rrx` `asr-reg` `lsl-reg` `lsr-reg`
+    `ror-reg` `rrx-reg`
 
 
 ## Arm64Writer
@@ -3423,6 +3508,8 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putBranchAddress(address)`: put a BRANCH instruction
 
+-   `canBranchDirectlyBetween(from, to)`: 
+
 -   `putBImm(address)`: put a B instruction
 
 -   `putBLabel(labelId)`: put a B instruction
@@ -3438,7 +3525,11 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putBrReg(reg)`: put a BR instruction
 
+-   `putBrRegNoAuth(reg)`: put a BR NO AUTH instruction
+
 -   `putBlrReg(reg)`: put a BLR instruction
+
+-   `putBlrRegNoAuth(reg)`: put a BLR NO AUTH instruction
 
 -   `putRet()`: put a RET instruction
 
@@ -3507,6 +3598,8 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putCmpRegReg(regA, regB)`: put a CMP instruction
 
+-   `putXpaciReg(reg)`: put an XPACI instruction
+
 -   `putNop()`: put a NOP instruction
 
 -   `putBrkImm(imm)`: put a BRK instruction
@@ -3514,6 +3607,8 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
+
+-   `sign(value)`: 
 
 
 ## Arm64Relocator
@@ -3626,6 +3721,8 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putJAddress(address)`: put a J instruction
 
+-   `putJAddressWithoutNop(address)`: put a J WITHOUT NOP instruction
+
 -   `putJLabel(labelId)`: put a J instruction
     referencing `labelId`, defined by a past or future `putLabel()`
 
@@ -3646,7 +3743,11 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putLuiRegImm(reg, imm)`: put a LUI instruction
 
+-   `putDsllRegReg(dstReg, srcReg, amount)`: put a DSLL instruction
+
 -   `putOriRegRegImm(rt, rs, imm)`: put an ORI instruction
+
+-   `putLdRegRegOffset(dstReg, srcReg, srcOffset)`: put an LD instruction
 
 -   `putLwRegRegOffset(dstReg, srcReg, srcOffset)`: put a LW instruction
 
@@ -3656,11 +3757,11 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putAdduRegRegReg(dstReg, leftReg, rightReg)`: put an ADDU instruction
 
--   `putAddiRegRegImm(destReg, leftReg, imm)`: put an ADDI instruction
+-   `putAddiRegRegImm(dstReg, leftReg, imm)`: put an ADDI instruction
 
--   `putAddiRegImm(destReg, imm)`: put an ADDI instruction
+-   `putAddiRegImm(dstReg, imm)`: put an ADDI instruction
 
--   `putSubRegRegImm(destReg, leftReg, imm)`: put a SUB instruction
+-   `putSubRegRegImm(dstReg, leftReg, imm)`: put a SUB instruction
 
 -   `putPushReg(reg)`: put a PUSH instruction
 
@@ -3677,6 +3778,8 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putNop()`: put a NOP instruction
 
 -   `putBreak()`: put a BREAK instruction
+
+-   `putPrologueTrampoline(reg, address)`: put a PROLOGUE TRAMPOLINE instruction
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
