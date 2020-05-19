@@ -126,6 +126,7 @@ Enjoy!
 
 - Android 11 Developer Preview 4 is now supported. Thanks for the assist,
   [@enovella_][]!
+- Linux file monitoring is back in great shape.
 - ArmRelocator properly relocates ADD instructions involving the PC register.
 - ThumbRelocator properly handles IT blocks containing an unconditional branch.
   This means Interceptor is able to hook even more tricky cases. Thanks
