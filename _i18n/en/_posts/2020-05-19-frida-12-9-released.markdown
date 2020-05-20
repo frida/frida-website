@@ -138,6 +138,14 @@ Enjoy!
 - Improved error-handling in ObjC and Java bridges, to avoid crashing the
   process on unsupported OSes.
 
+### Changes in 12.9.4
+
+- *ObjC.available* no longer pretends that the Objective-C runtime is available
+  when it indeed is not. The error-handling refactoring in 12.9.3 broke this,
+  and the regression went unnoticed due to this being a blind spot in our test
+  coverage.
+- Electron v9 is out, so we now only provide prebuilds for v9.
+
 
 [Stalker]: /docs/stalker/
 [what other functions does this function call]: https://codeshare.frida.re/@oleavr/who-does-it-call/
