@@ -18,8 +18,7 @@ Frida has a rather complicated build system due to some design constraints:
 - **Short build time for new contributors.** Frida downloads a prebuilt
 toolchain and SDK to save time. This requires a bit more fiddling to get the
 build environment just right, but it has the added benefit of providing a
-coherent build environment. For example we know we're being built with just
-one version of autotools whether we're on macOS or GNU/Linux.
+coherent build environment.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
 Frida's run-time components, like frida-helper, frida-agent, etc. will at some
@@ -51,13 +50,11 @@ below.
 ### GNU/Linux
 
 - Make sure you have a:
-  - Modern x86 system with GCC 5.4 or newer
-  - Development toolchain, and Node.js on your PATH. E.g. on Ubuntu 16.04:
+  - Modern x86 system with GCC 7.5 or newer
+  - Development toolchain, and Node.js on your PATH. E.g. on Ubuntu 20.04:
 {% highlight bash %}
-$ sudo apt-get install build-essential gcc-multilib lib32stdc++-5-dev \
-    python-dev python3-dev git
-$ curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-$ sudo apt-get install -y nodejs
+$ sudo apt-get install build-essential curl git lib32stdc++-9-dev \
+    libc6-dev-i386 nodejs npm python3-dev python3-pip
 {% endhighlight %}
 
 - Clone `frida` and build it:
@@ -74,7 +71,7 @@ Running `make` will provide you a list of modules to build. See
 
 - Make sure you have:
   - Xcode with command-line tools
-  - [Python 3.7](https://www.python.org/downloads/mac-osx/) on your PATH
+  - [Python 3.8](https://www.python.org/downloads/mac-osx/) on your PATH
   - [Node.js](https://nodejs.org/) on your PATH
 - Clone `frida` and build it:
 {% highlight bash %}
@@ -89,9 +86,9 @@ Running `make` will provide you a list of modules to build. See
 ### Windows
 
 - Make sure you have:
-  - Visual Studio 2017 w/XP support installed
+  - Visual Studio 2019 w/XP support installed
   - [Git](https://git-scm.com/downloads) on your PATH
-  - [Python 3.7](https://www.python.org/downloads/windows/) on your PATH
+  - [Python 3.8](https://www.python.org/downloads/windows/) on your PATH
   - [Node.js](https://nodejs.org/) on your PATH
     `py` launcher installed, and associated to .py files
   - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
