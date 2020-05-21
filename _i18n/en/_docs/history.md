@@ -34,10 +34,10 @@ possible to use Frida from C.
 [frida-gum]: https://github.com/frida/frida-gum
 [Stalker]: https://github.com/frida/frida-gum/blob/master/gum/backend-x86/gumstalker-x86.c
 [huge improvements]: http://blog.kalleberg.org/post/833101026/live-x86-code-instrumentation-with-frida
-[Node.js]: https://www.npmjs.com/package/frida
-[Python]: https://pypi.python.org/pypi/frida
+[Node.js]: https://github.com/frida/frida-node
+[Python]: https://github.com/frida/frida-python
 [Swift]: https://github.com/frida/frida-swift
-[.NET]: http://build.frida.re/frida/windows/x64-Release/bin/Frida.dll
-[Qt/Qml]: https://github.com/frida/frida/releases
+[.NET]: https://github.com/frida/frida-clr
+[Qt/Qml]: https://github.com/frida/frida-qml
 [oSpy]: https://github.com/oleavr/ospy
 [V8]: https://code.google.com/p/v8/
