@@ -469,8 +469,9 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     *find*-prefixed function returns *null* whilst the *get*-prefixed function
     throws an exception.
 
-+   `Module.load(name)`: loads the specified module and returns a `Module`
-    object. Throws an exception if the specified module cannot be loaded.
++   `Module.load(path)`: loads the specified module from the filesystem path
+    and returns a `Module` object. Throws an exception if the specified module
+    cannot be loaded.
 
 +   `Module.ensureInitialized(name)`: ensures that initializers of the specified
     module have been run. This is important during early instrumentation, i.e.
