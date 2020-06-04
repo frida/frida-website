@@ -156,6 +156,11 @@ Enjoy!
   issue that's been around for as long as the Java bridge has existed. Thanks
   [@tacesrever][]!
 
+### Changes in 12.9.6
+
+- No changes except for proper Windows binaries this time. The Windows CI worker
+  did not actually build anything last time around, and released stale binaries.
+
 
 [Stalker]: /docs/stalker/
 [what other functions does this function call]: https://codeshare.frida.re/@oleavr/who-does-it-call/
