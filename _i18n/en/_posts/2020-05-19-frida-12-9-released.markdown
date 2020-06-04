@@ -146,6 +146,16 @@ Enjoy!
   coverage.
 - Electron v9 is out, so we now only provide prebuilds for v9.
 
+### Changes in 12.9.5
+
+- iOS early instrumentation – i.e. spawn() – supported on latest unc0ver.
+- iOS crash reporter integration ported to iOS 13.5.
+- *SystemFunction* now implements *call()* and *apply()* in the Duktape runtime,
+  and not only in the V8 runtime.
+- Java bridge finally handles strings with embedded nuls, fixing a long-standing
+  issue that's been around for as long as the Java bridge has existed. Thanks
+  [@tacesrever][]!
+
 
 [Stalker]: /docs/stalker/
 [what other functions does this function call]: https://codeshare.frida.re/@oleavr/who-does-it-call/
