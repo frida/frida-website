@@ -161,6 +161,14 @@ Enjoy!
 - No changes except for proper Windows binaries this time. The Windows CI worker
   did not actually build anything last time around, and released stale binaries.
 
+### Changes in 12.9.7
+
+- iOS early instrumentation more reliable on the unc0ver jailbreak: we now load
+  *substrate-inserter.dylib* as part of our early instrumentation. This means
+  it gets a chance to bootstrap the process, and lets you hook system APIs
+  hooked by the bootstrapper without worrying about the bootstrapper getting
+  confused when it encounters your hooks. Thanks [@mrmacete][]!
+
 
 [Stalker]: /docs/stalker/
 [what other functions does this function call]: https://codeshare.frida.re/@oleavr/who-does-it-call/
