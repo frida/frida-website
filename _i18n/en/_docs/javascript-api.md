@@ -1,6 +1,6 @@
 ## Getting started
 
-To be more productive, we highly recommend using our [TypeScript](https://www.typescriptlang.org/)
+To be more productive, we highly recommend using our **[TypeScript](https://www.typescriptlang.org/)**
 bindings. This means you get code completion, type checking, inline docs,
 refactoring tools, etc.
 
@@ -8,7 +8,7 @@ Here's a short teaser video showing the editor experience:
 
 [![Frida TypeScript demo](https://i.ytimg.com/vi/9cr4gOPFN4o/sddefault.jpg)](https://youtu.be/9cr4gOPFN4o)
 
-Clone [this repo](https://github.com/oleavr/frida-agent-example) to get started.
+Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get started.
 
 ## Table of contents
 
@@ -16,6 +16,7 @@ Clone [this repo](https://github.com/oleavr/frida-agent-example) to get started.
     1. [Frida](#frida)
     1. [Script](#script)
 1. **Process, Thread, Module and Memory**
+    1. [Thread](#thread)
     1. [Process](#process)
     1. [Module](#module)
     1. [ModuleMap](#modulemap)
@@ -26,7 +27,6 @@ Clone [this repo](https://github.com/oleavr/frida-agent-example) to get started.
     1. [DebugSymbol](#debugsymbol)
     1. [Kernel](#kernel)
 1. **Data Types, Function and Callback**
-    1. [Thread](#thread)
     1. [Int64](#int64)
     1. [UInt64](#uint64)
     1. [NativePointer](#nativepointer)
@@ -73,202 +73,18 @@ Clone [this repo](https://github.com/oleavr/frida-agent-example) to get started.
     1. [MipsRelocator](#mipsrelocator)
     1. [MIPS enum types](#mips-enum-types)
 1. **Others**
-    1. Log and Dump
-    1. Shorthand
-    1. Messaging
-    1. [console](#console)
-    1. [Global](#global)
-    1. [rpc](#rpc)
+    1. [Console](#console)
+    1. [Hexdump](#hexdump)
+    1. [Shorthand](#shorthand)
+    1. [Messaging between host and injected process](#messaging-between-host-and-injected-process)
+    1. [Timing events](#timing-events)
+    1. [Garbage collection](#garbage-collection)
 
 ---
 
-## Global
+## Runtime information
 
-+   `hexdump(target[, options])`: generate a hexdump from the provided
-    *ArrayBuffer* or *NativePointer* `target`, optionally with `options` for
-    customizing the output.
-
-    For example:
-
-{% highlight js %}
-var libc = Module.findBaseAddress('libc.so');
-console.log(hexdump(libc, {
-  offset: 0,
-  length: 64,
-  header: true,
-  ansi: true
-}));
-{% endhighlight %}
-
-{% highlight sh %}
-           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
-00000000  7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00  .ELF............
-00000010  03 00 28 00 01 00 00 00 00 00 00 00 34 00 00 00  ..(.........4...
-00000020  34 a8 04 00 00 00 00 05 34 00 20 00 08 00 28 00  4.......4. ...(.
-00000030  1e 00 1d 00 06 00 00 00 34 00 00 00 34 00 00 00  ........4...4...
-{% endhighlight %}
-
-+   `int64(v)`: short-hand for `new Int64(v)`
-
-+   `uint64(v)`: short-hand for `new UInt64(v)`
-
-+   `ptr(s)`: short-hand for `new NativePointer(s)`
-
-+   `NULL`: short-hand for `ptr("0")`
-
-+   `recv([type, ]callback)`: request `callback` to be called on the next
-    message received from your Frida-based application. Optionally `type` may
-    be specified to only receive a message where the `type` field is set to
-    `type`.
-
-    This will only give you one message, so you need to call `recv()` again
-    to receive the next one.
-
-+   `send(message[, data])`: send the JavaScript object `message` to your
-    Frida-based application (it must be serializable to JSON). If you also have
-    some raw binary data that you'd like to send along with it, e.g. you dumped
-    some memory using `NativePointer#readByteArray`, then you may pass this
-    through the optional `data` argument. This requires it to either be an
-    ArrayBuffer or an array of integers between 0 and 255.
-
-<div class="note">
-  <h5>Performance considerations</h5>
-  <p>
-    While <i>send()</i> is asynchronous, the total overhead of sending a single
-    message is not optimized for high frequencies, so that means Frida leaves
-    it up to you to batch multiple values into a single <i>send()</i>-call,
-    based on whether low delay or high throughput is desired.
-  </p>
-</div>
-
-+   `setTimeout(func, delay[, ...parameters])`: call `func` after `delay`
-    milliseconds, optionally passing it one or more `parameters`.
-    Returns an id that can be passed to `clearTimeout` to cancel it.
-
-+   `clearTimeout(id)`: cancel id returned by call to `setTimeout`.
-
-+   `setInterval(func, delay[, ...parameters])`: call `func` every `delay`
-    milliseconds, optionally passing it one or more `parameters`.
-    Returns an id that can be passed to `clearInterval` to cancel it.
-
-+   `clearInterval(id)`: cancel id returned by call to `setInterval`.
-
-+   `setImmediate(func[, ...parameters])`: schedules `func` to be called on
-    Frida's JavaScript thread as soon as possible, optionally passing it one
-    or more `parameters`.
-    Returns an id that can be passed to `clearImmediate` to cancel it.
-
-+   `clearImmediate(id)`: cancel id returned by call to `setImmediate`.
-
-+   `gc()`: force garbage collection. Useful for testing `WeakRef.bind()` logic,
-    but also sometimes needed when using the Duktape runtime and its default GC
-    heuristics proving a bit too lazy.
-
-
-## console
-
-+   `console.log(line)`, `console.warn(line)`, `console.error(line)`:
-    write `line` to the console of your Frida-based application. The exact
-    behavior depends on where [frida-core](https://github.com/frida/frida-core)
-    is integrated.
-    For example, this output goes to *stdout* or *stderr* when using Frida
-    through [frida-python](https://github.com/frida/frida-python),
-    [qDebug](https://doc.qt.io/qt-5/qdebug.html) when using
-    [frida-qml](https://github.com/frida/frida-qml), etc.
-
-    Arguments that are ArrayBuffer objects will be substituted by the result of
-    `hexdump()` with default options.
-
-
-## rpc
-
-+   `rpc.exports`: empty object that you can either replace or insert into to
-    expose an RPC-style API to your application. The key specifies the method
-    name and the value is your exported function. This function may either
-    return a plain value for returning that to the caller immediately, or a
-    Promise for returning asynchronously.
-
->   For example:
-
-{% highlight js %}
-rpc.exports = {
-  add: function (a, b) {
-    return a + b;
-  },
-  sub: function (a, b) {
-    return new Promise(function (resolve) {
-      setTimeout(function () {
-        resolve(a - b);
-      }, 100);
-    });
-  }
-};
-{% endhighlight %}
-
->   From an application using the Node.js bindings this API would be consumed
->   like this:
-
-{% highlight js %}
-const frida = require('frida');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-
-const readFile = util.promisify(fs.readFile);
-
-let session, script;
-async function run() {
-  const source = await readFile(path.join(__dirname, '_agent.js'), 'utf8');
-  session = await frida.attach('iTunes');
-  script = await session.createScript(source);
-  script.message.connect(onMessage);
-  await script.load();
-  console.log(await script.exports.add(2, 3));
-  console.log(await script.exports.sub(5, 3));
-}
-
-run().catch(onError);
-
-function onError(error) {
-  console.error(error.stack);
-}
-
-function onMessage(message, data) {
-  if (message.type === 'send') {
-    console.log(message.payload);
-  } else if (message.type === 'error') {
-    console.error(message.stack);
-  }
-}
-{% endhighlight %}
-
->   The Python version would be very similar:
-
-{% highlight py %}
-import codecs
-import frida
-
-def on_message(message, data):
-    if message['type'] == 'send':
-        print(message['payload'])
-    elif message['type'] == 'error':
-        print(message['stack'])
-
-session = frida.attach('iTunes')
-with codecs.open('./agent.js', 'r', 'utf-8') as f:
-    source = f.read()
-script = session.create_script(source)
-script.on('message', on_message)
-script.load()
-print(script.exports.add(2, 3))
-print(script.exports.sub(5, 3))
-session.detach()
-{% endhighlight %}
-
-In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
-
-
-## Frida
+### Frida
 
 +   `Frida.version`: property containing the current Frida version, as a string.
 
@@ -277,14 +93,49 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     for keeping an eye on how much memory your instrumentation is using out of
     the total consumed by the hosting process.
 
-
-## Script
+### Script
 
 +   `Script.runtime`: string property containing the runtime being used.
     Either `DUK` or `V8`.
 
+---
 
-## Process
+## Process, Thread, Module and Memory
+
+### Thread
+
++   `Thread.backtrace([context, backtracer])`: generate a backtrace for the
+    current thread, returned as an array of `NativePointer` objects.
+
+    If you call this from Interceptor's `onEnter` or `onLeave` callbacks you
+    should provide `this.context` for the optional `context` argument, as it
+    will give you a more accurate backtrace. Omitting `context` means the
+    backtrace will be generated from the current stack location, which may
+    not give you a very good backtrace due to V8's stack frames.
+    The optional `backtracer` argument specifies the kind of backtracer to use,
+    and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
+    latter is the default if not specified. The accurate kind of backtracers
+    rely on debugger-friendly binaries or presence of debug information to do a
+    good job, whereas the fuzzy backtracers perform forensics on the stack in
+    order to guess the return addresses, which means you will get false
+    positives, but it will work on any binary.
+
+{% highlight js %}
+var f = Module.getExportByName('libcommonCrypto.dylib',
+    'CCCryptorCreate');
+Interceptor.attach(f, {
+  onEnter: function (args) {
+    console.log('CCCryptorCreate called from:\n' +
+        Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).join('\n') + '\n');
+  }
+});
+{% endhighlight %}
+
++   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
+    seconds specified as a number. For example 0.05 to sleep for 50 ms.
+
+### Process
 
 +   `Process.id`: property containing the PID as a number
 
@@ -405,10 +256,9 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     forward the exception to the hosting process' exception handler, if it has
     one, or let the OS terminate the process.
 
+### Module
 
-## Module
-
-    Objects returned by e.g. `Module.load()` and `Process.enumerateModules()`.
+Objects returned by e.g. `Module.load()` and `Process.enumerateModules()`.<br/><br/>
 
 -   `name`: canonical module name as a string
 
@@ -507,8 +357,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     export could be found, the *find*-prefixed function returns *null* whilst
     the *get*-prefixed function throws an exception.
 
-
-## ModuleMap
+### ModuleMap
 
 +   `new ModuleMap([filter])`: create a new module map optimized for determining
     which module a given memory address belongs to, if any. Takes a snapshot of
@@ -542,8 +391,7 @@ In the example above we used `script.on('message', on_message)` to monitor for a
     the map. The returned array is a deep copy and will not mutate after a call
     to `update()`.
 
-
-## Memory
+### Memory
 
 +   `Memory.scan(address, size, pattern, callbacks)`: scan memory for
     occurences of `pattern` in the memory range given by `address` and `size`.
@@ -674,8 +522,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     heap. The returned object is a `NativePointer`. See `Memory#alloc` for
     details about its lifetime.
 
-
-## MemoryAccessMonitor
+### MemoryAccessMonitor
 
 +   `MemoryAccessMonitor.enable(ranges, callbacks)`: monitor one or more memory
     ranges for access, and notify on the first access of each contained memory
@@ -703,26 +550,187 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
         -   `pagesTotal`: overall number of pages that were initially monitored
 
 +   `MemoryAccessMonitor.disable()`: stop monitoring the remaining memory ranges
-    passed to `MemoryAccessMonitor.enable()`
+    passed to `MemoryAccessMonitor.enable()`.
 
+### CModule
 
-## Thread
++   `new CModule(source[, symbols])`: compiles C `source` code string to machine
+    code, straight to memory.
 
-+   `Thread.backtrace([context, backtracer])`: generate a backtrace for the
-    current thread, returned as an array of `NativePointer` objects.
+    Useful for implementing hot callbacks, e.g. for *Interceptor* and *Stalker*,
+    but also useful when needing to start new threads in order to call functions
+    in a tight loop, e.g. for fuzzing purposes.
 
-    If you call this from Interceptor's `onEnter` or `onLeave` callbacks you
-    should provide `this.context` for the optional `context` argument, as it
-    will give you a more accurate backtrace. Omitting `context` means the
-    backtrace will be generated from the current stack location, which may
-    not give you a very good backtrace due to V8's stack frames.
-    The optional `backtracer` argument specifies the kind of backtracer to use,
-    and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
-    latter is the default if not specified. The accurate kind of backtracers
-    rely on debugger-friendly binaries or presence of debug information to do a
-    good job, whereas the fuzzy backtracers perform forensics on the stack in
-    order to guess the return addresses, which means you will get false
-    positives, but it will work on any binary.
+    Global functions are automatically exported as *NativePointer* properties
+    named exactly like in the C source code. This means you can pass them to
+    *Interceptor* and *Stalker*, or call them using *NativeFunction*.
+
+    The optional second argument, `symbols`, is an object specifying additional
+    symbol names and their *NativePointer* values, each of which will be plugged
+    in at creation. This may for example be one or more memory blocks allocated
+    using *Memory.alloc()*, and/or *NativeCallback* values for receiving
+    callbacks from the C module.
+
+    To perform initialization and cleanup, you may define functions with the
+    following names and signatures:
+
+    -   `void init (void)`
+    -   `void finalize (void)`
+
+    Note that all data is read-only, so writable globals should be declared
+    *extern*, allocated using e.g. *Memory.alloc()*, and passed in as symbols
+    through the constructor's second argument.
+
+-   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
+    modules when waiting for a future garbage collection isn't desirable.
+
+#### Examples
+
+{% highlight js %}
+var source = [
+  '#include <stdio.h>',
+  '',
+  'void hello(void) {',
+  '  printf("Hello World from CModule\\n");',
+  '}',
+].join('\n');
+
+var cm = new CModule(source);
+
+console.log(JSON.stringify(cm));
+
+var hello = new NativeFunction(cm.hello, 'void', []);
+hello();
+{% endhighlight %}
+
+Which you might load using Frida's REPL:
+
+{% highlight sh %}
+$ frida -p 0 -l example.js
+{% endhighlight %}
+
+(The REPL monitors the file on disk and reloads the script on change.)
+
+You can then type `hello()` in the REPL to call the C function.
+
+The same example can be simplified by using modern JavaScript syntax:
+
+{% highlight js %}
+const source = `
+#include <stdio.h>
+
+void hello(void) {
+  printf("Hello World from CModule\\n");
+}
+`;
+
+const cm = new CModule(source);
+
+const hello = new NativeFunction(cm.hello, 'void', []);
+hello();
+{% endhighlight %}
+
+Which our V8-based runtime supports:
+
+{% highlight sh %}
+$ frida -p 0 --runtime=v8 -l example.js
+{% endhighlight %}
+
+Another option is to use [frida-compile](https://github.com/oleavr/frida-agent-example)
+to compile the JavaScript code to ES5, so it can be run on our Duktape-based
+runtime.
+
+For prototyping we recommend using Frida's REPL:
+
+{% highlight sh %}
+$ frida -p 0 -C example.c
+{% endhighlight %}
+
+You may also add `-l example.js` to load some JavaScript next to it.
+The JavaScript code may use the global variable named `cm` to access
+the CModule object, but only after `rpc.exports.init()` has been called,
+so do any initialization depending on the CModule there. You may also
+inject symbols by assigning to the global object named `cs`, but this
+must be done *before* `rpc.exports.init()` gets called.
+
+Here's an example:
+
+![CModule REPL example](https://pbs.twimg.com/media/EEyxQzwXoAAqoAw?format=jpg&name=small)
+
+More details on CModule can be found in the [Frida 12.7 release notes]({{
+site.baseurl_root }}/news/2019/09/18/frida-12-7-released/).
+
+### ApiResolver
+
++   `new ApiResolver(type)`: create a new resolver of the given `type`, allowing
+    you to quickly find functions by name, with globs permitted. Precisely which
+    resolvers are available depends on the current platform and runtimes loaded
+    in the current process. As of the time of writing, the available resolvers
+    are:
+
+    -   `module`: Resolves exported and imported functions of shared libraries
+                  currently loaded. Always available.
+    -   `objc`: Resolves Objective-C methods of classes currently loaded.
+                Available on macOS and iOS in processes that have the Objective-C
+                runtime loaded. Use `ObjC.available` to check at runtime, or
+                wrap your `new ApiResolver('objc')` call in a *try-catch*.
+
+    The resolver will load the minimum amount of data required on creation, and
+    lazy-load the rest depending on the queries it receives. It is thus
+    recommended to use the same instance for a batch of queries, but recreate it
+    for future batches to avoid looking at stale data.
+
+-   `enumerateMatches(query)`: performs the resolver-specific `query` string,
+    returning an array of objects containing the following properties:
+
+    -   `name`: name of the API that was found
+    -   `address`: address as a `NativePointer`
+
+{% highlight js %}
+var resolver = new ApiResolver('module');
+var matches = resolver.enumerateMatches('exports:*!open*');
+var first = matches[0];
+/*
+ * Where `first` is an object similar to:
+ *
+ * {
+ *   name: '/usr/lib/libSystem.B.dylib!opendir$INODE64',
+ *   address: ptr('0x7fff870135c9')
+ * }
+ */
+{% endhighlight %}
+
+{% highlight js %}
+var resolver = new ApiResolver('objc');
+var matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
+var first = matches[0];
+/*
+ * Where `first` contains an object like this one:
+ *
+ * {
+ *   name: '-[NSURLRequest valueForHTTPHeaderField:]',
+ *   address: ptr('0x7fff94183e22')
+ * }
+ */
+{% endhighlight %}
+
+### DebugSymbol
+
++   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromName(name)`:
+    look up debug information for `address`/`name` and return it as an object
+    containing:
+
+    -   `address`: Address that this symbol is for, as a `NativePointer`.
+    -   `name`: Name of the symbol, as a string, or null if unknown.
+    -   `moduleName`: Module name owning this symbol, as a string, or null if
+                      unknown.
+    -   `fileName`: File name owning this symbol, as a string, or null if
+                    unknown.
+    -   `lineNumber`: Line number in `fileName`, as a number, or null if
+                      unknown.
+
+    You may also call `toString()` on it, which is very useful when combined
+    with `Thread.backtrace()`:
 
 {% highlight js %}
 var f = Module.getExportByName('libcommonCrypto.dylib',
@@ -736,11 +744,82 @@ Interceptor.attach(f, {
 });
 {% endhighlight %}
 
-+   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
-    seconds specified as a number. For example 0.05 to sleep for 50 ms.
++   `DebugSymbol.getFunctionByName(name)`: resolves a function name and
+    returns its address as a `NativePointer`. Returns the first if more than
+    one function is found. Throws an exception if the name cannot be resolved.
 
++   `DebugSymbol.findFunctionsNamed(name)`: resolves a function name and returns
+    its addresses as an array of `NativePointer` objects.
 
-## Int64
++   `DebugSymbol.findFunctionsMatching(glob)`: resolves function names matching
+    `glob` and returns their addresses as an array of `NativePointer` objects.
+
+### Kernel
+
++   `Kernel.available`: a boolean specifying whether the Kernel API is
+    available. Do not invoke any other `Kernel` properties or methods unless
+    this is the case.
+
++   `Kernel.base`: base address of the kernel, as a UInt64.
+
++   `Kernel.pageSize`: size of a kernel page in bytes, as a number.
+
++   `Kernel.enumerateModules()`: enumerates kernel modules loaded right now,
+    returning an array of objects containing the following properties:
+
+    -   `name`: canonical module name as a string
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
+
++   `Kernel.enumerateRanges(protection|specifier)`: enumerate kernel memory
+    ranges satisfying `protection` given as a string of the form: `rwx`, where
+    `rw-` means "must be at least readable and writable". Alternatively you may
+    provide a `specifier` object with a `protection` key whose value is as
+    aforementioned, and a `coalesce` key set to `true` if you'd like neighboring
+    ranges with the same protection to be coalesced (the default is `false`;
+    i.e. keeping the ranges separate). Returns an array of objects containing
+    the following properties:
+
+    -   `base`: base address as a `NativePointer`
+    -   `size`: size in bytes
+    -   `protection`: protection string (see above)
+
++   `Kernel.enumerateModuleRanges(name, protection)`: just like
+    `Kernel.enumerateRanges`, except it's scoped to the specified module
+    `name` – which may be `null` for the module of the kernel itself. Each
+    range also has a `name` field containing a unique identifier as a string.
+
++   `Kernel.alloc(size)`: allocate `size` bytes of kernel memory, rounded up to
+    a multiple of the kernel's page size. The returned value is a `UInt64`
+    specifying the base address of the allocation.
+
++   `Kernel.protect(address, size, protection)`: update protection on a region
+    of kernel memory, where `protection` is a string of the same format as
+    `Kernel.enumerateRanges()`.
+
+    For example:
+
+{% highlight js %}
+Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
+{% endhighlight %}
+
++   `Kernel.readByteArray(address, length)`: just like
+    `NativePointer#readByteArray`, but reading from kernel memory.
+
++   `Kernel.writeByteArray(address, bytes)`: just like
+    `NativePointer#writeByteArray`, but writing to kernel memory.
+
++   `Kernel.scan(address, size, pattern, callbacks)`: just like `Memory.scan`,
+    but scanning kernel memory.
+
+-   `Kernel.scanSync(address, size, pattern)`: synchronous version of `scan()`
+    that returns the matches in an array.
+
+---
+
+## Data Types, Function and Callback
+
+### Int64
 
 +   `new Int64(v)`: create a new Int64 from `v`, which is either a number or a
     string containing a value in decimal, or hexadecimal if prefixed with "0x".
@@ -763,8 +842,7 @@ Interceptor.attach(f, {
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
 
-
-## UInt64
+### UInt64
 
 +   `new UInt64(v)`: create a new UInt64 from `v`, which is either a number or a
     string containing a value in decimal, or hexadecimal if prefixed with "0x".
@@ -787,8 +865,7 @@ Interceptor.attach(f, {
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
 
-
-## NativePointer
+### NativePointer
 
 +   `new NativePointer(s)`: creates a new NativePointer from the string `s`
     containing a memory address in either decimal, or hexadecimal if prefixed
@@ -936,8 +1013,7 @@ Interceptor.attach(f, {
 
     Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
-
-## ArrayBuffer
+### ArrayBuffer
 
 +   `wrap(address, size)`: creates an ArrayBuffer backed by an existing memory
     region, where `address` is a `NativePointer` specifying the base address of
@@ -948,9 +1024,8 @@ Interceptor.attach(f, {
 -   `unwrap()`: returns a `NativePointer` specifying the base address of the
     ArrayBuffer's backing store. It is the caller's responsibility to keep the
     buffer alive while the backing store is still being used.
-
-
-## NativeFunction
+    
+### NativeFunction
 
 +   `new NativeFunction(address, returnType, argTypes[, abi])`: create a new
     NativeFunction to call the function at `address` (specified with a
@@ -959,25 +1034,25 @@ Interceptor.attach(f, {
     specify `abi` if not system default. For variadic functions, add a `'...'`
     entry to `argTypes` between the fixed arguments and the variadic ones.
 
-    ### Structs & Classes by Value
+    - #### Structs & Classes by Value
 
-    As for structs or classes passed by value, instead of a string provide an
-    array containing the struct's field types following each other. You may nest
-    these as deep as desired for representing structs inside structs. Note that
-    the returned object is also a `NativePointer`, and can thus be passed to
-    `Interceptor#attach`.
+        As for structs or classes passed by value, instead of a string provide an
+        array containing the struct's field types following each other. You may nest
+        these as deep as desired for representing structs inside structs. Note that
+        the returned object is also a `NativePointer`, and can thus be passed to
+        `Interceptor#attach`.
 
-    This must match the struct/class exactly, so if you have a struct with three
-    ints, you must pass `['int', 'int', 'int']`.
+        This must match the struct/class exactly, so if you have a struct with three
+        ints, you must pass `['int', 'int', 'int']`.
 
-    For a class that has virtual methods, the first parameter will be a pointer
-    to [the vtable](https://en.wikipedia.org/wiki/Virtual_method_table).
+        For a class that has virtual methods, the first parameter will be a pointer
+        to [the vtable](https://en.wikipedia.org/wiki/Virtual_method_table).
 
-    For C++ scenarios involving a return value that is larger than
-    `Process.pointerSize`, a `NativePointer` to preallocated space must be passed
-    in as the first parameter. (This scenario is common in WebKit, for example.)
+        For C++ scenarios involving a return value that is larger than
+        `Process.pointerSize`, a `NativePointer` to preallocated space must be passed
+        in as the first parameter. (This scenario is common in WebKit, for example.)
 
-    Example:
+        Example:
 {% highlight js %}
 // LargeObject HandyClass::friendlyFunctionName();
 var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr,
@@ -986,49 +1061,44 @@ var returnValue = Memory.alloc(sizeOfLargeObject);
 friendlyFunctionName(returnValue, thisPtr);
 {% endhighlight %}
 
-    ### Supported Types
++ 
+    - #### Supported Types
+        -   void
+        -   pointer
+        -   int
+        -   uint
+        -   long
+        -   ulong
+        -   char
+        -   uchar
+        -   float
+        -   double
+        -   int8
+        -   uint8
+        -   int16
+        -   uint16
+        -   int32
+        -   uint32
+        -   int64
+        -   uint64
+        -   bool
 
-    -   void
-    -   pointer
-    -   int
-    -   uint
-    -   long
-    -   ulong
-    -   char
-    -   uchar
-    -   float
-    -   double
-    -   int8
-    -   uint8
-    -   int16
-    -   uint16
-    -   int32
-    -   uint32
-    -   int64
-    -   uint64
-    -   bool
-
-    ### Supported ABIs
-
-    -   default
-
-    -   Windows 32-bit:
-        -   sysv
-        -   stdcall
-        -   thiscall
-        -   fastcall
-        -   mscdecl
-
-    - Windows 64-bit:
-        -   win64
-
-    - UNIX x86:
-        -   sysv
-        -   unix64
-
-    - UNIX ARM:
-        -   sysv
-        -   vfp
+    - #### Supported ABIs
+        -   default
+        -   Windows 32-bit:
+            -   sysv
+            -   stdcall
+            -   thiscall
+            -   fastcall
+            -   mscdecl
+        - Windows 64-bit:
+            -   win64
+        - UNIX x86:
+            -   sysv
+            -   unix64
+        - UNIX ARM:
+            -   sysv
+            -   vfp
 
 +   `new NativeFunction(address, returnType, argTypes[, options])`: just like
     the previous constructor, but where the fourth argument, `options`, is an
@@ -1067,8 +1137,7 @@ friendlyFunctionName(returnValue, thisPtr);
                  `clone(options)` API to create a new method wrapper with custom
                  NativeFunction options.
 
-
-## NativeCallback
+### NativeCallback
 
 +   `new NativeCallback(func, returnType, argTypes[, abi])`: create a new
     NativeCallback implemented by the JavaScript function `func`, where
@@ -1081,21 +1150,24 @@ friendlyFunctionName(returnValue, thisPtr);
     be invoked with `this` bound to an object with some useful properties, just
     like the one in *Interceptor.attach()*.
 
-
-## SystemFunction
+### SystemFunction
 
 +   `new SystemFunction(address, returnType, argTypes[, abi])`: just like
     `NativeFunction`, but also provides a snapshot of the thread's last error
     status. The return value is an object wrapping the actual return value as
     `value`, with one additional platform-specific field named either `errno`
     (UNIX) or `lastError` (Windows).
+    {: #new_SystemFunction}
 
 +   `new SystemFunction(address, returnType, argTypes[, options])`: same as
     above but accepting an `options` object like `NativeFunction`'s
     corresponding constructor.
 
+---
 
-## Socket
+## Network
+
+### Socket
 
 +   `Socket.listen([options])`: open a TCP or UNIX listening socket. Returns a
     *Promise* that receives a [SocketListener](#socketlistener).
@@ -1159,9 +1231,8 @@ friendlyFunctionName(returnValue, thisPtr);
     -   `path`: (UNIX sockets) UNIX path as a string.
 
 
-## SocketListener
-
-    All methods are fully asynchronous and return Promise objects.
+### SocketListener
+All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `path`: (UNIX family) path being listened on.
 
@@ -1175,20 +1246,37 @@ friendlyFunctionName(returnValue, thisPtr);
     receives a [SocketConnection](#socketconnection).
 
 
-## SocketConnection
-
-    Inherits from IOStream.
-    All methods are fully asynchronous and return Promise objects.
+### SocketConnection
+Inherits from IOStream.
+All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `setNoDelay(noDelay)`: disable the Nagle algorithm if `noDelay` is `true`,
     otherwise enable it. The Nagle algorithm is enabled by default, so it is
     only necessary to call this method if you wish to optimize for low delay
     instead of high throughput.
 
+---
 
-## IOStream
+## File and Stream
 
-    All methods are fully asynchronous and return Promise objects.
+### File
+
++   `new File(filePath, mode)`: open or create the file at `filePath` with
+    the `mode` string specifying how it should be opened. For example `"wb"`
+    to open the file for writing in binary mode (this is the same format as
+    `fopen()` from the C standard library).
+
+-   `write(data)`: synchronously write `data` to the file, where `data` is
+    either a string or a buffer as returned by `NativePointer#readByteArray`
+
+-   `flush()`: flush any buffered data to the underlying file
+
+-   `close()`: close the file. You should call this function when you're done
+    with the file unless you are fine with this happening when the object is
+    garbage-collected or the script is unloaded.
+
+### IOStream
+All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `input`: the [InputStream](#inputstream) to read from.
 
@@ -1200,9 +1288,8 @@ friendlyFunctionName(returnValue, thisPtr);
     allowed and will not result in an error.
 
 
-## InputStream
-
-    All methods are fully asynchronous and return Promise objects.
+### InputStream
+All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `close()`: close the stream, releasing resources related to it. Once the
     stream is closed, all other operations will fail. Closing a stream multiple
@@ -1219,9 +1306,8 @@ friendlyFunctionName(returnValue, thisPtr);
     `partialData` property containing the incomplete data.
 
 
-## OutputStream
-
-    All methods are fully asynchronous and return Promise objects.
+### OutputStream
+All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `close()`: close the stream, releasing resources related to it. Once the
     stream is closed, all other operations will fail. Closing a stream multiple
@@ -1239,9 +1325,8 @@ friendlyFunctionName(returnValue, thisPtr);
     bytes of `data` were written to the stream before the error occurred.
 
 
-## UnixInputStream
-
-    (Only available on UNIX-like OSes.)
+### UnixInputStream
+(Only available on UNIX-like OSes.)<br/><br/>
 
 +   `new UnixInputStream(fd[, options])`: create a new
     [InputStream](#inputstream) from the specified file descriptor `fd`.
@@ -1251,9 +1336,8 @@ friendlyFunctionName(returnValue, thisPtr);
     released, either through `close()` or future garbage-collection.
 
 
-## UnixOutputStream
-
-    (Only available on UNIX-like OSes.)
+### UnixOutputStream
+(Only available on UNIX-like OSes.)<br/><br/>
 
 +   `new UnixOutputStream(fd[, options])`: create a new
     [OutputStream](#outputstream) from the specified file descriptor `fd`.
@@ -1263,9 +1347,8 @@ friendlyFunctionName(returnValue, thisPtr);
     released, either through `close()` or future garbage-collection.
 
 
-## Win32InputStream
-
-    (Only available on Windows.)
+### Win32InputStream
+(Only available on Windows.)<br/><br/>
 
 +   `new Win32InputStream(handle[, options])`: create a new
     [InputStream](#inputstream) from the specified `handle`, which is a Windows
@@ -1276,9 +1359,8 @@ friendlyFunctionName(returnValue, thisPtr);
     either through `close()` or future garbage-collection.
 
 
-## Win32OutputStream
-
-    (Only available on Windows.)
+### Win32OutputStream
+(Only available on Windows.)<br/><br/>
 
 +   `new Win32OutputStream(handle[, options])`: create a new
     [OutputStream](#outputstream) from the specified `handle`, which is a
@@ -1288,25 +1370,9 @@ friendlyFunctionName(returnValue, thisPtr);
     make the stream close the underlying handle when the stream is released,
     either through `close()` or future garbage-collection.
 
+## Database
 
-## File
-
-+   `new File(filePath, mode)`: open or create the file at `filePath` with
-    the `mode` string specifying how it should be opened. For example `"wb"`
-    to open the file for writing in binary mode (this is the same format as
-    `fopen()` from the C standard library).
-
--   `write(data)`: synchronously write `data` to the file, where `data` is
-    either a string or a buffer as returned by `NativePointer#readByteArray`
-
--   `flush()`: flush any buffered data to the underlying file
-
--   `close()`: close the file. You should call this function when you're done
-    with the file unless you are fine with this happening when the object is
-    garbage-collected or the script is unloaded.
-
-
-## SqliteDatabase
+### SqliteDatabase
 
 +   `SqliteDatabase.open(path[, options])`: opens the SQLite v3 database
     specified by `path`, a string containing the filesystem path to the
@@ -1362,7 +1428,7 @@ smt.reset();
     cache in your agent's code, loaded by calling `SqliteDatabase.openInline()`.
 
 
-## SqliteStatement
+### SqliteStatement
 
 -   `bindInteger(index, value)`: bind the integer `value` to `index`
 -   `bindFloat(index, value)`: bind the floating point `value` to `index`
@@ -1376,8 +1442,11 @@ smt.reset();
     `reset()` at that point if you intend to use this object again.
 -   `reset()`: reset internal state to allow subsequent queries
 
+---
 
-## Interceptor
+## Instrumentation
+
+### Interceptor
 
 +   `Interceptor.attach(target, callbacks[, data])`: intercept calls to function
     at `target`. This is a `NativePointer` specifying the address of the
@@ -1568,7 +1637,7 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
     method on the [console](#console) API.
 
 
-## Stalker
+### Stalker
 
 +   `Stalker.exclude(range)`: marks the specified memory `range` as excluded,
     which is an object with `base` and `size` properties – like the properties
@@ -1813,304 +1882,21 @@ Stalker.follow(mainThread.id, {
     `Stalker.flush()` when you would like the queue to be drained.
 
 
-## ApiResolver
+### WeakRef
 
-+   `new ApiResolver(type)`: create a new resolver of the given `type`, allowing
-    you to quickly find functions by name, with globs permitted. Precisely which
-    resolvers are available depends on the current platform and runtimes loaded
-    in the current process. As of the time of writing, the available resolvers
-    are:
++   `WeakRef.bind(value, fn)`: monitor `value` and call the `fn` callback as
+    soon as `value` has been garbage-collected, or the script is about to get
+    unloaded. Returns an id that you can pass to `WeakRef.unbind()` for
+    explicit cleanup.
 
-    -   `module`: Resolves exported and imported functions of shared libraries
-                  currently loaded. Always available.
-    -   `objc`: Resolves Objective-C methods of classes currently loaded.
-                Available on macOS and iOS in processes that have the Objective-C
-                runtime loaded. Use `ObjC.available` to check at runtime, or
-                wrap your `new ApiResolver('objc')` call in a *try-catch*.
+    This API is useful if you're building a language-binding, where you need to
+    free native resources when a JS value is no longer needed.
 
-    The resolver will load the minimum amount of data required on creation, and
-    lazy-load the rest depending on the queries it receives. It is thus
-    recommended to use the same instance for a batch of queries, but recreate it
-    for future batches to avoid looking at stale data.
++   `WeakRef.unbind(id)`: stop monitoring the value passed to
+    `WeakRef.bind(value, fn)`, and call the `fn` callback immediately.
 
--   `enumerateMatches(query)`: performs the resolver-specific `query` string,
-    returning an array of objects containing the following properties:
 
-    -   `name`: name of the API that was found
-    -   `address`: address as a `NativePointer`
-
-{% highlight js %}
-var resolver = new ApiResolver('module');
-var matches = resolver.enumerateMatches('exports:*!open*');
-var first = matches[0];
-/*
- * Where `first` is an object similar to:
- *
- * {
- *   name: '/usr/lib/libSystem.B.dylib!opendir$INODE64',
- *   address: ptr('0x7fff870135c9')
- * }
- */
-{% endhighlight %}
-
-{% highlight js %}
-var resolver = new ApiResolver('objc');
-var matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
-var first = matches[0];
-/*
- * Where `first` contains an object like this one:
- *
- * {
- *   name: '-[NSURLRequest valueForHTTPHeaderField:]',
- *   address: ptr('0x7fff94183e22')
- * }
- */
-{% endhighlight %}
-
-
-## DebugSymbol
-
-+   `DebugSymbol.fromAddress(address)`, `DebugSymbol.fromName(name)`:
-    look up debug information for `address`/`name` and return it as an object
-    containing:
-
-    -   `address`: Address that this symbol is for, as a `NativePointer`.
-    -   `name`: Name of the symbol, as a string, or null if unknown.
-    -   `moduleName`: Module name owning this symbol, as a string, or null if
-                      unknown.
-    -   `fileName`: File name owning this symbol, as a string, or null if
-                    unknown.
-    -   `lineNumber`: Line number in `fileName`, as a number, or null if
-                      unknown.
-
-    You may also call `toString()` on it, which is very useful when combined
-    with `Thread.backtrace()`:
-
-{% highlight js %}
-var f = Module.getExportByName('libcommonCrypto.dylib',
-    'CCCryptorCreate');
-Interceptor.attach(f, {
-  onEnter: function (args) {
-    console.log('CCCryptorCreate called from:\n' +
-        Thread.backtrace(this.context, Backtracer.ACCURATE)
-        .map(DebugSymbol.fromAddress).join('\n') + '\n');
-  }
-});
-{% endhighlight %}
-
-+   `DebugSymbol.getFunctionByName(name)`: resolves a function name and
-    returns its address as a `NativePointer`. Returns the first if more than
-    one function is found. Throws an exception if the name cannot be resolved.
-
-+   `DebugSymbol.findFunctionsNamed(name)`: resolves a function name and returns
-    its addresses as an array of `NativePointer` objects.
-
-+   `DebugSymbol.findFunctionsMatching(glob)`: resolves function names matching
-    `glob` and returns their addresses as an array of `NativePointer` objects.
-
-
-## CModule
-
-+   `new CModule(source[, symbols])`: compiles C `source` code string to machine
-    code, straight to memory.
-
-    Useful for implementing hot callbacks, e.g. for *Interceptor* and *Stalker*,
-    but also useful when needing to start new threads in order to call functions
-    in a tight loop, e.g. for fuzzing purposes.
-
-    Global functions are automatically exported as *NativePointer* properties
-    named exactly like in the C source code. This means you can pass them to
-    *Interceptor* and *Stalker*, or call them using *NativeFunction*.
-
-    The optional second argument, `symbols`, is an object specifying additional
-    symbol names and their *NativePointer* values, each of which will be plugged
-    in at creation. This may for example be one or more memory blocks allocated
-    using *Memory.alloc()*, and/or *NativeCallback* values for receiving
-    callbacks from the C module.
-
-    To perform initialization and cleanup, you may define functions with the
-    following names and signatures:
-
-    -   `void init (void)`
-    -   `void finalize (void)`
-
-    Note that all data is read-only, so writable globals should be declared
-    *extern*, allocated using e.g. *Memory.alloc()*, and passed in as symbols
-    through the constructor's second argument.
-
--   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
-    modules when waiting for a future garbage collection isn't desirable.
-
-### Examples
-
-{% highlight js %}
-var source = [
-  '#include <stdio.h>',
-  '',
-  'void hello(void) {',
-  '  printf("Hello World from CModule\\n");',
-  '}',
-].join('\n');
-
-var cm = new CModule(source);
-
-console.log(JSON.stringify(cm));
-
-var hello = new NativeFunction(cm.hello, 'void', []);
-hello();
-{% endhighlight %}
-
-Which you might load using Frida's REPL:
-
-{% highlight sh %}
-$ frida -p 0 -l example.js
-{% endhighlight %}
-
-(The REPL monitors the file on disk and reloads the script on change.)
-
-You can then type `hello()` in the REPL to call the C function.
-
-The same example can be simplified by using modern JavaScript syntax:
-
-{% highlight js %}
-const source = `
-#include <stdio.h>
-
-void hello(void) {
-  printf("Hello World from CModule\\n");
-}
-`;
-
-const cm = new CModule(source);
-
-const hello = new NativeFunction(cm.hello, 'void', []);
-hello();
-{% endhighlight %}
-
-Which our V8-based runtime supports:
-
-{% highlight sh %}
-$ frida -p 0 --runtime=v8 -l example.js
-{% endhighlight %}
-
-Another option is to use [frida-compile](https://github.com/oleavr/frida-agent-example)
-to compile the JavaScript code to ES5, so it can be run on our Duktape-based
-runtime.
-
-For prototyping we recommend using Frida's REPL:
-
-{% highlight sh %}
-$ frida -p 0 -C example.c
-{% endhighlight %}
-
-You may also add `-l example.js` to load some JavaScript next to it.
-The JavaScript code may use the global variable named `cm` to access
-the CModule object, but only after `rpc.exports.init()` has been called,
-so do any initialization depending on the CModule there. You may also
-inject symbols by assigning to the global object named `cs`, but this
-must be done *before* `rpc.exports.init()` gets called.
-
-Here's an example:
-
-![CModule REPL example](https://pbs.twimg.com/media/EEyxQzwXoAAqoAw?format=jpg&name=small)
-
-More details on CModule can be found in the [Frida 12.7 release notes]({{
-site.baseurl_root }}/news/2019/09/18/frida-12-7-released/).
-
-
-## Instruction
-
-+   `Instruction.parse(target)`: parse the instruction at the `target` address
-    in memory, represented by a `NativePointer`.
-    Note that on 32-bit ARM this address must have its least significant bit
-    set to 0 for ARM functions, and 1 for Thumb functions. Frida takes care
-    of this detail for you if you get the address from a Frida API (for
-    example `Module.getExportByName()`).
-
-    The object returned has the fields:
-
-    -   `address`: address (EIP) of this instruction, as a `NativePointer`
-    -   `next`: pointer to the next instruction, so you can `parse()` it
-    -   `size`: size of this instruction
-    -   `mnemonic`: string representation of instruction mnemonic
-    -   `opStr`: string representation of instruction operands
-    -   `operands`: array of objects describing each operand, each specifying
-                    the `type` and `value`, at a minimum, but potentially also
-                    additional properties depending on the architecture
-    -   `regsRead`: array of register names implicitly read by this instruction
-    -   `regsWritten`: array of register names implicitly written to by this
-        instruction
-    -   `groups`: array of group names that this instruction belongs to
-    -   `toString()`: convert to a human-readable string
-
-    For details about `operands` and `groups`, please consult the
-    [Capstone](http://www.capstone-engine.org/) documentation for your
-    architecture.
-
-
-## Kernel
-
-+   `Kernel.available`: a boolean specifying whether the Kernel API is
-    available. Do not invoke any other `Kernel` properties or methods unless
-    this is the case.
-
-+   `Kernel.base`: base address of the kernel, as a UInt64.
-
-+   `Kernel.pageSize`: size of a kernel page in bytes, as a number.
-
-+   `Kernel.enumerateModules()`: enumerates kernel modules loaded right now,
-    returning an array of objects containing the following properties:
-
-    -   `name`: canonical module name as a string
-    -   `base`: base address as a `NativePointer`
-    -   `size`: size in bytes
-
-+   `Kernel.enumerateRanges(protection|specifier)`: enumerate kernel memory
-    ranges satisfying `protection` given as a string of the form: `rwx`, where
-    `rw-` means "must be at least readable and writable". Alternatively you may
-    provide a `specifier` object with a `protection` key whose value is as
-    aforementioned, and a `coalesce` key set to `true` if you'd like neighboring
-    ranges with the same protection to be coalesced (the default is `false`;
-    i.e. keeping the ranges separate). Returns an array of objects containing
-    the following properties:
-
-    -   `base`: base address as a `NativePointer`
-    -   `size`: size in bytes
-    -   `protection`: protection string (see above)
-
-+   `Kernel.enumerateModuleRanges(name, protection)`: just like
-    `Kernel.enumerateRanges`, except it's scoped to the specified module
-    `name` – which may be `null` for the module of the kernel itself. Each
-    range also has a `name` field containing a unique identifier as a string.
-
-+   `Kernel.alloc(size)`: allocate `size` bytes of kernel memory, rounded up to
-    a multiple of the kernel's page size. The returned value is a `UInt64`
-    specifying the base address of the allocation.
-
-+   `Kernel.protect(address, size, protection)`: update protection on a region
-    of kernel memory, where `protection` is a string of the same format as
-    `Kernel.enumerateRanges()`.
-
-    For example:
-
-{% highlight js %}
-Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
-{% endhighlight %}
-
-+   `Kernel.readByteArray(address, length)`: just like
-    `NativePointer#readByteArray`, but reading from kernel memory.
-
-+   `Kernel.writeByteArray(address, bytes)`: just like
-    `NativePointer#writeByteArray`, but writing to kernel memory.
-
-+   `Kernel.scan(address, size, pattern, callbacks)`: just like `Memory.scan`,
-    but scanning kernel memory.
-
--   `Kernel.scanSync(address, size, pattern)`: synchronous version of `scan()`
-    that returns the matches in an array.
-
-
-## ObjC
+### ObjC
 
 +   `ObjC.available`: a boolean specifying whether the current process has an
     Objective-C runtime loaded. Do not invoke any other `ObjC` properties or
@@ -2513,8 +2299,7 @@ function isAppModule(m) {
 +   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
     string
 
-
-## Java
+### Java
 
 +   `Java.available`: a boolean specifying whether the current process has the
     a Java VM loaded, i.e. Dalvik or ART. Do not invoke any other `Java`
@@ -2777,22 +2562,40 @@ var MyWeirdTrustManager = Java.registerClass({
     -   `registerClass(spec)`: like `Java.registerClass()` but for a specific
          class loader.
 
+---
 
-## WeakRef
+## CPU Instruction
 
-+   `WeakRef.bind(value, fn)`: monitor `value` and call the `fn` callback as
-    soon as `value` has been garbage-collected, or the script is about to get
-    unloaded. Returns an id that you can pass to `WeakRef.unbind()` for
-    explicit cleanup.
+### Instruction
 
-    This API is useful if you're building a language-binding, where you need to
-    free native resources when a JS value is no longer needed.
++   `Instruction.parse(target)`: parse the instruction at the `target` address
+    in memory, represented by a `NativePointer`.
+    Note that on 32-bit ARM this address must have its least significant bit
+    set to 0 for ARM functions, and 1 for Thumb functions. Frida takes care
+    of this detail for you if you get the address from a Frida API (for
+    example `Module.getExportByName()`).
 
-+   `WeakRef.unbind(id)`: stop monitoring the value passed to
-    `WeakRef.bind(value, fn)`, and call the `fn` callback immediately.
+    The object returned has the fields:
 
+    -   `address`: address (EIP) of this instruction, as a `NativePointer`
+    -   `next`: pointer to the next instruction, so you can `parse()` it
+    -   `size`: size of this instruction
+    -   `mnemonic`: string representation of instruction mnemonic
+    -   `opStr`: string representation of instruction operands
+    -   `operands`: array of objects describing each operand, each specifying
+                    the `type` and `value`, at a minimum, but potentially also
+                    additional properties depending on the architecture
+    -   `regsRead`: array of register names implicitly read by this instruction
+    -   `regsWritten`: array of register names implicitly written to by this
+        instruction
+    -   `groups`: array of group names that this instruction belongs to
+    -   `toString()`: convert to a human-readable string
 
-## X86Writer
+    For details about `operands` and `groups`, please consult the
+    [Capstone](http://www.capstone-engine.org/) documentation for your
+    architecture.
+
+### X86Writer
 
 +   `new X86Writer(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating x86 machine code written directly to memory at
@@ -3035,7 +2838,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
 
-## X86Relocator
+### X86Relocator
 
 +   `new X86Relocator(inputCode, output)`: create a new code relocator for
     copying x86 instructions from one memory location to another, taking
@@ -3089,7 +2892,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `writeAll()`: write all buffered instructions
 
 
-## x86 enum types
+### x86 enum types
 
 -   Register: `xax` `xcx` `xdx` `xbx` `xsp` `xbp` `xsi` `xdi` `eax` `ecx` `edx`
     `ebx` `esp` `ebp` `esi` `edi` `rax` `rcx` `rdx` `rbx` `rsp` `rbp` `rsi`
@@ -3101,7 +2904,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   PointerTarget: `byte` `dword` `qword`
 
 
-## ArmWriter
+### ArmWriter
 
 +   `new ArmWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating ARM machine code written directly to memory at
@@ -3223,7 +3026,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
 
-## ArmRelocator
+### ArmRelocator
 
 +   `new ArmRelocator(inputCode, output)`: create a new code relocator for
     copying ARM instructions from one memory location to another, taking
@@ -3267,7 +3070,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `writeAll()`: write all buffered instructions
 
 
-## ThumbWriter
+### ThumbWriter
 
 +   `new ThumbWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating ARM machine code written directly to memory at
@@ -3425,7 +3228,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
 
-## ThumbRelocator
+### ThumbRelocator
 
 +   `new ThumbRelocator(inputCode, output)`: create a new code relocator for
     copying ARM instructions from one memory location to another, taking
@@ -3473,7 +3276,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `writeAll()`: write all buffered instructions
 
 
-## ARM enum types
+### ARM enum types
 
 -   Register: `r0` `r1` `r2` `r3` `r4` `r5` `r6` `r7` `r8` `r9` `r10` `r11`
     `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc`
@@ -3484,7 +3287,7 @@ var MyWeirdTrustManager = Java.registerClass({
     `ror-reg` `rrx-reg`
 
 
-## Arm64Writer
+### Arm64Writer
 
 +   `new Arm64Writer(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating AArch64 machine code written directly to memory at
@@ -3636,7 +3439,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `sign(value)`: sign the given pointer value
 
 
-## Arm64Relocator
+### Arm64Relocator
 
 +   `new Arm64Relocator(inputCode, output)`: create a new code relocator for
     copying AArch64 instructions from one memory location to another, taking
@@ -3680,7 +3483,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `writeAll()`: write all buffered instructions
 
 
-## AArch64 enum types
+### AArch64 enum types
 
 -   Register: `x0` `x1` `x2` `x3` `x4` `x5` `x6` `x7` `x8` `x9` `x10` `x11`
     `x12` `x13` `x14` `x15` `x16` `x17` `x18` `x19` `x20` `x21` `x22` `x23`
@@ -3701,7 +3504,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   IndexMode: `post-adjust` `signed-offset` `pre-adjust`
 
 
-## MipsWriter
+### MipsWriter
 
 +   `new MipsWriter(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating MIPS machine code written directly to memory at
@@ -3812,7 +3615,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putBytes(data)`: put raw data from the provided ArrayBuffer
 
 
-## MipsRelocator
+### MipsRelocator
 
 +   `new MipsRelocator(inputCode, output)`: create a new code relocator for
     copying MIPS instructions from one memory location to another, taking
@@ -3856,7 +3659,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `writeAll()`: write all buffered instructions
 
 
-## MIPS enum types
+### MIPS enum types
 
 -   Register: `v0` `v1` `a0` `a1` `a2` `a3` `t0` `t1` `t2` `t3` `t4` `t5` `t6`
     `t7` `s0` `s1` `s2` `s3` `s4` `s5` `s6` `s7` `t8` `t9` `k0` `k1` `gp` `sp`
@@ -3864,5 +3667,197 @@ var MyWeirdTrustManager = Java.registerClass({
     `9` `10` `11` `12` `13` `14` `15` `16` `17` `18` `19` `20` `21` `22` `23`
     `24` `25` `26` `27` `28` `29` `30` `31`
 
+---
+
+## Others
+
+### Console
+
++   `console.log(line)`, `console.warn(line)`, `console.error(line)`:
+    write `line` to the console of your Frida-based application. The exact
+    behavior depends on where [frida-core](https://github.com/frida/frida-core)
+    is integrated.
+    For example, this output goes to *stdout* or *stderr* when using Frida
+    through [frida-python](https://github.com/frida/frida-python),
+    [qDebug](https://doc.qt.io/qt-5/qdebug.html) when using
+    [frida-qml](https://github.com/frida/frida-qml), etc.
+
+    Arguments that are ArrayBuffer objects will be substituted by the result of
+    `hexdump()` with default options.
+
+### Hexdump
+
++   `hexdump(target[, options])`: generate a hexdump from the provided
+    *ArrayBuffer* or *NativePointer* `target`, optionally with `options` for
+    customizing the output.
+
+    For example:
+
+{% highlight js %}
+var libc = Module.findBaseAddress('libc.so');
+console.log(hexdump(libc, {
+  offset: 0,
+  length: 64,
+  header: true,
+  ansi: true
+}));
+{% endhighlight %}
+
+{% highlight sh %}
+           0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
+00000000  7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00  .ELF............
+00000010  03 00 28 00 01 00 00 00 00 00 00 00 34 00 00 00  ..(.........4...
+00000020  34 a8 04 00 00 00 00 05 34 00 20 00 08 00 28 00  4.......4. ...(.
+00000030  1e 00 1d 00 06 00 00 00 34 00 00 00 34 00 00 00  ........4...4...
+{% endhighlight %}
+
+### Shorthand
+
++   `int64(v)`: short-hand for `new Int64(v)`
+
++   `uint64(v)`: short-hand for `new UInt64(v)`
+
++   `ptr(s)`: short-hand for `new NativePointer(s)`
+
++   `NULL`: short-hand for `ptr("0")`
+
+### Messaging between host and injected process
+
++   `recv([type, ]callback)`: request `callback` to be called on the next
+    message received from your Frida-based application. Optionally `type` may
+    be specified to only receive a message where the `type` field is set to
+    `type`.
+
+    This will only give you one message, so you need to call `recv()` again
+    to receive the next one.
+
++   `send(message[, data])`: send the JavaScript object `message` to your
+    Frida-based application (it must be serializable to JSON). If you also have
+    some raw binary data that you'd like to send along with it, e.g. you dumped
+    some memory using `NativePointer#readByteArray`, then you may pass this
+    through the optional `data` argument. This requires it to either be an
+    ArrayBuffer or an array of integers between 0 and 255.
+
+<div class="note">
+  <h5>Performance considerations</h5>
+  <p>
+    While <i>send()</i> is asynchronous, the total overhead of sending a single
+    message is not optimized for high frequencies, so that means Frida leaves
+    it up to you to batch multiple values into a single <i>send()</i>-call,
+    based on whether low delay or high throughput is desired.
+  </p>
+</div>
+
++   `rpc.exports`: empty object that you can either replace or insert into to
+    expose an RPC-style API to your application. The key specifies the method
+    name and the value is your exported function. This function may either
+    return a plain value for returning that to the caller immediately, or a
+    Promise for returning asynchronously.
+
+>   For example:
+
+{% highlight js %}
+rpc.exports = {
+  add: function (a, b) {
+    return a + b;
+  },
+  sub: function (a, b) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve(a - b);
+      }, 100);
+    });
+  }
+};
+{% endhighlight %}
+
+>   From an application using the Node.js bindings this API would be consumed
+>   like this:
+
+{% highlight js %}
+const frida = require('frida');
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
+const readFile = util.promisify(fs.readFile);
+
+let session, script;
+async function run() {
+  const source = await readFile(path.join(__dirname, '_agent.js'), 'utf8');
+  session = await frida.attach('iTunes');
+  script = await session.createScript(source);
+  script.message.connect(onMessage);
+  await script.load();
+  console.log(await script.exports.add(2, 3));
+  console.log(await script.exports.sub(5, 3));
+}
+
+run().catch(onError);
+
+function onError(error) {
+  console.error(error.stack);
+}
+
+function onMessage(message, data) {
+  if (message.type === 'send') {
+    console.log(message.payload);
+  } else if (message.type === 'error') {
+    console.error(message.stack);
+  }
+}
+{% endhighlight %}
+
+>   The Python version would be very similar:
+
+{% highlight py %}
+import codecs
+import frida
+
+def on_message(message, data):
+    if message['type'] == 'send':
+        print(message['payload'])
+    elif message['type'] == 'error':
+        print(message['stack'])
+
+session = frida.attach('iTunes')
+with codecs.open('./agent.js', 'r', 'utf-8') as f:
+    source = f.read()
+script = session.create_script(source)
+script.on('message', on_message)
+script.load()
+print(script.exports.add(2, 3))
+print(script.exports.sub(5, 3))
+session.detach()
+{% endhighlight %}
+
+In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
+
+### Timing events
+
++   `setTimeout(func, delay[, ...parameters])`: call `func` after `delay`
+    milliseconds, optionally passing it one or more `parameters`.
+    Returns an id that can be passed to `clearTimeout` to cancel it.
+
++   `clearTimeout(id)`: cancel id returned by call to `setTimeout`.
+
++   `setInterval(func, delay[, ...parameters])`: call `func` every `delay`
+    milliseconds, optionally passing it one or more `parameters`.
+    Returns an id that can be passed to `clearInterval` to cancel it.
+
++   `clearInterval(id)`: cancel id returned by call to `setInterval`.
+
++   `setImmediate(func[, ...parameters])`: schedules `func` to be called on
+    Frida's JavaScript thread as soon as possible, optionally passing it one
+    or more `parameters`.
+    Returns an id that can be passed to `clearImmediate` to cancel it.
+
++   `clearImmediate(id)`: cancel id returned by call to `setImmediate`.
+
+### Garbage collection
+
++   `gc()`: force garbage collection. Useful for testing `WeakRef.bind()` logic,
+    but also sometimes needed when using the Duktape runtime and its default GC
+    heuristics proving a bit too lazy.
 
 [r2]: http://radare.org/r/
