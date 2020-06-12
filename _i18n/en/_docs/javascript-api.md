@@ -76,7 +76,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     1. [Console](#console)
     1. [Hexdump](#hexdump)
     1. [Shorthand](#shorthand)
-    1. [Messaging between host and injected process](#messaging-between-host-and-injected-process)
+    1. [Communication between host and injected process](#communication-between-host-and-injected-process)
     1. [Timing events](#timing-events)
     1. [Garbage collection](#garbage-collection)
 
@@ -257,7 +257,7 @@ Interceptor.attach(f, {
         the missing bits needed for your use-case.
 
     It is up to your callback to decide what to do with the exception. It could
-    log the issue, notify your application through a **[send()](#messaging-send)**
+    log the issue, notify your application through a **[send()](#communication-send)**
     followed by a blocking recv() for acknowledgement of the sent data being received,
     or it can modify registers and memory to recover from the exception. You should
     return `true` if you did handle the exception, in which case Frida will
@@ -511,7 +511,7 @@ Memory.protect(ptr('0x1234'), 4096, 'rw-');
 {% endhighlight %}
 
 +   `Memory.patchCode(address, size, apply)`: safely modify `size` bytes at
-    `address`, specified as a NativePointer. The supplied JavaScript function
+    `address`, specified as a **[NativePointer](#nativepointer)**. The supplied JavaScript function
     `apply` gets called with a writable pointer where you must write the desired
     modifications before returning. Do not make any assumptions about this being
     the same location as `address`, as some systems require modifications to be
@@ -576,19 +576,19 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
 +   `new CModule(source[, symbols])`: compiles C `source` code string to machine
     code, straight to memory.
 
-    Useful for implementing hot callbacks, e.g. for ***[Interceptor](#interceptor)***
-    and ***[Stalker](#stalker)***, but also useful when needing to start new threads
+    Useful for implementing hot callbacks, e.g. for **[Interceptor](#interceptor)**
+    and **[Stalker](#stalker)**, but also useful when needing to start new threads
     in order to call functions in a tight loop, e.g. for fuzzing purposes.
 
-    Global functions are automatically exported as ***[NativePointer](#nativepointer)***
+    Global functions are automatically exported as **[NativePointer](#nativepointer)**
     properties named exactly like in the C source code. This means you can pass them
-    to ***[Interceptor](#interceptor)*** and ***[Stalker](#stalker)***, or call them
-    using ***[NativePointer](#nativepointer)***.
+    to **[Interceptor](#interceptor)** and **[Stalker](#stalker)**, or call them
+    using **[NativePointer](#nativepointer)**.
 
     The optional second argument, `symbols`, is an object specifying additional
-    symbol names and their *NativePointer* values, each of which will be plugged
+    symbol names and their **[NativePointer](#nativepointer)** values, each of which will be plugged
     in at creation. This may for example be one or more memory blocks allocated
-    using ***[Memory.alloc()](#memory-alloc)***, and/or ***[NativeCallback](#nativecallback)***
+    using **[Memory.alloc()](#memory-alloc)**, and/or **[NativeCallback](#nativecallback)**
     values for receiving callbacks from the C module.
 
     To perform initialization and cleanup, you may define functions with the
@@ -598,7 +598,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     -   `void finalize (void)`
 
     Note that all data is read-only, so writable globals should be declared
-    *extern*, allocated using e.g. ***[Memory.alloc()](#memory-alloc)***, and passed
+    *extern*, allocated using e.g. **[Memory.alloc()](#memory-alloc)**, and passed
     in as symbols through the constructor's second argument.
 
 -   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
@@ -894,7 +894,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 
 ### NativePointer
 
-+   `new NativePointer(s)`: creates a new NativePointer from the string `s`
++   `new NativePointer(s)`: creates a new **[NativePointer](#nativepointer)** from the string `s`
     containing a memory address in either decimal, or hexadecimal if prefixed
     with '0x'. You may use the `ptr(s)` short-hand for brevity.
 
@@ -904,19 +904,19 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `add(rhs)`, `sub(rhs)`,
     `and(rhs)`, `or(rhs)`,
     `xor(rhs)`:
-    makes a new NativePointer with this NativePointer plus/minus/and/or/xor
-    `rhs`, which may either be a number or another NativePointer
+    makes a new **[NativePointer](#nativepointer)** with this **[NativePointer](#nativepointer)** plus/minus/and/or/xor
+    `rhs`, which may either be a number or another **[NativePointer](#nativepointer)**
 
 -   `shr(n)`, `shl(n)`:
-    makes a new NativePointer with this NativePointer shifted right/left by `n`
+    makes a new **[NativePointer](#nativepointer)** with this **[NativePointer](#nativepointer)** shifted right/left by `n`
     bits
 
--   `not()`: makes a new NativePointer with this NativePointer's bits inverted
+-   `not()`: makes a new **[NativePointer](#nativepointer)** with this **[NativePointer](#nativepointer)**'s bits inverted
 
--   `sign([key, data])`: makes a new NativePointer by taking this
-    NativePointer's bits and adding pointer authentication bits, creating a
+-   `sign([key, data])`: makes a new **[NativePointer](#nativepointer)** by taking this
+    **[NativePointer](#nativepointer)**'s bits and adding pointer authentication bits, creating a
     signed pointer. This is a no-op if the current process does not support
-    pointer authentication, returning this NativePointer instead of a new value.
+    pointer authentication, returning this **[NativePointer](#nativepointer)** instead of a new value.
     {: #nativepointer-sign}
 
     Optionally, `key` may be specified as a string. Supported values are:
@@ -925,20 +925,20 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
     -   da: The DA key, for signing data pointers.
     -   db: The DB key, for signing data pointers.
 
-    The `data` argument may also be specified as a NativePointer/number-like
+    The `data` argument may also be specified as a **[NativePointer](#nativepointer)**/number-like
     value to provide extra data used for the signing, and defaults to `0`.
 
--   `strip([key])`: makes a new NativePointer by taking this NativePointer's
+-   `strip([key])`: makes a new **[NativePointer](#nativepointer)** by taking this **[NativePointer](#nativepointer)**'s
     bits and removing its pointer authentication bits, creating a raw pointer.
     This is a no-op if the current process does not support pointer
-    authentication, returning this NativePointer instead of a new value.
+    authentication, returning this **[NativePointer](#nativepointer)** instead of a new value.
 
     Optionally, `key` may be passed to specify which key was used to sign the
     pointer being stripped. Defaults to `ia`. (See [`sign()`](#nativepointer-sign)
     for supported values.)
 
--   `blend(smallInteger)`: makes a new NativePointer by taking this
-    NativePointer's bits and blending them with a constant, which may in turn be
+-   `blend(smallInteger)`: makes a new **[NativePointer](#nativepointer)** by taking this
+    **[NativePointer](#nativepointer)**'s bits and blending them with a constant, which may in turn be
     passed to [`sign()`](#nativepointer-sign) as `data`.
 
 -   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
@@ -947,7 +947,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `compare(rhs)`: returns an integer comparison result just like
     **[String#localeCompare()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)**
 
--   `toInt32()`: casts this NativePointer to a signed 32-bit integer
+-   `toInt32()`: casts this **[NativePointer](#nativepointer)** to a signed 32-bit integer
 
 -   `toString([radix = 16])`: converts to a string of optional radix (defaults
     to 16)
@@ -955,7 +955,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `toMatchPattern()`: returns a string containing a [`Memory.scan()`](#memory-scan)-compatible
     match pattern for this pointer's raw value
 
--   `readPointer()`: reads a `NativePointer` from this memory location.
+-   `readPointer()`: reads a [`NativePointer`](#nativepointer) from this memory location.
 
     A JavaScript exception will be thrown if the address isn't readable.
 
@@ -1002,7 +1002,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `readByteArray(length)`: reads `length` bytes from this memory location, and
     returns it as an **[ArrayBuffer](#arraybuffer)**. This buffer may be efficiently
     transferred to your Frida-based application by passing it as the second argument
-    to [`send()`](#messaging-send).
+    to [`send()`](#communication-send).
     {: #nativepointer-readbytearray}
 
     A JavaScript exception will be thrown if any of the `length` bytes read from
@@ -1326,11 +1326,11 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     times is allowed and will not result in an error.
 
 -   `read(size)`: read up to `size` bytes from the stream. The returned
-    *Promise* receives an *ArrayBuffer* up to `size` bytes long. End of stream
+    **Promise** receives an **[ArrayBuffer](#arraybuffer)** up to `size` bytes long. End of stream
     is signalled through an empty buffer.
 
 -   `readAll(size)`: keep reading from the stream until exactly `size` bytes
-    have been consumed. The returned *Promise* receives an *ArrayBuffer* that is
+    have been consumed. The returned *Promise* receives an **[ArrayBuffer](#arraybuffer)** that is
     exactly `size` bytes long. Premature error or end of stream results in the
     *Promise* getting rejected with an error, where the `Error` object has a
     `partialData` property containing the incomplete data.
@@ -1344,12 +1344,12 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     times is allowed and will not result in an error.
 
 -   `write(data)`: try to write `data` to the stream. The `data` value is either
-    an *ArrayBuffer* or an array of integers between 0 and 255. The returned
+    an **[ArrayBuffer](#arraybuffer)** or an array of integers between 0 and 255. The returned
     *Promise* receives a *Number* specifying how many bytes of `data` were
     written to the stream.
 
 -   `writeAll(data)`: keep writing to the stream until all of `data` has been
-    written. The `data` value is either an *ArrayBuffer* or an array of integers
+    written. The `data` value is either an **[ArrayBuffer](#arraybuffer)** or an array of integers
     between 0 and 255. Premature error or end of stream results in an error,
     where the `Error` object has a `partialSize` property specifying how many
     bytes of `data` were written to the stream before the error occurred.
@@ -1465,7 +1465,7 @@ smt.reset();
 -   `bindFloat(index, value)`: bind the floating point `value` to `index`
 -   `bindText(index, value)`: bind the text `value` to `index`
 -   `bindBlob(index, bytes)`: bind the blob `bytes` to `index`, where `bytes`
-    is an ArrayBuffer, array of byte values, or a string
+    is an **[ArrayBuffer](#arraybuffer)**, array of byte values, or a string
 -   `bindNull(index)`: bind a null value to `index`
 -   `step()`: either start a new query and get the first result, or move to the
     next one. Returns an array containing the values in the order specified by
@@ -1507,7 +1507,7 @@ smt.reset();
 
     In case the hooked function is very hot, `onEnter` and `onLeave` may be
     [`NativePointer`](#nativepointer) values pointing at native C functions compiled using
-    [CModule](#cmodule). Their signatures are:
+    **[CModule](#cmodule)**. Their signatures are:
 
     -   `void onEnter (GumInvocationContext * ic)`
 
@@ -1610,10 +1610,10 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
   </p>
   <p markdown="1">
     Also be careful about intercepting calls to functions that are called a
-    bazillion times per second; while **[send()](#messaging-send)** is asynchronous, the total
+    bazillion times per second; while **[send()](#communication-send)** is asynchronous, the total
     overhead of sending a single message is not optimized for high frequencies,
     so that means Frida leaves it up to you to batch multiple values into a
-    single **[send()](#messaging-send)**-call, based on whether low delay or high throughput
+    single **[send()](#communication-send)**-call, based on whether low delay or high throughput
     is desired.
   </p>
   <p markdown="1">
@@ -1632,7 +1632,7 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
     Use [`NativeCallback`](#nativecallback) to implement a `replacement` in JavaScript.
 
     In case the replaced function is very hot, you may implement `replacement`
-    in C using [CModule](#cmodule). You may then also specify the third optional
+    in C using **[CModule](#cmodule)**. You may then also specify the third optional
     argument `data`, which is a [`NativePointer`](#nativepointer) accessible through
     `gum_invocation_context_get_listener_function_data()`. Use
     `gum_interceptor_get_current_invocation()` to get hold of the
@@ -1668,8 +1668,8 @@ Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
     necessary, e.g. if you just **[attach()](#interceptor-attach)**ed to or **[replace()](#interceptor-replace)**d a function that you
     are about to call using **[NativeFunction](#nativefunction)**. Pending changes
     are flushed automatically whenever the current thread is about to leave the
-    JavaScript runtime or calls **[send()](#messaging-send)**. This includes any API built on top of
-    **[send()](#messaging-send)**, like when returning from an **[RPC](#rpc-exports)** method, and calling any
+    JavaScript runtime or calls **[send()](#communication-send)**. This includes any API built on top of
+    **[send()](#communication-send)**, like when returning from an **[RPC](#rpc-exports)** method, and calling any
     method on the **[console](#console)** API.
 
 
@@ -1978,7 +1978,7 @@ ObjC.schedule(ObjC.mainQueue, function () {
 {% endhighlight %}
 
 +   `new ObjC.Object(handle[, protocol])`: create a JavaScript binding given
-    the existing object at `handle` (a NativePointer). You may also specify
+    the existing object at `handle` (a **[NativePointer](#nativepointer)**). You may also specify
     the `protocol` argument if you'd like to treat `handle` as an object
     implementing a certain protocol only.
     {: #objc-object}
@@ -2022,7 +2022,7 @@ Interceptor.attach(myFunction.implementation, {
     {: #objc-protocol}
 
 +   `new ObjC.Block(target[, options])`: create a JavaScript binding given the
-    existing block at `target` (a NativePointer), or, to define a new block,
+    existing block at `target` (a **[NativePointer](#nativepointer)**), or, to define a new block,
     `target` should be an object specifying the type signature and JavaScript
     function to call whenever the block is invoked. The function is specified
     with an `implementation` key, and the signature is specified either through
@@ -2433,7 +2433,7 @@ Java.perform(function () {
 >   assigning a different loader instance to `Java.classFactory.loader`.
 >
 >   Note that all method wrappers provide a `clone(options)` API to create a new
->   method wrapper with custom [NativeFunction](#nativefunction) options.
+>   method wrapper with custom **[NativeFunction](#nativefunction)** options.
 
 +   `Java.openClassFile(filePath)`: open the .dex file at `filePath`, returning
     an object with the following methods:
@@ -2652,7 +2652,7 @@ var MyWeirdTrustManager = Java.registerClass({
     -   `toString()`: convert to a human-readable string
 
     For details about `operands` and `groups`, please consult the
-    [Capstone](http://www.capstone-engine.org/) documentation for your
+    **[Capstone](http://www.capstone-engine.org/)** documentation for your
     architecture.
 
 ### X86Writer
@@ -2896,7 +2896,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putS8(value)`: put an int8
 
--   `putBytes(data)`: put raw data from the provided ArrayBuffer
+-   `putBytes(data)`: put raw data from the provided **[ArrayBuffer](#arraybuffer)**
 
 
 ### X86Relocator
@@ -3089,7 +3089,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
--   `putBytes(data)`: put raw data from the provided ArrayBuffer
+-   `putBytes(data)`: put raw data from the provided **[ArrayBuffer](#arraybuffer)**
 
 
 ### ArmRelocator
@@ -3124,7 +3124,7 @@ var MyWeirdTrustManager = Java.registerClass({
     now `true`.
     {: #armrelocator-readone}
 
--   `peekNextWriteInsn()`: peek at the next [Instruction](#instruction) to be
+-   `peekNextWriteInsn()`: peek at the next **[Instruction](#instruction)** to be
     written or skipped
 
 -   `peekNextWriteSource()`: peek at the address of the next instruction to be
@@ -3181,12 +3181,12 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    [NativePointer](#nativepointer) specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    [NativePointer](#nativepointer) specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putBImm(target)`: put a B instruction
 
@@ -3296,7 +3296,7 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putInstructionWide(upper, lower)`: put a raw Thumb-2 instruction from
     two JavaScript Number values
 
--   `putBytes(data)`: put raw data from the provided ArrayBuffer
+-   `putBytes(data)`: put raw data from the provided **[ArrayBuffer](#arraybuffer)**
 
 
 ### ThumbRelocator
@@ -3366,7 +3366,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 +   `new Arm64Writer(codeAddress[, { pc: ptr('0x1234') }])`: create a new code
     writer for generating AArch64 machine code written directly to memory at
-    `codeAddress`, specified as a NativePointer.
+    `codeAddress`, specified as a **[NativePointer](#nativepointer)**.
     The second argument is an optional options object where the initial program
     counter may be specified, which is useful when generating code to a scratch
     buffer. This is essential when using [`Memory.patchCode()`](#memory-patchcode) on iOS, which may
@@ -3399,12 +3399,12 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    NativePointer specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    NativePointer specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putBranchAddress(address)`: put code needed for branching/jumping to the
     given address
@@ -3512,7 +3512,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
--   `putBytes(data)`: put raw data from the provided ArrayBuffer
+-   `putBytes(data)`: put raw data from the provided **[ArrayBuffer](#arraybuffer)**
 
 -   `sign(value)`: sign the given pointer value
 
@@ -3623,12 +3623,12 @@ var MyWeirdTrustManager = Java.registerClass({
 -   `putCallAddressWithArguments(func, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    NativePointer specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
     function with the specified `args`, specified as a JavaScript array where
     each element is either a string specifying the register, or a Number or
-    NativePointer specifying the immediate value.
+    **[NativePointer](#nativepointer)** specifying the immediate value.
 
 -   `putJAddress(address)`: put a J instruction
 
@@ -3695,7 +3695,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
--   `putBytes(data)`: put raw data from the provided ArrayBuffer
+-   `putBytes(data)`: put raw data from the provided **[ArrayBuffer](#arraybuffer)**
 
 
 ### MipsRelocator
@@ -3703,7 +3703,7 @@ var MyWeirdTrustManager = Java.registerClass({
 +   `new MipsRelocator(inputCode, output)`: create a new code relocator for
     copying MIPS instructions from one memory location to another, taking
     care to adjust position-dependent instructions accordingly.
-    The source address is specified by `inputCode`, a NativePointer.
+    The source address is specified by `inputCode`, a **[NativePointer](#nativepointer)**.
     The destination is given by `output`, a **[MipsWriter](#mipswriter)** pointed
     at the desired target memory address.
 
@@ -3766,16 +3766,16 @@ var MyWeirdTrustManager = Java.registerClass({
     is integrated.
     For example, this output goes to *stdout* or *stderr* when using Frida
     through [frida-python](https://github.com/frida/frida-python),
-    [qDebug](https://doc.qt.io/qt-5/qdebug.html) when using
-    [frida-qml](https://github.com/frida/frida-qml), etc.
+    **[qDebug](https://doc.qt.io/qt-5/qdebug.html)** when using
+    **[frida-qml](https://github.com/frida/frida-qml)**, etc.
 
-    Arguments that are ArrayBuffer objects will be substituted by the result of
+    Arguments that are **[ArrayBuffer](#arraybuffer)** objects will be substituted by the result of
     [`hexdump()`](#hexdump) with default options.
 
 ### Hexdump
 
 +   `hexdump(target[, options])`: generate a hexdump from the provided
-    *ArrayBuffer* or *NativePointer* `target`, optionally with `options` for
+    **[ArrayBuffer](#arraybuffer)** or [NativePointer](#nativepointer) `target`, optionally with `options` for
     customizing the output.
 
     For example:
@@ -3808,13 +3808,13 @@ console.log(hexdump(libc, {
 
 +   `NULL`: short-hand for `ptr("0")`
 
-### Messaging between host and injected process
+### Communication between host and injected process
 
 +   `recv([type, ]callback)`: request `callback` to be called on the next
     message received from your Frida-based application. Optionally `type` may
     be specified to only receive a message where the `type` field is set to
     `type`.
-    {: #messaging-recv}
+    {: #communication-recv}
 
     This will only give you one message, so you need to call `recv()` again
     to receive the next one.
@@ -3824,8 +3824,8 @@ console.log(hexdump(libc, {
     some raw binary data that you'd like to send along with it, e.g. you dumped
     some memory using [`NativePointer#readByteArray`](#nativepointer-readbytearray), then you may pass this
     through the optional `data` argument. This requires it to either be an
-    ArrayBuffer or an array of integers between 0 and 255.
-    {: #messaging-send}
+    **[ArrayBuffer](#arraybuffer)** or an array of integers between 0 and 255.
+    {: #communication-send}
 
     <div class="note">
     <h5>Performance considerations</h5>
