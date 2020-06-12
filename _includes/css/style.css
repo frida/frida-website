@@ -518,7 +518,7 @@ pre, code {
   }
 }
 
-.highlight, p > pre, p > code, p > nobr > code, li > code, h5 > code, .note > code {
+.highlight, p > pre, p > code, p > nobr > code, li > code, h5 > code, .note > code, a > code {
   background: rgba(0,0,0,.7);
   color: #fff;
   border-radius: 5px;
@@ -538,6 +538,7 @@ pre, code {
   padding: 10px 0;
   width: 100%;
   overflow: auto;
+  margin-bottom: 10px;
 }
 
 /* HTML Elements */
