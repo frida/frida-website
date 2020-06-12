@@ -1980,11 +1980,10 @@ ObjC.schedule(ObjC.mainQueue, function () {
 });
 {% endhighlight %}
 
-+   `new ObjC.Object(handle[, protocol])`: create a JavaScript binding given
++   <code id="objc-object">new ObjC.Object(handle[, protocol])</code>: create a JavaScript binding given
     the existing object at `handle` (a **[NativePointer](#nativepointer)**). You may
     also specify the `protocol` argument if you'd like to treat `handle` as an object
     implementing a certain protocol only.
-    {: #objc-object}
 
 {% highlight js %}
 Interceptor.attach(myFunction.implementation, {
