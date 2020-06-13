@@ -72,7 +72,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     1. [MipsWriter](#mipswriter)
     1. [MipsRelocator](#mipsrelocator)
     1. [MIPS enum types](#mips-enum-types)
-1. **Others**
+1. **Other**
     1. [Console](#console)
     1. [Hexdump](#hexdump)
     1. [Shorthand](#shorthand)
