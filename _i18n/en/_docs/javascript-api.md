@@ -1379,6 +1379,11 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     error, where the `Error` object has a `partialSize` property specifying how many
     bytes of `data` were written to the stream before the error occurred.
 
+-   `writeMemoryRegion(address, size)`: try to write `size` bytes to the stream,
+    reading them from `address`, which is a [`NativePointer`](#nativepointer). The
+    returned *Promise* receives a *Number* specifying how many bytes of `data` were
+    written to the stream.
+
 
 ### UnixInputStream
 
