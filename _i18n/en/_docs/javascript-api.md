@@ -265,6 +265,7 @@ Interceptor.attach(f, {
     forward the exception to the hosting process' exception handler, if it has
     one, or let the OS terminate the process.
 
+
 ### Module
 
 Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerateModules()`](#process-enumeratemodules).<br/><br/>
@@ -368,6 +369,7 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
     the *get*-prefixed function throws an exception.
     {: #module-getexportbyname}
 
+
 ### ModuleMap
 
 +   `new ModuleMap([filter])`: create a new module map optimized for determining
@@ -404,6 +406,7 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 -   `values()`: returns an array with the **[Module](#module)** objects currently in
     the map. The returned array is a deep copy and will not mutate after a call
     to [`update()`](#modulemap-update).
+
 
 ### Memory
 
@@ -540,6 +543,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
     heap. The returned object is a [`NativePointer`](#nativepointer). See
     [`Memory.alloc()`](#memory-alloc) for details about its lifetime.
 
+
 ### MemoryAccessMonitor
 
 +   `MemoryAccessMonitor.enable(ranges, callbacks)`: monitor one or more memory
@@ -570,6 +574,7 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
 
 +   `MemoryAccessMonitor.disable()`: stop monitoring the remaining memory ranges
     passed to [`MemoryAccessMonitor.enable()`](#memoryaccessmonitor-enable).
+
 
 ### CModule
 
@@ -680,6 +685,7 @@ Here's an example:
 More details on CModule can be found in the **[Frida 12.7 release notes]({{
 site.baseurl_root }}/news/2019/09/18/frida-12-7-released/)**.
 
+
 ### ApiResolver
 
 +   `new ApiResolver(type)`: create a new resolver of the given `type`, allowing
@@ -733,6 +739,7 @@ var first = matches[0];
  * }
  */
 {% endhighlight %}
+
 
 ### DebugSymbol
 
@@ -846,6 +853,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 
 ## Data Types, Function and Callback
 
+
 ### Int64
 
 +   `new Int64(v)`: create a new Int64 from `v`, which is either a number or a
@@ -869,6 +877,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
 
+
 ### UInt64
 
 +   `new UInt64(v)`: create a new UInt64 from `v`, which is either a number or a
@@ -891,6 +900,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 
 -   `toString([radix = 10])`: convert to a string of optional radix (defaults to
     10)
+
 
 ### NativePointer
 
@@ -1046,6 +1056,7 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 
     Note that `writeAnsiString()` is only available (and relevant) on Windows.
 
+
 ### ArrayBuffer
 
 +   `wrap(address, size)`: creates an ArrayBuffer backed by an existing memory
@@ -1057,7 +1068,8 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `unwrap()`: returns a [`NativePointer`](#nativepointer) specifying the base
     address of the ArrayBuffer's backing store. It is the caller's responsibility to
     keep the buffer alive while the backing store is still being used.
-    
+
+
 ### NativeFunction
 
 +   `new NativeFunction(address, returnType, argTypes[, abi])`: create a new
@@ -1095,7 +1107,7 @@ var returnValue = Memory.alloc(sizeOfLargeObject);
 friendlyFunctionName(returnValue, thisPtr);
 {% endhighlight %}
 
-+ 
++
     - #### Supported Types
         -   void
         -   pointer
@@ -1171,6 +1183,7 @@ friendlyFunctionName(returnValue, thisPtr);
                  `clone(options)` API to create a new method wrapper with custom
                  NativeFunction options.
 
+
 ### NativeCallback
 
 +   `new NativeCallback(func, returnType, argTypes[, abi])`: create a new
@@ -1183,6 +1196,7 @@ friendlyFunctionName(returnValue, thisPtr);
     When using the resulting callback with **[Interceptor.replace()](#interceptor-replace)**,
     `func` will be invoked with `this` bound to an object with some useful properties,
     just like the one in **[Interceptor.attach()](#interceptor-attach)**.
+
 
 ### SystemFunction
 
@@ -1199,6 +1213,7 @@ friendlyFunctionName(returnValue, thisPtr);
 ---
 
 ## Network
+
 
 ### Socket
 
@@ -1265,6 +1280,7 @@ friendlyFunctionName(returnValue, thisPtr);
 
 
 ### SocketListener
+
 All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `path`: (UNIX family) path being listened on.
@@ -1280,6 +1296,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### SocketConnection
+
 Inherits from **[IOStream](#iostream)**.
 All methods are fully asynchronous and return Promise objects.<br/><br/>
 
@@ -1291,6 +1308,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 ---
 
 ## File and Stream
+
 
 ### File
 
@@ -1308,7 +1326,9 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     with the file unless you are fine with this happening when the object is
     garbage-collected or the script is unloaded.
 
+
 ### IOStream
+
 All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `input`: the **[InputStream](#inputstream)** to read from.
@@ -1322,6 +1342,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### InputStream
+
 All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `close()`: close the stream, releasing resources related to it. Once the
@@ -1340,6 +1361,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### OutputStream
+
 All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 -   `close()`: close the stream, releasing resources related to it. Once the
@@ -1359,6 +1381,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### UnixInputStream
+
 (Only available on UNIX-like OSes.)<br/><br/>
 
 +   `new UnixInputStream(fd[, options])`: create a new
@@ -1370,6 +1393,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### UnixOutputStream
+
 (Only available on UNIX-like OSes.)<br/><br/>
 
 +   `new UnixOutputStream(fd[, options])`: create a new
@@ -1381,6 +1405,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### Win32InputStream
+
 (Only available on Windows.)<br/><br/>
 
 +   `new Win32InputStream(handle[, options])`: create a new
@@ -1393,6 +1418,7 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 
 ### Win32OutputStream
+
 (Only available on Windows.)<br/><br/>
 
 +   `new Win32OutputStream(handle[, options])`: create a new
@@ -1403,7 +1429,9 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     make the stream close the underlying handle when the stream is released,
     either through `close()` or future garbage-collection.
 
+
 ## Database
+
 
 ### SqliteDatabase
 
@@ -1479,6 +1507,7 @@ smt.reset();
 ---
 
 ## Instrumentation
+
 
 ### Interceptor
 
@@ -2352,6 +2381,7 @@ function isAppModule(m) {
 +   `ObjC.selectorAsString(sel)`: convert the selector `sel` to a JavaScript
     string
 
+
 ### Java
 
 +   `Java.available`: a boolean specifying whether the current process has the
@@ -2372,7 +2402,8 @@ function isAppModule(m) {
     -   `onComplete: function ()`: called when all classes have been enumerated.
 
 +   `Java.enumerateLoadedClassesSync()`: synchronous version of
-    [`enumerateLoadedClasses()`](#java-enumerateloadedclasses) that returns the class names in an array.
+    [`enumerateLoadedClasses()`](#java-enumerateloadedclasses) that returns the
+    class names in an array.
 
 +   `Java.enumerateClassLoaders(callbacks)`: enumerate class loaders present
     in the Java VM, where `callbacks` is an object specifying:
@@ -2388,7 +2419,8 @@ function isAppModule(m) {
     [`.use()`](#java-use) classes on the specified class loader.
 
 +   `Java.enumerateClassLoadersSync()`: synchronous version of
-    [`enumerateClassLoaders()`](#java-enumerateclassloaders) that returns the class loaders in an array.
+    [`enumerateClassLoaders()`](#java-enumerateclassloaders) that returns the
+    class loaders in an array.
 
 +   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
 
@@ -2473,7 +2505,7 @@ Java.perform(function () {
   };
 });
 {% endhighlight %}
- 
+
 +   <code id="java-cast">Java.cast(handle, klass)</code>: create a JavaScript wrapper
     given the existing instance at `handle` of given class `klass` as returned from
     [`Java.use()`](#java-use).
@@ -2629,6 +2661,7 @@ var MyWeirdTrustManager = Java.registerClass({
 
 ## CPU Instruction
 
+
 ### Instruction
 
 +   `Instruction.parse(target)`: parse the instruction at the `target` address
@@ -2657,6 +2690,7 @@ var MyWeirdTrustManager = Java.registerClass({
     For details about `operands` and `groups`, please consult the
     **[Capstone](http://www.capstone-engine.org/)** documentation for your
     architecture.
+
 
 ### X86Writer
 
@@ -3925,7 +3959,11 @@ print(script.exports.sub(5, 3))
 session.detach()
 {% endhighlight %}
 
-In the example above we used `script.on('message', on_message)` to monitor for any messages from the injected process, JavaScript side.  There are other notifications that you can watch for as well on both the `script` and `session`.  If you want to be notified when the target process exits, use `session.on('detached', your_function)`.
+In the example above we used `script.on('message', on_message)` to monitor for
+any messages from the injected process, JavaScript side.  There are other
+notifications that you can watch for as well on both the `script` and `session`.
+If you want to be notified when the target process exits, use
+`session.on('detached', your_function)`.
 
 ### Timing events
 
