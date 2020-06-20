@@ -707,6 +707,7 @@ site.baseurl_root }}/news/2019/09/18/frida-12-7-released/)**.
     for future batches to avoid looking at stale data.
 
 -   `enumerateMatches(query)`: performs the resolver-specific `query` string,
+    optionally suffixed with `/i` to perform case-insensitive matching,
     returning an array of objects containing the following properties:
 
     -   `name`: name of the API that was found
@@ -782,6 +783,9 @@ Interceptor.attach(f, {
 +   `DebugSymbol.findFunctionsMatching(glob)`: resolves function names matching
     `glob` and returns their addresses as an array of [`NativePointer`](#nativepointer)
     objects.
+
++   `DebugSymbol.load(path)`: loads debug symbols for a specific module.
+
 
 ### Kernel
 
@@ -2065,6 +2069,10 @@ Interceptor.attach(myFunction.implementation, {
     through a `types` key, or through the `retType` and `argTypes` keys. See
     [`ObjC.registerClass()`](#objc-registerclass) for details.
 
+    Note that if an existing block lacks signature metadata, you may call
+    `declare(signature)`, where `signature` is an object with either a `types`
+    key, or `retType` and `argTypes` keys, as described above.
+
     You may also provide an `options` object with the same options as supported
     by **[NativeFunction](#nativefunction)**, e.g. to pass `traps: 'all'` in order
     to [`Stalker.follow()`](#stalker-follow) the execution when calling the block.
@@ -2426,6 +2434,59 @@ function isAppModule(m) {
 +   `Java.enumerateClassLoadersSync()`: synchronous version of
     [`enumerateClassLoaders()`](#java-enumerateclassloaders) that returns the
     class loaders in an array.
+
++   `Java.enumerateMethods(query)`: enumerate methods matching `query`,
+    specified as `"class!method"`, with globs permitted. May also be suffixed
+    with `/` and one or more modifiers:
+
+    -   `i`: Case-insensitive matching.
+    -   `s`: Include method signatures, so e.g. `"putInt"` becomes
+        `"putInt(java.lang.String, int): void"`.
+    -   `u`: User-defined classes only, ignoring system classes.
+
+{% highlight js %}
+Java.perform(() => {
+  const groups = Java.enumerateMethods('*youtube*!on*')
+  console.log(JSON.stringify(groups, null, 2));
+});
+{% endhighlight %}
+
+{% highlight json %}
+[
+  {
+    "loader": "<instance: java.lang.ClassLoader, $className: dalvik.system.PathClassLoader>",
+    "classes": [
+      {
+        "name": "com.google.android.apps.youtube.app.watch.nextgenwatch.ui.NextGenWatchLayout",
+        "methods": [
+          "onAttachedToWindow",
+          "onDetachedFromWindow",
+          "onFinishInflate",
+          "onInterceptTouchEvent",
+          "onLayout",
+          "onMeasure",
+          "onSizeChanged",
+          "onTouchEvent",
+          "onViewRemoved"
+        ]
+      },
+      {
+        "name": "com.google.android.apps.youtube.app.search.suggest.YouTubeSuggestionProvider",
+        "methods": [
+          "onCreate"
+        ]
+      },
+      {
+        "name": "com.google.android.libraries.youtube.common.ui.YouTubeButton",
+        "methods": [
+          "onInitializeAccessibilityNodeInfo"
+        ]
+      },
+      …
+    ]
+  }
+]
+{% endhighlight %}
 
 +   `Java.scheduleOnMainThread(fn)`: run `fn` on the main thread of the VM.
 
