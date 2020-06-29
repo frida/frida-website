@@ -9,7 +9,19 @@ $ frida-trace --decorate -i "recv*" -i "send*" Safari
 $ frida-trace -m "-[NSView drawRect:]" Safari
 
 # Launch SnapChat on your iPhone and trace crypto API calls
-$ frida-trace -U -f com.toyopagroup.picaboo -I "libcommonCrypto*"
+$ frida-trace \
+    -U \
+    -f com.toyopagroup.picaboo \
+    -I "libcommonCrypto*"
+
+# Launch YouTube on your Android device and trace Java methods
+# with “certificate” in their signature (s), ignoring case (i)
+# and only searching in user-defined classes (u)
+$ frida-trace
+    -U \
+    -f com.google.android.youtube \
+    --runtime=v8 \
+    -j '*!*certificate*/isu'
 
 # Trace all JNI functions in Samsung FaceService app on Android
 $ frida-trace -U -i "Java_*" com.samsung.faceservice
@@ -41,9 +53,12 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
                       attach to NAME
 -p PID, --attach-pid=PID
                       attach to PID
---stdio=inherit|pipe  stdio behavior when spawning (defaults to "inherit")
---runtime=duk|v8      script runtime to use (defaults to "duk")
+--stdio=inherit|pipe  stdio behavior when spawning (defaults to “inherit”)
+--runtime=duk|v8      script runtime to use
 --debug               enable the Node.js compatible script debugger
+--squelch-crash       if enabled, will not dump crash report to console
+-O FILE, --options-file=FILE
+                      text file containing additional command line options
 -I MODULE, --include-module=MODULE
                       include MODULE
 -X MODULE, --exclude-module=MODULE
@@ -62,10 +77,19 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
                       include OBJC_METHOD
 -M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
                       exclude OBJC_METHOD
+-j JAVA_METHOD, --include-java-method=JAVA_METHOD
+                      include JAVA_METHOD
+-J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
+                      exclude JAVA_METHOD
 -s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
                       include DEBUG_SYMBOL
 -q, --quiet           do not format output messages
--d, --decorate        Add module name to generated onEnter log statement
+-d, --decorate        add module name to generated onEnter log statement
+-S PATH, --init-session=PATH
+                      path to JavaScript file used to initialize the session
+-P PARAMETERS_JSON, --parameters=PARAMETERS_JSON
+                      parameters as JSON, exposed as a global named
+                      'parameters'
 -o OUTPUT, --output=OUTPUT
                       dump messages to file
 {% endhighlight %}
