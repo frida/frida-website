@@ -191,7 +191,7 @@ Enjoy!
 - Fix handling of long symbol names on i/macOS. Thanks [@mrmacete][]!
 - Java: Fix JVM interception issues for static/final methods. Thanks
   [@0xraaz][]!
-- Fix Stalker ARM handling of Thumb-2 “mov pc, <reg>”.
+- Fix Stalker ARM handling of Thumb-2 “mov pc, \<reg\>”.
 - Fix Stalker ARM handling of volatile VFP registers.
 
 ### Changes in 12.10.3
