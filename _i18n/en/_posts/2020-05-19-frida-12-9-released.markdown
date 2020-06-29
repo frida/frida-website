@@ -169,6 +169,21 @@ Enjoy!
   hooked by the bootstrapper without worrying about the bootstrapper getting
   confused when it encounters your hooks. Thanks [@mrmacete][]!
 
+### Changes in 12.9.8
+
+- ApiResolver implementations now support case-insensitive matching by appending
+  “/i” to the query string. Thanks [@Hexploitable][]!
+- The *module* ApiResolver no longer leaks the *MatchInfo* instance.
+- CModule runtime gained *GLib.PatternSpec* and GLib UTF-8 case helpers.
+- *DebugSymbol.load()* introduced to be able to explicitly load debug symbols.
+  For now this is only implemented on Windows, where we now also support
+  “module!symbol” notation for improved performance and precision. Thanks
+  [@ohjeongwook][]!
+- Java bridge got a brand new API: *Java.enumerateMethods(query)* This enables
+  efficiently locating methods matching a given query.
+- *ObjC.choose()* no longer crashes due to a lifetime issue only reproducible in
+  our V8 runtime.
+
 
 [Stalker]: /docs/stalker/
 [what other functions does this function call]: https://codeshare.frida.re/@oleavr/who-does-it-call/
@@ -193,3 +208,5 @@ Enjoy!
 [@aemmitt-ns]: https://github.com/aemmitt-ns
 [@enovella_]: https://twitter.com/enovella_
 [@bet4it]: https://github.com/bet4it
+[@Hexploitable]: https://twitter.com/Hexploitable
+[@ohjeongwook]: https://twitter.com/ohjeongwook
