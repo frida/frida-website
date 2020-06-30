@@ -1,17 +1,31 @@
 <ul>
   <li class="{% if page.overview %}current{% endif %}">
-    <a href="{{ site.baseurl }}/">Overview</a>
+    <a href="{{ site.baseurl_root }}/">Overview</a>
   </li>
   <li class="{% if page.url contains '/docs/' %}current{% endif %}">
-    <a href="{{ site.baseurl }}/docs/home/">Docs</span></a>
+    <a href="{{ site.baseurl_root }}/docs/home/">Docs</span></a>
   </li>
   <li class="{% if page.author %}current{% endif %}">
-    <a href="{{ site.baseurl }}/news/">News</a>
+    <a href="{{ site.baseurl_root }}/news/">News</a>
   </li>
   <li class="">
     <a href="{{ site.repository }}">Code</a>
   </li>
   <li class="{% if page.url contains '/contact/' %}current{% endif %}">
-    <a href="{{ site.baseurl }}/contact/">Contact</a>
+    <a href="{{ site.baseurl_root }}/contact/">Contact</a>
+  </li>
+  <li>
+    <div class="cp_ipselect cp_sl01">
+      <select name="select" onChange="location.href=value;">
+        <option value="#">Language</option>
+        {% if site.lang == "en" %}
+        <option value="{{ site.baseurl }}">English</option>
+        <option value="{{ site.baseurl }}/ja/docs/home">Japanese</option>
+        {% else %}
+        <option value="{{ site.baseurl_root }}">English</option>
+        <option value="{{ site.baseurl }}">Japanese</option>
+        {% endif %}
+      </select>
+    </div>
   </li>
 </ul>
