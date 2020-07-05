@@ -2,7 +2,7 @@ For the impatient, here's how to do function tracing with Frida:
 
 {% highlight bash %}
 ~ $ pip install frida-tools
-~ $ frida-trace -i "recv*" -i "read*" *twitter*
+~ $ frida-trace -i "recv*" -i "read*" twitter
 recv: Auto-generated handler: …/recv.js
 # (snip)
 recvfrom: Auto-generated handler: …/recvfrom.js
