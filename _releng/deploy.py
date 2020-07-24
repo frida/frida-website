@@ -27,7 +27,6 @@ def main():
         "s3cmd",
         "sync",
         "--delete-removed",
-        "--acl-public",
         os.path.join(repo_path, "_site") + os.sep,
         BUCKET_URI + "/"
     ])
