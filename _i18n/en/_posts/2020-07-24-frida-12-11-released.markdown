@@ -91,6 +91,12 @@ Enjoy!
 - qml: Sync DetachReason enum with the current Frida API.
 - qml: Fix Device lifetime logic.
 
+### Changes in 12.11.4
+
+- Fix injector on macOS 11 beta 3. Drop support for older betas.
+- Drop helper hack made redundant by macOS 11 beta 3.
+- Fix handling of i/macOS introspection modules.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
