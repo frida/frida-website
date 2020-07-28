@@ -93,6 +93,22 @@ Enjoy!
 - Drop helper hack made redundant by macOS 11 beta 3.
 - Fix handling of i/macOS introspection modules.
 
+### Changes in 12.11.5
+
+- Fix i/macOS early instrumentation of processes using dyld's modern code path
+  on macOS 11 and iOS 14.
+- Make JVM method interception safer by installing new methods using
+  VMThread::execute(), which blocks all Java threads and makes it safer to do
+  interception of hot methods. Thanks [@0xraaz][]!
+- Add support for SUB instruction to ARM Relocator. This means improved
+  reliability when using Interceptor and Stalker on 32-bit ARM.
+- qml: Fix build with GCC by adding missing include.
+
+### Changes in 12.11.6
+
+- Port iOS jailed injector to the new arm64e ABI. This means iOS 14 beta 3 is
+  now fully supported in jailed mode, even on A12+ devices.
+
 
 [XNU driver]: https://github.com/frida/frida-core/tree/master/lib/xnu
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
@@ -100,3 +116,4 @@ Enjoy!
 [@mrmacete]: https://twitter.com/bezjaje
 [@sowdust]: https://github.com/sowdust
 [@Hexploitable]: https://twitter.com/Hexploitable
+[@0xraaz]: https://twitter.com/0xraaz
