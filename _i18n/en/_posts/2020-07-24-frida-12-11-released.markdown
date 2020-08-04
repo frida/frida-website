@@ -109,6 +109,18 @@ Enjoy!
 - Port iOS jailed injector to the new arm64e ABI. This means iOS 14 beta 3 is
   now fully supported in jailed mode, even on A12+ devices.
 
+### Changes in 12.11.7
+
+- Improve libc detection on Linux and QNX. Thanks [@demantz][]!
+- Fix checking of symbol sizes in libdwarf backend. This means more reliable
+  debug symbol resolution on Linux.
+- Fix brittle Android activity start logic. Thanks [@muhzii][]!
+- Improve Android Java hooking reliability by clearing the
+  *kAccFastInterpreterToInterpreterInvoke* flag. Thanks [@deroko][]!
+- Guard against using Java wrappers after *$dispose()*, to make such dangerous
+  bugs easier to detect.
+- Improve the frida-qml build system and add support for standalone use.
+
 
 [XNU driver]: https://github.com/frida/frida-core/tree/master/lib/xnu
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
@@ -117,3 +129,6 @@ Enjoy!
 [@sowdust]: https://github.com/sowdust
 [@Hexploitable]: https://twitter.com/Hexploitable
 [@0xraaz]: https://twitter.com/0xraaz
+[@demantz]: https://github.com/demantz
+[@muhzii]: https://github.com/muhzii
+[@deroko]: https://github.com/deroko
