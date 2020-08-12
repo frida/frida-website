@@ -11,10 +11,14 @@ In anticipation of Apple releasing macOS 11, it's time for Frida 12.11! This
 release brings full compatibility with macOS 11 Beta 3. Not only that, we now
 also support macOS on Apple silicon. Yay!
 
-It's worth noting that we didn't stop at arm64, we also support arm64e. This is
-great news if you're interested in security research on system services. Only
-caveat is that SIP needs to be disabled first – unless you convince your
-kernel to load Frida's [XNU driver][].
+It's worth noting that we didn't stop at arm64, we also support arm64e. This ABI
+is still a moving target, so if you have a Developer Transition Kit (DTK) and
+want to take this for a spin you will have to disable SIP, and then add a boot
+argument:
+
+{% highlight bash %}
+$ sudo nvram boot-args="-arm64e_preview_abi"
+{% endhighlight %}
 
 Considering this awesome convergence of platforms, there's actually a chance
 that we may already support jailbroken iOS 14. We will know once a public
@@ -122,7 +126,6 @@ Enjoy!
 - Improve the frida-qml build system and add support for standalone use.
 
 
-[XNU driver]: https://github.com/frida/frida-core/tree/master/lib/xnu
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
 [@mrmacete]: https://twitter.com/bezjaje
