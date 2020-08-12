@@ -129,6 +129,10 @@ Enjoy!
 
 - Add support for macOS 11 beta 4 on Apple silicon.
 
+### Changes in 12.11.9
+
+- Add support for jailed iOS w/ Xcode 12 developer disk images.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
