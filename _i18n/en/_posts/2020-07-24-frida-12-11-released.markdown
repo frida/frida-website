@@ -125,6 +125,10 @@ Enjoy!
   bugs easier to detect.
 - Improve the frida-qml build system and add support for standalone use.
 
+### Changes in 12.11.8
+
+- Add support for macOS 11 beta 4 on Apple silicon.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
