@@ -133,6 +133,15 @@ Enjoy!
 
 - Add support for jailed iOS w/ Xcode 12 developer disk images.
 
+### Changes in 12.11.10
+
+- node: Plug leak in IOStream's WriteOperation. Thanks [@mrmacete][]!
+- qml: Add support for listing applications.
+- qml: Expose a “count” property on each model.
+- Fix ARM relocation of “add sb, pc, r4”.
+- Fix ARM relocation of “add ip, pc, #4, #12”.
+- Fix ARM writer support for LDMIA when Rn is in reglist.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
