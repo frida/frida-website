@@ -151,6 +151,15 @@ Enjoy!
 - qml: Fix static linking on Linux.
 - qml: Optimize startup to not wait for enumerate_devices().
 
+### Changes in 12.11.12
+
+- Initialize CoreFoundation during early instrumentation on i/macOS. Thanks
+  [@mrmacete][]!
+- Support a NULL EventSink in Stalker. Thanks [@meme][]!
+- node: Provide Electron prebuilds for v10 and v11. Next release will drop
+  prebuilds for v9.
+- qml: Add post(QJsonArray).
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
@@ -161,3 +170,4 @@ Enjoy!
 [@demantz]: https://github.com/demantz
 [@muhzii]: https://github.com/muhzii
 [@deroko]: https://github.com/deroko
+[@meme]: https://github.com/meme
