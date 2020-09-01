@@ -142,6 +142,15 @@ Enjoy!
 - Fix ARM relocation of “add ip, pc, #4, #12”.
 - Fix ARM writer support for LDMIA when Rn is in reglist.
 
+### Changes in 12.11.11
+
+- Add support for opaque JNI IDs on Android R, to support debuggable apps.
+  Thanks [@muhzii][]!
+- qml: Add support for spawning processes.
+- qml: Add missing libraries when linking with devkit on Linux.
+- qml: Fix static linking on Linux.
+- qml: Optimize startup to not wait for enumerate_devices().
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
