@@ -160,6 +160,12 @@ Enjoy!
   prebuilds for v9.
 - qml: Add post(QJsonArray).
 
+### Changes in 12.11.13
+
+- Fix ART internals probing on Android 11/arm64. Thanks [@enovella_][]!
+- Build GumJS runtime for V8 without compression for now, as we need to improve
+  frida-compile to use the latest version of [terser][].
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
@@ -171,3 +177,5 @@ Enjoy!
 [@muhzii]: https://github.com/muhzii
 [@deroko]: https://github.com/deroko
 [@meme]: https://github.com/meme
+[@enovella_]: https://twitter.com/enovella_
+[terser]: https://github.com/terser/terser
