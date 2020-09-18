@@ -171,6 +171,11 @@ Enjoy!
 - Build GumJS runtime for V8 with compression now that frida-compile has been
   upgraded to the latest version of [terser][].
 
+### Changes in 12.11.15
+
+- Add support for iOS 14.x secure DTX. Thanks [@mrmacete][]!
+- Fix Java.deoptimizeEverything() on Android 11. Thanks [@Gh0u1L5][]!
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
@@ -184,3 +189,4 @@ Enjoy!
 [@meme]: https://github.com/meme
 [@enovella_]: https://twitter.com/enovella_
 [terser]: https://github.com/terser/terser
+[@Gh0u1L5]: https://github.com/Gh0u1L5
