@@ -166,6 +166,11 @@ Enjoy!
 - Build GumJS runtime for V8 without compression for now, as we need to improve
   frida-compile to use the latest version of [terser][].
 
+### Changes in 12.11.14
+
+- Build GumJS runtime for V8 with compression now that frida-compile has been
+  upgraded to the latest version of [terser][].
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
