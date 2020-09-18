@@ -176,6 +176,18 @@ Enjoy!
 - Add support for iOS 14.x secure DTX. Thanks [@mrmacete][]!
 - Fix Java.deoptimizeEverything() on Android 11. Thanks [@Gh0u1L5][]!
 
+### Changes in 12.11.16
+
+- Fix arm64e support in Arm64Relocator.can_relocate(). Thanks [@mrmacete][]!
+- Add “onEvent” option to Stalker.follow(). This allows synchronous
+  processing of events in native code – typically implemented using CModule.
+  Useful when wanting to implement custom filtering and/or queuing logic to
+  improve performance, or sacrifice performance in exchange for reliable event
+  delivery.
+- Expose Stalker's live CpuContext to EventSink. This can be accessed through
+  the “onEvent” callback, and through the Gum C API.
+- Add Spinlock to the CModule runtime.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
