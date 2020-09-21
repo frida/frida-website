@@ -1874,10 +1874,32 @@ Stalker.follow(mainThread.id, {
   //  *   printf ("on_ret!\n");
   //  * }
   //  *
+  //  * void
+  //  * process (const GumEvent * event,
+  //  *          GumCpuContext * cpu_context,
+  //  *          gpointer user_data)
+  //  * {
+  //  *   switch (event->type)
+  //  *   {
+  //  *     case GUM_CALL:
+  //  *       break;
+  //  *     case GUM_RET:
+  //  *       break;
+  //  *     case GUM_EXEC:
+  //  *       break;
+  //  *     case GUM_BLOCK:
+  //  *       break;
+  //  *     case GUM_COMPILE:
+  //  *       break;
+  //  *     default:
+  //  *       break;
+  //  *   }
+  //  * }
   //  * `);
   //  */
   //
   //transform: cm.transform,
+  //onEvent: cm.process,
   //data: ptr(1337) /* user_data */
   //
   // You may also use a hybrid approach and only write
