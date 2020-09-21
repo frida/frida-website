@@ -188,6 +188,18 @@ Enjoy!
   the “onEvent” callback, and through the Gum C API.
 - Add Spinlock to the CModule runtime.
 
+### Changes in 12.11.17
+
+- Kill via LLDB on jailed iOS, to avoid killing via ProcessControl when
+  possible. Turns out our previous behavior left debugserver in a bad state
+  for which killed apps sometimes would appear as already running, failing early
+  instrumentation on subsequent spawn() attempts. Thanks [@mrmacete][]!
+- Fix Java bridge initialization on older Android API levels by letting the
+  instrumentation field detection fail gracefully. We don't need it on older API
+  levels anyway.
+- Reduce Duktape memory usage a little per script. There is no need to intern
+  the script source code string.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
