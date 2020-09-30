@@ -1,4 +1,4 @@
-## Frida's website
+## Frida's Website
 
 Live at [www.frida.re](https://www.frida.re/).
 
