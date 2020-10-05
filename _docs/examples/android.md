@@ -118,3 +118,33 @@ Java.perform(function () {
   console.log('[+] StringBuilder.toString() hooked');
 });
 {% endhighlight %}
+
+
+## Example of stacktrace usage
+
+{% highlight js %}
+Java.perform(function () {
+
+  // returns pretty stacktrace as string
+  function stackTrace() {
+    return Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Exception").$new())
+  }
+
+  // import some module
+  var Cipher = Java.use('javax.crypto.Cipher');
+  
+  // setup hook for method
+  Cipher.init.overload('int', 'java.security.Key').implementation = function (a,b) {
+    // call original init method 
+    var result = this.init(a,b);
+    console.log('Cipher.init(a,b)');
+      
+    // show the stackTrace of this .implementation call
+    console.log(stackTrace())
+      
+    return result;
+  };
+
+});
+{% endhighlight %}
+
