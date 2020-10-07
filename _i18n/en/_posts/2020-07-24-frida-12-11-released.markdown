@@ -200,6 +200,19 @@ Enjoy!
 - Reduce Duktape memory usage a little per script. There is no need to intern
   the script source code string.
 
+### Changes in 12.11.18
+
+- Skip app extensions when detecting frontmost app on jailed iOS. Sometimes an
+  app extension was returned as the first matched process, subsequently throwing
+  “Unable to resolve bundle path to bundle ID”. Thanks [@mrmacete][]!
+- Improve Android ART instrumentation offset detection for x86/x86_64. Thanks
+  [@Gh0u1L5][]!
+- Fix JDWP initialization failure on Android 7.1-8.1. Thanks [@Gh0u1L5][]!
+- Fix nearest symbol logic in the libdwarf backend.
+- Plug a leak in the Duktape-based runtime's argument parsing logic, where any
+  collected memory range arrays would leak in case an error occurs parsing one
+  of the following arguments.
+
 
 [CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
