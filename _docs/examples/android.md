@@ -124,27 +124,22 @@ Java.perform(function () {
 
 {% highlight js %}
 Java.perform(function () {
-
-  // returns pretty stacktrace as string
-  function stackTrace() {
-    return Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Exception").$new())
-  }
-
-  // import some module
   var Cipher = Java.use('javax.crypto.Cipher');
-  
-  // setup hook for method
-  Cipher.init.overload('int', 'java.security.Key').implementation = function (a,b) {
-    // call original init method 
-    var result = this.init(a,b);
-    console.log('Cipher.init(a,b)');
-      
-    // show the stackTrace of this .implementation call
-    console.log(stackTrace())
-      
+  var Exception = Java.use('java.lang.Exception');
+  var Log = Java.use('android.util.Log');
+
+  var init = Cipher.init.overload('int', 'java.security.Key');
+  init.implementation = function (opmode, key) {
+    var result = init.call(this, opmode, key);
+
+    console.log('Cipher.init() opmode:', opmode, 'key:', key);
+    console.log(stackTraceHere());
+
     return result;
   };
 
+  function stackTraceHere() {
+    return Log.getStackTraceString(Exception.$new());
+  }
 });
 {% endhighlight %}
-
