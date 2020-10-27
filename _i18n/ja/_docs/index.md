@@ -31,12 +31,11 @@ Fridaを使うことで、Windows、macOS、GNU/Linux、iOS、AndroidやQNXの�
 
 ## Why a Python API, but JavaScript debugging logic?
 
-Frida's core is written in C and injects [Google's V8
-engine](https://developers.google.com/v8/) into the target processes, where your
-JS gets executed with full access to memory, hooking functions and even calling
-native functions inside the process. There's a bi-directional communication
-channel that is used to talk between your app and the JS running inside the
-target process.
+Frida's core is written in C and injects [QuickJS](https://bellard.org/quickjs/)
+into the target processes, where your JS gets executed with full access to
+memory, hooking functions and even calling native functions inside the process.
+There's a bi-directional communication channel that is used to talk between your
+app and the JS running inside the target process.
 
 Using Python and JS allows for quick development with a risk-free API. Frida can
 help you easily catch errors in JS and provide you an exception rather than

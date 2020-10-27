@@ -11,8 +11,8 @@ further improved and used to create Frida. The component [frida-core][] would
 take care of all the nitty gritty details of injecting shared libraries into
 arbitrary processes, and maintaining a live two-way channel with the injected
 code running inside those processes. Inside that payload, [frida-gum][] would
-take care of hooking functions and providing a scripting runtime using Google's
-excellent [V8][] engine.
+take care of hooking functions and providing a scripting runtime using the
+excellent [QuickJS][] engine.
 
 Later, in their not-so-ample spare time, [@oleavr][] and [@karltk][] did some
 recreational pair-programming-hackathons that resulted in [huge improvements][]
@@ -40,4 +40,4 @@ possible to use Frida from C.
 [.NET]: https://github.com/frida/frida-clr
 [Qt/Qml]: https://github.com/frida/frida-qml
 [oSpy]: https://github.com/oleavr/ospy
-[V8]: https://code.google.com/p/v8/
+[QuickJS]: https://bellard.org/quickjs/

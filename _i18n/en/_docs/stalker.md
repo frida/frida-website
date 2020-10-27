@@ -144,7 +144,7 @@ GUM_API void gum_stalker_follow_me (GumStalker * self,
     GumStalkerTransformer * transformer, GumEventSink * sink);
 {% endhighlight %}
 
-So we can see the function is called by the Duktape or V8 runtime passing 3
+So we can see the function is called by the QuickJS or V8 runtime passing 3
 arguments. The first is the Stalker instance itself. Note that there may be
 multiple of these if multiple scripts are loaded at once. The second is a
 transformer, this can be used to transform the instrumented code as it is being

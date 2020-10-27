@@ -54,7 +54,7 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
 -p PID, --attach-pid=PID
                       attach to PID
 --stdio=inherit|pipe  stdio behavior when spawning (defaults to “inherit”)
---runtime=duk|v8      script runtime to use
+--runtime=qjs|v8      script runtime to use
 --debug               enable the Node.js compatible script debugger
 --squelch-crash       if enabled, will not dump crash report to console
 -O FILE, --options-file=FILE

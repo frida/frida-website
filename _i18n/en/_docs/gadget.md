@@ -58,9 +58,8 @@ root. It supports four different keys at the root level:
     itself. Specify `full` if you intend to unload it at some point.
 
 -   `runtime`: string specifying either `interpreter` or `jit`, essentially
-    letting you choose between Duktape and V8, respectively. The default is
-    `interpreter`, i.e. Duktape, which uses less memory at the expense of speed
-    and JavaScript language features.
+    letting you choose between QuickJS and V8, respectively. The default is
+    `interpreter`, i.e. QuickJS.
 
 -   `code_signing`: string specifying either `optional` or `required`, making
     it possible to run on a jailed iOS device without a debugger attached by

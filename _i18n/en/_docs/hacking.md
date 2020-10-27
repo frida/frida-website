@@ -36,7 +36,7 @@ Frida's build system automatically downloads a tarball with all dependencies
 prebuilt for the host OS and architecture. As we're porting to a new
 architecture we will have to build these dependencies by hand. But first,
 we need to update the build recipe to support this new architecture.
-Because most of the dependencies make use of autotools this requires almost
+Because most of the dependencies make use of Meson this requires almost
 no changes at all; we just need to add the V8-specific bits as it uses a
 custom build system. Go update them [here](https://github.com/frida/frida/blob/e23516d9d027c35cedc9c3497dde774f0acfce1a/Makefile.sdk.mk#L271-L286).
 

@@ -96,7 +96,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 ### Script
 
 +   `Script.runtime`: string property containing the runtime being used.
-    Either `DUK` or `V8`.
+    Either `QJS` or `V8`.
 
 ---
 
@@ -113,7 +113,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     should provide `this.context` for the optional `context` argument, as it
     will give you a more accurate backtrace. Omitting `context` means the
     backtrace will be generated from the current stack location, which may
-    not give you a very good backtrace due to V8's stack frames.
+    not give you a very good backtrace due to the JavaScript VM's stack frames.
     The optional `backtracer` argument specifies the kind of backtracer to use,
     and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
     latter is the default if not specified. The accurate kind of backtracers
@@ -123,10 +123,10 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     positives, but it will work on any binary.
 
 {% highlight js %}
-var f = Module.getExportByName('libcommonCrypto.dylib',
+const f = Module.getExportByName('libcommonCrypto.dylib',
     'CCCryptorCreate');
 Interceptor.attach(f, {
-  onEnter: function (args) {
+  onEnter(args) {
     console.log('CCCryptorCreate called from:\n' +
         Thread.backtrace(this.context, Backtracer.ACCURATE)
         .map(DebugSymbol.fromAddress).join('\n') + '\n');
@@ -426,18 +426,17 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
     -   `callbacks` is an object with:
 
-        -   `onMatch: function (address, size)`: called with `address`
-            containing the address of the occurence as a [`NativePointer`](#nativepointer)
-            and `size` specifying the size as a number.
+        -   `onMatch(address, size)`: called with `address` containing the
+            address of the occurence as a [`NativePointer`](#nativepointer) and
+            `size` specifying the size as a number.
 
             This function may return the string `stop` to cancel the memory
             scanning early.
 
-        -   `onError: function (reason)`: called with `reason` when there was a
-            memory access error while scanning
+        -   `onError(reason)`: called with `reason` when there was a memory
+            access error while scanning
 
-        -   `onComplete: function ()`: called when the memory range has been
-            fully scanned
+        -   `onComplete()`: called when the memory range has been fully scanned
 
 -   `Memory.scanSync(address, size, pattern)`: synchronous version of [`scan()`](#memory-scan)
     that returns an array of objects containing the following properties:
@@ -449,10 +448,10 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
 {% highlight js %}
 // Find the module for the program itself, always at index 0:
-var m = Process.enumerateModules()[0];
+const m = Process.enumerateModules()[0];
 
 // Or load a module by name:
-//var m = Module.load('win32u.dll');
+//const m = Module.load('win32u.dll');
 
 // Print its properties:
 console.log(JSON.stringify(m));
@@ -461,22 +460,22 @@ console.log(JSON.stringify(m));
 console.log(hexdump(m.base));
 
 // The pattern that you are interested in:
-var pattern = '00 00 00 00 ?? 13 37 ?? 42';
+const pattern = '00 00 00 00 ?? 13 37 ?? 42';
 
 Memory.scan(m.base, m.size, pattern, {
-  onMatch: function (address, size) {
+  onMatch(address, size) {
     console.log'Memory.scan() found match at', address,
         'with size', size);
 
     // Optionally stop scanning early:
     return 'stop';
   },
-  onComplete: function () {
+  onComplete() {
     console.log('Memory.scan() complete');
   }
 });
 
-var results = Memory.scanSync(m.base, m.size, pattern);
+const results = Memory.scanSync(m.base, m.size, pattern);
 console.log('Memory.scanSync() result:\n' +
     JSON.stringify(results));
 {% endhighlight %}
@@ -526,10 +525,10 @@ Memory.protect(ptr('0x1234'), 4096, 'rw-');
     For example:
 
 {% highlight js %}
-var getLivesLeft = Module.getExportByName('game-engine.so', 'get_lives_left');
-var maxPatchSize = 64; // Do not write out of bounds, may be a temporary buffer!
-Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
-  var cw = new X86Writer(code, { pc: getLivesLeft });
+const getLivesLeft = Module.getExportByName('game-engine.so', 'get_lives_left');
+const maxPatchSize = 64; // Do not write out of bounds, may be a temporary buffer!
+Memory.patchCode(getLivesLeft, maxPatchSize, code => {
+  const cw = new X86Writer(code, { pc: getLivesLeft });
   cw.putMovRegU32('eax', 9000);
   cw.putRet();
   cw.flush();
@@ -612,19 +611,17 @@ Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
 #### Examples
 
 {% highlight js %}
-var source = [
-  '#include <stdio.h>',
-  '',
-  'void hello(void) {',
-  '  printf("Hello World from CModule\\n");',
-  '}',
-].join('\n');
+const cm = new CModule(`
+#include <stdio.h>
 
-var cm = new CModule(source);
+void hello(void) {
+  printf("Hello World from CModule\\n");
+}
+`);
 
 console.log(JSON.stringify(cm));
 
-var hello = new NativeFunction(cm.hello, 'void', []);
+const hello = new NativeFunction(cm.hello, 'void', []);
 hello();
 {% endhighlight %}
 
@@ -638,34 +635,7 @@ $ frida -p 0 -l example.js
 
 You can then type `hello()` in the REPL to call the C function.
 
-The same example can be simplified by using modern JavaScript syntax:
-
-{% highlight js %}
-const source = `
-#include <stdio.h>
-
-void hello(void) {
-  printf("Hello World from CModule\\n");
-}
-`;
-
-const cm = new CModule(source);
-
-const hello = new NativeFunction(cm.hello, 'void', []);
-hello();
-{% endhighlight %}
-
-Which our V8-based runtime supports:
-
-{% highlight sh %}
-$ frida -p 0 --runtime=v8 -l example.js
-{% endhighlight %}
-
-Another option is to use **[frida-compile](https://github.com/oleavr/frida-agent-example)**
-to compile the JavaScript code to ES5, so it can be run on our Duktape-based
-runtime.
-
-For prototyping we recommend using Frida's REPL:
+For prototyping we recommend using the Frida REPL's built-in CModule support:
 
 {% highlight sh %}
 $ frida -p 0 -C example.c
@@ -674,8 +644,8 @@ $ frida -p 0 -C example.c
 You may also add `-l example.js` to load some JavaScript next to it.
 The JavaScript code may use the global variable named `cm` to access
 the CModule object, but only after [`rpc.exports.init()`](#rpc-exports) has been
-called, so do any initialization depending on the CModule there. You may also
-inject symbols by assigning to the global object named `cs`, but this
+called, so perform any initialization depending on the CModule there. You may
+also inject symbols by assigning to the global object named `cs`, but this
 must be done *before* [`rpc.exports.init()`](#rpc-exports) gets called.
 
 Here's an example:
@@ -714,9 +684,9 @@ site.baseurl_root }}/news/2019/09/18/frida-12-7-released/)**.
     -   `address`: address as a [`NativePointer`](#nativepointer)
 
 {% highlight js %}
-var resolver = new ApiResolver('module');
-var matches = resolver.enumerateMatches('exports:*!open*');
-var first = matches[0];
+const resolver = new ApiResolver('module');
+const matches = resolver.enumerateMatches('exports:*!open*');
+const first = matches[0];
 /*
  * Where `first` is an object similar to:
  *
@@ -728,9 +698,9 @@ var first = matches[0];
 {% endhighlight %}
 
 {% highlight js %}
-var resolver = new ApiResolver('objc');
-var matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
-var first = matches[0];
+const resolver = new ApiResolver('objc');
+const matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
+const first = matches[0];
 /*
  * Where `first` contains an object like this one:
  *
@@ -761,10 +731,10 @@ var first = matches[0];
     with [`Thread.backtrace()`](#thread-backtrace):
 
 {% highlight js %}
-var f = Module.getExportByName('libcommonCrypto.dylib',
+const f = Module.getExportByName('libcommonCrypto.dylib',
     'CCCryptorCreate');
 Interceptor.attach(f, {
-  onEnter: function (args) {
+  onEnter(args) {
     console.log('CCCryptorCreate called from:\n' +
         Thread.backtrace(this.context, Backtracer.ACCURATE)
         .map(DebugSymbol.fromAddress).join('\n') + '\n');
@@ -1094,20 +1064,21 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
         This must match the struct/class exactly, so if you have a struct with three
         ints, you must pass `['int', 'int', 'int']`.
 
-        For a class that has virtual methods, the first parameter will be a pointer
+        For a class that has virtual methods, the first field will be a pointer
         to **[the vtable](https://en.wikipedia.org/wiki/Virtual_method_table)**.
 
         For C++ scenarios involving a return value that is larger than
-        [`Process.pointerSize`](#process-pointersize), a [`NativePointer`](#nativepointer)
-        to preallocated space must be passed in as the first parameter. (This scenario is
-        common in WebKit, for example.)
+        [`Process.pointerSize`](#process-pointersize), a typical ABI may expect
+        that a [`NativePointer`](#nativepointer) to preallocated space must be
+        passed in as the first parameter. (This scenario is common in WebKit,
+        for example.)
 
         Example:
 {% highlight js %}
 // LargeObject HandyClass::friendlyFunctionName();
-var friendlyFunctionName = new NativeFunction(friendlyFunctionPtr,
+const friendlyFunctionName = new NativeFunction(friendlyFunctionPtr,
     'void', ['pointer', 'pointer']);
-var returnValue = Memory.alloc(sizeOfLargeObject);
+const returnValue = Memory.alloc(sizeOfLargeObject);
 friendlyFunctionName(returnValue, thisPtr);
 {% endhighlight %}
 
@@ -1477,17 +1448,15 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
     For example:
 
 {% highlight js %}
-var db, smt, row, name, bio;
+const db = SqliteDatabase.open('/path/to/people.db');
 
-db = SqliteDatabase.open('/path/to/people.db');
-
-smt = db.prepare('SELECT name, bio FROM people WHERE age = ?');
+const smt = db.prepare('SELECT name, bio FROM people WHERE age = ?');
 
 console.log('People whose age is 42:');
 smt.bindInteger(1, 42);
+let row;
 while ((row = smt.step()) !== null) {
-  name = row[0];
-  bio = row[1];
+  const [name, bio] = row;
   console.log('Name:', name);
   console.log('Bio:', bio);
 }
@@ -1530,14 +1499,13 @@ smt.reset();
 
     The `callbacks` argument is an object containing one or more of:
 
-    -   `onEnter: function (args)`: callback function given one argument
-        `args` that can be used to read or write arguments as an array of
-        [`NativePointer`](#nativepointer) objects.
-        {: #interceptor-onenter}
+    -   `onEnter(args)`: callback function given one argument `args` that can be
+        used to read or write arguments as an array of
+        [`NativePointer`](#nativepointer) objects. {: #interceptor-onenter}
 
-    -   `onLeave: function (retval)`: callback function given one argument
-        `retval` that is a [`NativePointer`](#nativepointer)-derived object containing
-        the raw return value.
+    -   `onLeave(retval)`: callback function given one argument `retval` that is
+        a [`NativePointer`](#nativepointer)-derived object containing the raw
+        return value.
         You may call `retval.replace(1337)` to replace the return value with
         the integer `1337`, or `retval.replace(ptr("0x1234"))` to replace with
         a pointer.
@@ -1577,10 +1545,10 @@ smt.reset();
 
 {% highlight js %}
 Interceptor.attach(Module.getExportByName('libc.so', 'read'), {
-  onEnter: function (args) {
+  onEnter(args) {
     this.fileDescriptor = args[0].toInt32();
   },
-  onLeave: function (retval) {
+  onLeave(retval) {
     if (retval.toInt32() > 0) {
       /* do something with this.fileDescriptor */
     }
@@ -1610,7 +1578,7 @@ Interceptor.attach(Module.getExportByName('libc.so', 'read'), {
 
 {% highlight js %}
 Interceptor.attach(Module.getExportByName(null, 'read'), {
-  onEnter: function (args) {
+  onEnter(args) {
     console.log('Context information:');
     console.log('Context  : ' + JSON.stringify(this.context));
     console.log('Return   : ' + this.returnAddress);
@@ -1623,10 +1591,10 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
     this.buf = args[1];
     this.count = args[2].toInt32();
   },
-  onLeave: function (result) {
+  onLeave(result) {
     console.log('----------')
     // Show argument 1 (buf), saved during onEnter.
-    var numBytes = result.toInt32();
+    const numBytes = result.toInt32();
     if (numBytes > 0) {
       console.log(hexdump(this.buf, { length: numBytes, ansi: true }));
     }
@@ -1689,12 +1657,12 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
     Here's an example:
 
 {% highlight js %}
-var openPtr = Module.getExportByName('libc.so', 'open');
-var open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
-Interceptor.replace(openPtr, new NativeCallback(function (pathPtr, flags) {
-  var path = pathPtr.readUtf8String();
+const openPtr = Module.getExportByName('libc.so', 'open');
+const open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
+Interceptor.replace(openPtr, new NativeCallback((pathPtr, flags) => {
+  const path = pathPtr.readUtf8String();
   log('Opening "' + path + '"');
-  var fd = open(pathPtr, flags);
+  const fd = open(pathPtr, flags);
   log('Got fd: ' + fd);
   return fd;
 }, 'int', ['pointer', 'int']));
@@ -1787,10 +1755,10 @@ Stalker.follow(mainThread.id, {
   //                 to be executed by the stalked thread.
   //
   //transform: function (iterator) {
-  //  var instruction = iterator.next();
+  //  let instruction = iterator.next();
   //
-  //  var startAddress = instruction.address;
-  //  var isAppCode = startAddress.compare(appStart) >= 0 &&
+  //  const startAddress = instruction.address;
+  //  const isAppCode = startAddress.compare(appStart) >= 0 &&
   //      startAddress.compare(appEnd) === -1;
   //
   //  do {
@@ -2018,7 +1986,7 @@ Stalker.follow(mainThread.id, {
     with objects by using dot notation and replacing colons with underscores, i.e.:
     `[NSString stringWithString:@"Hello World"]`
     becomes
-    `var NSString = ObjC.classes.NSString; NSString.stringWithString_("Hello World");`.
+    `const { NSString } = ObjC.classes; NSString.stringWithString_("Hello World");`.
     Note the underscore after the method name. Refer to iOS Examples section for
     more details.
     {: #objc-classes}
@@ -2033,9 +2001,9 @@ Stalker.follow(mainThread.id, {
     before calling `work`, and cleaned up on return.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* macOS */
+const { NSSound } = ObjC.classes; /* macOS */
 ObjC.schedule(ObjC.mainQueue, function () {
-    var sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
+    const sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
     sound.play();
 });
 {% endhighlight %}
@@ -2047,9 +2015,9 @@ ObjC.schedule(ObjC.mainQueue, function () {
 
 {% highlight js %}
 Interceptor.attach(myFunction.implementation, {
-  onEnter: function(args) {
+  onEnter(args) {
     // ObjC: args[0] = self, args[1] = selector, args[2-n] = arguments
-    var myString = new ObjC.Object(args[2]);
+    const myString = new ObjC.Object(args[2]);
     console.log("String argument: " + myString.toString());
   }
 });
@@ -2126,16 +2094,16 @@ Interceptor.attach(..., {
     assign to an ObjC method's `implementation` property.
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* macOS */
-var oldImpl = NSSound.play.implementation;
-NSSound.play.implementation = ObjC.implement(NSSound.play, function (handle, selector) {
+const NSSound = ObjC.classes.NSSound; /* macOS */
+const oldImpl = NSSound.play.implementation;
+NSSound.play.implementation = ObjC.implement(NSSound.play, (handle, selector) => {
   return oldImpl(handle, selector);
 });
 
-var NSView = ObjC.classes.NSView; /* macOS */
-var drawRect = NSView['- drawRect:'];
-var oldImpl = drawRect.implementation;
-drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
+const NSView = ObjC.classes.NSView; /* macOS */
+const drawRect = NSView['- drawRect:'];
+const oldImpl = drawRect.implementation;
+drawRect.implementation = ObjC.implement(drawRect, (handle, selector) => {
   oldImpl(handle, selector);
 });
 {% endhighlight %}
@@ -2144,11 +2112,11 @@ drawRect.implementation = ObjC.implement(drawRect, function (handle, selector) {
 >   [`NativePointer`](#nativepointer), you may also use [`Interceptor`](#interceptor) to hook functions:
 
 {% highlight js %}
-var NSSound = ObjC.classes.NSSound; /* macOS */
+const { NSSound } = ObjC.classes; /* macOS */
 Interceptor.attach(NSSound.play.implementation, {
-    onEnter: function () {
-        send("[NSSound play]");
-    }
+  onEnter() {
+    send("[NSSound play]");
+  }
 });
 {% endhighlight %}
 
@@ -2192,7 +2160,7 @@ const MyConnectionDelegateProxy = ObjC.registerProxy({
 const method = ObjC.classes.NSURLConnection[
     '- initWithRequest:delegate:startImmediately:'];
 Interceptor.attach(method.implementation, {
-  onEnter: function (args) {
+  onEnter(args) {
     args[3] = new MyConnectionDelegateProxy(args[3], {
       foo: 1234
     });
@@ -2331,21 +2299,21 @@ const MyDataDelegate = ObjC.registerProtocol({
     loaded right now, where `callbacks` is an object specifying:
     {: #objc-enumerateloadedclasses}
 
-    -   `onMatch: function (name, owner)`: called for each loaded class with the
-        `name` of the class as a string, and `owner` specifying the path to the
-        module where the class was loaded from. To obtain a JavaScript wrapper
-        for a given class, do: [`ObjC.classes[name]`](#objc-classes).
+    -   `onMatch(name, owner)`: called for each loaded class with the `name` of
+        the class as a string, and `owner` specifying the path to the module
+        where the class was loaded from. To obtain a JavaScript wrapper for a
+        given class, do: [`ObjC.classes[name]`](#objc-classes).
 
-    -   `onComplete: function ()`: called when all classes have been enumerated.
+    -   `onComplete()`: called when all classes have been enumerated.
 
     For example:
 
 {% highlight js %}
 ObjC.enumerateLoadedClasses({
-  onMatch: function (name, owner) {
+  onMatch(name, owner) {
     console.log('onMatch:', name, owner);
   },
-  onComplete: function () {
+  onComplete() {
   }
 });
 {% endhighlight %}
@@ -2356,12 +2324,12 @@ The optional `options` argument is an object where you may specify the
 For example:
 
 {% highlight js %}
-var appModules = new ModuleMap(isAppModule);
+const appModules = new ModuleMap(isAppModule);
 ObjC.enumerateLoadedClasses({ ownedBy: appModules }, {
-  onMatch: function (name, owner) {
+  onMatch(name, owner) {
     console.log('onMatch:', name, owner);
   },
-  onComplete: function () {
+  onComplete() {
   }
 });
 
@@ -2377,8 +2345,8 @@ function isAppModule(m) {
     For example:
 
 {% highlight js %}
-var appModules = new ModuleMap(isAppModule);
-var appClasses = ObjC.enumerateLoadedClassesSync({ ownedBy: appModules });
+const appModules = new ModuleMap(isAppModule);
+const appClasses = ObjC.enumerateLoadedClassesSync({ ownedBy: appModules });
 console.log('appClasses:', JSON.stringify(appClasses));
 
 function isAppModule(m) {
@@ -2398,15 +2366,15 @@ function isAppModule(m) {
     The `callbacks` argument is an object specifying:
     {: #objc-choose}
 
-    -   `onMatch: function (instance)`: called once for each live instance found
-        with a ready-to-use `instance` just as if you would have called
-        [`new ObjC.Object(ptr("0x1234"))`](#objc-object) knowing that this particular
-        Objective-C instance lives at *0x1234*.
+    -   `onMatch(instance)`: called once for each live instance found with a
+        ready-to-use `instance` just as if you would have called
+        [`new ObjC.Object(ptr("0x1234"))`](#objc-object) knowing that this
+        particular Objective-C instance lives at *0x1234*.
 
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function ()`: called when all instances have been enumerated
+    -   `onComplete()`: called when all instances have been enumerated
 
 +   `ObjC.chooseSync(specifier)`: synchronous version of [`choose()`](#objc-choose)
     that returns the instances in an array.
@@ -2430,11 +2398,11 @@ function isAppModule(m) {
     now, where `callbacks` is an object specifying:
     {: #java-enumerateloadedclasses}
 
-    -   `onMatch: function (name, handle)`: called for each loaded class with
-        `name` that may be passed to [`use()`](#java-use) to get a JavaScript wrapper.
+    -   `onMatch(name, handle)`: called for each loaded class with `name` that
+        may be passed to [`use()`](#java-use) to get a JavaScript wrapper.
         You may also [`Java.cast()`](#java-cast) the `handle` to `java.lang.Class`.
 
-    -   `onComplete: function ()`: called when all classes have been enumerated.
+    -   `onComplete()`: called when all classes have been enumerated.
 
 +   `Java.enumerateLoadedClassesSync()`: synchronous version of
     [`enumerateLoadedClasses()`](#java-enumerateloadedclasses) that returns the
@@ -2444,11 +2412,10 @@ function isAppModule(m) {
     in the Java VM, where `callbacks` is an object specifying:
     {: #java-enumerateclassloaders}
 
-    -   `onMatch: function (loader)`: called for each class loader with
-        `loader`, a wrapper for the specific `java.lang.ClassLoader`.
+    -   `onMatch(loader)`: called for each class loader with `loader`, a wrapper
+        for the specific `java.lang.ClassLoader`.
 
-    -   `onComplete: function ()`: called when all class loaders have been
-        enumerated.
+    -   `onComplete()`: called when all class loaders have been enumerated.
 
     You may pass such a loader to `Java.ClassFactory.get()` to be able to
     [`.use()`](#java-use) classes on the specified class loader.
@@ -2519,8 +2486,8 @@ Java.perform(() => {
     {: #java-perform}
 
 {% highlight js %}
-Java.perform(function () {
-  var Activity = Java.use('android.app.Activity');
+Java.perform(() => {
+  const Activity = Java.use('android.app.Activity');
   Activity.onResume.implementation = function () {
     send('onResume() got called! Let\'s call the original implementation');
     this.onResume();
@@ -2542,9 +2509,9 @@ Java.perform(function () {
     {: #java-use}
 
 {% highlight js %}
-Java.perform(function () {
-  var Activity = Java.use('android.app.Activity');
-  var Exception = Java.use('java.lang.Exception');
+Java.perform(() => {
+  const Activity = Java.use('android.app.Activity');
+  const Exception = Java.use('java.lang.Exception');
   Activity.onResume.implementation = function () {
     throw Exception.$new('Oh noes!');
   };
@@ -2570,23 +2537,23 @@ Java.perform(function () {
     object specifying:
     {: #java-choose}
 
-    -   `onMatch: function (instance)`: called with each live instance found
-        with a ready-to-use `instance` just as if you would have called
+    -   `onMatch(instance)`: called with each live instance found with a
+        ready-to-use `instance` just as if you would have called
         [`Java.cast()`](#java-cast) with a raw handle to this particular instance.
 
         This function may return the string `stop` to cancel the enumeration
         early.
 
-    -   `onComplete: function ()`: called when all instances have been enumerated
+    -   `onComplete()`: called when all instances have been enumerated
 
 +   `Java.retain(obj)`: duplicates the JavaScript wrapper `obj` for later use
     outside replacement method.
     {: #java-retain}
 
 {% highlight js %}
-Java.perform(function () {
-  var Activity = Java.use('android.app.Activity');
-  var lastActivity = null;
+Java.perform(() => {
+  const Activity = Java.use('android.app.Activity');
+  let lastActivity = null;
   Activity.onResume.implementation = function () {
     lastActivity = Java.retain(this);
     this.onResume();
@@ -2602,8 +2569,8 @@ Java.perform(function () {
     its class-name.
 
 {% highlight js %}
-var Activity = Java.use('android.app.Activity');
-var activity = Java.cast(ptr('0x1234'), Activity);
+const Activity = Java.use('android.app.Activity');
+const activity = Java.cast(ptr('0x1234'), Activity);
 {% endhighlight %}
 
 +   <code id="java-array">Java.array(type, elements)</code>: creates a Java array with
@@ -2612,10 +2579,10 @@ var activity = Java.cast(ptr('0x1234'), Activity);
      Java APIs in order to allow them to modify its contents.
 
 {% highlight js %}
-var values = Java.array('int', [ 1003, 1005, 1007 ]);
+const values = Java.array('int', [ 1003, 1005, 1007 ]);
 
-var JString = Java.use('java.lang.String');
-var str = JString.$new(Java.array('byte', [ 0x48, 0x65, 0x69 ]));
+const JString = Java.use('java.lang.String');
+const str = JString.$new(Java.array('byte', [ 0x48, 0x65, 0x69 ]));
 {% endhighlight %}
 
 +   `Java.isMainThread()`: determine whether the caller is running on the main
@@ -2634,24 +2601,24 @@ var str = JString.$new(Java.array('byte', [ 0x48, 0x65, 0x69 ]));
     -   `methods`: (optional) Object specifying methods to implement.
 
 {% highlight js %}
-var SomeBaseClass = Java.use('com.example.SomeBaseClass');
-var X509TrustManager = Java.use('javax.net.ssl.X509TrustManager');
+const SomeBaseClass = Java.use('com.example.SomeBaseClass');
+const X509TrustManager = Java.use('javax.net.ssl.X509TrustManager');
 
-var MyTrustManager = Java.registerClass({
+const MyTrustManager = Java.registerClass({
   name: 'com.example.MyTrustManager',
   implements: [X509TrustManager],
   methods: {
-    checkClientTrusted: function (chain, authType) {
+    checkClientTrusted(chain, authType) {
     },
-    checkServerTrusted: function (chain, authType) {
+    checkServerTrusted(chain, authType) {
     },
-    getAcceptedIssuers: function () {
+    getAcceptedIssuers() {
       return [];
     },
   }
 });
 
-var MyWeirdTrustManager = Java.registerClass({
+const MyWeirdTrustManager = Java.registerClass({
   name: 'com.example.MyWeirdTrustManager',
   superClass: SomeBaseClass,
   implements: [X509TrustManager],
@@ -2660,27 +2627,27 @@ var MyWeirdTrustManager = Java.registerClass({
     limit: 'int',
   },
   methods: {
-    $init: function () {
+    $init() {
       console.log('Constructor called');
     },
-    checkClientTrusted: function (chain, authType) {
+    checkClientTrusted(chain, authType) {
       console.log('checkClientTrusted');
     },
     checkServerTrusted: [{
       returnType: 'void',
       argumentTypes: ['[Ljava.security.cert.X509Certificate;', 'java.lang.String'],
-      implementation: function (chain, authType) {
+      implementation(chain, authType) {
         console.log('checkServerTrusted A');
       }
     }, {
       returnType: 'java.util.List',
       argumentTypes: ['[Ljava.security.cert.X509Certificate;', 'java.lang.String', 'java.lang.String'],
-      implementation: function (chain, authType, host) {
+      implementation(chain, authType, host) {
         console.log('checkServerTrusted B');
         return null;
       }
     }],
-    getAcceptedIssuers: function () {
+    getAcceptedIssuers() {
       console.log('getAcceptedIssuers');
       return [];
     },
@@ -3906,7 +3873,7 @@ var MyWeirdTrustManager = Java.registerClass({
     For example:
 
 {% highlight js %}
-var libc = Module.findBaseAddress('libc.so');
+const libc = Module.findBaseAddress('libc.so');
 console.log(hexdump(libc, {
   offset: 0,
   length: 64,
@@ -3974,12 +3941,12 @@ console.log(hexdump(libc, {
 
 {% highlight js %}
 rpc.exports = {
-  add: function (a, b) {
+  add(a, b) {
     return a + b;
   },
-  sub: function (a, b) {
-    return new Promise(function (resolve) {
-      setTimeout(function () {
+  sub(a, b) {
+    return new Promise(resolve => {
+      setTimeout(() => {
         resolve(a - b);
       }, 100);
     });
@@ -4076,8 +4043,7 @@ If you want to be notified when the target process exits, use
 
 ### Garbage collection
 
-+   `gc()`: force garbage collection. Useful for testing [`WeakRef.bind()`](#weakref-bind) logic,
-    but also sometimes needed when using the Duktape runtime and its default GC
-    heuristics proving a bit too lazy.
++   `gc()`: force garbage collection. Useful for testing, especially logic
+    involving [`WeakRef.bind()`](#weakref-bind).
 
-[r2]: http://radare.org/r/
+[r2]: https://radare.org/r/
