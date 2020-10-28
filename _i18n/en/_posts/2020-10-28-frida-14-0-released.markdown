@@ -169,7 +169,7 @@ So with that, I hope you'll enjoy this new release!
 
 ### Changes in 14.0.1
 
-- Fix nested global access requests in the QJS runtime.
+- QJS: Fix nested global access requests.
 - qml: Update to the new frida-core API.
 
 ### Changes in 14.0.2
