@@ -195,6 +195,18 @@ So with that, I hope you'll enjoy this new release!
 
 - QJS: Fix Interceptor error-handling.
 
+### Changes in 14.0.6
+
+- ObjC: Fix lifetime of replaced methods so they're not tied to the class
+  wrapper, and also kept alive in chaining use-cases. Kudos to [@Hexploitable][]
+  and [@mrmacete][] for the assist!
+- Fix Exceptor sigaction() registration failure when act == oact. Thanks
+  [@hluwa][]!
+- Improve Linux libc detection.
+- Fix intermittent hang when enumerating and modifying threads on Linux.
+- Fix inconsistent PC vs CPSR Thumb bit handling.
+- Fix build regressions on Linux/armhf and Linux/arm64.
+
 
 [frida-compile]: https://github.com/frida/frida-compile
 [QuickJS]: https://bellard.org/quickjs/
@@ -207,3 +219,6 @@ So with that, I hope you'll enjoy this new release!
 [test]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/tests/gumjs/script.c#L5089-L5137
 [baseline memory usage]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/tests/gumjs/script.c#L7356-L7399
 [this line]: https://github.com/frida/frida/blob/b5aa3aa623c2d919e7fe7c34eee9ded31da8212e/config.mk#L22
+[@Hexploitable]: https://twitter.com/Hexploitable
+[@mrmacete]: https://twitter.com/bezjaje
+[@hluwa]: https://github.com/hluwa
