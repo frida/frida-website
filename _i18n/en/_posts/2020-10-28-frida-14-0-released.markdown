@@ -208,6 +208,16 @@ So with that, I hope you'll enjoy this new release!
 - Fix build regressions on Linux/armhf and Linux/arm64.
 - Publish binaries for Raspberry Pi 32- and 64-bit.
 
+### Changes in 14.0.7
+
+- Avoid deadlocking in scenarios where we crash while executing JS code, e.g.
+  when calling out to a NativeFunction w/ `exceptions: 'propagate'`, or in case
+  of a bug in GumJS. Thanks [@mrmacete][]!
+- Fix CModule on macOS/arm64.
+- Publish Python and Node.js binaries for Raspberry Pi 32-bit.
+- Publish binaries for Fedora 33 instead of Fedora 32.
+- Publish binaries for Ubuntu 20.10.
+
 
 [frida-compile]: https://github.com/frida/frida-compile
 [QuickJS]: https://bellard.org/quickjs/
