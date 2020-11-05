@@ -206,6 +206,7 @@ So with that, I hope you'll enjoy this new release!
 - Fix intermittent hang when enumerating and modifying threads on Linux.
 - Fix inconsistent PC vs CPSR Thumb bit handling.
 - Fix build regressions on Linux/armhf and Linux/arm64.
+- Publish binaries for Raspberry Pi 32- and 64-bit.
 
 
 [frida-compile]: https://github.com/frida/frida-compile
