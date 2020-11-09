@@ -218,6 +218,13 @@ So with that, I hope you'll enjoy this new release!
 - Publish binaries for Fedora 33 instead of Fedora 32.
 - Publish binaries for Ubuntu 20.10.
 
+### Changes in 14.0.8
+
+- Improve jailed iOS upload reliability by adding some bi-directional
+  communication into the upload connection. This is to prevent DoS protections
+  from kicking in during gadget upload in complex remote configurations. Thanks
+  [@mrmacete][]!
+
 
 [frida-compile]: https://github.com/frida/frida-compile
 [QuickJS]: https://bellard.org/quickjs/
