@@ -3,8 +3,8 @@
 We have presented Frida at various conferences around the world. As presentation
 material becomes available, we will try to put it here.
 
-- [OSDC 2015](https://act.osdc.no/osdc2015no/):
-  [Putting the open back into closed software](https://act.osdc.no/osdc2015no/talk/6165)
+- [OSDC 2015](https://web.archive.org/web/20160803154827/http://act.osdc.no/osdc2015no/):
+  [Putting the open back into closed software](https://web.archive.org/web/20160805115358/https://act.osdc.no/osdc2015no/talk/6165)
   ([PDF]({{ site.baseurl_root }}/slides/osdc-2015-putting-the-open-back-into-closed-software.pdf) · [Recording](https://youtu.be/tmpjftTHzH8))
 
   Have this black box process that you’re just dying to peek inside of? Is
@@ -21,8 +21,8 @@ material becomes available, we will try to put it here.
   processes. Hook any function, spy on crypto APIs or trace private application
   code. No source code, no permission needed!
 
-- [OSDC 2015](https://act.osdc.no/osdc2015no/):
-  [The engineering behind the reverse engineering](https://act.osdc.no/osdc2015no/talk/6195)
+- [OSDC 2015](https://web.archive.org/web/20160803154827/http://act.osdc.no/osdc2015no/):
+  [The engineering behind the reverse engineering](https://web.archive.org/web/20160413183418/http://act.osdc.no/osdc2015no/talk/6195)
   ([PDF]({{ site.baseurl_root }}/slides/osdc-2015-the-engineering-behind-the-reverse-engineering.pdf) · [Recording](https://youtu.be/uc1mbN9EJKQ))
 
   Ever wondered how to build your own debugger? Did you complete that assembly
