@@ -77,10 +77,6 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
                       include OBJC_METHOD
 -M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
                       exclude OBJC_METHOD
--j JAVA_METHOD, --include-java-method=JAVA_METHOD
-                      include JAVA_METHOD
--J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
-                      exclude JAVA_METHOD
 -s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
                       include DEBUG_SYMBOL
 -q, --quiet           do not format output messages
