@@ -6,47 +6,56 @@ permalink: /docs/examples/ios/
 
 ## Recipes
 
-1. Inject script into process on host via REPL
+1. Inject script into process on a USB device via REPL
 -
-    Injecting a Frida instrumentation script on the host machine can be achieved
-    through the following command. Here the **-n** switch specifies the process
-    name to attach to.
+    Injecting a Frida instrumentation script on an iOS device connected via USB
+    can be achieved through the following command. Here the **-n** switch (default 
+    option) specifies the process name to attach to (the associated app must be
+    running before executing this command), and the **-U** switch specifies 
+    that a USB device is being targeted (therefore, this option is used for all 
+    **iOS** related commands).
 
-    `$ frida -n Twitter -l demo1.js`
+    `$ frida -U -n Twitter -l demo1.js`
 
-2. List all running process names and PIDs
+2. List all running processes names and PIDs on a USB device
 -
-    The following command lists all the running processes in a tabular format
-    with name and PID columns.
+    The following command lists all the running processes from an iOS device in a 
+    tabular format with PID and name columns. Remember, the **-U** specifies that a 
+    USB device is being queried.
 
-    `$ frida-ps`
+    `$ frida-ps -U`
 
-3. List all running process names on a USB device
+3. List all installed apps on a USB device
 -
-    The following command lists all the running processes on a **USB device** in
-    a tabular format with name and PID columns. The **-U** specifies that a USB
-    device is being queried.
+    The following command lists all installed apps on a **USB device** in
+    a tabular format with PID, name and identifier columns. 
 
     `$ frida-ps -Uai`
 
-4. List all attached devices
+4. List all running apps on a USB device
 -
-    The following command lists all the attached devices. Processes on these
-    devices can be instrumented by Frida.
+    The following command lists all the running apps on a **USB device** in
+    a tabular format with PID, name and identifier columns. 
+
+    `$ frida-ps -Ua`
+
+5. List all attached devices
+-
+    The following command lists all the available Frida devices, including the ones
+    attached via USB. Processes on these devices can be instrumented by Frida.
 
     `$ frida-ls-devices`
 
-5. Tracing native APIs
+6. Tracing native APIs
 -
     The following command can be used to trace a native API in a specific
     process. Function names can be specified using wildcard characters
     *(as shown below)*, which can be particularly useful while exploring or
     discovering user-defined functions within the process.
 
-    >1. `$ frida-trace -n Twitter -i "*URL*"$`
-    >2. `$ frida-trace -U Twitter -i "*URL*"$` *// USB Device*
+    `$ frida-trace -U Twitter -i "*URL*"`
 
-6. Tracing Objective-C APIs
+7. Tracing Objective-C APIs
 -
     The following command can be used to trace an Objective-C API in a specific
     process. Notice the difference in switch, in this case it's **-m** instead
@@ -57,7 +66,7 @@ permalink: /docs/examples/ios/
 
     `$ frida-trace -U Twitter -m "-[NSURL* *HTTP*]"`
 
-7. Backtracing an Objective-C method call
+8. Backtracing an Objective-C method call
 -
     The following command can be used to generate a backtrace for an Objective-C
     method call in a specific process.
@@ -69,7 +78,7 @@ permalink: /docs/examples/ios/
 Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
 .join('\n\t'));```
 
-8. Writing data to file
+9. Writing data to file
 -
     If you want to write some data to a file, you should ```send()``` it from the
     injected script and receive it in your Frida-based application, where you then
@@ -79,17 +88,21 @@ Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
 
     agent.js:
 
+        ```
         var data = { foo: 'bar' };
         send(data);
+        ```
 
     app.py:
 
+        ```
         import frida
 
         def on_message(message, data):
             print(message['payload'])
+        ```
 
-9. Calling a native function
+10. Calling a native function
 -
 ```
 var address = Module.getExportByName('libsqlite3.dylib', 'sqlite3_sql');
@@ -101,7 +114,9 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
 ## Data Structures
 
->**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run `console.log('Type of args[2] -> ' + new ObjC.Object(args[2]).$className)` to determine the actual type of the object that you're dealing with!
+>**Tip**: If things don't seem to be working as expected you may be interacting with the wrong data type - run the following command to determine the actual type of the object that you're dealing with!
+
+`console.log('Type of args[2] -> ' + new ObjC.Object(args[2]).$className)`
 
 1. Converting NSData to String
 -
