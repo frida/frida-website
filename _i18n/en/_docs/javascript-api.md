@@ -411,7 +411,7 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 ### Memory
 
 +   `Memory.scan(address, size, pattern, callbacks)`: scan memory for
-    occurences of `pattern` in the memory range given by `address` and `size`.
+    occurrences of `pattern` in the memory range given by `address` and `size`.
     {: #memory-scan}
 
     -   `pattern` must be of the form "13 37 ?? ff" to match 0x13 followed by
