@@ -12,12 +12,11 @@ Lots of goodies this time! 🎉 Let's dive in.
 ## Dependencies
 
 We've just upgraded all of our dependencies to the latest and greatest. Part of
-this work included refurbishing the build system bits used for building our
-dependencies.
+this work included refurbishing the build system bits used for building them.
 
 With these improvements we will finally support building past versions of Frida
 fully from source, which has been a long-standing issue that's caused a lot of
-frustration in the past.
+frustration.
 
 It is now also a whole lot easier to tweak our dependencies, e.g. while
 debugging an issue. Say you're troubleshooting why *Thread.backtrace()* isn't
