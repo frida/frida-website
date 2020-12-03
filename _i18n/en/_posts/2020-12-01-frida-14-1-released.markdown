@@ -86,6 +86,24 @@ there's now a good chance that the most common use-cases will actually work.
 For those of you using Stalker on 32-bit ARM, it should now be working a whole
 lot better than ever before. A whole slew of fixes landed in this release.
 
+## Bytecode and frida-tools
+
+One of the realizations since 14.0 was released is that QuickJS' bytecode format
+is a lot more volatile than expected. Because of this I would caution against
+using “frida-compile -b” unless your application is designed to only be used
+with one exact version of Frida.
+
+As I wasn't aware of this pitfall when cutting the previous release of
+frida-tools, I opted to precompile the frida-trace agent to bytecode. Upon
+realizing my mistake while working on releasing 14.1, I reverted this mistake
+and released a new version of frida-tools.
+
+So make sure you also grab its latest release while upgrading:
+
+{% highlight bash %}
+$ pip3 install -U frida-tools
+{% endhighlight %}
+
 ## EOF
 
 There's also a bunch of other exciting changes, so definitely check out the
