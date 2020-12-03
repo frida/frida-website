@@ -1092,6 +1092,8 @@ friendlyFunctionName(returnValue, thisPtr);
         -   ulong
         -   char
         -   uchar
+        -   size_t
+        -   ssize_t
         -   float
         -   double
         -   int8
