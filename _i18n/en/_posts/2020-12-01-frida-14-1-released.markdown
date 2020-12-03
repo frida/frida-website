@@ -15,10 +15,14 @@ We've just upgraded all of our dependencies to the latest and greatest. Part of
 this work included refurbishing the build system bits used for building our
 dependencies.
 
-It is now a whole lot easier to tweak these bits, e.g. while debugging an issue.
-Say you're troubleshooting why *Thread.backtrace()* isn't working well on
-Android, you might want to play around with libunwind's internals. It is now
-really easy to build one specific dependency:
+With these improvements we will finally support building past versions of Frida
+fully from source, which has been a long-standing issue that's caused a lot of
+frustration in the past.
+
+It is now also a whole lot easier to tweak our dependencies, e.g. while
+debugging an issue. Say you're troubleshooting why *Thread.backtrace()* isn't
+working well on Android, you might want to play around with libunwind's
+internals. It is now really easy to build one specific dependency:
 
 {% highlight bash %}
 $ make -f Makefile.sdk.mk FRIDA_HOST=android-arm64 libunwind
@@ -85,8 +89,8 @@ lot better than ever before. A whole slew of fixes landed in this release.
 
 ## EOF
 
-There's also a bunch of other exciting changes in this release, so definitely
-check out the changelog below.
+There's also a bunch of other exciting changes, so definitely check out the
+changelog below.
 
 Enjoy!
 
