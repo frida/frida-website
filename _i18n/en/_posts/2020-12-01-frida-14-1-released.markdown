@@ -145,7 +145,7 @@ Enjoy!
 - Add missing CModule builtins for 32-bit ARM.
 - Fix Thread.backtrace() on Android/ARM64.
 
-### Changes in 14.0.2
+### Changes in 14.1.2
 
 - Fix Thread.backtrace() on Android/ARM.
 
