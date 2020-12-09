@@ -149,6 +149,18 @@ Enjoy!
 
 - Fix Thread.backtrace() on Android/ARM.
 
+### Changes in 14.1.3
+
+- Fix ObjC.choose(). The TinyCC upgrade in 14.1.0 exposed an existing bug.
+- Re-enable V8 by default. Turns out we have use-cases where it is a much better
+  fit than QuickJS, and its debugger features were also being sorely missed.
+- Add --ignore-crashes/-C to frida-server for disabling the native crash
+  reporter integration. For use-cases where the integration is undesired, or
+  when running on bleeding edge OS versions that we don't yet fully support.
+  (Crash reporter integration is only available on iOS and Android for now.)
+- Enhance devkits to ensure Capstone APIs are exposed on all platforms.
+- Improve devkit examples.
+
 
 [@mame82]: https://twitter.com/mame82
 [Gum]: https://github.com/frida/frida-gum
