@@ -40,58 +40,69 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
 ## Full List of Options
 
 {% highlight bash %}
---version             show program's version number and exit
--h, --help            show this help message and exit
--D ID, --device=ID    connect to device with the given ID
--U, --usb             connect to USB device
--R, --remote          connect to remote frida-server
--H HOST, --host=HOST  connect to remote frida-server on HOST
--f FILE, --file=FILE  spawn FILE
--F, --attach-frontmost
-                      attach to frontmost application
--n NAME, --attach-name=NAME
-                      attach to NAME
--p PID, --attach-pid=PID
-                      attach to PID
---stdio=inherit|pipe  stdio behavior when spawning (defaults to “inherit”)
---runtime=qjs|v8      script runtime to use
---debug               enable the Node.js compatible script debugger
---squelch-crash       if enabled, will not dump crash report to console
--O FILE, --options-file=FILE
-                      text file containing additional command line options
--I MODULE, --include-module=MODULE
-                      include MODULE
--X MODULE, --exclude-module=MODULE
-                      exclude MODULE
--i FUNCTION, --include=FUNCTION
-                      include FUNCTION
--x FUNCTION, --exclude=FUNCTION
-                      exclude FUNCTION
--a MODULE!OFFSET, --add=MODULE!OFFSET
-                      add MODULE!OFFSET
--T, --include-imports
-                      include program's imports
--t MODULE, --include-module-imports=MODULE
-                      include MODULE imports
--m OBJC_METHOD, --include-objc-method=OBJC_METHOD
-                      include OBJC_METHOD
--M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
-                      exclude OBJC_METHOD
--j JAVA_METHOD, --include-java-method=JAVA_METHOD
-                      include JAVA_METHOD
--J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
-                      exclude JAVA_METHOD
--s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
-                      include DEBUG_SYMBOL
--q, --quiet           do not format output messages
--d, --decorate        add module name to generated onEnter log statement
--S PATH, --init-session=PATH
-                      path to JavaScript file used to initialize the session
--P PARAMETERS_JSON, --parameters=PARAMETERS_JSON
-                      parameters as JSON, exposed as a global named
-                      'parameters'
--o OUTPUT, --output=OUTPUT
-                      dump messages to file
+@>frida-trace --help
+Usage: frida-trace [options] target
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -D ID, --device=ID    connect to device with the given ID
+  -U, --usb             connect to USB device
+  -R, --remote          connect to remote frida-server
+  -H HOST, --host=HOST  connect to remote frida-server on HOST
+  -f FILE, --file=FILE  spawn FILE
+  -F, --attach-frontmost
+                        attach to frontmost application
+  -n NAME, --attach-name=NAME
+                        attach to NAME
+  -p PID, --attach-pid=PID
+                        attach to PID
+  --stdio=inherit|pipe  stdio behavior when spawning (defaults 
+                        to “inherit”)
+  --aux=option          set aux option when spawning, such as 
+                        “uid=(int)42” (supported types are: 
+                        string, bool, int)
+  --runtime=duk|v8      script runtime to use
+  --debug               enable the Node.js compatible script debugger
+  --squelch-crash       if enabled, will not dump crash report 
+                        to console
+  -O FILE, --options-file=FILE
+                        pass command line options via text file
+  -I MODULE, --include-module=MODULE
+                        include MODULE
+  -X MODULE, --exclude-module=MODULE
+                        exclude MODULE
+  -i FUNCTION, --include=FUNCTION
+                        include [MODULE]![FUNCTION]
+  -x FUNCTION, --exclude=FUNCTION
+                        exclude [MODULE]![FUNCTION]
+  -a MODULE!OFFSET, --add=MODULE!OFFSET
+                        add MODULE!OFFSET
+  -T, --include-imports
+                        include program's imports
+  -t MODULE, --include-module-imports=MODULE
+                        include MODULE imports
+  -m OBJC_METHOD, --include-objc-method=OBJC_METHOD
+                        include OBJC_METHOD
+  -M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
+                        exclude OBJC_METHOD
+  -j JAVA_METHOD, --include-java-method=JAVA_METHOD
+                        include JAVA_METHOD
+  -J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
+                        exclude JAVA_METHOD
+  -s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
+                        include DEBUG_SYMBOL
+  -q, --quiet           do not format output messages
+  -d, --decorate        add module name to generated onEnter 
+                        log statement
+  -S PATH, --init-session=PATH
+                        path to JavaScript file used to initialize 
+                        the session
+  -P PARAMETERS_JSON, --parameters=PARAMETERS_JSON
+                        parameters as JSON, exposed as a global named
+                        'parameters'
+  -o OUTPUT, --output=OUTPUT
+                        dump messages to file
 {% endhighlight %}
 
 ## -U, --usb: connect to USB device
@@ -110,28 +121,60 @@ and from the remote device and trace accordingly.
   <a href="https://github.com/frida/frida/releases">platform-appropriate frida-server binary</a>
   to the remote device.  Once copied, be sure to run the frida-server binary before
   beginning the tracing session.</p>
-  <p>For example, to trace a remote Android application, you would copy the
+  <p>For example, to trace a remote Android application, you might copy the
   'frida-server-12.8.0-android-arm' binary to the Android's /data/local/tmp
   folder.  Using adb shell, you would run the server in the background
-  (e.g. frida-server-12.8.0-android-arm &).</p>
+  (e.g. "frida-server-12.8.0-android-arm &").</p>
 </div>
+
+## -O: pass command line options via text file
+
+Using this option, you can pass any number of command line options via one or more text files.  The 
+options in the text file can be on one or more lines, with any number of options per line,
+including other `-O` command options.
+
+This feature is useful for handling a large number of command line options, and solves the problem
+when the command line exceeds the operating system maximum command line length.
+
+For example:
+
+<pre style="font-size: medium; background-color:powderblue; line-height: normal; margin-left: 50px;">
+frida-trace -p 9753 --decorate -O additional-options.txt
+</pre>
+
+where additional-options.txt is:
+
+<pre style="font-size: medium; background-color:powderblue; line-height: normal; margin-left: 50px;">
+-i "gdi32full.dll!ExtTextOutW"
+-S core.js -S ms-windows.js
+-O module-offset-options.txt
+</pre>
+
+and module-offset-options.txt is:
+
+<pre style="font-size: medium; background-color:powderblue; line-height: normal; margin-left: 50px;">
+-a "gdi32full.dll!0x3918DC" -a "gdi32full.dll!0xBE7458"
+-a "gdi32full.dll!0xBF9904"
+</pre>
+<p/>
 
 ## -I, -X: include/exclude module
 
-These options allow you to include or exclude **all** functions in a particular
-module (e.g., *.so, *.dll) in one, single option.  The option expects a filename
-glob for matching one or more modules.  Any module that matches the glob pattern
-will be either included or excluded in its entirety.
+These options allow you to include or exclude, in one single option, **all** 
+functions in a particular module (e.g., *.so, *.dll) in one, single option.  
+The option expects a filename glob for matching one or more modules.  Any 
+module that matches the glob pattern will be either included or excluded in 
+its entirety.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
 by the `-I` option.
 
-To exclude specific functions after including an entire module, see the `-i` option.
+To exclude specific functions after including an entire module, see the `-x` option.
 
 ## -i, -x: include/exclude function (glob-based)
 
 These options enable you to include or exclude matching functions according to
-your needs.  This is a flexible option, allowing a granularity ranging from
+your needs.  These are flexible options, allowing a granularity ranging from
 **all** functions in **all** modules down to a single function in a specific module.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
@@ -172,7 +215,7 @@ Here are some examples and their descriptions:
     </tr>
     <tr>
       <td style="text-align: left; font-family: monospace;">-i "gdi32.dll!"</td>
-      <td style="text-align: left">Trace all functions in gdi32.dll</td>
+      <td style="text-align: left">Trace all functions in gdi32.dll (identical to -I "gdi32.dll")</td>
     </tr>
   </tbody>
   </table>
@@ -224,17 +267,79 @@ Here are some examples and their descriptions:
 ## -a: include function (offset-based)
 
 This option enables tracing functions whose names are not exported by their
-modules (e.g., a static C/C++ function).  This should not prevent you from
-tracing such functions, so long as you know that absolute offset of the
+parent modules (e.g., a static C/C++ function).  This should not prevent you from
+tracing such functions, so long as you know the absolute offset of that
 function's entry point.
 
 Example: `-a "libjpeg.so!0x4793c"`
 
-The option value provides both the full name of the module and the hex offset
-of the function entry point within the module.
+In this example, the option's value provides both the full name of the module 
+(i.e., `libjpeg.so`) and the hex offset (`0x4793c`) of the function entry point 
+within the module.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
 by the `-a` option.
+
+## -P: Initialize frida-trace session with a globally-accessible JSON object
+
+This option enables assigning a JSON object to the `parameters` global 
+variable.  Your handlers can access this global variable, enabling you
+ to dynamically change the handlers' behavior by modifying the value of
+ `-P` passed on the command line.
+
+The JSON object passed can be as complicated or extensive as you wish, 
+so long as it is valid JSON.
+
+<div class="note">
+  <h5>Example</h5>
+  <p>In your session, you are tracing many functions.  At times you want 
+all handlers to print out their process ID.  Using the `-P` option, you 
+can enable a handler to decide whether or not to print the process ID.</p>
+
+<p>
+First, decide on the JSON object format that notifies a handler whether 
+it should display the process ID.  Let's use the following format:<br><br>
+<div style="font-family: monospace; text-indent:40px">-P '{"display_pid": true}'</div><br>
+Note that this form is the one you might use under Linux (i.e., you can 
+use both single- and double-quotes on the command line).  Under Windows 
+you can only use double quotes, so you should escape the inner double 
+quotes by inserting <b>two</b> double quotes, like this:<br><br>
+<div style="font-family: monospace; text-indent:40px">-P "{""display_pid"": true}"</div><br>
+Frida-trace will assign your JSON object to the internal Javascript 
+variable "<i>parameters</i>".  Now, your handler can check the 
+parameters.display_pid global variable to decide whether to print the 
+process ID:<br><br>
+<code>{
+  onEnter: function (log, args, state) {
+    log('memcpy() [msvcrt.dll]');
+    if (parameters.display_pid) {
+      log ('Process ID: ' + Process.id);
+    }
+  },
+
+  onLeave: function (log, retval, state) {
+  }
+}
+</code>
+<br>
+</p>
+</div>
+
+## -S: Initialize frida-trace session with JavaScript code
+
+This option initializes your frida-trace session by executing one or more
+JavaScript code files of your choice, saving code and data objects to the
+global "state" object.  When the "state" object is passed to any of your
+handlers, you have immedaite access to anything you saved to it during 
+session initialization.
+
+Uses of this powerful feature include initializing the frida-trace running 
+environment before the session begins, and sharing finely-tuned and debugged 
+JavaScript global functions and data that can be invoked across different 
+handlers and development projects.
+
+For a detailed explanation of how to use this powerful feature, see the
+[following linked page]({% link _docs/session-initialization-primer.md %}).
 
 ## -d, --decorate: add module name to log tracing
 
