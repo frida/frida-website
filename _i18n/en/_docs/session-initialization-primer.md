@@ -76,7 +76,7 @@ Started tracing 1 function. Press Ctrl+C to stop.
                            0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
                 00b9c81c  00 00 00 00 01 00 00 00 01 00 00 00 98 02 00 00  ................
                 00b9c82c  26 90 b2 b3                                      &...
-  2695 ms  lprect: (left, top ,right, bottom) = (0, 1, 1, 664)
+  2695 ms  lprect: (left, top, right, bottom) = (0, 1, 1, 664)
   2695 ms  c: 0
   2696 ms  x (exit): 0
   2696 ms  y (exit): 0
@@ -90,7 +90,7 @@ Started tracing 1 function. Press Ctrl+C to stop.
                       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
            00b9eaac  00 00 00 00 00 00 00 00 4d 00 00 00 0f 00 00 00  ........M.......
            00b9eabc  0a 78 7e c1                                      .x~.
-  2788 ms  lprect: (left, top ,right, bottom) = (0, 0, 77, 15)
+  2788 ms  lprect: (left, top, right, bottom) = (0, 0, 77, 15)
   2788 ms  lpString [50 bytes]
                       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F  0123456789ABCDEF
            1aa90148  43 00 61 00 6c 00 69 00 62 00 72 00 69 00 20 00  C.a.l.i.b.r.i. .
@@ -136,7 +136,7 @@ line option.
  */
 
 {
-  onEnter: function (log, args, state) {
+  onEnter(log, args, state) {
     /*
         C++ Syntax:
 
@@ -154,28 +154,26 @@ line option.
 
     log('---------------------------------------------');
     log('ExtTextOutW() [gdi32full.dll]');
-    state.general_clone_args (args, 8, this);
+    state.generalCloneArgs(args, 8, this);
     log('x: ' + args[1].toString(10));
     log('y: ' + args[2].toString(10));
-    log('options: ' + state.decode_exttextout_options(args[3]));
-    if (args[4].isNull() === false) {
-        state.general_hexdump(log, 'lprect', args[4], 20);
-        log('lprect: ' + state.rect_struct_tostring (args[4]));
+    log('options: ' + state.decodeExttextoutOptions(args[3]));
+    if (!args[4].isNull()) {
+        state.generalHexdump(log, 'lprect', args[4], 20);
+        log('lprect: ' + state.rectStructToString(args[4]));
     }
-    if (args[5].isNull() === false)
-    {
-        state.general_hexdump(log, 'lpString', args[5], 50);
+    if (!args[5].isNull()) {
+        state.generalHexdump(log, 'lpString', args[5], 50);
         log('*lpString: "' + args[5].readUtf16String() + '"');
     }
     log('c: ' + args[6].toString(10));
-    if (args[7].isNull() === false)
-    {
-        state.general_hexdump(log, 'lpDx', args[7], 4);
-        log ('*lpDx: ' + args[7].readU32().toString(10));
+    if (!args[7].isNull()) {
+        state.generalHexdump(log, 'lpDx', args[7], 4);
+        log('*lpDx: ' + args[7].readU32().toString(10));
     }
   },
 
-  onLeave: function (log, retval, state) {
+  onLeave(log, retval, state) {
     // We can access the onEnter arguments using "this.args"
     log('x (exit): ' + this.args[1].toString(10));
     log('y (exit): ' + this.args[2].toString(10));
@@ -202,32 +200,30 @@ handler can access or invoke the objects by referring to them as "state.&lt;func
 // Define useful general-purpose Frida handler functions
 
 //--------------------------------------------------------------------
-// state.general_clone_args()
+// state.generalCloneArgs()
 //
 // args (array):     [in] The "args" array as passed to the onEnter() function.
-// num_args (int32): [in] The number of meaningful arguments in "args". This
+// numArgs (int32):  [in] The number of meaningful arguments in "args". This
 //                        function has no way of determining the number of
 //                        actual arguments because "args" is a virtual array.
-// my_this (object): [in] The "this" object of the calling onEnter() function.
+// myThis (object):  [in] The "this" object of the calling onEnter() function.
 //
-// This function creates a true JavaScript array as [my_this].args.  This
+// This function creates a true JavaScript array as [myThis].args.  This
 // array can be accessed in the handler's onLeave() function.
 //--------------------------------------------------------------------
-state.general_clone_args = function (args, num_args, my_this)
+state.generalCloneArgs = function(args, numArgs, myThis)
 {
-    if (my_this.args === undefined)
-    {
-        my_this.args = []
+    if (myThis.args === undefined) {
+        myThis.args = []
 
-        for (var i=0; i<num_args; ++i)
-        {
-            my_this.args.push (args[i].add(0));
+        for (let i=0; i<numArgs; ++i) {
+            myThis.args.push (args[i].add(0));
         }
     }
 };
 
 //--------------------------------------------------------------------
-// state.general_decode_bitflags()
+// state.generalDecodeBitflags()
 //
 // value (int32):     [in] A value consisting of optional bitflags
 // dict (dictionary): [in] A JavaScript array whose elements are
@@ -244,14 +240,12 @@ state.general_clone_args = function (args, num_args, my_this)
 // Returns a string consisting of one or more flag strings delimited
 // by the OR ('|') symbol.
 //--------------------------------------------------------------------
-state.general_decode_bitflags = function (value, dict)
+state.generalDecodeBitflags = function(value, dict)
 {
-    var s = '';
+    let s = '';
 
-    for (var key in dict)
-    {
-        if (value & key)
-        {
+    for (const key in dict) {
+        if (value & key) {
             if (s.length > 0)
             {
                 s = s + ' | ';
@@ -265,53 +259,45 @@ state.general_decode_bitflags = function (value, dict)
 };
 
 //--------------------------------------------------------------------
-// state.general_return_hexdump_lines()
+// state.generalHexdumpLines()
 //
 // outlines:      [out] Caller-provided array that will return the hex dump lines
 // desc:          [in]  Descriptive text, printed together with the hex dump
 // pMem:          [in]  Frida NativePointer pointing to a memory location to dump
 // len:           [in]  Number of bytes to dump
-// indent_string: [in]  Optional string to prepend to each dump line
+// indentString:  [in]  Optional string to prepend to each dump line
 //
 // This function produces a somewhat more elegant hex dump, based on frida-trace's
 // own "hexdump".  It does not output the hex dump to any stream, but rather
 // returns the hex dump lines in an array.  It is up to the caller to decide
 // where to, and how, to output the dump lines.
 //--------------------------------------------------------------------
-state.general_hexdump_lines = function (outlines, desc, pMem, len, indent_string)
+state.generalHexdumpLines = function(outlines, desc, pMem, len, indentString)
 {
-    outlines.push (desc + ' [' + len + ' bytes]');
+    outlines.push(desc + ' [' + len + ' bytes]');
 
-    indent_string = typeof indent_string === 'undefined' ? '\t\t' : indent_string;
+    const actualIndentString = (typeof indentString === 'undefined') ? '\t\t' : indentString;
 
-    if (pMem === undefined)
-    {
-        outlines.push (indent_string + 'WARNING: pMem is UNDEFINED');
-    }
-    else if (pMem === null)
-    {
-        outlines.push (indent_string + 'WARNING: pMem is NULL');
-    }
-    else
-    {
-        try
-        {
-            var s = hexdump (pMem, {length: len});
-            var split_lines = s.split ('\n');
-            for (var j=0; j<split_lines.length; ++j)
-            {
-                outlines.push (indent_string + split_lines [j]);
+    if (pMem === undefined) {
+        outlines.push(actualIndentString + 'WARNING: pMem is UNDEFINED');
+    } else if (pMem === null) {
+        outlines.push(actualIndentString + 'WARNING: pMem is NULL');
+    } else {
+        try {
+            const s = hexdump(pMem, {length: len});
+            const splitLines = s.split('\n');
+            for (let j=0; j<splitLines.length; ++j) {
+                outlines.push(actualIndentString + splitLines [j]);
             }
         }
-        catch (err)
-        {
-            outlines.push (indent_string + 'WARNING: pMem is NOT VALID (' + pMem.toString() + ')');
+        catch (err) {
+            outlines.push(actualIndentString + 'WARNING: pMem is NOT VALID (' + pMem.toString() + ')');
         }
     }
 };
 
 //--------------------------------------------------------------------
-// state.general_hexdump()
+// state.generalHexdump()
 //
 // log (function): [in] The log object to output to
 // desc (string):  [in] Descriptive string, printed with the hex dump
@@ -320,14 +306,14 @@ state.general_hexdump_lines = function (outlines, desc, pMem, len, indent_string
 //
 // Outputs the hex dump results to the log stream.  If you only want
 // the dump lines without outputing them to the log stream, call
-// the state.general_hexdump_lines() function directly.
+// the state.generalHexdumpLines() function directly.
 //--------------------------------------------------------------------
-state.general_hexdump = function (log, desc, pMem, len)
+state.generalHexdump = function(log, desc, pMem, len)
 {
-    var outlines = [];
+    let outlines = [];
 
-    state.general_hexdump_lines (outlines, desc, pMem, len, '\t\t');
-    log (outlines.join('\n'));
+    state.generalHexdumpLines(outlines, desc, pMem, len, '\t\t');
+    log(outlines.join('\n'));
 };
 </pre>
 <p/>
@@ -341,7 +327,7 @@ built on top of the `core.js` library.
 // Define useful Frida handler functions for MS Windows
 
 //--------------------------------------------------------------------
-// state.decode_exttextout_options()
+// state.decodeExttextoutOptions()
 //
 // flags (int32): [in] A DWORD consisting of the "options" bit flags
 //                     used in the ExtTextOutW function.
@@ -350,9 +336,9 @@ built on top of the `core.js` library.
 // string consisting of one or more bit flags strings delimited by
 // the OR ('|') symbol.
 //--------------------------------------------------------------------
-state.decode_exttextout_options = function (/* DWORD */ flags)
+state.decodeExttextoutOptions = function(/*DWORD*/ flags)
 {
-    var dict =  {
+    const dict = {
                     0x0004 : 'ETO_CLIPPED',
                     0x0010 : 'ETO_GLYPH_INDEX',
                     0x1000 : 'ETO_IGNORELANGUAGE',
@@ -362,13 +348,13 @@ state.decode_exttextout_options = function (/* DWORD */ flags)
                     0x2000 : 'ETO_PDY',
                     0x0080 : 'ETO_RTLREADING',
                     0x10000 : 'ETO_REVERSE_INDEX_MAP'
-                };
+                 };
 
-    return state.general_decode_bitflags (flags, dict);
+    return state.generalDecodeBitflags(flags, dict);
 }
 
 //--------------------------------------------------------------------
-// state.rect_struct_tostring()
+// state.rectStructToString()
 //
 // lprect (pointer): [in] A NativePointer object pointing to a Windows
 //                        RECT object.  The memory consists of four (4)
@@ -379,19 +365,18 @@ state.decode_exttextout_options = function (/* DWORD */ flags)
 //
 //    (left, top ,right, bottom) = (0, 0, 77, 15)
 //--------------------------------------------------------------------
-state.rect_struct_tostring = function (/* LPRECT */ lprect)
+state.rectStructToString = function(/*LPRECT*/ lprect)
 {
-    if (lprect.isNull())
-    {
+    if (lprect.isNull()) {
         return 'LPRECT is null';
     }
 
-    var left   = lprect.add(0).readU32();
-    var top    = lprect.add(4).readU32();
-    var right  = lprect.add(8).readU32();
-    var bottom = lprect.add(12).readU32();
+    const left   = lprect.add(0).readU32();
+    const top    = lprect.add(4).readU32();
+    const right  = lprect.add(8).readU32();
+    const bottom = lprect.add(12).readU32();
 
-    return '(left, top ,right, bottom) = (' + left + ', ' + top + ', ' + right + ', ' + bottom + ')';
+    return '(left, top, right, bottom) = (' + left + ', ' + top + ', ' + right + ', ' + bottom + ')';
 }
 </pre>
 
@@ -429,12 +414,12 @@ if (typeof state.pqrs === 'undefined') {
     state.pqrs = {}
 }
 
-state.pqrs.decode_exttextout_options = function (/* DWORD */ flags)
+state.pqrs.decodeExttextoutOptions = function(/*DWORD*/ flags)
 {
     ...
 }
 
-state.pqrs.rect_struct_tostring = function (/* LPRECT */ lprect)
+state.pqrs.rectStructToString = function(/*LPRECT*/ lprect)
 {
     ...
 }
