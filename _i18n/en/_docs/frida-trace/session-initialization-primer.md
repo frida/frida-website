@@ -251,15 +251,23 @@ function cloneArgs(args, numArgs, invCtx) {
  * @returns {string} Flag names delimited by '|', or '0' if none are set.
  */
 function decodeBitflags(value, spec) {
+  if (value === 0)
+    return '0';
+
   const flags = [];
+  let pending = value;
 
   for (const [flagValue, flagName] of spec.entries()) {
-    if ((value & flagValue) !== 0)
+    if ((value & flagValue) !== 0) {
       flags.push(flagName);
+      pending &= ~flagValue;
+      if (pending === 0)
+        break;
+    }
   }
 
-  if (flags.length === 0)
-    return '0';
+  if (pending !== 0)
+    flags.push(`0x${pending.toString(16)}`);
 
   return flags.join(' | ');
 }
@@ -293,7 +301,7 @@ function prettyHexdump(log, desc, address, length) {
  * @param {string} [indent='\t\t'] - String to prepend to each dump line.
  */
 function prettyHexdumpLines(lines, desc, address, length, indent = '\t\t') {
-  lines.push(`${desc} [${len} bytes]`);
+  lines.push(`${desc} [${length} bytes]`);
 
   try {
       const s = hexdump(address, { length });
