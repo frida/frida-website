@@ -86,11 +86,15 @@ Running `make` will provide you a list of modules to build. See
 ### Windows
 
 - Make sure you have:
-  - Visual Studio 2019 w/XP support installed
+  - Visual Studio 2019 w/XP support
+    - Select `Desktop development with C++` workload
+    - Select the `C++ Windows XP Support for VS 2017 (v141) tools [Deprecated]` individual component
   - [Git](https://git-scm.com/downloads) on your PATH
-  - [Python 3.8](https://www.python.org/downloads/windows/) on your PATH
+  - [Python 3.8](https://www.python.org/downloads/windows/) on your path with `py` launcher installed
+    - Select `Add Python 3.8 to PATH`
+    - Specify the installation directory to `C:\Program Files (x86)\Python 3.8\` (with spaces)
+    - Select `Associate files with Python (requires the py launcher)` option
   - [Node.js](https://nodejs.org/) on your PATH
-    `py` launcher installed, and associated to .py files
   - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
 - Clone the `frida` repository:
