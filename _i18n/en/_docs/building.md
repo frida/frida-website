@@ -92,8 +92,8 @@ Running `make` will provide you a list of modules to build. See
   - [Git](https://git-scm.com/downloads) on your PATH
   - [Python 3.8](https://www.python.org/downloads/windows/) on your path with `py` launcher installed
     - Select `Add Python 3.8 to PATH`
-    - Specify the installation directory to `C:\Program Files (x86)\Python 3.8\`  (with spaces)
-    - select `Associate files with Python (requires the py launcher)`  option
+    - Specify the installation directory to `C:\Program Files (x86)\Python 3.8\` (with spaces)
+    - Select `Associate files with Python (requires the py launcher)` option
   - [Node.js](https://nodejs.org/) on your PATH
   - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
