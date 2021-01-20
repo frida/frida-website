@@ -330,16 +330,16 @@ process ID:<br><br>
 This option initializes your frida-trace session by executing one or more
 JavaScript code files of your choice, saving code and data objects to the
 global "state" object.  When the "state" object is passed to any of your
-handlers, you have immedaite access to anything you saved to it during 
-session initialization.
+handlers, you have immediate access to anything you saved to it during session
+initialization.
 
-Uses of this powerful feature include initializing the frida-trace running 
-environment before the session begins, and sharing finely-tuned and debugged 
-JavaScript global functions and data that can be invoked across different 
+Uses of this powerful feature include initializing the frida-trace running
+environment before the session begins, and sharing finely-tuned and debugged
+JavaScript global functions and data that can be invoked across different
 handlers and development projects.
 
-For a detailed explanation of how to use this powerful feature, see the
-[following linked page]({% link _docs/session-initialization-primer.md %}).
+For a detailed explanation of how to use this powerful feature, consult the
+[session initialization primer]({% link _docs/frida-trace/session-initialization-primer.md %}).
 
 ## -d, --decorate: add module name to log tracing
 
