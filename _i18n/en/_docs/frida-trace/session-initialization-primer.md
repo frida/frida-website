@@ -38,9 +38,9 @@ enhance tracing of the Microsoft Windows `ExtTextOutW()` function.  We describe
 the components in a top-down fashion, beginning with the ExtTextOutW.js
 JavaScript handler function, working our way down to the shared code files.
 
-### ExtTextOutW: Function Signature
+### ExtTextOutW(): Function Signature
 
-In my Windows system, the [ExtTextOutW][] function to monitor resides in
+In my Windows system, the [ExtTextOutW()][] function to monitor resides in
 *gdi32full.dll*. Here is the C syntax of the function:
 
 {% highlight c %}
@@ -377,7 +377,7 @@ Here are some points to consider when using the `-S` option.
 For clarity sake, you can have several shared code files for different groups of
 functions.  In the above example, the common and basic functions reside in
 “core.js”, while MS Windows specific function are found in “ms-windows.js”.
-In other projects of mine I have files for Android-related functions, for Linux
+In other projects you may have files for Android-related functions, for Linux
 functions, etc.
 
 ### Implementing namespaces
@@ -403,4 +403,4 @@ const MyLibrary = {
 {% endhighlight %}
 
 
-[ExtTextOutW]: https://web.archive.org/web/20191222090821/https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-exttextoutw
+[ExtTextOutW()]: https://web.archive.org/web/20191222090821/https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-exttextoutw
