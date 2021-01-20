@@ -7,10 +7,12 @@ The `--init-session` option executes any number of user-written JavaScript code
 files during the frida-trace engine initialization stage.  These files are
 executed before the first function handler is called.
 
-Its power comes from the ability to create and save code and data objects in the
-global "state" object, which is passed as a parameter to every handler called.
-The "state" object allows you to maintain information across function calls.
-Code and data objects stored in "state" are accessible to all called handlers.
+Its power comes from the ability to define globally visible functions and store
+data in the global `state` object, which is passed as a parameter to every
+handler called.
+
+The `state` object allows you to maintain information across function calls.
+Data stored in `state` are accessible to all called handlers.
 
 ## Uses for the --init-session option
 
@@ -167,19 +169,19 @@ the `--init-session` / `-S` command line option.
     log(`options: ${decodeExttextoutOptions(options)}`);
 
     if (!lprect.isNull()) {
-      generalHexdump(log, 'lprect', lprect, 20);
+      prettyHexdump(log, 'lprect', lprect, 20);
       log(`lprect: ${rectStructToString(lprect)}`);
     }
 
     if (!lpString.isNull()) {
-      state.generalHexdump(log, 'lpString', lpString, 50);
+      prettyHexdump(log, 'lpString', lpString, 50);
       log(`*lpString: "${lpString.readUtf16String()}"`);
     }
 
     log(`c: ${c.toUInt32()}`);
 
     if (!lpDx.isNull()) {
-      state.generalHexdump(log, 'lpDx', lpDx, 4);
+      prettyHexdump(log, 'lpDx', lpDx, 4);
       log(`*lpDx: ${lpDx.readU32()}`);
     }
   },
@@ -198,18 +200,18 @@ the `--init-session` / `-S` command line option.
 
 Note that, besides calling standard Frida functions (e.g., `toInt32()`,
 `isNull()`, `readUtf16String()`), there are calls to our shared code functions
-(e.g., `cloneArgs()`, `decodeExttextoutOptions()`, `generalHexdump()`,
+(e.g., `cloneArgs()`, `decodeExttextoutOptions()`, `prettyHexdump()`,
 `rectStructToString()`).  The shared code functions have been debugged and
 refined, and are ready to be called by any handler, at any time.
 
 ### Shared Code: core.js
 
-The 'core.js' shared code library contains core, or basic, functions that are
+The “core.js” shared code library contains core, or basic, functions that are
 meant to be reused by frida-trace handlers and shared code libraries.
 
 Writing a shared code library is simple: your shared library source files define
 functions and data objects, storing the latter in the global `state` object.
-Once stored there, any handler can access them through "state.propertyName".
+Once stored there, any handler can access them through `state.propertyName`.
 
 {% highlight js %}
 /*
@@ -263,6 +265,21 @@ function decodeBitflags(value, spec) {
 }
 
 /**
+ * Outputs the hex dump results to the log stream.  If you only want the dump
+ * lines without outputing them to the log stream, use prettyHexdumpLines().
+ *
+ * @param {function} log - The log function to output to.
+ * @param {string} desc - Descriptive text, printed together with the hex dump.
+ * @param {NativePointer} address - Memory location to dump.
+ * @param {number} length - Number of bytes to dump.
+ */
+function prettyHexdump(log, desc, address, length) {
+  const lines = [];
+  prettyHexdumpLines(lines, desc, address, length);
+  log(lines.join('\n'));
+}
+
+/**
  * Produces a somewhat more elegant hex dump, based on Frida's own hexdump().
  * It does not output the hex dump to any stream, but rather returns the hex
  * dump lines in an array.  It is up to the caller to decide where to, and how,
@@ -287,26 +304,11 @@ function prettyHexdumpLines(lines, desc, address, length, indent = '\t\t') {
     lines.push(`${indent}WARNING: address is NOT VALID (${address})`);
   }
 }
-
-/**
- * Outputs the hex dump results to the log stream.  If you only want the dump
- * lines without outputing them to the log stream, use prettyHexdumpLines().
- *
- * @param {function} log - The log function to output to.
- * @param {string} desc - Descriptive text, printed together with the hex dump.
- * @param {NativePointer} address - Memory location to dump.
- * @param {number} length - Number of bytes to dump.
- */
-function prettyHexdump(log, desc, address, length) {
-  const lines = [];
-  prettyHexdumpLines(lines, desc, address, length);
-  log(lines.join('\n'));
-}
 {% endhighlight %}
 
 ### Shared Code: ms-windows.js
 
-The `ms-windows.js` shared code library consists of MS Windows-related utility
+The “ms-windows.js” shared code library consists of MS Windows-related utility
 functions, and is built on top of the `core.js` library.
 
 {% highlight js %}

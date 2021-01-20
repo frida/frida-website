@@ -314,7 +314,7 @@ as it is valid JSON.
     </div>
     <br>
 
-    Frida-trace will assign your JSON object to the internal JavaScript variable
+    Frida-trace will assign your JSON object to the global JavaScript variable
     "<i>parameters</i>".  Now, your handler can check the parameters.displayPid
     variable to decide whether to print the process ID:
 
