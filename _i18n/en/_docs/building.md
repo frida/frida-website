@@ -1,4 +1,3 @@
-
 ## Table of contents
 
 1. Building Frida
