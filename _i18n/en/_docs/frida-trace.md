@@ -40,58 +40,69 @@ $ frida-trace -p 1372 -a "libjpeg.so!0x4793c"
 ## Full List of Options
 
 {% highlight bash %}
---version             show program's version number and exit
--h, --help            show this help message and exit
--D ID, --device=ID    connect to device with the given ID
--U, --usb             connect to USB device
--R, --remote          connect to remote frida-server
--H HOST, --host=HOST  connect to remote frida-server on HOST
--f FILE, --file=FILE  spawn FILE
--F, --attach-frontmost
-                      attach to frontmost application
--n NAME, --attach-name=NAME
-                      attach to NAME
--p PID, --attach-pid=PID
-                      attach to PID
---stdio=inherit|pipe  stdio behavior when spawning (defaults to “inherit”)
---runtime=qjs|v8      script runtime to use
---debug               enable the Node.js compatible script debugger
---squelch-crash       if enabled, will not dump crash report to console
--O FILE, --options-file=FILE
-                      text file containing additional command line options
--I MODULE, --include-module=MODULE
-                      include MODULE
--X MODULE, --exclude-module=MODULE
-                      exclude MODULE
--i FUNCTION, --include=FUNCTION
-                      include FUNCTION
--x FUNCTION, --exclude=FUNCTION
-                      exclude FUNCTION
--a MODULE!OFFSET, --add=MODULE!OFFSET
-                      add MODULE!OFFSET
--T, --include-imports
-                      include program's imports
--t MODULE, --include-module-imports=MODULE
-                      include MODULE imports
--m OBJC_METHOD, --include-objc-method=OBJC_METHOD
-                      include OBJC_METHOD
--M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
-                      exclude OBJC_METHOD
--j JAVA_METHOD, --include-java-method=JAVA_METHOD
-                      include JAVA_METHOD
--J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
-                      exclude JAVA_METHOD
--s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
-                      include DEBUG_SYMBOL
--q, --quiet           do not format output messages
--d, --decorate        add module name to generated onEnter log statement
--S PATH, --init-session=PATH
-                      path to JavaScript file used to initialize the session
--P PARAMETERS_JSON, --parameters=PARAMETERS_JSON
-                      parameters as JSON, exposed as a global named
-                      'parameters'
--o OUTPUT, --output=OUTPUT
-                      dump messages to file
+@>frida-trace --help
+Usage: frida-trace [options] target
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -D ID, --device=ID    connect to device with the given ID
+  -U, --usb             connect to USB device
+  -R, --remote          connect to remote frida-server
+  -H HOST, --host=HOST  connect to remote frida-server on HOST
+  -f FILE, --file=FILE  spawn FILE
+  -F, --attach-frontmost
+                        attach to frontmost application
+  -n NAME, --attach-name=NAME
+                        attach to NAME
+  -p PID, --attach-pid=PID
+                        attach to PID
+  --stdio=inherit|pipe  stdio behavior when spawning (defaults
+                        to “inherit”)
+  --aux=option          set aux option when spawning, such as
+                        “uid=(int)42” (supported types are:
+                        string, bool, int)
+  --runtime=duk|v8      script runtime to use
+  --debug               enable the Node.js compatible script debugger
+  --squelch-crash       if enabled, will not dump crash report
+                        to console
+  -O FILE, --options-file=FILE
+                        pass command line options via text file
+  -I MODULE, --include-module=MODULE
+                        include MODULE
+  -X MODULE, --exclude-module=MODULE
+                        exclude MODULE
+  -i FUNCTION, --include=FUNCTION
+                        include [MODULE]![FUNCTION]
+  -x FUNCTION, --exclude=FUNCTION
+                        exclude [MODULE]![FUNCTION]
+  -a MODULE!OFFSET, --add=MODULE!OFFSET
+                        add MODULE!OFFSET
+  -T, --include-imports
+                        include program's imports
+  -t MODULE, --include-module-imports=MODULE
+                        include MODULE imports
+  -m OBJC_METHOD, --include-objc-method=OBJC_METHOD
+                        include OBJC_METHOD
+  -M OBJC_METHOD, --exclude-objc-method=OBJC_METHOD
+                        exclude OBJC_METHOD
+  -j JAVA_METHOD, --include-java-method=JAVA_METHOD
+                        include JAVA_METHOD
+  -J JAVA_METHOD, --exclude-java-method=JAVA_METHOD
+                        exclude JAVA_METHOD
+  -s DEBUG_SYMBOL, --include-debug-symbol=DEBUG_SYMBOL
+                        include DEBUG_SYMBOL
+  -q, --quiet           do not format output messages
+  -d, --decorate        add module name to generated onEnter
+                        log statement
+  -S PATH, --init-session=PATH
+                        path to JavaScript file used to initialize
+                        the session
+  -P PARAMETERS_JSON, --parameters=PARAMETERS_JSON
+                        parameters as JSON, exposed as a global named
+                        'parameters'
+  -o OUTPUT, --output=OUTPUT
+                        dump messages to file
 {% endhighlight %}
 
 ## -U, --usb: connect to USB device
@@ -110,28 +121,61 @@ and from the remote device and trace accordingly.
   <a href="https://github.com/frida/frida/releases">platform-appropriate frida-server binary</a>
   to the remote device.  Once copied, be sure to run the frida-server binary before
   beginning the tracing session.</p>
-  <p>For example, to trace a remote Android application, you would copy the
+  <p>For example, to trace a remote Android application, you might copy the
   'frida-server-12.8.0-android-arm' binary to the Android's /data/local/tmp
   folder.  Using adb shell, you would run the server in the background
-  (e.g. frida-server-12.8.0-android-arm &).</p>
+  (e.g. "frida-server-12.8.0-android-arm &").</p>
 </div>
+
+## -O: pass command line options via text file
+
+Using this option, you can pass any number of command line options via one or
+more text files.  The options in the text file can be on one or more lines, with
+any number of options per line, including other `-O` command options.
+
+This feature is useful for handling a large number of command line options, and
+solves the problem when the command line exceeds the operating system maximum
+command line length.
+
+For example:
+
+{% highlight console %}
+$ frida-trace -p 9753 --decorate -O additional-options.txt
+{% endhighlight %}
+
+where additional-options.txt is:
+
+{% highlight console %}
+-i "gdi32full.dll!ExtTextOutW"
+-S core.js -S ms-windows.js
+-O module-offset-options.txt
+{% endhighlight %}
+
+and module-offset-options.txt is:
+
+{% highlight console %}
+-a "gdi32full.dll!0x3918DC" -a "gdi32full.dll!0xBE7458"
+-a "gdi32full.dll!0xBF9904"
+{% endhighlight %}
 
 ## -I, -X: include/exclude module
 
-These options allow you to include or exclude **all** functions in a particular
-module (e.g., *.so, *.dll) in one, single option.  The option expects a filename
-glob for matching one or more modules.  Any module that matches the glob pattern
-will be either included or excluded in its entirety.
+These options allow you to include or exclude, in one single option, **all**
+functions in a particular module (e.g., *.so, *.dll) in one, single option.
+The option expects a filename glob for matching one or more modules.  Any
+module that matches the glob pattern will be either included or excluded in its
+entirety.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
 by the `-I` option.
 
-To exclude specific functions after including an entire module, see the `-i` option.
+To exclude specific functions after including an entire module, see the `-x`
+option.
 
 ## -i, -x: include/exclude function (glob-based)
 
 These options enable you to include or exclude matching functions according to
-your needs.  This is a flexible option, allowing a granularity ranging from
+your needs.  These are flexible options, allowing a granularity ranging from
 **all** functions in **all** modules down to a single function in a specific module.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
@@ -150,39 +194,19 @@ glob patterns):
 
 Here are some examples and their descriptions:
 
-<table style="background-color:white">
-  <thead>
-    <tr style="background-color:LightSkyBlue; color:White">
-      <th style="text-align: left">Option Value</th>
-      <th style="text-align: left">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left; font-family: monospace;">-i "msvcrt.dll!*cpy*"</td>
-      <td style="text-align: left">Matches all functions with 'cpy' in its name, ONLY in msvcrt.dll</td>
-    </tr>
-    <tr>
-      <td style="text-align: left; font-family: monospace;">-i "*free*"</td>
-      <td style="text-align: left">Matches all functions with 'free' in its name in ALL modules</td>
-    </tr>
-    <tr>
-      <td style="text-align: left; font-family: monospace;">-i "!*free*"</td>
-      <td style="text-align: left">Identical to -i "*free*"</td>
-    </tr>
-    <tr>
-      <td style="text-align: left; font-family: monospace;">-i "gdi32.dll!"</td>
-      <td style="text-align: left">Trace all functions in gdi32.dll</td>
-    </tr>
-  </tbody>
-  </table>
+| Option Value          | Description                                                      |
+| --------------------- | ---------------------------------------------------------------- |
+| -i "msvcrt.dll!*cpy*" | Matches all functions with 'cpy' in its name, ONLY in msvcrt.dll |
+| -i "*free*"           | Matches all functions with 'free' in its name in ALL modules     |
+| -i "!*free*"          | Identical to -i "*free*"                                         |
+| -i "gdi32.dll!"       | Trace all functions in gdi32.dll (identical to -I "gdi32.dll")   |
 
 <div class="note info">
   <h5>frida-trace's working set and the order of inclusions and exclusions</h5>
   <p>frida-trace has an internal concept of a "working set", i.e., a set of
-  "module:function" pairs whose handlers will be traced at runtime.  The contents of the
-  working set can be changed by an include / exclude command line option
-  (-I / -X / -i / -x).</p>
+  "module:function" pairs whose handlers will be traced at runtime.  The
+  contents of the working set can be changed by an include / exclude command
+  line option (-I / -X / -i / -x).</p>
   <p>It is important to understand that the order of the include / exclude
   options is important.  Each such option works on the current state of the
   working set, and different orderings of options can lead to
@@ -196,27 +220,40 @@ Here are some examples and their descriptions:
   <p>We will describe three different option orders on the command line and
   show that they produce different results.</p>
   <ul>
-    <li><div style="font-family: monospace">-i "str*" -i "mem*" -X "msvcrt.dll"</div></li>
+    <li><div style="font-family: monospace">-i "str*" -i "mem*" -X "msvcrt.dll"
+        </div></li>
       <ul>
-        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
-        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, working set has 98 entries</li>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" and 6 "mem" functions originating in
-        msvcrt.dll, <b>final working set has 64 entries</b>.</li>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80
+            functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18
+            functions in 3 modules, working set has 98 entries</li>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes
+            the 28 "str" and 6 "mem" functions originating in msvcrt.dll,
+            <b>final working set has 64 entries</b>.</li>
       </ul>
-    <li><div style="font-family: monospace">-i "str*" -X "msvcrt.dll" -i "mem*"</div></li>
+    <li><div style="font-family: monospace">-i "str*" -X "msvcrt.dll" -i "mem*"
+        </div></li>
       <ul>
-        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes the 28 "str" functions originating in
-        msvcrt.dll, working set has 52 entries.</li>
-        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules including msvcrt.dll, <b>
-        final working set has 70 entries</b></li>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80
+            functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> removes
+            the 28 "str" functions originating in msvcrt.dll, working set has 52
+            entries.</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18
+            functions in 3 modules including msvcrt.dll, <b>final working set
+            has 70 entries</b></li>
       </ul>
-    <li><div style="font-family: monospace">-X "msvcrt.dll" -i "str*" -i "mem*"</div></li>
+    <li><div style="font-family: monospace">-X "msvcrt.dll" -i "str*" -i "mem*"
+        </div></li>
       <ul>
-        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> tries to remove the 28 "str" and 6 "mem" functions originating in
-        msvcrt.dll.  Since the working set is empty, there is nothing to remove, working set has 0 entries.</li>
-        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80 functions in 3 modules, working set has 80 entries</li>
-        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18 functions in 3 modules, <b>final working set has 98 entries</b></li>
+        <li><div style="font-family: monospace">'-X "msvcrt.dll"'</div> tries to
+            remove the 28 "str" and 6 "mem" functions originating in msvcrt.dll.
+            Since the working set is empty, there is nothing to remove, working
+            set has 0 entries.</li>
+        <li><div style="font-family: monospace">'-i "str*"'</div> matches 80
+            functions in 3 modules, working set has 80 entries</li>
+        <li><div style="font-family: monospace">'-i "mem*"'</div> matches 18
+            functions in 3 modules, <b>final working set has 98 entries</b></li>
       </ul>
   </ul>
 </div>
@@ -224,24 +261,105 @@ Here are some examples and their descriptions:
 ## -a: include function (offset-based)
 
 This option enables tracing functions whose names are not exported by their
-modules (e.g., a static C/C++ function).  This should not prevent you from
-tracing such functions, so long as you know that absolute offset of the
+parent modules (e.g., a static C/C++ function).  This should not prevent you
+from tracing such functions, so long as you know the absolute offset of that
 function's entry point.
 
 Example: `-a "libjpeg.so!0x4793c"`
 
-The option value provides both the full name of the module and the hex offset
-of the function entry point within the module.
+In this example, the option's value provides both the full name of the module
+(i.e., `libjpeg.so`) and the hex offset (`0x4793c`) of the function entry point
+within the module.
 
 `frida-trace` will generate a JavaScript handler file for each function matched
 by the `-a` option.
+
+## -P: Initialize frida-trace session with a globally-accessible JSON object
+
+This option enables assigning a JSON object to the `parameters` global variable.
+Your handlers can access this global variable, enabling you to dynamically
+change the handlers' behavior by modifying the value of `-P` passed on the
+command line.
+
+The JSON object passed can be as complicated or extensive as you wish, so long
+as it is valid JSON.
+
+<div class="note">
+  <h5>Example</h5>
+  <p>
+    In your session, you are tracing many functions.  At times you want all
+    handlers to print out their process ID.  Using the `-P` option, you can
+    enable a handler to decide whether or not to print the process ID.
+  </p>
+  <p>
+    First, decide on the JSON object format that notifies a handler whether it
+    should display the process ID.  Let's use the following format:
+
+    <br>
+    <br>
+    <div style="font-family: monospace; text-indent: 40px">
+      -P '{"displayPid": true}'
+    </div>
+    <br>
+
+    Note that this form is the one you might use under Linux (i.e., you can use
+    both single- and double-quotes on the command line).  Under Windows you can
+    only use double quotes, so you should escape the inner double quotes by
+    inserting <b>two</b> double quotes, like this:
+
+    <br>
+    <br>
+    <div style="font-family: monospace; text-indent: 40px">
+      -P "{""displayPid"": true}"
+    </div>
+    <br>
+
+    Frida-trace will assign your JSON object to the global JavaScript variable
+    "<i>parameters</i>".  Now, your handler can check the parameters.displayPid
+    variable to decide whether to print the process ID:
+
+    <br>
+    <br>
+
+    <code>{
+  onEnter(log, args, state) {
+    log('memcpy() [msvcrt.dll]');
+    if (parameters.displayPid) {
+      log(`Process ID: ${Process.id}`);
+    }
+  },
+
+  onLeave(log, retval, state) {
+  }
+}
+</code>
+
+    <br>
+  </p>
+</div>
+
+## -S: Initialize frida-trace session with JavaScript code
+
+This option initializes your frida-trace session by executing one or more
+JavaScript code files of your choice, which may declare globally visible
+functions and add arbitrary data to the global "state" object.  When the "state"
+object is passed to any of your handlers, you have immediate access to anything
+you saved to it during session initialization.
+
+Uses of this powerful feature include initializing the frida-trace running
+environment before the session begins, and sharing finely-tuned and debugged
+JavaScript functions and data that can be invoked across different handlers and
+development projects.
+
+For a detailed explanation of how to use this powerful feature, consult the
+[session initialization primer]({% link _docs/frida-trace/session-initialization-primer.md %}).
 
 ## -d, --decorate: add module name to log tracing
 
 The `--decorate` option is relevant when `frida-trace` auto-generates JavaScript
 handler scripts.  By default, a handler's `onEnter` function looks like this:
 
-<code>onEnter: function (log, args, state) {
+<code>onEnter(log, args, state) {
   log('memcpy()');
 },
 </code>
@@ -251,7 +369,7 @@ it will be difficult to differentiate between function traces.  The `--decorate`
 function instructs `frida-trace` to insert the module name in the default
 `onEnter` trace instruction:
 
-<code>onEnter: function (log, args, state) {
+<code>onEnter(log, args, state) {
   log('memcpy() [msvcrt.dll]');
 },
 </code>
