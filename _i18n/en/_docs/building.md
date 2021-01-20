@@ -87,8 +87,8 @@ Running `make` will provide you a list of modules to build. See
 
 - Make sure you have:
   - Visual Studio 2019 w/XP support
-    - select `Desktop development with C++` workload
-    - select the `C++ Windows XP Support for VS 2017 (v141) tools [Deprecated]` individual component
+    - Select `Desktop development with C++` workload
+    - Select the `C++ Windows XP Support for VS 2017 (v141) tools [Deprecated]` individual component
   - [Git](https://git-scm.com/downloads) on your PATH
   - [Python 3.8](https://www.python.org/downloads/windows/) on your path with `py` launcher installed
     - Select `Add Python 3.8 to PATH`
