@@ -2662,6 +2662,10 @@ const MyWeirdTrustManager = Java.registerClass({
     hooks in some cases, and allows ART's Instrumentation APIs to be used for
     tracing the runtime.
 
++   `Java.deoptimizeBootImage()`: similar to Java.deoptimizeEverything() but
+     only deoptimizes boot image code. Use with
+     `dalvik.vm.dex2oat-flags --inline-max-code-units=0` for best results.
+
 +   `Java.vm`: object with the following methods:
 
     -   `perform(fn)`: ensures that the current thread is attached to the VM and
