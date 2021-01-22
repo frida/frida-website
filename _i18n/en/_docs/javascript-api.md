@@ -480,12 +480,16 @@ console.log('Memory.scanSync() result:\n' +
     JSON.stringify(results));
 {% endhighlight %}
 
-+   `Memory.alloc(size)`: allocate `size` bytes of memory on the heap, or, if
-    `size` is a multiple of [`Process.pageSize`](#process-pagesize), one or more raw
-    memory pages managed by the OS. The returned value is a [`NativePointer`](#nativepointer)
-    and the underlying memory will be released when all JavaScript handles to it are
-    gone. This means you need to keep a reference to it while the pointer is
-    being used by code outside the JavaScript runtime.
++   `Memory.alloc(size[, options])`: allocate `size` bytes of memory on the
+    heap, or, if `size` is a multiple of
+    [`Process.pageSize`](#process-pagesize), one or more raw memory pages
+    managed by the OS. When using page granularity you may also specify an
+    `options` object if you need the memory allocated close to a given address,
+    by specifying `{ near: address, maxDistance: distanceInBytes }`.
+    The returned value is a [`NativePointer`](#nativepointer) and the underlying
+    memory will be released when all JavaScript handles to it are gone. This
+    means you need to keep a reference to it while the pointer is being used by
+    code outside the JavaScript runtime.
     {: #memory-alloc}
 
 +   `Memory.copy(dst, src, n)`: just like memcpy(). Returns nothing.
