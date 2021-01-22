@@ -402,7 +402,7 @@ object named descriptively, and correspondingly for data stored on “state”.
 Here is how you might implement it:
 
 {% highlight js %}
-const MyLibrary = {
+global.MyLibrary = {
   doX() {
   },
   doY() {
