@@ -26,7 +26,7 @@ In a Frida context, however, we're usually talking about a VirtualBox-based
 emulator that runs an Android system built for x86. This system then ships with
 NativeBridge support powered by libhoudini, a proprietary ARM translator.
 
-There's quite a few of these emulators, e.g. BlueStacks, NoxPlayer, LDPlayer,
+There's quite a few of these emulators, e.g. BlueStacks, LDPlayer, NoxPlayer,
 etc. While the ones mentioned are optimized for running games, there's now also
 Google's official Android 11 AVDs which ship with NativeBridge support out of
 the gate.
@@ -92,7 +92,7 @@ interpreter, but the assumption was that we could deal with those by hooking
 VM internals.
 
 I took a stab at an early prototype to explore this approach further. It seemed
-like it could work, but there was still a lot of details to figure out. After
+like it could work, but there were still many challenges to work through. After
 some brainstorming with [@muhzii][], he kept working on evolving this rough PoC
 further in his spare time. Then one day I almost fell off my chair out of pure
 excitement when I saw the amazing pull-request he had just opened.
@@ -119,7 +119,7 @@ behind the scenes, and it doesn't yet support this architecture. The system
 might have a C compiler though, so @mephi42 proposed that we add support for
 using GCC on systems where TinyCC cannot help us out.
 
-I really liked this idea; not only from the perspective of architecture support,
+I really liked this idea. Not only from the perspective of architecture support,
 but also because of the potential for much faster code – TinyCC optimizes for
 small compiler footprint and fast compilation, not fast code.
 
@@ -130,14 +130,14 @@ Apple's clang on i/macOS.
 In the end we arrived at this:
 
 {% highlight js %}
-const cm = new CModule(`...`, {}, { toolchain: 'external' });
+const cm = new CModule(`…`, {}, { toolchain: 'external' });
 {% endhighlight %}
 
 Where `toolchain` is either `any`, `internal`, or `external`. The default is
 `any`, which means we will use TinyCC if it supports your `Process.arch`, and
 fall back to `external` otherwise.
 
-The story doesn't end there, though. While implementing support for i/macOS,
+The story doesn't end here, though. While implementing support for i/macOS,
 it wasn't really clear to me how we could fuse in symbols provided by the
 JavaScript side. (The second argument to CModule's constructor.)
 
@@ -150,7 +150,7 @@ support skipping Clang entirely, and allow the user to pass in a precompiled
 shared library.
 
 The thinking there was that it would enable cross-compilation, but also make it
-possible to implement a CModule in a language such as Swift or Rust: basically
+possible to implement a CModule in languages such as Swift and Rust: basically
 anything that can interop with C.
 
 So this means we now also support the following:
@@ -230,8 +230,6 @@ Enjoy!
 
 - Brand new realms API for instrumenting emulated realms inside native
   processes. Only implemented on Android for now.
-- Upgrade to using inline hooking for the ART runtime. Thanks [@muhzii][]!
-  This got temporarily reverted before release, to be relanded soon.
 - Add Java.deoptimizeBootImage(). Thanks [@alkalinesec][]!
 - Add --disable-preload/-P to frida-server. Useful in case of OS compatibility
   issues where Frida crashes certain OS processes when attaching to them.
@@ -240,7 +238,8 @@ Enjoy!
 - Restore support for libhoudini on Android.
 - Fix ARM cache flushing on Android 11's translator.
 - Fix linker offsets for Android 5.x. Thanks [@muhzii][]!
-- Start refactoring CModule's internals to prepare for multiple backends.
+- Start refactoring CModule's internals to prepare for multiple backends. Thanks
+  [@mephi42][]!
 - Fix CModule aggregate initializations on ARM.
 - Fix ModuleApiResolver fast-path emitting bad matches.
 
@@ -257,6 +256,7 @@ Enjoy!
 
 ### Changes in 14.2.3
 
+- Upgrade to using inline hooking for the ART runtime. Thanks [@muhzii][]!
 - Fix direct transport regression on i/macOS, introduced by GLib upgrade where
   GLib.Socket gained GLib.Credentials support on Apple OSes. A typical symptom
   of this regression is that frida-server gets killed by Jetsam.
@@ -267,20 +267,17 @@ Enjoy!
   [@dkw72n][]!
 - Improve the JVM C++ allocator API probing logic by consulting debug symbols
   before giving up. Thanks [@Happyholic1203][]!
-- Reland "Upgrade to using inline hooking for the ART runtime". Now handling
-  short methods, and trampoline no longer clobbers x16 (used by
-  art_quick_to_interpreter_bridge). Thanks [@muhzii][]!
 - Upgrade SELinux libraries to support bleeding edge Android systems.
 - Add gum-linux-x86_64-gir target for GIR generation. Thanks [@meme][]!
 
 ### Changes in 14.2.4
 
-- Fix V8 debugger support in Node.js bindings on Linux.
-- Fix crash on ELF init error in the libdwarf backend.
 - Fix Android performance regression when ART's interpreter is used, such as
   when using deoptimizeEverything() or deoptimizeBootImage(), which results in
   our JS callbacks becoming extremely hot. Move the hot callbacks to CModule to
   speed things up.
+- Fix V8 debugger support in Node.js bindings on Linux.
+- Fix crash on ELF init error in the libdwarf backend.
 
 ### Changes in 14.2.5
 
@@ -303,7 +300,7 @@ Enjoy!
   frida-server dying due to SIGPIPE. Thanks [@mrmacete][]!
 - Refactor CModule internals and lay foundations for GCC backend. Thanks
   [@mephi42][]!
-- Add EventSink.make_from_callback() for simple C API consumers that only care
+- Add EventSink.make_from_callback() for Stalker C API consumers that only care
   about events, and don't need lifecycle hooks or code transformations.
 - Emit Stalker BLOCK event at the start of the block, as this is what's the most
   intuitive, as one would expect at least as many BLOCK events as COMPILE
@@ -318,7 +315,7 @@ Enjoy!
   map entries are marked as “permanent”. Thanks [@mrmacete][]!
 - Wire up GCC support in CModule. Thanks [@mephi42][]!
 - Add CModule backend for Clang on Apple OSes.
-- Add support for linking in a prebuilt CModule.
+- Add support for linking in a prebuilt CModule. (Only on i/macOS for now.)
 - Finalize the CModule toolchain selection API.
 - Add CModule.builtins property for tooling support.
 - Generate frida-core GIR by default. Thanks [@meme][]!
@@ -326,14 +323,14 @@ Enjoy!
 
 ### Changes in 14.2.10
 
-- Add support for Termux in frida-python: `pip install frida-tools` now works.
 - Improve frida-inject to support bidirectional stdio.
+- Add support for Termux in frida-python: `pip install frida-tools` now works.
 
 ### Changes in 14.2.11
 
+- Improve frida-inject to support raw terminal mode.
 - Add internal policy daemon for Darwin.
 - Improve Gum.Darwin.Mapper to support strict kernels.
-- Improve frida-inject to support raw terminal mode.
 
 ### Changes in 14.2.12
 
