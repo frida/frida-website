@@ -143,6 +143,7 @@ Interceptor.attach(f, {
 
 +   `Process.arch`: property containing the string `ia32`, `x64`, `arm`
     or `arm64`
+    {: #process-arch}
 
 +   `Process.platform`: property containing the string `windows`,
     `darwin`, `linux` or `qnx`
@@ -581,8 +582,10 @@ Memory.patchCode(getLivesLeft, maxPatchSize, code => {
 
 ### CModule
 
-+   `new CModule(source[, symbols])`: compiles C `source` code string to machine
-    code, straight to memory.
++   `new CModule(code[, symbols, options])`: creates a new C module from the
+    provided `code`, either a string containing the C source code to compile, or
+    an ArrayBuffer containing a precompiled shared library. The C module gets
+    mapped into memory and becomes fully accessible to JavaScript.
 
     Useful for implementing hot callbacks, e.g. for **[Interceptor](#interceptor)**
     and **[Stalker](#stalker)**, but also useful when needing to start new threads
@@ -593,11 +596,15 @@ Memory.patchCode(getLivesLeft, maxPatchSize, code => {
     to **[Interceptor](#interceptor)** and **[Stalker](#stalker)**, or call them
     using **[NativePointer](#nativepointer)**.
 
-    The optional second argument, `symbols`, is an object specifying additional
-    symbol names and their **[NativePointer](#nativepointer)** values, each of which
-    will be plugged in at creation. This may for example be one or more memory blocks
-    allocated using **[Memory.alloc()](#memory-alloc)**, and/or **[NativeCallback](#nativecallback)**
-    values for receiving callbacks from the C module.
+    In addition to accessing a curated subset of Gum, GLib, and standard C APIs,
+    the code being mapped in can also communicate with JavaScript through the
+    `symbols` exposed to it. This is the optional second argument, an object
+    specifying additional symbol names and their
+    **[NativePointer](#nativepointer)** values, each of which will be plugged in
+    at creation. This may for example be one or more memory blocks allocated
+    using **[Memory.alloc()](#memory-alloc)**, and/or
+    **[NativeCallback](#nativecallback)** values for receiving callbacks from
+    the C module.
 
     To perform initialization and cleanup, you may define functions with the
     following names and signatures:
@@ -609,8 +616,56 @@ Memory.patchCode(getLivesLeft, maxPatchSize, code => {
     *extern*, allocated using e.g. **[Memory.alloc()](#memory-alloc)**, and passed
     in as symbols through the constructor's second argument.
 
+    The optional third argument, `options`, is an object that may be used to
+    specify which toolchain to use, e.g.: `{ toolchain: 'external' }`. Supported
+    values are:
+
+    -   `internal`: use TinyCC, which is statically linked into the runtime.
+        Never touches the filesystem and works even in sandboxed processes. The
+        generated code is however not optimized, as TinyCC optimizes for small
+        compiler footprint and short compilation times.
+    -   `external`: use toolchain provided by the target system, assuming it is
+        accessible to the process we're executing inside.
+    -   `any`: same as `internal` if [`Process.arch`](#process-arch) is
+        supported by TinyCC, and `external` otherwise. This is the default
+        behavior if left unspecified.
+
 -   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
     modules when waiting for a future garbage collection isn't desirable.
+
++   `builtins`: an object specifying builtins present when constructing a
+    CModule from C source code. This is typically used by a scaffolding tool
+    such as `frida-create` in order to set up a build environment that matches
+    what CModule uses. The exact contents depends on the
+    [`Process.arch`](#process-arch) and Frida version, but may look something
+    like the following:
+
+        {
+          defines: {
+            'GLIB_SIZEOF_VOID_P': '8',
+            'G_GINT16_MODIFIER': '"h"',
+            'G_GINT32_MODIFIER': '""',
+            'G_GINT64_MODIFIER': '"ll"',
+            'G_GSIZE_MODIFIER': '"l"',
+            'G_GSSIZE_MODIFIER': '"l"',
+            'HAVE_I386': true
+          },
+          headers: {
+            'gum/arch-x86/gumx86writer.h': '…',
+            'gum/gumdefs.h': '…',
+            'gum/guminterceptor.h': '…',
+            'gum/gummemory.h': '…',
+            'gum/gummetalarray.h': '…',
+            'gum/gummetalhash.h': '…',
+            'gum/gummodulemap.h': '…',
+            'gum/gumprocess.h': '…',
+            'gum/gumspinlock.h': '…',
+            'gum/gumstalker.h': '…',
+            'glib.h': '…',
+            'json-glib/json-glib.h': '…',
+            'capstone.h': '…'
+          }
+        }
 
 #### Examples
 
