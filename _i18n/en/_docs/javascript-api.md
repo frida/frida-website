@@ -1077,16 +1077,6 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
         passed in as the first parameter. (This scenario is common in WebKit,
         for example.)
 
-        Example:
-{% highlight js %}
-// LargeObject HandyClass::friendlyFunctionName();
-const friendlyFunctionName = new NativeFunction(friendlyFunctionPtr,
-    'void', ['pointer', 'pointer']);
-const returnValue = Memory.alloc(sizeOfLargeObject);
-friendlyFunctionName(returnValue, thisPtr);
-{% endhighlight %}
-
-+
     - #### Supported Types
         -   void
         -   pointer
