@@ -336,6 +336,14 @@ Enjoy!
 
 - Fix ART method hooking reliability after GC. Thanks [@muhzii][]!
 
+### Changes in 14.2.13
+
+- Fix Instruction operands parsing on x86, ensuring the immediate value is
+  always represented by an Int64 and never a number. Thanks [@muhzii][]!
+- Fix frida-inject when process is not attached to a terminal. Thanks
+  [@muhzii][]!
+- Expose Base64 and Checksum GLib primitives to CModule. Thanks [@mrmacete][]!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
