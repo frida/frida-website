@@ -26,7 +26,7 @@ This could also be [due to Magisk Hide](https://github.com/frida/frida/issues/82
 
 ## Failed to spawn: unexpected error while spawning child process 'XXX' (task_for_pid returned '(os/kern) failure')
 
-On macOS this probably means that you did't properly sign Frida or that there
+On macOS this probably means that you didn't properly sign Frida or that there
 is a permission missing. For example if you are running Frida over SSH and can't
 respond to the authentication dialog that would pop up under *normal* use.
 
