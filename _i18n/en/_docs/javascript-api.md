@@ -561,8 +561,8 @@ Memory.patchCode(getLivesLeft, maxPatchSize, code => {
 
     `callbacks` is an object specifying:
 
-    -   `onAccess: function (details)`: called synchronously with `details`
-        object containing:
+    -   `onAccess(details)`: called synchronously with `details` object
+        containing:
         -   `operation`: the kind of operation that triggered the access, as a
             string specifying either `read`, `write`, or `execute`
         -   `from`: address of instruction performing the access as a
@@ -1779,7 +1779,7 @@ Stalker.follow(mainThread.id, {
   //            format. Use `Stalker.parse()` to examine the
   //            data.
   //
-  //onReceive: function (events) {
+  //onReceive(events) {
   //},
   //
 
@@ -1794,7 +1794,7 @@ Stalker.follow(mainThread.id, {
   //                about the order that the calls happened
   //                in.
   //
-  onCallSummary: function (summary) {
+  onCallSummary(summary) {
   },
 
   //
@@ -1805,7 +1805,7 @@ Stalker.follow(mainThread.id, {
   //                 a basic block of the code that's about
   //                 to be executed by the stalked thread.
   //
-  //transform: function (iterator) {
+  //transform(iterator) {
   //  let instruction = iterator.next();
   //
   //  const startAddress = instruction.address;
@@ -1952,7 +1952,7 @@ Stalker.follow(mainThread.id, {
     For example:
 
 {% highlight js %}
-  onReceive: function (events) {
+  onReceive(events) {
     console.log(Stalker.parse(events, {
       annotate: true, // to display the type of event
       stringify: true
@@ -2178,12 +2178,12 @@ Interceptor.attach(NSSound.play.implementation, {
     -   `methods`: (optional) Object specifying methods to implement.
     -   `events`: (optional) Object specifying callbacks for getting notified
         about events:
-        -   `dealloc: function ()`: Called right after the object has been
-            deallocated. This is where you might clean up any associated state.
-        -   `forward: function (name)`: Called with `name` specifying the
-            method name that we're about to forward a call to. This might be
-            where you'd start out with a temporary callback that just logs the
-            names to help you decide which methods to override.
+        -   `dealloc()`: Called right after the object has been deallocated.
+            This is where you might clean up any associated state.
+        -   `forward(name)`: Called with `name` specifying the method name that
+            we're about to forward a call to. This might be where you'd start
+            out with a temporary callback that just logs the names to help you
+            decide which methods to override.
 
 {% highlight js %}
 const MyConnectionDelegateProxy = ObjC.registerProxy({
@@ -2202,7 +2202,7 @@ const MyConnectionDelegateProxy = ObjC.registerProxy({
     }
   },
   events: {
-    forward: function (name) {
+    forward(name) {
       console.log('*** forwarding: ' + name);
     }
   }
