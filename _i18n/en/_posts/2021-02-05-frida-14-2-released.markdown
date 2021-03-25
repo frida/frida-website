@@ -344,6 +344,72 @@ Enjoy!
   [@muhzii][]!
 - Expose Base64 and Checksum GLib primitives to CModule. Thanks [@mrmacete][]!
 
+### Changes in 14.2.14
+
+- Fix Gadget crash on i/macOS when loaded early.
+- Make frida-inject stdin communication optional. Thanks [@muhzii][]!
+- Support iOS app spawn on unc0ver 6.x. Thanks [@mrmacete][]!
+- Work around single-step delay when spawning iOS apps, to avoid failing
+  randomly. Thanks [@mrmacete][]!
+- Fix read() signature mismatch in the libc shim, which would result in a
+  compilation error on newer Apple toolchains. Thanks [@Manouchehri][]!
+- Fix Android enumerate_applications() name truncation on newer versions of
+  Android. Kudos to [@pancake][] for reporting and helping figure this one out!
+- Fix hang when target is unable to load frida-agent.
+- Fix support for attaching to Windows services.
+- Clean up stale Windows services before registering new ones.
+- Add build option to support using installed assets instead of embedding them.
+- Update iOS packaging to use installed assets.
+- Add basic support for jailed Android. Thanks [@enovella_][] for all the fun
+  and productive pair-programming on this one!
+- Extend Arm64Writer API to support more immediates.
+- Improve Stalker to support temporarily misaligned stack on arm64.
+- Fix crash in Stalker follow() without a sink.
+- Implement Stalker invalidation support. This allows updating the
+  instrumentation without throwing away all of the translated code. Thanks
+  for the assist on this one, [@p1onk][]!
+- Add Gum.DarwinModule.enumerate_function_starts().
+- Add Gum.DarwinGrafter for AOT grafting to be able to prepare binaries so they
+  can be instrumented when runtime code modification isn't possible. Thanks for
+  the assist, [@mrmacete][]!
+- Add Memory.allocate_near().
+- Improve Stalker performance and robustness on all supported architectures:
+    - Improve call probes to probe at the target instead of at the call
+      site, and take advantage of the new invalidation infrastructure.
+    - Handle adding/removing call probes from within call probes.
+    - Refactor callout-handling so user data can be destroyed on invalidate.
+      This also eliminates the callout lock.
+    - In case of self-modifying code, recompile instead of allocating a new
+      block.
+    - Use separate slabs for code and data, to avoid cases where we only
+      use part of the slab because we run out of metadata storage.
+    - Inline the first code/data slab in ExecCtx, so we use a lot less
+      memory when following threads that either don't touch much code, or
+      none at all in case they don't wake up.
+    - Don't bother storing original code when trust_threshold is 0.
+    - Simplify Stalker block metadata to reduce the per-block memory
+      consumption.
+- Fix result of Java.enumerateMethods() on ART. This was a bug where static
+  initializer methods were being included in the enumerated set as '$init' when
+  they should be skipped altogether. Thanks [@muhzii][]!
+- Fix the Android/ART near memory allocation code path used during Java method
+  hooking. Thanks [@muhzii][]!
+- Fix handling of generic Java array types. This allows array objects obtained
+  from the runtime to be reused later when marshalling array types, which is
+  necessary to preserve type information particularly in cases where the type
+  is dynamic. Thanks [@muhzii][]!
+- Port Android/ART StackVisitor to x86, x64, and ARM32. Thanks [@P-Sc][]!
+- Fix ARM cache flushing on Android. Turns out cacheflush() expects a range on
+  Linux/ARM. This 32-bit Android/ARM regression was introduced in 14.2.0.
+- Add a few missing TinyCC builtins for 32-bit ARM.  Kudos to [@giantpune][] for
+  reporting and helping figure this one out!
+- Fix wrap-around in Stalker block recycling logic.
+- Fix V8 NativePointer construction from large numbers.
+- Fix Stalker local thread actions on Windows.
+- Fix the CModule temporary directory cleanup logic.
+- Remove forgotten InspectorServer debug code.
+- Fix the V8 debugger integration. Kudos to [@taviso][] for reporting!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
@@ -355,3 +421,10 @@ Enjoy!
 [@Happyholic1203]: https://github.com/Happyholic1203
 [@meme]: https://github.com/meme
 [@mrmacete]: https://twitter.com/bezjaje
+[@Manouchehri]: https://github.com/Manouchehri
+[@pancake]: https://twitter.com/trufae
+[@enovella_]: https://twitter.com/enovella_
+[@p1onk]: https://twitter.com/p1onk
+[@P-Sc]: https://github.com/P-Sc
+[@giantpune]: https://twitter.com/giantpune
+[@taviso]: https://twitter.com/taviso
