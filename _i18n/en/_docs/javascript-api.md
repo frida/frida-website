@@ -1971,6 +1971,20 @@ Stalker.follow(mainThread.id, {
     [`Stalker#unfollow`](#stalker-unfollow). This is needed to avoid race-conditions
     where the thread just unfollowed is executing its last instructions.
 
++   `Stalker.invalidate(address)`: invalidates the current thread's translated
+    code for a given basic block. Useful when providing a transform callback and
+    wanting to dynamically adapt the instrumentation for a given basic block.
+    This is much more efficient than unfollowing and re-following the thread,
+    which would discard all cached translations and require all encountered
+    basic blocks to be compiled from scratch.
+
++   `Stalker.invalidate(threadId, address)`: invalidates a specific thread's
+    translated code for a given basic block. Useful when providing a transform
+    callback and wanting to dynamically adapt the instrumentation for a given
+    basic block. This is much more efficient than unfollowing and re-following
+    the thread, which would discard all cached translations and require all
+    encountered basic blocks to be compiled from scratch.
+
 +   `Stalker.addCallProbe(address, callback[, data])`: call `callback` (see
     [`Interceptor#attach#onEnter`](#interceptor-attach) for signature) synchronously
     when a call is made to `address`. Returns an id that can be passed to
