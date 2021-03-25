@@ -27,7 +27,7 @@ $ frida Calculator -l calc.js
     |   |        object?   -> Display information about 'object'
     |   |        exit/quit -> Exit
     |   |
-    |   |    More info at http://www.frida.re/docs/home/
+    |   |    More info at https://frida.re/docs/home/
     `._.'
 
 # The code in calc.js has now been loaded and executed
@@ -60,7 +60,7 @@ $ frida Calculator -l calc.js --debug
     |   |        object?   -> Display information about 'object'
     |   |        exit/quit -> Exit
     |   |
-    |   |    More info at http://www.frida.re/docs/home/
+    |   |    More info at https://frida.re/docs/home/
     `._.'
 
 Debugger listening on port 5858

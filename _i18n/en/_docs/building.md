@@ -65,7 +65,7 @@ $ make
 {% endhighlight %}
 
 Running `make` will provide you a list of modules to build. See
-[the hacking page](https://www.frida.re/docs/hacking/) for more information.
+[the hacking page](https://frida.re/docs/hacking/) for more information.
 
 ### macOS
 
@@ -81,7 +81,7 @@ $ make
 {% endhighlight %}
 
 Running `make` will provide you a list of modules to build. See
-[the hacking page](https://www.frida.re/docs/hacking/) for more information.
+[the hacking page](https://frida.re/docs/hacking/) for more information.
 
 ### Windows
 

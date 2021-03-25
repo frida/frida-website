@@ -167,4 +167,4 @@ Enjoy!
 [X86Writer]: /docs/javascript-api/#x86writer
 [Capstone]: http://www.capstone-engine.org/
 [Process.setExceptionHandler()]: /docs/javascript-api/#process
-[SQLite API]: https://www.frida.re/docs/javascript-api/#sqlitedatabase
+[SQLite API]: https://frida.re/docs/javascript-api/#sqlitedatabase

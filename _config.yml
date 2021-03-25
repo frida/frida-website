@@ -16,7 +16,7 @@ collections:
 
 name: Frida • A world-class dynamic instrumentation framework
 description: Inject JavaScript to explore native apps on Windows, macOS, GNU/Linux, iOS, Android, and QNX
-url: https://www.frida.re
+url: https://frida.re
 
 twitter:
   username: fridadotre

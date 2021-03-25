@@ -32,7 +32,7 @@ Now, let's have a look at the generated `recvfrom.js`:
  * etc. (Pull-requests appreciated!)
  *
  * For full API reference, see:
- * http://www.frida.re/docs/javascript-api/
+ * https://frida.re/docs/javascript-api/
  */
 
 {

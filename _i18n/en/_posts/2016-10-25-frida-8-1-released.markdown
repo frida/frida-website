@@ -300,7 +300,7 @@ Anyway, those are the highlights. Here's a full summary of the changes:
 Enjoy!
 
 
-[JavaScript API]: http://www.frida.re/docs/javascript-api/
+[JavaScript API]: https://frida.re/docs/javascript-api/
 [ecosystem]: https://www.npmjs.com/search?q=frida
 [frida-screenshot]: https://www.npmjs.com/package/frida-screenshot
 [frida-uikit]: https://www.npmjs.com/package/frida-uikit

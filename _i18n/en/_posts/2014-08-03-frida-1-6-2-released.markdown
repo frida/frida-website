@@ -24,10 +24,10 @@ mov rbp, rsp
 {% endhighlight %}
 
 How is this implemented you ask? That's the cool part. Frida already uses the
-amazing [Capstone disassembly framework](http://www.capstone-engine.org/)
+amazing [Capstone disassembly framework](https://www.capstone-engine.org/)
 behind the scenes, and thus it makes perfect sense to make it available to the
 JavaScript runtime. Have a look at the
-[JavaScript API Reference](https://www.frida.re/docs/javascript-api/) for all
+[JavaScript API Reference](https://frida.re/docs/javascript-api/) for all
 the details.
 
 Enjoy!

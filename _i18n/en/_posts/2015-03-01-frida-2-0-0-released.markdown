@@ -44,7 +44,7 @@ $
   integration; please get in touch if you'd like to help out with a pull-request
   to fix that!
 
-Want to help out? Have a look at our [GSoC 2015 Ideas Page](https://www.frida.re/docs/gsoc-ideas-2015/)
+Want to help out? Have a look at our [GSoC 2015 Ideas Page](https://frida.re/docs/gsoc-ideas-2015/)
 to get an overview of where we'd like to go next.
 
 Enjoy!

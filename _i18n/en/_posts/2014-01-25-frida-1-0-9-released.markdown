@@ -31,4 +31,4 @@ ObjC.schedule(ObjC.mainQueue, function () {
   `type` field is either `function` or `variable`.
 
 To get the full scoop on the ObjC integration, have a look at the
-[JavaScript API reference](https://www.frida.re/docs/javascript-api/).
+[JavaScript API reference](https://frida.re/docs/javascript-api/).
