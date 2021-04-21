@@ -410,6 +410,13 @@ Enjoy!
 - Remove forgotten InspectorServer debug code.
 - Fix the V8 debugger integration. Kudos to [@taviso][] for reporting!
 
+### Changes in 14.2.15
+
+- Fix compatibility with latest unc0ver iOS jailbreak. Thanks [@mrmacete][]!
+- Add support for Anbox. Thanks [@asabil][]!
+- Add Java.deoptimizeMethod(). Thanks [@liuyufei][]!
+- Handle replacing ART methods that may be devirtualized. Thanks [@liuyufei][]!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
@@ -428,3 +435,5 @@ Enjoy!
 [@P-Sc]: https://github.com/P-Sc
 [@giantpune]: https://twitter.com/giantpune
 [@taviso]: https://twitter.com/taviso
+[@asabil]: https://twitter.com/asabil
+[@liuyufei]: https://github.com/liuyufei
