@@ -417,6 +417,15 @@ Enjoy!
 - Add Java.deoptimizeMethod(). Thanks [@liuyufei][]!
 - Handle replacing ART methods that may be devirtualized. Thanks [@liuyufei][]!
 
+### Changes in 14.2.16
+
+- Add many missing TinyCC builtins for 32-bit ARM. Kudos to [@giantpune][] for
+  reporting and helping figure this one out!
+- Fix Android ART trampoline alignment when using ADRP on arm64, previously
+  resulting in `Error: invalid argument` exception being thrown when attempting
+  to replace some methods. Kudos to [@pandasauce][] for reporting and helping
+  figure this one out!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
@@ -437,3 +446,4 @@ Enjoy!
 [@taviso]: https://twitter.com/taviso
 [@asabil]: https://twitter.com/asabil
 [@liuyufei]: https://github.com/liuyufei
+[@pandasauce]: https://github.com/pandasauce
