@@ -41,6 +41,12 @@ For the last step, make sure you start frida-server as root, i.e. if you are
 doing this on a rooted device, you might need to *su* and run it from that
 shell.
 
+<div class="note info">
+  <h5>adb on a production build</h5>
+  <p>If you get <code>adbd cannot run as root in production builds</code> after running <code>adb root</code><br>you need to add <code>su -c</code>in the beginning of each adb shell. for example: <code>adb shell "su -c chmod 755 /data/local/tmp/frida-server"</code></p>
+  
+</div>
+
 Next, make sure `adb` can see your device:
 
 {% highlight bash %}
