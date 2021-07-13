@@ -14,7 +14,7 @@ In this tutorial we will show you how to do function tracing on your iOS device.
 
 ### Setting up your iOS device
 
-Start `Cydia` and add Frida's repository by going to `Manage` -> `Sources` ->
+Start your Favorite package manager and add Frida's repository by going to `Manage` -> `Sources` ->
 `Edit` -> `Add` and enter `https://build.frida.re`. You should now be able to
 find and install the `Frida` package which lets Frida inject JavaScript into
 apps running on your iOS device. This happens over USB, so you will need to have
