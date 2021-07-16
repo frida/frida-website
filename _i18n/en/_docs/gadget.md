@@ -11,7 +11,7 @@ This may be done in a variety of ways, for example:
 Gadget gets kickstarted as soon as the dynamic linker executes its constructor
 function.
 
-It supports three different interactions depending on your use-case, where the
+It supports four different interactions depending on your use-case, where the
 [Listen](#listen) interaction is the default. You can override this by adding a
 configuration file. The file should be named exactly like the Gadget binary but
 with *.config* as its file extension. So for example if you named the binary
@@ -75,6 +75,7 @@ root. It supports four different keys at the root level:
 ## Supported interaction types
 
   1. [Listen](#listen)
+  1. [Connect](#connect)
   1. [Script](#script)
   1. [ScriptDirectory](#scriptdirectory)
 
@@ -119,6 +120,14 @@ Supported configuration keys are:
 
 -   `port`: number specifying the TCP port to listen on. Defaults to `27042`.
 
+-   `certificate`: specify this to enable TLS. Must be a PEM-encoded public and
+    private key, either as a string containing the multi-line PEM data, or a
+    single-line string specifying the filesystem path to load it from. The
+    server will accept any certificate from the client's side.
+
+-   `token`: specify this to enable authentication. Must be a string specifying
+    the secret token expected from incoming clients.
+
 -   `on_port_conflict`: string specifying either `fail` or `pick-next`, stating
     what to do if the listening port is already taken. The default is `fail`,
     which means Gadget will fail to start. Specify `pick-next` if you would like
@@ -129,6 +138,81 @@ Supported configuration keys are:
     you to connect to it and tell it to resume. Specify `resume` if you would
     like the program to be allowed to start immediately, which is useful if you
     just want to be able to attach at a later time.
+
+-   `origin`: specify this to protect against unauthorized cross-origin use from
+    from web browsers, by requiring that the “Origin” header matches the value
+    specified here.
+
+-   `asset_root`: specify this to serve static files over HTTP/HTTPS, where any
+    accessible files inside the specified directory are exposed. By default no
+    files are served.
+
+## Connect
+
+This is the inverse of the “Listen” interaction, where instead of listening on
+TCP, Gadget will connect to a running *frida-portal* and become a node in its
+cluster of processes. This is the so-called *cluster* interface that it listens
+on. The Portal typically also exposes a *control* interface, which speaks the
+same protocol as *frida-server*. This allows any connected controllers to
+*enumerate_processes()* and *attach()* to them as if they were local to the
+machine where the Portal is running.
+
+In order to achieve early instrumentation we let Gadget's constructor function
+block until *resume()* is requested by a controller – but only if spawn-gating
+is enabled. (Through *Device.enable_spawn_gating()*.) This means that for a
+simple setup, Gadget will only block until it's connected to the Portal and has
+joined its cluster – in order to ask it whether spawn-gating is enabled.
+
+The default configuration is:
+
+{% highlight json %}
+{
+  "interaction": {
+    "type": "connect",
+    "address": "127.0.0.1",
+    "port": 27052
+  }
+}
+{% endhighlight %}
+
+Supported configuration keys are:
+
+-   `address`: string specifying the host to connect to, which is where the
+    Portal's cluster interface is exposed. Supports both IPv4 and IPv6.
+    Defaults to `127.0.0.1`.
+
+-   `port`: number specifying the TCP port to connect to, on the host where the
+    Portal's cluster interface is exposed. Defaults to `27052`.
+
+-   `certificate`: must be specified if the Portal has TLS enabled. Contains a
+    PEM-encoded public key, either as a string containing the multi-line PEM
+    data, or a single-line string specifying the filesystem path to load it
+    from. This is the public key of a trusted CA, which the server's certificate
+    must match or be derived from.
+
+-   `token`: must be specified if the Portal's cluster interface has
+    authentication enabled. This is a string specifying the token to present to
+    the Portal. The actual interpretation of this string depends on the Portal
+    implementation, and ranges from a fixed secret in case of *frida-portal*, to
+    anything (such as an OAuth access token) in case the Portal is instantiated
+    through the API with a custom authentication service plugged into it.
+
+-   `acl`: array of strings that specify an Access Control List, used to limit
+    which controllers are able to discover and interact with this process. For
+    example in case of `["team-a", "team-b"]`, any controller from “team-a” or
+    “team-b” will be granted access. This key should only be set if the Portal
+    is instantiated through the API, as custom application code is required to
+    *tag* the controller connections to be granted access, typically based on
+    some custom authentication scheme.
+
+<div class="note">
+  <h5>Advanced users</h5>
+  <p>
+    For greater control, such as custom authentication, per-node ACLs, and
+    application-specific protocol messages, you may also instantiate the
+    PortalService object instead of running the frida-portal CLI program.
+  </p>
+</div>
 
 ## Script
 
