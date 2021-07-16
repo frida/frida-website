@@ -53,18 +53,18 @@ const onClose = new NativeCallback(function () {
   Script.unpin();
 }, 'void', ['pointer']);
 
-const async = Memory.alloc(128);
-uv_async_init(uv_default_loop(), async, processPending);
-uv_unref(async);
+const handle = Memory.alloc(128);
+uv_async_init(uv_default_loop(), handle, processPending);
+uv_unref(handle);
 
-WeakRef.bind(async, function () {
+Script.bindWeak(handle, function () {
   Script.pin();
-  uv_close(async, onClose);
+  uv_close(handle, onClose);
 });
 
 function run(source) {
   pending.push(source);
-  uv_async_send(async);
+  uv_async_send(handle);
 }
 
 run('console.log("Hello from Frida");');

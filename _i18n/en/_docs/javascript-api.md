@@ -53,7 +53,6 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 1. **Instrumentation**
     1. [Interceptor](#interceptor)
     1. [Stalker](#stalker)
-    1. [WeakRef](#weakref)
     1. [ObjC](#objc)
     1. [Java](#java)
 1. **CPU Instruction**
@@ -97,6 +96,27 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 
 +   `Script.runtime`: string property containing the runtime being used.
     Either `QJS` or `V8`.
+
++   `Script.pin()`: temporarily prevents the current script from being unloaded.
+    This is reference-counted, so there must be one matching *unpin()* happening
+    at a later point. Typically used in the callback of *bindWeak()* when you
+    need to schedule cleanup on another thread.
+
++   `Script.unpin()`: reverses a previous *pin()* so the current script may be
+    unloaded.
+
++   `Script.bindWeak(value, fn)`: monitors `value` and calls the `fn` callback
+    as soon as `value` has been garbage-collected, or the script is about to get
+    unloaded. Returns an ID that you can pass to [`Script.unbindWeak()`](#unbindweak)
+    for explicit cleanup.
+    {: #bindweak}
+
+    This API is useful if you're building a language-binding, where you need to
+    free native resources when a JS value is no longer needed.
+
++   `Script.unbindWeak(id)`: stops monitoring the value passed to
+    `Script.bindWeak(value, fn)`, and call the `fn` callback immediately.
+    {: #unbindweak}
 
 ---
 
@@ -2018,22 +2038,6 @@ Stalker.follow(mainThread.id, {
     set this property to zero to disable periodic draining, and instead call
     [`Stalker.flush()`](#stalker-flush) when you would like the queue to be drained.
     {: #stalker-queuedraininterval}
-
-
-### WeakRef
-
-+   `WeakRef.bind(value, fn)`: monitor `value` and call the `fn` callback as
-    soon as `value` has been garbage-collected, or the script is about to get
-    unloaded. Returns an id that you can pass to [`WeakRef.unbind()`](#weakref-unbind)
-    for explicit cleanup.
-    {: #weakref-bind}
-
-    This API is useful if you're building a language-binding, where you need to
-    free native resources when a JS value is no longer needed.
-
-+   `WeakRef.unbind(id)`: stop monitoring the value passed to
-    `WeakRef.bind(value, fn)`, and call the `fn` callback immediately.
-    {: #weakref-unbind}
 
 
 ### ObjC
@@ -4113,6 +4117,6 @@ If you want to be notified when the target process exits, use
 ### Garbage collection
 
 +   `gc()`: force garbage collection. Useful for testing, especially logic
-    involving [`WeakRef.bind()`](#weakref-bind).
+    involving [`Script.bindWeak()`](#bindweak).
 
 [r2]: https://radare.org/r/
