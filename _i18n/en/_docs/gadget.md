@@ -29,12 +29,12 @@ the .config in the parent directory in this case. But only if it's put in a
 directory named “Frameworks”.
 
 On Android, the package manager will only copy files from a non-debuggable
-application's `/lib` folder if their name matches the following conditions:
+application's `/lib` directory if their name matches the following conditions:
 - It starts with the prefix `lib`
 - It ends with the suffix `.so`
 - It's `gdbserver`
 
-Frida is well-aware of this limitation and will accept a config file with those
+Frida is well aware of this limitation and will accept a config file with those
 changes. Example:
 ```
 lib
@@ -80,8 +80,8 @@ root. It supports four different keys at the root level:
 
 ## Listen
 
-This is the default interaction, where Gadget exposes the same interface as
-*frida-server* does, listening on *localhost:27042* by default. The only
+This is the default interaction, where Gadget exposes a *frida-server*
+compatible interface, listening on *localhost:27042* by default. The only
 difference is that the lists of running processes and installed apps only
 contain a single entry, which is for the program itself. The process name is
 always just *Gadget*, and the installed app's identifier is always
@@ -115,7 +115,7 @@ Supported configuration keys are:
 
 -   `address`: string specifying the interface to listen on. Supports both IPv4
     and IPv6. Defaults to `127.0.0.1`. Specify `0.0.0.0` to listen on all IPv4
-    interfaces.
+    interfaces, `::` to listen on all IPv6 interfaces.
 
 -   `port`: number specifying the TCP port to listen on. Defaults to `27042`.
 
