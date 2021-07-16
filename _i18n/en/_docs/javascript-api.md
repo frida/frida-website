@@ -118,6 +118,17 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     `Script.bindWeak(value, fn)`, and call the `fn` callback immediately.
     {: #unbindweak}
 
++   `Script.setGlobalAccessHandler(handler | null)`: installs or uninstalls a
+    handler that is used to resolve attempts to access non-existent global
+    variables. Useful for implementing a REPL where unknown identifiers may be
+    fetched lazily from a database.
+
+    The `handler` is an object containing two properties:
+
+    -   `enumerate()`: queries which additional globals exist. Must return an
+                       array of strings.
+    -   `get(property)`: retrieves the value for the given property.
+
 ---
 
 ## Process, Thread, Module and Memory
