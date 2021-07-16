@@ -105,6 +105,7 @@ The default configuration is:
     "type": "listen",
     "address": "127.0.0.1",
     "port": 27042,
+    "on_port_conflict": "fail",
     "on_load": "wait"
   }
 }
@@ -117,6 +118,11 @@ Supported configuration keys are:
     interfaces.
 
 -   `port`: number specifying the TCP port to listen on. Defaults to `27042`.
+
+-   `on_port_conflict`: string specifying either `fail` or `pick-next`, stating
+    what to do if the listening port is already taken. The default is `fail`,
+    which means Gadget will fail to start. Specify `pick-next` if you would like
+    it to try each consecutive port until an available port is found.
 
 -   `on_load`: string specifying either `resume` or `wait`, stating what to do
     when Gadget is loaded. The default is `wait`, which means it will wait for
