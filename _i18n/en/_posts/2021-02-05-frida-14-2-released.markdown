@@ -426,6 +426,13 @@ Enjoy!
   to replace some methods. Kudos to [@pandasauce][] for reporting and helping
   figure this one out!
 
+### Changes in 14.2.17
+
+- Enumerate Darwin imports from chained fixups, to support the latest arm64e
+  binaries. Thanks [@mrmacete][]!
+- Fix chained fixups handling in the jailed iOS injector. Thanks [@mrmacete][]!
+- qml: Compile with *no_keywords* for GLib compatibility. Thanks [@suy][]!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
@@ -447,3 +454,4 @@ Enjoy!
 [@asabil]: https://twitter.com/asabil
 [@liuyufei]: https://github.com/liuyufei
 [@pandasauce]: https://github.com/pandasauce
+[@suy]: https://github.com/suy
