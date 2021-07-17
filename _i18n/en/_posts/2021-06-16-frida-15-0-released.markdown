@@ -18,7 +18,7 @@ Earlier this year [@insitusec][] and I were brainstorming ways we could simplify
 distributed instrumentation use-cases. Essentially ship a Frida Gadget that's
 “hollow”, where application-specific instrumentation is provided by a backend.
 
-One way one could implement this is by using the *Socket.connect()* JavaScript
+One way one could implement this is by using the Socket.connect() JavaScript
 API, and then define an application-specific signaling protocol over which the
 code is loaded, before handing it off to the JavaScript runtime.
 
@@ -35,11 +35,11 @@ Such a Portal then aggregates all of the connected gadgets, and also exposes a
 frida-server compatible interface where all of them appear as processes. To the
 outside it appears as if they're processes on the same machine as where the
 Portal is running: they all have unique process IDs if you use
-*enumerate_processes()* / *frida-ps*, and one can *attach()* to them seamlessly.
+enumerate_processes() or frida-ps, and one can attach() to them seamlessly.
 
 In this way, existing Frida tools work exactly the same way – and by enabling
 spawn-gating on the Portal, any Gadget connecting could be instructed to wait
-for somebody to *resume()* it after applying the desired instrumentation. This
+for somebody to resume() it after applying the desired instrumentation. This
 is the same way spawn-gating works in other situations.
 
 ### Part II: Implementation
@@ -50,10 +50,10 @@ this eventually [crystallized][] into the following:
 
 The Portal should expose two different interfaces:
 
-1. The *cluster* interface that Gadgets can connect to, allowing them to join
+1. The ***cluster*** interface that Gadgets can connect to, allowing them to join
    the cluster.
-2. Optionally also a *control* interface that controllers can talk to. E.g.
-   `frida-trace -H my.portal.com -n Twitter -i open`.
+2. Optionally also a ***control*** interface that controllers can talk to. E.g.
+   `frida-trace -H my.portal.com -n Twitter -i open`
 
 To a user this would be pretty simple: just grab the frida-portal binary from
 our [releases][], and run it on some machine that the Gadget is able to
@@ -66,9 +66,9 @@ north of [200 lines of code][], of which very little is actual logic.
 
 One can also use our frida-core language bindings, for e.g. Python or Node.js,
 to instantiate the PortalService. This allows configuring it to not provide
-any *control* interface, and instead access its *device* property. This is a
-standard Frida *Device* object, on which one can *enumerate_processes()*,
-*attach()*, etc. Or one can do both at the same time.
+any control interface, and instead access its ***device*** property. This is a
+standard Frida Device object, on which one can enumerate_processes(), attach(),
+etc. Or one can do both at the same time.
 
 Using the API also offers other features, but we will get back to those.
 
@@ -190,7 +190,7 @@ our synchronous APIs and onto async/await.)
 ### Part VI: Latency and Bottlenecks
 
 Alright, so next up we've got a Portal running in a data center in the US, but
-the Gadget is at my friends' place in Spain, and I'm trying to control it from
+the Gadget is at my friend's place in Spain, and I'm trying to control it from
 Norway using frida-trace. It would be a shame if the script messages coming from
 Spain would have to cross the Atlantic twice, not just because of the latency,
 but also the AWS bill I'll have to pay next month. Because I'm dumping memory
