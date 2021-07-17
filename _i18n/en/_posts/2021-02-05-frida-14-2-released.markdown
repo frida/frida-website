@@ -433,6 +433,18 @@ Enjoy!
 - Fix chained fixups handling in the jailed iOS injector. Thanks [@mrmacete][]!
 - qml: Compile with *no_keywords* for GLib compatibility. Thanks [@suy][]!
 
+### Changes in 14.2.18
+
+- Fix i/macOS injector on recent XNU versions, where mach_port_extract_right()
+  fails with KERN_INVALID_CAPABILITY when trying to steal the target process'
+  POSIX thread port send right. This resulted in the injector assuming that we'd
+  uninjected, subsequently deallocating memory still in use.
+- Fix \_\_\_error symbol name in the jailed iOS injector. Thanks [@mrmacete][]!
+- Fix enumeration of modules with spaces on path in the Linux backend. Thanks
+  [@suy][]!
+- Fix Stalker handling of direct branch addresses on x64.
+- python: Add RPC exports listing functionality. Thanks [@NewbieGoose][]!
+
 
 [@alkalinesec]: https://twitter.com/alkalinesec
 [Java bridge]: https://github.com/frida/frida-java-bridge
@@ -455,3 +467,4 @@ Enjoy!
 [@liuyufei]: https://github.com/liuyufei
 [@pandasauce]: https://github.com/pandasauce
 [@suy]: https://github.com/suy
+[@NewbieGoose]: https://github.com/NewbieGoose
