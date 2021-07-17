@@ -422,7 +422,7 @@ calls attach() on their Bus object:
 
 {% highlight python %}
 def on_subscribe(connection_id):
-    self._service.post(connection_id, {
+    service.post(connection_id, {
         'type': 'welcome',
         'users': [user.nick for user in connected_users]
     })
@@ -479,8 +479,8 @@ where he needed to pick a Device object based on whether it's running iOS vs
 Android. This is a feature that's been requested in the past, and it felt like
 it might be time to finally address it.
 
-While one could do `device.attach(0)` and load a script in the system session,
-in order to run code inside Frida itself (e.g. in a remote frida-server), it is
+While one could do device.attach(0) and load a script in the system session, in
+order to run code inside Frida itself (e.g. in a remote frida-server), it is
 somewhat tedious. It also doesn't work if the Device represents a
 jailed/non-rooted device, where code execution is a lot more constrained.
 
@@ -647,8 +647,8 @@ jailbroken (rooted). For example on Android, we didn't even fetch app labels in
 the non-rooted code-path. This was because we were relying on running shell
 commands over ADB, and I couldn't find a way to grab labels in that case.
 
-The shell command route is obviously very fragile, as most tools output details
-in a format that's meant to be consumed by a human, not a machine. And obviously
+The shell command route is very fragile, as most tools output details in a
+format that's meant to be consumed by a human, not a machine. And obviously
 such output is likely to change as Android evolves.
 
 Because of this we now have a tiny prebuilt .dex that we copy over and run, and
@@ -698,7 +698,7 @@ transparently – no changes needed in your existing instrumentation code.
 
 We now also support the latest betas of macOS Monterey, iOS 15, and Android 12.
 Special thanks to [@alexhude][] at [Corellium][] for helping debug and test
-things on iOS 15, and [@pengzhangdev][] who contributed a fix to
+things on iOS 15, and [@pengzhangdev][] who contributed a fix for
 frida-java-bridge to support Android 12.
 
 ## Networked iOS Devices
@@ -798,7 +798,7 @@ Enjoy!
 - Implement WebRTC Data Channel compatible peer-to-peer support, enabled
   by calling setup_peer_connection() on Session. This allows a direct
   connection to be established between the client and the remote
-  process, which is useful when talking to it through e.g. a portal.
+  process, which is useful when talking to it through e.g. a Portal.
 - Optimize protocol by skipping the DBus authentication handshake and
   telling GDBus not to fetch properties, saving an additional roundtrip.
 - Drop deprecated protocol bits, such as Session.enable_jit().
@@ -881,12 +881,11 @@ Enjoy!
 - Ensure DarwinGrafter's merging of binds doesn't make gaps in \_\_LINKEDIT.
   Not doing so triggers a bug in `codesign` for which the resulting signed
   binary turns out corrupted. Thanks [@mrmacete][]!
-- python: Upgrade web client example to match latest dbus-next.
 - node: Fix compilation error when building with MSVC.
 
 ### Changes in 15.0.2
 
-- Fix handling of large messages. For both client-server and p2p. Also bump the
+- Fix handling of large messages, for both client-server and p2p. Also bump the
   WebSocket payload size limit to 256 KiB - same as is typically negotiated for
   data channels in p2p mode.
 - Move WebSocket I/O to the DBus thread, to avoid unnecessary thread hopping.
