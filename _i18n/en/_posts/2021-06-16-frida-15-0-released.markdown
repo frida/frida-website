@@ -555,7 +555,7 @@ Here we can see the iOS Twitter app's version and build number, where its app
 bundle is on the filesystem, the containers that it owns, that it is currently
 the frontmost app, how long ago it was started, etc.
 
-We can also crank that up to `enumerate_applications(scope='full')`, and get
+We can also crank that up to `enumerate_applications(scope='full')` and get
 icons as well:
 
 ![enumerate_applications(scope='full')](/img/enumerate-applications-ios-full.png "enumerate_applications(scope='full')")
@@ -665,7 +665,7 @@ As part of these major changes I also added code to fetch icons on Android as
 well, both non-rooted and rooted, so that this feature is no longer just limited
 to iOS, macOS, and Windows.
 
-We didn't provide icons for jailed iOS however, but that feature gap is now also
+We didn't provide icons for jailed iOS though, but that feature gap is now also
 closed. There is however still one difference between jailed and jailbroken iOS:
 the `ppid` and `user` parameters are not available in the jailed case, as this
 is not exposed by any lockdown/DTX API that I'm currently aware of. But other
