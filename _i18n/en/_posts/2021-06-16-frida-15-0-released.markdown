@@ -277,7 +277,7 @@ really break the protocol and go ahead with a major-bump. This is something
 I've been trying to avoid for a long time, as I know how painful they are to
 everyone, myself included.
 
-So now, browsers can finally join in on the fun, without any middleware needed:
+So now browsers can finally join in on the fun, without any middleware needed:
 
 {% highlight js %}
 async function start() {
@@ -285,7 +285,6 @@ async function start() {
   const bus = dbus.peerBus(ws, {
     authMethods: [],
   });
-  let peerBus: dbus.MessageBus | null = null;
 
   const hostSessionObj = await bus.getProxyObject('re.frida.HostSession15',
       '/re/frida/HostSession');
@@ -315,8 +314,9 @@ finally talk directly to a running Portal/frida-server, without any middleware
 or gateways in between.
 
 I didn't want this to be a half-baked story though, so I made sure that the
-peer-to-peer implementation is built on WebRTC data channels – this way even
-browsers can communicate with minimal latency and help keep the AWS bill low.
+[peer-to-peer implementation][] is built on WebRTC data channels – this way
+even browsers can communicate with minimal latency and help keep the AWS bill
+low.
 
 ### Part IX: Assets
 
@@ -954,6 +954,7 @@ Enjoy!
 [GLib]: https://gitlab.gnome.org/GNOME/glib
 [mode]: https://frida.re/docs/modes/
 [examples/web_client]: https://github.com/frida/frida-python/blob/bbdcdfaca821276361399775bd81599710ec0625/examples/web_client/src/store/plugins/frida.ts
+[peer-to-peer implementation]: https://github.com/frida/frida-core/blob/0120cf59bc6f623bb842c93bc8870ce2a704453c/lib/base/p2p.vala
 [examples/portal_server.py]: https://github.com/frida/frida-python/blob/bbdcdfaca821276361399775bd81599710ec0625/examples/portal_server.py
 [examples/portal_client.py]: https://github.com/frida/frida-python/blob/bbdcdfaca821276361399775bd81599710ec0625/examples/portal_client.py
 [@Hexploitable]: https://twitter.com/Hexploitable
