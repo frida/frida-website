@@ -1,7 +1,7 @@
 ---
 layout: news_item
 title: 'Frida 15.0 Released'
-date: 2021-06-16 23:00:00 +0200
+date: 2021-07-16 23:00:00 +0200
 author: oleavr
 version: 15.0
 categories: [release]
