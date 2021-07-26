@@ -939,6 +939,14 @@ Enjoy!
 - iOS: Add support for unc0ver v6.1.2.
 - iOS: Update Substrate interop logic to support 0.9.7113.
 
+### Changes in 15.0.9
+
+- iOS: Revive support for older OS versions. (Verified on iOS 10.3.)
+- iOS: Fix support for older Apple usbmuxd versions.
+- Android: Handle devices where jailed is unsupported.
+- Fix DarwinGrafter alignment issue, aligning to 16 bytes also when lazy
+  binds follow regular binds. Thanks [@mrmacete][]!
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
