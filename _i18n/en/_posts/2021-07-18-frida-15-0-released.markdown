@@ -948,6 +948,12 @@ Enjoy!
 - Fix DarwinGrafter alignment issue, aligning to 16 bytes also when lazy
   binds follow regular binds. Thanks [@mrmacete][]!
 
+### Changes in 15.0.10
+
+- Fix regression where Device.open_channel("lockdown:") ended up closing the
+  stream right away.
+- Fix crash when talking to older versions of ADB.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
