@@ -962,6 +962,17 @@ Enjoy!
   Apple Silicon as well.
 - Work around i/macOS arm64 single-step delay during early instrumentation.
 
+### Changes in 15.0.12
+
+- Fix macOS spawn gating task port lifetime issue. Should not try to be clever
+  and keep task ports around – bad things happen if a task port is used after an
+  exec transition.
+- Remove the i/macOS task port caching logic. It is dangerous in exec
+  transitions, adds some complexity, and doesn't help all that much
+  performance-wise, anyway.
+- Make the macOS spawn gating DTrace predicate environment variable optional.
+- Improve the macOS spawn gating error message.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
