@@ -954,6 +954,14 @@ Enjoy!
   stream right away.
 - Fix crash when talking to older versions of ADB.
 
+### Changes in 15.0.11
+
+- Rewrite macOS spawn gating to use DTrace. This means we've now dropped support
+  for our kernel extension, and we don't need to worry about future OSes no
+  longer supporting extensions. It also means we finally support spawn gating on
+  Apple Silicon as well.
+- Work around i/macOS arm64 single-step delay during early instrumentation.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
