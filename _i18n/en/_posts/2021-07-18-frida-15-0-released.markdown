@@ -973,6 +973,12 @@ Enjoy!
 - Make the macOS spawn gating DTrace predicate environment variable optional.
 - Improve the macOS spawn gating error message.
 
+### Changes in 15.0.13
+
+- Improve clients to specify Host header and use TLS SNI.
+- iOS: Fix usbmux port number encoding in the connect request.
+- Python, Node.js: Fix ownership in Device.spawn() aux options logic.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
