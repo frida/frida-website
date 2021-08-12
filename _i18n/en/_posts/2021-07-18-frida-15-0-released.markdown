@@ -976,6 +976,7 @@ Enjoy!
 ### Changes in 15.0.13
 
 - Improve clients to specify Host header and use TLS SNI.
+- Revert i/macOS single-step delay workarounds.
 - iOS: Fix usbmux port number encoding in the connect request.
 - Python, Node.js: Fix ownership in Device.spawn() aux options logic.
 
