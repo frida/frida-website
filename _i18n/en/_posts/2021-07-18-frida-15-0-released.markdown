@@ -980,6 +980,23 @@ Enjoy!
 - iOS: Fix usbmux port number encoding in the connect request.
 - Python, Node.js: Fix ownership in Device.spawn() aux options logic.
 
+### Changes in 15.0.14
+
+- Port iOS crash reporter integration to iOS 14.7.1.
+- Configure internal agents to be less intrusive on i/macOS.
+- Improve i/macOS error-handling during process preparation.
+- Revive i/macOS single-step delay workarounds, which turned out to be needed
+  after all.
+- Handle reentrancy when about to yield JS lock, which may happen if a replaced
+  function gets called by Interceptor during end_transaction().
+- Fix conditional Interceptor unignore logic in GumJS. This was preventing
+  Interceptor from ignoring internal calls, and resulted in noise and reduced
+  performance.
+- Enhance the i/macOS DebugSymbol fallback name to also include the unslid
+  address. This makes it easy to plop it into a static analysis tool.
+- Fix Stalker code slab refill logic.
+- Add Stalker stats interface.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
