@@ -997,6 +997,11 @@ Enjoy!
 - Fix Stalker code slab refill logic.
 - Add Stalker stats interface.
 
+### Changes in 15.0.15
+
+- Rework i/macOS Exceptor to support latest iOS 14. This would previously result
+  in a deadlock whenever a native exception occurred.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
