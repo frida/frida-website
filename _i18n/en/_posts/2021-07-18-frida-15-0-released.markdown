@@ -1002,6 +1002,16 @@ Enjoy!
 - Rework i/macOS Exceptor to support latest iOS 14. This would previously result
   in a deadlock whenever a native exception occurred.
 
+### Changes in 15.0.16
+
+- Fix i/macOS single-step handling on ARM during early instrumentation, which
+  would result in attach() failing randomly for a freshly spawn()ed process.
+  Thanks [@mrmacete][]!
+- Add Stalker backpatch prefetching support.
+- Make Stalker inline cache size configurable on x86.
+- Optimize Stalker x86 return handling.
+- ObjC: Allow proxies to implement methods. Thanks [@hot3eed][]!
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
