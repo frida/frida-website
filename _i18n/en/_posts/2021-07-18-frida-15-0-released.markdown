@@ -1012,6 +1012,16 @@ Enjoy!
 - Optimize Stalker x86 return handling.
 - ObjC: Allow proxies to implement methods. Thanks [@hot3eed][]!
 
+### Changes in 15.0.17
+
+- gadget: Support packaging as framework on i/macOS. Load config from
+  “Resources/config.json”, and resolve relative paths relative to the same
+  directory. As an added bonus, we now also support specifying relative paths
+  for “certificate” and “asset_root”.
+- web-service: Implement basic directory listing with NGINX-style output. This
+  is useful with e.g. “frida-server --asset-root=/”.
+- stalker: Fix backpatch args for 32-bit x86.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
