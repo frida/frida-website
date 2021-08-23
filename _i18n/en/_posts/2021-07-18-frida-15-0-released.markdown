@@ -1022,6 +1022,13 @@ Enjoy!
   is useful with e.g. “frida-server --asset-root=/”.
 - stalker: Fix backpatch args for 32-bit x86.
 
+### Changes in 15.0.18
+
+- Plug long-standing memory leaks, both in our internal heap's realloc behavior
+  being misconfigured and causing leaks, and in how we register JavaScript
+  classes with QuickJS. Kudos to [@mrmacete][] for discovering and helping track
+  down these long-standing bugs!
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
