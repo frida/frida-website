@@ -17,7 +17,7 @@ $ frida-trace \
 # Launch YouTube on your Android device and trace Java methods
 # with “certificate” in their signature (s), ignoring case (i)
 # and only searching in user-defined classes (u)
-$ frida-trace
+$ frida-trace \
     -U \
     -f com.google.android.youtube \
     --runtime=v8 \
