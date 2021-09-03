@@ -1029,6 +1029,10 @@ Enjoy!
   classes with QuickJS. Kudos to [@mrmacete][] for discovering and helping track
   down these long-standing bugs!
 
+### Changes in 15.0.19
+
+- gadget: Fix framework resource lookup logic on iOS.
+
 
 [@insitusec]: https://twitter.com/insitusec
 [Listen]: https://frida.re/docs/gadget/#listen
