@@ -108,9 +108,10 @@ Refer to the [documentation][] for an up-to-date resource on the current API.
 
 Enjoy!
 
+
 ### Changes in 15.1.0
 
-Implement the Swift bridge, which allows Frida to:
+- Implement the Swift bridge, which allows Frida to:
   - Explore Swift modules along with types implemented in them, i.e. classes,
     structs, enums and protocols.
   - Create JavaScript wrappers for object instances and values.
@@ -118,6 +119,10 @@ Implement the Swift bridge, which allows Frida to:
     JavaScript runtime.
   - Intercept Swift functions and automatically parse their arguments and return
     values.
+- Fix i/macOS regression where changes related to iOS 15 support ended up
+  breaking support for attaching to Apple system daemons.
+- gadget: Add interaction.parameters in connect mode. These parameters are then
+  "reflected" into app's info under `parameters.config`. Thanks [@mrmacete][]!
 
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
@@ -126,3 +131,4 @@ Implement the Swift bridge, which allows Frida to:
 [include/swift/Basic/RelativePointer.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/Basic/RelativePointer.h
 [docs]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/docs/ABI/CallingConvention.rst
 [documentation]: https://github.com/frida/frida-swift-bridge/blob/master/docs/api.md
+[@mrmacete]: https://twitter.com/bezjaje
