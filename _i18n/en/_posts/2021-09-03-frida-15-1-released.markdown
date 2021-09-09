@@ -17,7 +17,7 @@ this Frida release.
 
 Probably the first thing a reverser does when they start reversing a binary is
 getting to know the different data structures that the binary defines. So it
-made most since to start by building the Swift equivalent of the `ObjC.classes`
+made most sense to start by building the Swift equivalent of the `ObjC.classes`
 and `ObjC.protocols` APIs. But since Swift has other first-class types,
 i.e. structs and enums, and since the Swift runtime doesn't offer reflection
 primitives, at least not in the sense that Objective-C does, it meant we had to
