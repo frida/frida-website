@@ -124,6 +124,10 @@ Enjoy!
 - gadget: Add interaction.parameters in connect mode. These parameters are then
   "reflected" into app's info under `parameters.config`. Thanks [@mrmacete][]!
 
+### Changes in 15.1.1
+
+- gumjs: Fix Swift lifetime logic in the V8 runtime.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
