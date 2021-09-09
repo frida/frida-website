@@ -89,7 +89,7 @@ to support Swift functions.
 
 For functions that are not stripped, we use a simple regex to parse argment
 types and names, same for return values. After parsing them we retrieve the
-type metadata, figure the type's layout, then simply construct JS wrappers
+type metadata, figure out the type's layout, then simply construct JS wrappers
 for each argument, which we pass the Swift argument value, however many
 registers it occupies.
 
