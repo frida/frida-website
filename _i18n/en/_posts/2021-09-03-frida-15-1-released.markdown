@@ -68,7 +68,7 @@ it's direct or indirect. Some structs, even though they might be smaller than
 generic and thus their exact memory layout is not known at compile time, or
 because they include a weak reference that has to be in-memory at all times.
 
-Frida had to implement both semantic and physical lowering in order to be able
+We had to implement both semantic and physical lowering in order to be able
 to call Swift functions. Physical lowering is implemented using JIT-compiled
 adapter functions (thanks to the `Arm64Writer` API) that does the necessary
 `SystemV`-`swiftcall` translation. Semantic lowering is implemented by utilizing
