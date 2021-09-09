@@ -38,7 +38,7 @@ don't have to build the Swift compiler in order to tinker with it.
 
 Frida also has the advantage of being able to probe into
 internal Apple dylibs written in Swift, and that's because we don't need to
-parse the `dyld_shared_cache` thanks to the private `getsectiondata` API, whch
+parse the `dyld_shared_cache` thanks to the private `getsectiondata` API, which
 gives us section offsets hassle-free.
 
 Once we have the metadata, we're able to easily create JavaScript wrappers for
