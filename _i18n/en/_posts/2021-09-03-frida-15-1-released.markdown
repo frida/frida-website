@@ -81,7 +81,7 @@ convention.
 ## Interception
 
 Because Swift passes structs directly in registers, there isn't a 1-to-1 mapping
-between registers and actual arguments, as is the case for SystemV.
+between registers and actual arguments.
 
 And now that we have JavaScript wrappers for types, and are able to call Swift
 functions from the JS runtime, a good next step would be extending `Interceptor`
