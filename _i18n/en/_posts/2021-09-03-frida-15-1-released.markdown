@@ -34,7 +34,7 @@ Mach-O binaries, these are stored in the `__swift5_types` section.
 
 So to dump types, Frida basically iterates over these data structures and
 parses them along the way, very similar to what [dsdump][] does, except that you
-don't have to build the Swift compiler to in order to tinker with it.
+don't have to build the Swift compiler in order to tinker with it.
 
 Frida also has the advantage of being able to probe into
 internal Apple dylibs written in Swift, and that's because we don't need to
