@@ -57,9 +57,8 @@ root. It supports four different keys at the root level:
     and OS resources. This is fine if Gadget's lifetime is linked to the program
     itself. Specify `full` if you intend to unload it at some point.
 
--   `runtime`: string specifying either `interpreter` or `jit`, essentially
-    letting you choose between QuickJS and V8, respectively. The default is
-    `interpreter`, i.e. QuickJS.
+-   `runtime`: string specifying either `default`, `qjs`, or `v8`, letting you
+    override the default JavaScript runtime used.
 
 -   `code_signing`: string specifying either `optional` or `required`, making
     it possible to run on a jailed iOS device without a debugger attached by
