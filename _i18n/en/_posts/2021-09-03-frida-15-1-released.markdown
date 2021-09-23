@@ -128,6 +128,19 @@ Enjoy!
 
 - gumjs: Fix Swift lifetime logic in the V8 runtime.
 
+### Changes in 15.1.2
+
+- control-service: Fix signal wiring, so signals such as Device.output get
+  emitted correctly by a remote frida-server. Thanks [@mrmacete][]!
+- gadget: Fix the “runtime” option, which was forgotten during the refactorings
+  leading up to Frida 15.
+- relocator: Optimize handling of x86 RIP relative code, by simply adjusting the
+  offset where possible.
+- gumjs: Add ESM support, so tools like frida-compile can output better code.
+- gumjs: Throw away source code after parsing it.
+- gumjs: Plug leak when compiling to QuickJS bytecode.
+- java: Expose JNIEnv->GetDirectBufferAddress. Thanks [@pandasauce][]!
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -136,3 +149,4 @@ Enjoy!
 [docs]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/docs/ABI/CallingConvention.rst
 [documentation]: https://github.com/frida/frida-swift-bridge/blob/master/docs/api.md
 [@mrmacete]: https://twitter.com/bezjaje
+[@pandasauce]: https://github.com/pandasauce
