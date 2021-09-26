@@ -496,7 +496,7 @@ const pattern = '00 00 00 00 ?? 13 37 ?? 42';
 
 Memory.scan(m.base, m.size, pattern, {
   onMatch(address, size) {
-    console.log'Memory.scan() found match at', address,
+    console.log('Memory.scan() found match at', address,
         'with size', size);
 
     // Optionally stop scanning early:
