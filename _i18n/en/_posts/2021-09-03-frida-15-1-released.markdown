@@ -141,6 +141,12 @@ Enjoy!
 - gumjs: Plug leak when compiling to QuickJS bytecode.
 - java: Expose JNIEnv->GetDirectBufferAddress. Thanks [@pandasauce][]!
 
+### Changes in 15.1.3
+
+- objc: Fix the Proxy respondsToSelector implementation. Thanks [@hot3eed][]!
+- gumjs: Fix V8 runtime crash when module is missing.
+- gumjs: Emit V8 exceptions thrown by ESM entrypoints.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -150,3 +156,4 @@ Enjoy!
 [documentation]: https://github.com/frida/frida-swift-bridge/blob/master/docs/api.md
 [@mrmacete]: https://twitter.com/bezjaje
 [@pandasauce]: https://github.com/pandasauce
+[@hot3eed]: https://github.com/hot3eed
