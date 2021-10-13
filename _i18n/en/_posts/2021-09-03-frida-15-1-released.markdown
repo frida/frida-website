@@ -147,6 +147,19 @@ Enjoy!
 - gumjs: Fix V8 runtime crash when module is missing.
 - gumjs: Emit V8 exceptions thrown by ESM entrypoints.
 
+### Changes in 15.1.4
+
+- gumjs: Fix double-free related to weak ref callbacks in the QuickJS runtime.
+  Thanks [@mrmacete][]!
+- gumjs: Ignore Interceptor context in unrelated NativeCallback invokes. In this
+  way invalid Interceptor contexts from higher up the call stack will be safely
+  ignored in favor of the minimal but correct callback context. Thanks
+  [@mrmacete][]!
+- gumjs: Fix ESM module name normalization logic.
+- gumjs: Add Process getters for cwd, home, and tmp dirs.
+- Swift: Improve metadata caching performance by ~3x. Thanks [@hot3eed][]!
+- node: Publish Electron prebuilds for v15 instead of v13.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
