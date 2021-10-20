@@ -160,6 +160,15 @@ Enjoy!
 - Swift: Improve metadata caching performance by ~3x. Thanks [@hot3eed][]!
 - node: Publish Electron prebuilds for v15 instead of v13.
 
+### Changes in 15.1.5
+
+- gumjs: Fix crash when QuickJS stringifies large numbers. Thanks
+  [@vfsfitvnm][]!
+- gumjs: Expose GError and GIConv to CModule. Thanks [@0xDC00][]!
+- droidy: Support ADB server host/port environment variables. Thanks
+  [@amirpeles90][]!
+- Swift: Improve load behavior on non-Darwin.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -170,3 +179,6 @@ Enjoy!
 [@mrmacete]: https://twitter.com/bezjaje
 [@pandasauce]: https://github.com/pandasauce
 [@hot3eed]: https://github.com/hot3eed
+[@vfsfitvnm]: https://github.com/vfsfitvnm
+[@0xDC00]: https://github.com/0xDC00
+[@amirpeles90]: https://github.com/amirpeles90
