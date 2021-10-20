@@ -169,6 +169,10 @@ Enjoy!
   [@amirpeles90][]!
 - Swift: Improve load behavior on non-Darwin.
 
+### Changes in 15.1.6
+
+- Swift: Fix crash during load on non-Darwin. Thanks [@hot3eed][]!
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
