@@ -173,6 +173,13 @@ Enjoy!
 
 - swift: Fix crash during load on non-Darwin. Thanks [@hot3eed][]!
 
+### Changes in 15.1.7
+
+- swift: Fix CoreSymbolication integration on older OS versions. Thanks
+  [@hot3eed][]!
+- python: Add setup.py download logic for Android/ARM. Our CI doesn't yet build
+  and upload such a binary, though.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
