@@ -157,7 +157,7 @@ Enjoy!
   [@mrmacete][]!
 - gumjs: Fix ESM module name normalization logic.
 - gumjs: Add Process getters for cwd, home, and tmp dirs.
-- Swift: Improve metadata caching performance by ~3x. Thanks [@hot3eed][]!
+- swift: Improve metadata caching performance by ~3x. Thanks [@hot3eed][]!
 - node: Publish Electron prebuilds for v15 instead of v13.
 
 ### Changes in 15.1.5
@@ -167,11 +167,11 @@ Enjoy!
 - gumjs: Expose GError and GIConv to CModule. Thanks [@0xDC00][]!
 - droidy: Support ADB server host/port environment variables. Thanks
   [@amirpeles90][]!
-- Swift: Improve load behavior on non-Darwin.
+- swift: Improve load behavior on non-Darwin.
 
 ### Changes in 15.1.6
 
-- Swift: Fix crash during load on non-Darwin. Thanks [@hot3eed][]!
+- swift: Fix crash during load on non-Darwin. Thanks [@hot3eed][]!
 
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
