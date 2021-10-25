@@ -180,6 +180,11 @@ Enjoy!
 - python: Add setup.py download logic for Android/ARM. Our CI doesn't yet build
   and upload such a binary, though.
 
+### Changes in 15.1.8
+
+- darwin: Add support for working in the SRD environment. Thanks [@Nessphoro][]!
+- darwin: Add support for building with newer iOS SDKs.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -193,3 +198,4 @@ Enjoy!
 [@vfsfitvnm]: https://github.com/vfsfitvnm
 [@0xDC00]: https://github.com/0xDC00
 [@amirpeles90]: https://github.com/amirpeles90
+[@Nessphoro]: https://github.com/Nessphoro
