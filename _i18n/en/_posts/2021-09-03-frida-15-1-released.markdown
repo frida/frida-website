@@ -185,6 +185,15 @@ Enjoy!
 - darwin: Add support for working in the SRD environment. Thanks [@Nessphoro][]!
 - darwin: Add support for building with newer iOS SDKs.
 
+### Changes in 15.1.9
+
+- x86-relocator: Fix patching of RIP relative instructions. This was a
+  regression introduced in 15.1.2, resulting in Stalker becoming unreliable.
+- portal-service: Always remove ClusterNode sessions whenever a session ID is
+  unset from PortalService. This avoids both NULL dereferences and leaks.
+  Thanks [@mrmacete][]!
+- frida-portal: Fix typo in --help output.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
