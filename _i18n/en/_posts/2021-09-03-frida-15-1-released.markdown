@@ -208,6 +208,18 @@ Enjoy!
 - gumjs: Expand Instruction API w/ regsAccessed and operand.access. Thanks
   [@3vilWind][]!
 
+### Changes in 15.1.11
+
+- x86-writer: Add put_sahf() and put_lahf().
+- x86-relocator: Fix handling of out-of-range Jcc branch targets. Thanks
+  [@0xDC00][]!
+- stalker: Optimize target address retrieval.
+- stalker: Avoid expensive XCHG instructions.
+- stalker: Optimize IC prolog to use SAHF/LAHF.
+- memory: Improve search() to support regex patterns. Thanks [@hot3eed][]!
+- kernel: Get base from all_image_info where supported. Thanks [@mrmacete][]!
+- windows: Improve dbghelp backtracer reliability. Thanks [@HonicRoku][]!
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -223,3 +235,4 @@ Enjoy!
 [@amirpeles90]: https://github.com/amirpeles90
 [@Nessphoro]: https://github.com/Nessphoro
 [@3vilWind]: https://github.com/3vilWind
+[@HonicRoku]: https://github.com/HonicRoku
