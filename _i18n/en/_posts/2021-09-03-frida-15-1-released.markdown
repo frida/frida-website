@@ -216,7 +216,7 @@ Enjoy!
 - stalker: Optimize target address retrieval.
 - stalker: Avoid expensive XCHG instructions.
 - stalker: Optimize IC prolog to use SAHF/LAHF.
-- memory: Improve search() to support regex patterns. Thanks [@hot3eed][]!
+- memory: Improve scan() to support regex patterns. Thanks [@hot3eed][]!
 - kernel: Get base from all_image_info where supported. Thanks [@mrmacete][]!
 - windows: Improve dbghelp backtracer reliability. Thanks [@HonicRoku][]!
 
