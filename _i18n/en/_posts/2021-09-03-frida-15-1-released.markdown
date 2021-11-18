@@ -194,6 +194,20 @@ Enjoy!
   Thanks [@mrmacete][]!
 - frida-portal: Fix typo in --help output.
 
+### Changes in 15.1.10
+
+- p2p: Gracefully handle unsupported ICE candidates.
+- p2p: Disable ICE-TCP for now.
+- p2p: Rework PeerSocket to fix synchronization issues.
+- socket: Fix WebService teardown.
+- x86-writer: Add UD2 instructions after/in indirect branches.
+- x86-writer: Emit larger NOPs when possible.
+- stalker: Improve performance of the x86/64 backend.
+- objc-api-resolver: Guard against disposed ObjC classes. Thanks [@mrmacete][]!
+- gumjs: Fix V8 Interceptor.{replace,revert}() regression. Thanks [@3vilWind][]!
+- gumjs: Expand Instruction API w/ regsAccessed and operand.access. Thanks
+  [@3vilWind][]!
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
@@ -208,3 +222,4 @@ Enjoy!
 [@0xDC00]: https://github.com/0xDC00
 [@amirpeles90]: https://github.com/amirpeles90
 [@Nessphoro]: https://github.com/Nessphoro
+[@3vilWind]: https://github.com/3vilWind
