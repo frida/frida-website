@@ -228,6 +228,19 @@ Enjoy!
   NO_REPLY_EXPECTED, this bug went unnoticed.
 - android: Move to NDK r24 Beta 1.
 
+### Changes in 15.1.13
+
+- linux: Improve module resolution on glibc systems.
+- fruity: Fix spawn on dyld v4 case (jailed iOS 15.x). Thanks [@mrmacete][]!
+- objc-api-resolver: Protect against objc_disposeClassPair() via mutex. Thanks
+  [@mrmacete][]!
+- gumjs: Update Kernel.scan\*() to match Memory.scan\*(). Thanks [@hot3eed][]!
+- stalker: Fix emitted branch op-code on x86.
+- stalker: Fix handling of Thumb IT AL.
+- stalker: Handle excluded Linux calls through PLT on x86.
+- stalker: Fix Linux exception handling on x86.
+- java: Add Java.backtrace(), without any API stability guarantees for now.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
