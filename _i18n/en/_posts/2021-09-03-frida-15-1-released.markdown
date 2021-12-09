@@ -241,6 +241,16 @@ Enjoy!
 - stalker: Fix Linux exception handling on x86.
 - java: Add Java.backtrace(), without any API stability guarantees for now.
 
+### Changes in 15.1.14
+
+- backtracer: Improve fuzzy backtracers to also include the immediate caller,
+  and avoid walking past stack end when known.
+- windows: Implement Thread.try_get_ranges().
+- linux: Implement Thread.try_get_ranges().
+- ios: Check in with launchd on SRD systems.
+- stalker: Fix accidental clobbery in call depth code on x86.
+- node: Publish Node.js prebuilds for v17, too.
+
 
 [consider]: https://youtu.be/0rHG_Pa86oA?t=36
 [include/swift/ABI/Metadata.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/ABI/Metadata.h
