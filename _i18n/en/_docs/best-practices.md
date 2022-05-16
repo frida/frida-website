@@ -7,7 +7,7 @@ By reading the documentation, one might think that allocating/replacing strings
 is as simple as:
 
 {% highlight javascript %}
-onEnter: function (args) {
+onEnter(args) {
   args[0].writeUtf8String('mystring');
 }
 {% endhighlight %}
@@ -31,8 +31,8 @@ semantics depend on how the API was designed.
 With this in mind, a reliable way to do this would be:
 
 {% highlight javascript %}
-onEnter: function (args) {
-  var buf = Memory.allocUtf8String('mystring');
+onEnter(args) {
+  const buf = Memory.allocUtf8String('mystring');
   this.buf = buf;
   args[0] = buf;
 }
@@ -48,10 +48,10 @@ If the function keeps the pointer around and also uses it after the function
 call has completed, one solution is to do it like this:
 
 {% highlight javascript %}
-var myStringBuf = Memory.allocUtf8String('mystring');
+const myStringBuf = Memory.allocUtf8String('mystring');
 
 Interceptor.attach(f, {
-  onEnter: function (args) {
+  onEnter(args) {
     args[0] = myStringBuf;
   }
 });

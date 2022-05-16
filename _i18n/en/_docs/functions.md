@@ -62,7 +62,7 @@ import sys
 session = frida.attach("hello")
 script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
-    onEnter: function(args) {
+    onEnter(args) {
         send(args[0].toInt32());
     }
 });
@@ -101,7 +101,7 @@ import sys
 session = frida.attach("hello")
 script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
-    onEnter: function(args) {
+    onEnter(args) {
         args[0] = ptr("1337");
     }
 });
@@ -143,7 +143,7 @@ import sys
 
 session = frida.attach("hello")
 script = session.create_script("""
-var f = new NativeFunction(ptr("%s"), 'void', ['int']);
+const f = new NativeFunction(ptr("%s"), 'void', ['int']);
 f(1911);
 f(1911);
 f(1911);
@@ -214,8 +214,8 @@ import sys
 
 session = frida.attach("hi")
 script = session.create_script("""
-var st = Memory.allocUtf8String("TESTMEPLZ!");
-var f = new NativeFunction(ptr("%s"), 'int', ['pointer']);
+const st = Memory.allocUtf8String("TESTMEPLZ!");
+const f = new NativeFunction(ptr("%s"), 'int', ['pointer']);
     // In NativeFunction param 2 is the return value type,
     // and param 3 is an array of input types
 f(st);
@@ -379,17 +379,17 @@ session = frida.attach("client")
 script = session.create_script("""
 // First, let's give ourselves a bit of memory to put our struct in:
 send('Allocating memory and writing bytes...');
-var st = Memory.alloc(16);
+const st = Memory.alloc(16);
 // Now we need to fill it - this is a bit blunt, but works...
 st.writeByteArray([0x02, 0x00, 0x13, 0x89, 0x7F, 0x00, 0x00, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30]);
 // Module.getExportByName() can find functions without knowing the source
 // module, but it's slower, especially over large binaries! YMMV...
 Interceptor.attach(Module.getExportByName(null, 'connect'), {
-    onEnter: function(args) {
+    onEnter(args) {
         send('Injecting malicious byte array:');
         args[1] = st;
     }
-    //, onLeave: function(retval) {
+    //, onLeave(retval) {
     //   retval.replace(0); // Use this to manipulate the return value
     //}
 });

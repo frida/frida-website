@@ -17,17 +17,17 @@ def main(target_process):
     session = frida.attach(target_process)
 
     script = session.create_script("""
-        var appWillFinishLaunching = ObjC.classes.NSApplicationDelegate['- applicationWillFinishLaunching:'];
+        const appWillFinishLaunching = ObjC.classes.NSApplicationDelegate['- applicationWillFinishLaunching:'];
         Interceptor.attach(appWillFinishLaunching.implementation, {
-          onEnter: function (args) {
+          onEnter(args) {
             // As this is an Objective-C method, the arguments are as follows:
             // 0. 'self'
             // 1. The selector (applicationWillFinishLaunching:)
             // 2. The first argument to this method
-            var notification = new ObjC.Object(args[2]);
+            const notification = new ObjC.Object(args[2]);
 
             // Convert it to a JS string and log it
-            var notificationStr = notification.absoluteString().toString();
+            const notificationStr = notification.absoluteString().toString();
             console.log('Will finish launching with notification: ' + notificationStr);
           }
         });
