@@ -238,8 +238,8 @@ rpc.exports = {
     console.log('[init]', stage, JSON.stringify(parameters));
 
     Interceptor.attach(Module.getExportByName(null, 'open'), {
-      onEnter: function (args) {
-        var path = args[0].readUtf8String();
+      onEnter(args) {
+        const path = args[0].readUtf8String();
         console.log('open("' + path + '")');
       }
     });
@@ -349,7 +349,7 @@ Say you want to write a tweak for Twitter's macOS app, you could create
 a file named *twitter.js* in */usr/local/frida/scripts*, containing:
 
 {% highlight js %}
-var TMTheme = ObjC.classes.TMTheme;
+const { TMTheme } = ObjC.classes;
 
 rpc.exports = {
   init: function (stage, parameters) {

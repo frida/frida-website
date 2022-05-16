@@ -171,7 +171,7 @@ const MyConnectionDelegateProxy = ObjC.registerProxy({
 const method = ObjC.classes.NSURLConnection[
     '- initWithRequest:delegate:startImmediately:'];
 Interceptor.attach(method.implementation, {
-  onEnter: function (args) {
+  onEnter(args) {
     args[3] = new MyConnectionDelegateProxy(args[3], {
       foo: 1234
     });

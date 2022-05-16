@@ -120,7 +120,7 @@ class Application(object):
         print("✔ create_script()")
         script = session.create_script("""
 Interceptor.attach(Module.findExportByName(null, 'open'), {
-  onEnter: function (args) {
+  onEnter(args) {
     send({
       type: 'open',
       path: Memory.readUtf8String(args[0])

@@ -84,10 +84,10 @@ There are also other goodies, like brand new support for generating backtraces
 and using debug symbols to symbolicate addresses:
 
 {% highlight js %}
-var f = Module.findExportByName("libcommonCrypto.dylib",
+const f = Module.findExportByName("libcommonCrypto.dylib",
     "CCCryptorCreate");
 Interceptor.attach(f, {
-    onEnter: function (args) {
+    onEnter(args) {
         console.log("CCCryptorCreate called from:\n" +
             Thread.backtrace(this.context, Backtracer.ACCURATE)
             .map(DebugSymbol.fromAddress).join("\n") + "\n");
@@ -138,13 +138,13 @@ That brings us to the next topic. The ObjC interface has changed a bit.
 Essentially:
 
 {% highlight js %}
-var NSString = ObjC.use("NSString");
+const NSString = ObjC.use("NSString");
 {% endhighlight %}
 
 is now:
 
 {% highlight js %}
-var NSString = ObjC.classes.NSString;
+const NSString = ObjC.classes.NSString;
 {% endhighlight %}
 
 You still use `ObjC.classes` for enumerating the currently loaded classes,
@@ -154,14 +154,14 @@ binding.
 Also, there's no more casting, so instead of:
 
 {% highlight js %}
-var NSSound = ObjC.use('NSSound');
-var sound = ObjC.cast(ptr("0x1234"), NSSound);
+const NSSound = ObjC.use('NSSound');
+const sound = ObjC.cast(ptr("0x1234"), NSSound);
 {% endhighlight %}
 
 You just go:
 
 {% highlight js %}
-var sound = new ObjC.Object(ptr("0x1234"));
+const sound = new ObjC.Object(ptr("0x1234"));
 {% endhighlight %}
 
 Yep, no more class hierarchies trying to mimic the ObjC one. Just a fully
