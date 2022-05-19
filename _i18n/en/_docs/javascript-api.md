@@ -151,7 +151,9 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     rely on debugger-friendly binaries or presence of debug information to do a
     good job, whereas the fuzzy backtracers perform forensics on the stack in
     order to guess the return addresses, which means you will get false
-    positives, but it will work on any binary.
+    positives, but it will work on any binary. The generated backtrace is 
+    currently limited to 16 frames and is not adjustable without recompiling
+    Frida.
 
 {% highlight js %}
 const f = Module.getExportByName('libcommonCrypto.dylib',
