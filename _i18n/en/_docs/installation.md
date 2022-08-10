@@ -88,7 +88,7 @@ The output should be something similar to this (depending on your platform
 and library versions):
 
 {% highlight py %}
-[u'cat', …, u'ld-2.15.so']
+['cat', …, 'ld-2.15.so']
 {% endhighlight %}
 
 [PyPI]: https://pypi.python.org/pypi/frida-tools

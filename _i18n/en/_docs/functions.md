@@ -55,7 +55,6 @@ process and report back a function argument to you. Create a file `hook.py`
 containing:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
@@ -84,8 +83,8 @@ $ python hook.py 0x400544
 This should give you a new message every second on the form:
 
 {% highlight py %}
-{u'type': u'send', u'payload': 531}
-{u'type': u'send', u'payload': 532}
+{'type': 'send', 'payload': 531}
+{'type': 'send', 'payload': 532}
 …
 {% endhighlight %}
 
@@ -208,7 +207,6 @@ to inject a string into memory, and then call the function f() in the following
 way:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
@@ -371,7 +369,6 @@ Here's a script to inject the malicious struct into memory, and then hijack the
 Create the file `struct_mod.py` as follows:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 

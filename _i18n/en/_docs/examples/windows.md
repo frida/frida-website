@@ -9,7 +9,6 @@ Save this code as *bb.py*, run BB Simulator (fledge.exe), then run
 *jvm.dll*.
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
