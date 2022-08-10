@@ -77,7 +77,6 @@ So that's the theory. Let's have a look at a practical [example][], using
 Frida's Python bindings:
 
 {% highlight python %}
-from __future__ import print_function
 import frida
 from frida.application import Reactor
 import threading

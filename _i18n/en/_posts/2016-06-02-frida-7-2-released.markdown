@@ -60,7 +60,6 @@ co(function* () {
 And from Python:
 
 {% highlight python %}
-from __future__ import print_function
 import frida
 
 system_session = frida.attach(0)

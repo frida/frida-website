@@ -55,7 +55,6 @@ You can send any JavaScript value which is serializable to JSON.
 Create a file `send.py` containing:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
@@ -77,7 +76,7 @@ $ python send.py
 it should print the following message:
 
 {% highlight py %}
-{u'type': u'send', u'payload': 1337}
+{'type': 'send', 'payload': 1337}
 {% endhighlight %}
 
 This means that the JavaScript code `send(1337)` has been executed inside the
@@ -91,7 +90,7 @@ with `send(a)` (an undefined variable), the following message will be received
 by Python:
 
 {% highlight py %}
-{u'type': u'error', u'description': u'ReferenceError: a is not defined', u'lineNumber': 1}
+{'type': 'error', 'description': 'ReferenceError: a is not defined', 'lineNumber': 1}
 {% endhighlight %}
 
 Note the `type` field (`error` vs `send`).
@@ -102,7 +101,6 @@ It is possible to send messages from the Python script to the JavaScript
 script. Create the file `pingpong.py`:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
@@ -127,7 +125,7 @@ $ python pingpong.py
 produces the output:
 
 {% highlight py %}
-{u'type': u'send', u'payload': u'pokeBack'}
+{'type': 'send', 'payload': 'pokeBack'}
 {% endhighlight %}
 
 <div class="note info">
@@ -145,7 +143,6 @@ It is possible to wait for a message to arrive (a blocking receive) inside your
 JavaScript script. Create a script `rpc.py`:
 
 {% highlight py %}
-from __future__ import print_function
 import frida
 import sys
 
