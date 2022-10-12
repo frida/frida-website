@@ -56,3 +56,35 @@ Interceptor.attach(f, {
   }
 });
 {% endhighlight %}
+
+### Reusing arguments
+
+When reading arguments in the *onEnter* callback, it is common to access each
+argument by their index. But what happens when an argument is accessed multiple
+times? Take for example this code:
+
+{% highlight javascript %}
+Interceptor.attach(f, {
+  onEnter(args) {
+    if (!args[0].readUtf8String(4).includes('MZ')) {
+      console.log(hexdump(args[0]));
+    }
+  }
+});
+{% endhighlight %}
+
+In the above example the first argument is obtained from the *args* array twice,
+and this is paying the cost of querying *frida-gum* for this information twice.
+To avoid wasting precious CPU cycles when needing the same argument multiple
+times, it is best to store this information using a local variable:
+
+{% highlight javascript %}
+Interceptor.attach(f, {
+  onEnter(args) {
+    const firstArg = args[0];
+    if (!firstArg.readUtf8String(4).includes('MZ')) {
+      console.log(hexdump(firstArg));
+    }
+  }
+});
+{% endhighlight %}
