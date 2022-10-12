@@ -1,0 +1,42 @@
+---
+layout: news_item
+title: 'Frida 15.1.17 Released'
+date: 2022-02-10 22:51:56 +0100
+author: oleavr
+version: 15.1.17
+categories: [release]
+---
+
+One notable improvement in this release is that `Java.backtrace()` got a major
+overhaul. It is now lazy and >10x faster. I have also refined its [API][],
+which is now considered stable.
+
+While working on [frida-java-bridge][], I optimized how Env objects are handled,
+so we can recycle an existing instance if we already have one for the current
+thread.
+
+The remaining goodies are covered by the changelog below, so definitely check
+it out.
+
+Enjoy!
+
+### Changelog
+
+- Fix devkits for i/macOS, Android, and QNX, where parts of libiconv were
+  missing.
+- Improve devkit packaging on LLVM toolchains.
+- Improve diet mode support in GLib.
+- cmodule: Expose g_strndup().
+- cmodule: Expose Gum's Thread Local Storage API.
+- java: Rework Java.backtrace() to be lazy and >10x faster.
+  - Move thread transition and stack walking logic to CModule.
+  - Return a Backtrace object instead of an array with the frames.
+  - Provide a cheap *id* property that can be used for deduplication.
+  - Lazily compute the frames when accessing the *frames* property.
+- java: Avoid expensive Env creation when possible.
+- python: Improve index URL handling. Thanks [@GalaxySnail][]!
+
+
+[API]: https://github.com/DefinitelyTyped/DefinitelyTyped/commit/37db50ef28bb33d3dbbd3250107d15213861bbf5
+[frida-java-bridge]: https://github.com/frida/frida-java-bridge
+[@GalaxySnail]: https://github.com/GalaxySnail
