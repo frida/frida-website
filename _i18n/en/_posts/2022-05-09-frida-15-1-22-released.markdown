@@ -1,0 +1,24 @@
+---
+layout: news_item
+title: 'Frida 15.1.22 Released'
+date: 2022-05-09 11:20:25 +0200
+author: oleavr
+version: 15.1.22
+categories: [release]
+---
+
+Turns out the major surgery that Gum went through in 15.1.15 introduced some
+error-handling regressions. Errors thrown vs. actually expected by the Vala code
+in frida-core did not match, which resulted in the process crashing instead of a
+friendly error bubbling up to e.g. the Python bindings. That is now finally
+taken care of. I wish we had noticed it sooner, though — we're clearly lacking
+test coverage in this area.
+
+Beside the error-handling fixes, we're also including a build system [fix][] for
+incremental build issues. Kudos to [Londek][] for this nice contribution.
+
+Enjoy!
+
+
+[fix]: https://github.com/frida/frida/commit/6a717d636a87c501327c77a70080b495556c8d25
+[Londek]: https://github.com/londek
