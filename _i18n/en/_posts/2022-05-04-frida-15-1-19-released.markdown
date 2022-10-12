@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 15.1.19 Released'
+date: 2022-05-04 23:16:38 +0200
+author: oleavr
+version: 15.1.19
+categories: [release]
+---
+
+Turns out 15.1.18 had a release automation bug that resulted in stale Python
+binding artifacts getting uploaded.
+
+To make this release a little happier, I also threw in a Stalker improvement
+for x86/64, where the *clone3* syscall is now [handled][] as well. This was
+caught by Stalker's test-suite on some systems.
+
+Enjoy!
+
+
+[handled]: https://github.com/frida/frida-gum/commit/eb7621136af07d3db38a68effafa37087d23b8d4
