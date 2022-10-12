@@ -84,13 +84,13 @@ There are also other goodies, like brand new support for generating backtraces
 and using debug symbols to symbolicate addresses:
 
 {% highlight js %}
-const f = Module.findExportByName("libcommonCrypto.dylib",
-    "CCCryptorCreate");
+const f = Module.getExportByName('libcommonCrypto.dylib',
+    'CCCryptorCreate');
 Interceptor.attach(f, {
     onEnter(args) {
-        console.log("CCCryptorCreate called from:\n" +
+        console.log('CCCryptorCreate called from:\n' +
             Thread.backtrace(this.context, Backtracer.ACCURATE)
-            .map(DebugSymbol.fromAddress).join("\n") + "\n");
+            .map(DebugSymbol.fromAddress).join('\n') + '\n');
     }
 });
 {% endhighlight %}

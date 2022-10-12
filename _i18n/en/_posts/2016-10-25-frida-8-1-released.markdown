@@ -171,7 +171,7 @@ afterwards. Here's an example:
 
 {% highlight js %}
 const open = new SystemFunction(
-    Module.findExportByName(null, 'open'),
+    Module.getExportByName(null, 'open'),
     'int',
     ['pointer', 'int']);
 const O_RDONLY = 0;

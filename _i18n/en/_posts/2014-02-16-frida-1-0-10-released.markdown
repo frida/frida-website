@@ -29,22 +29,22 @@ Then paste in:
 
 {% highlight js %}
 callbacks = { \
-    onEnter: function onEnter(args) { \
+    onEnter(args) { \
         args[0] = ptr(-1); // Avoid side-effects on socket \
     }, \
-    onLeave: function onLeave(retval) { \
-        var ECONNREFUSED = 61; \
+    onLeave(retval) { \
+        const ECONNREFUSED = 61; \
         this.errno = ECONNREFUSED; \
         retval.replace(-1); \
     } \
 }; \
 Module.enumerateExports("libsystem_kernel.dylib", { \
-    onMatch: function (exp) { \
+    onMatch(exp) { \
         if (exp.name.indexOf("connect") === 0 && exp.name.indexOf("connectx") !== 0) { \
             Interceptor.attach(exp.address, callbacks); \
         } \
     }, \
-    onComplete: function () {} \
+    onComplete() {} \
 });
 {% endhighlight %}
 

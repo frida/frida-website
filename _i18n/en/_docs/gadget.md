@@ -234,7 +234,7 @@ Where *explore.js* contains the following skeleton:
 
 {% highlight js %}
 rpc.exports = {
-  init: function (stage, parameters) {
+  init(stage, parameters) {
     console.log('[init]', stage, JSON.stringify(parameters));
 
     Interceptor.attach(Module.getExportByName(null, 'open'), {
@@ -244,7 +244,7 @@ rpc.exports = {
       }
     });
   },
-  dispose: function () {
+  dispose() {
     console.log('[dispose]');
   }
 };
@@ -352,17 +352,17 @@ a file named *twitter.js* in */usr/local/frida/scripts*, containing:
 const { TMTheme } = ObjC.classes;
 
 rpc.exports = {
-  init: function (stage, parameters) {
+  init(stage, parameters) {
     console.log('[init]', stage, JSON.stringify(parameters));
 
-    ObjC.schedule(ObjC.mainQueue, function () {
+    ObjC.schedule(ObjC.mainQueue, () => {
       TMTheme.switchToTheme_(TMTheme.darkTheme());
     });
   },
-  dispose: function () {
+  dispose() {
     console.log('[dispose]');
 
-    ObjC.schedule(ObjC.mainQueue, function () {
+    ObjC.schedule(ObjC.mainQueue, () => {
       TMTheme.switchToTheme_(TMTheme.lightTheme());
     });
   }

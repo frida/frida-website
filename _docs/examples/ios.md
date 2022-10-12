@@ -89,7 +89,7 @@ Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
     agent.js:
 
         ```
-        var data = { foo: 'bar' };
+        const data = { foo: 'bar' };
         send(data);
         ```
 
@@ -105,8 +105,8 @@ Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
 10. Calling a native function
 -
 ```
-var address = Module.getExportByName('libsqlite3.dylib', 'sqlite3_sql');
-var sql = new NativeFunction(address, 'char', ['pointer']);
+const address = Module.getExportByName('libsqlite3.dylib', 'sqlite3_sql');
+const sql = new NativeFunction(address, 'char', ['pointer']);
 sql(statement);
 ```
 
@@ -121,7 +121,7 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 1. Converting NSData to String
 -
 ```
-var data = new ObjC.Object(args[2]);
+const data = new ObjC.Object(args[2]);
 data.bytes().readUtf8String(data.length());
 ```
 >**Tip**: 2nd argument (number of bytes) is not required if the string data is null-terminated.
@@ -129,40 +129,40 @@ data.bytes().readUtf8String(data.length());
 2. Converting NSData to Binary Data
 -
 ```
-var data = new ObjC.Object(args[2]);
+const data = new ObjC.Object(args[2]);
 data.bytes().readByteArray(data.length());
 ```
 
 3. Iterating an NSArray
 -
 ```
-var array = new ObjC.Object(args[2]);
+const array = new ObjC.Object(args[2]);
 /*
  * Be sure to use valueOf() as NSUInteger is a Number in
  * 32-bit processes, and UInt64 in 64-bit processes. This
  * coerces it into a Number in the latter case.
  */
-var count = array.count().valueOf();
-for (var i = 0; i !== count; i++) {
-  var element = array.objectAtIndex_(i);
+const count = array.count().valueOf();
+for (let i = 0; i !== count; i++) {
+  const element = array.objectAtIndex_(i);
 }
 ```
 
 4. Iterating an NSDictionary
 -
 ```
-var dict = new ObjC.Object(args[2]);
-var enumerator = dict.keyEnumerator();
-var key;
+const dict = new ObjC.Object(args[2]);
+const enumerator = dict.keyEnumerator();
+let key;
 while ((key = enumerator.nextObject()) !== null) {
-  var value = dict.objectForKey_(key);
+  const value = dict.objectForKey_(key);
 }
 ```
 
 5. Unarchiving an NSKeyedArchiver
 -
 ```
-var parsedValue = ObjC.classes.NSKeyedUnarchiver.unarchiveObjectWithData_(value);
+const parsedValue = ObjC.classes.NSKeyedUnarchiver.unarchiveObjectWithData_(value);
 ```
 
 6. Reading a struct
@@ -178,8 +178,8 @@ args[0].add(4).readU32();
 ### Displaying an alert box on iOS 7
 
 {% highlight js %}
-var UIAlertView = ObjC.classes.UIAlertView; /* iOS 7 */
-var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
+const UIAlertView = ObjC.classes.UIAlertView; /* iOS 7 */
+const view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
     'Frida',
     'Hello from Frida',
     NULL,
@@ -196,29 +196,29 @@ This is an implementation of the following
 
 {% highlight js %}
 // Defining a Block that will be passed as handler parameter to +[UIAlertAction actionWithTitle:style:handler:]
-var handler = new ObjC.Block({
+const handler = new ObjC.Block({
   retType: 'void',
   argTypes: ['object'],
-  implementation: function () {
+  implementation() {
   }
 });
 
 // Import ObjC classes
-var UIAlertController = ObjC.classes.UIAlertController;
-var UIAlertAction = ObjC.classes.UIAlertAction;
-var UIApplication = ObjC.classes.UIApplication;
+const UIAlertController = ObjC.classes.UIAlertController;
+const UIAlertAction = ObjC.classes.UIAlertAction;
+const UIApplication = ObjC.classes.UIApplication;
 
 // Using Grand Central Dispatch to pass messages (invoke methods) in application's main thread
-ObjC.schedule(ObjC.mainQueue, function () {
+ObjC.schedule(ObjC.mainQueue, () => {
   // Using integer numerals for preferredStyle which is of type enum UIAlertControllerStyle
-  var alert = UIAlertController.alertControllerWithTitle_message_preferredStyle_('Frida', 'Hello from Frida', 1);
+  const alert = UIAlertController.alertControllerWithTitle_message_preferredStyle_('Frida', 'Hello from Frida', 1);
   // Again using integer numeral for style parameter that is enum
-  var defaultAction = UIAlertAction.actionWithTitle_style_handler_('OK', 0, handler);
+  const defaultAction = UIAlertAction.actionWithTitle_style_handler_('OK', 0, handler);
   alert.addAction_(defaultAction);
   // Instead of using `ObjC.choose()` and looking for UIViewController instances
   // on the heap, we have direct access through UIApplication:
   UIApplication.sharedApplication().keyWindow().rootViewController().presentViewController_animated_completion_(alert, true, NULL);
-})
+});
 {% endhighlight %}
 
 ### Printing an NSURL argument

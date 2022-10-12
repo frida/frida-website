@@ -80,19 +80,19 @@ can do with this API, and this one is a game changer. You can now customize
 the recompilation process, and it's really easy:
 
 {% highlight js %}
-var appModule = Process.enumerateModulesSync()[0];
-var appStart = appModule.base;
-var appEnd = appStart.add(appModule.size);
+const appModule = Process.enumerateModulesSync()[0];
+const appStart = appModule.base;
+const appEnd = appStart.add(appModule.size);
 
-Process.enumerateThreadsSync().forEach(function (thread) {
+Process.enumerateThreadsSync().forEach(thread => {
   console.log('Stalking ' + thread.id);
 
   Stalker.follow(thread.id, {
-    transform: function (iterator) {
-      var instruction = iterator.next();
+    transform(iterator) {
+      const instruction = iterator.next();
 
-      var startAddress = instruction.address;
-      var isAppCode = startAddress.compare(appStart) >= 0 &&
+      const startAddress = instruction.address;
+      const isAppCode = startAddress.compare(appStart) >= 0 &&
           startAddress.compare(appEnd) === -1;
 
       do {

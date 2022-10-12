@@ -11,8 +11,8 @@ It's release o'clock, and this time we're bringing you more than just bugfixes.
 Meet `Instruction.parse()`:
 
 {% highlight js %}
-var a = Instruction.parse(ptr("0x1234"));
-var b = Instruction.parse(a.next);
+const a = Instruction.parse(ptr('0x1234'));
+const b = Instruction.parse(a.next);
 console.log(a);
 console.log(b);
 {% endhighlight %}

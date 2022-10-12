@@ -13,9 +13,9 @@ Another release — this time with some new features:
   appetite:
 
 {% highlight js %}
-var UIAlertView = ObjC.use('UIAlertView'); /* iOS */
-ObjC.schedule(ObjC.mainQueue, function () {
-    var view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
+const UIAlertView = ObjC.use('UIAlertView'); /* iOS */
+ObjC.schedule(ObjC.mainQueue, () => {
+    const view = UIAlertView.alloc().initWithTitle_message_delegate_cancelButtonTitle_otherButtonTitles_(
         "Frida",
         "Hello from Frida",
         ptr("0"),

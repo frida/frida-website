@@ -2084,7 +2084,7 @@ Stalker.follow(mainThread.id, {
 
 {% highlight js %}
 const { NSSound } = ObjC.classes; /* macOS */
-ObjC.schedule(ObjC.mainQueue, function () {
+ObjC.schedule(ObjC.mainQueue, () => {
     const sound = NSSound.alloc().initWithContentsOfFile_byReference_("/Users/oleavr/.Trash/test.mp3", true);
     sound.play();
 });
@@ -2294,27 +2294,27 @@ const MyConnectionDelegateProxy = ObjC.registerClass({
     '- connection:didReceiveResponse:': {
       retType: 'void',
       argTypes: ['object', 'object'],
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or grab it from an existing class: */
     '- connection:didReceiveResponse:': {
       types: ObjC.classes
           .Foo['- connection:didReceiveResponse:'].types,
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or from an existing protocol: */
     '- connection:didReceiveResponse:': {
       types: ObjC.protocols.NSURLConnectionDataDelegate
           .methods['- connection:didReceiveResponse:'].types,
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or write the signature by hand if you really want to: */
     '- connection:didReceiveResponse:': {
       types: 'v32@0:8@16@24',
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     }
   }

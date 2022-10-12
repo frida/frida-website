@@ -38,7 +38,7 @@ That still left the big unanswered question of how to use Stalker in conjunction
 with NativeFunction. We can now finally put that behind us:
 
 {% highlight js %}
-var open = new NativeFunction(
+const open = new NativeFunction(
     Module.getExportByName(null, 'open'),
     'int', ['pointer', 'int'],
     { traps: 'all' }
@@ -48,12 +48,12 @@ Stalker.follow({
   events: {
     call: true
   },
-  onReceive: function (e) {
+  onReceive(e) {
     console.log(JSON.stringify(Stalker.parse(e)));
   }
 });
 
-var fd = open(Memory.allocUtf8String('/foo/bar'), 0);
+const fd = open(Memory.allocUtf8String('/foo/bar'), 0);
 console.log('open() =>', fd);
 {% endhighlight %}
 
@@ -69,21 +69,21 @@ Stalker.follow({
   events: {
     call: true
   },
-  onReceive: function (e) {
+  onReceive(e) {
     console.log(JSON.stringify(Stalker.parse(e)));
   }
 });
 
-var NSAutoreleasePool = ObjC.classes.NSAutoreleasePool;
-var NSFileManager = ObjC.classes.NSFileManager;
+const NSAutoreleasePool = ObjC.classes.NSAutoreleasePool;
+const NSFileManager = ObjC.classes.NSFileManager;
 
-var fileExistsAtPath = NSFileManager['- fileExistsAtPath:']
+const fileExistsAtPath = NSFileManager['- fileExistsAtPath:']
     .clone({ traps: 'all' });
 
-var pool = NSAutoreleasePool.alloc().init();
+const pool = NSAutoreleasePool.alloc().init();
 try {
-  var manager = NSFileManager.defaultManager();
-  var result = fileExistsAtPath.call(manager, '/foo/bar');
+  const manager = NSFileManager.defaultManager();
+  const result = fileExistsAtPath.call(manager, '/foo/bar');
   console.log('fileExistsAtPath() =>', result);
 } finally {
   pool.release();
@@ -97,17 +97,17 @@ Stalker.follow({
   events: {
     call: true
   },
-  onReceive: function (e) {
+  onReceive(e) {
     console.log(JSON.stringify(Stalker.parse(e)));
   }
 });
 
-Java.perform(function () {
-  var JFile = Java.use('java.io.File');
-  var exists = JFile.exists.clone({ traps: 'all' });
+Java.perform(() => {
+  const JFile = Java.use('java.io.File');
+  const exists = JFile.exists.clone({ traps: 'all' });
 
-  var file = JFile.$new('/foo/bar');
-  var result = exists.call(file);
+  const file = JFile.$new('/foo/bar');
+  const result = exists.call(file);
   console.log('exists() =>', result);
 });
 {% endhighlight %}
@@ -129,9 +129,9 @@ allows you to conveniently and efficiently access memory regions as if they were
 JavaScript arrays:
 
 {% highlight js %}
-var header = Memory.alloc(16);
+const header = Memory.alloc(16);
 
-var bytes = new Uint8Array(ArrayBuffer.wrap(header, 16));
+const bytes = new Uint8Array(ArrayBuffer.wrap(header, 16));
 bytes[0] = 1;
 bytes[0] += 2;
 bytes[1] = 2;

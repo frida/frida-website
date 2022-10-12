@@ -118,7 +118,7 @@ class Application(object):
         session.enable_child_gating()
         print("✔ create_script()")
         script = session.create_script("""
-Interceptor.attach(Module.findExportByName(null, 'open'), {
+Interceptor.attach(Module.getExportByName(null, 'open'), {
   onEnter(args) {
     send({
       type: 'open',
@@ -196,7 +196,7 @@ an [RPC][] export named *dispose*. E.g.:
 
 {% highlight js %}
 rpc.exports = {
-  dispose: function () {
+  dispose() {
     send(bufferedData);
   }
 };

@@ -110,8 +110,8 @@ similar to this:
 {% highlight py %}
 session = device.attach(pid)
 script = session.create_script("""
-Interceptor.attach(Module.findExportByName(null, 'open'), {
-  onEnter: function () {
+Interceptor.attach(Module.getExportByName(null, 'open'), {
+  onEnter() {
     console.log('open()');
   }
 });

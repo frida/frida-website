@@ -59,7 +59,7 @@ def on_message(message, data):
 session = frida.attach("cat")
 
 script = session.create_script("""
-rpc.exports.enumerateModules = function () {
+rpc.exports.enumerateModules = () => {
   return Process.enumerateModules();
 };
 """)

@@ -29,12 +29,12 @@ will be effortless.
 Let's take a look at an example on x86:
 
 {% highlight js %}
-var getLivesLeft = Module.findExportByName('game-engine.so',
+const getLivesLeft = Module.getExportByName('game-engine.so',
     'get_lives_left');
-var maxPatchSize = 64; // Do not write out of bounds, may be
-                       // a temporary buffer!
-Memory.patchCode(getLivesLeft, maxPatchSize, function (code) {
-  var cw = new X86Writer(code, { pc: getLivesLeft });
+const maxPatchSize = 64; // Do not write out of bounds, may be
+                         // a temporary buffer!
+Memory.patchCode(getLivesLeft, maxPatchSize, code => {
+  const cw = new X86Writer(code, { pc: getLivesLeft });
   cw.putMovRegU32('eax', 9999);
   cw.putRet();
   cw.flush();
@@ -61,18 +61,18 @@ protection and then go ahead and write code all over the place, but
 So that was a simple example. Let's try something a bit crazier:
 
 {% highlight js %}
-var multiply = new NativeCallback(function (a, b) {
+const multiply = new NativeCallback(function (a, b) {
   return a * b;
 }, 'int', ['int', 'int']);
 
-var impl = Memory.alloc(Process.pageSize);
+const impl = Memory.alloc(Process.pageSize);
 
-Memory.patchCode(impl, 64, function (code) {
-  var cw = new X86Writer(code, { pc: impl });
+Memory.patchCode(impl, 64, code => {
+  const cw = new X86Writer(code, { pc: impl });
 
   cw.putMovRegU32('eax', 42);
 
-  var stackAlignOffset = Process.pointerSize;
+  const stackAlignOffset = Process.pointerSize;
   cw.putSubRegImm('xsp', stackAlignOffset);
 
   cw.putCallAddressWithArguments(multiply, ['eax', 7]);
@@ -89,7 +89,7 @@ Memory.patchCode(impl, 64, function (code) {
   cw.flush();
 });
 
-var f = new NativeFunction(impl, 'int', []);
+const f = new NativeFunction(impl, 'int', []);
 console.log(f());
 {% endhighlight %}
 
@@ -104,13 +104,13 @@ be adjusted based on their new locations in memory. Let's look at how we can
 solve this with Frida's new relocator APIs:
 
 {% highlight js %}
-var impl = Memory.alloc(Process.pageSize);
+const impl = Memory.alloc(Process.pageSize);
 
-Memory.patchCode(impl, Process.pageSize, function (code) {
-  var cw = new X86Writer(code, { pc: impl });
+Memory.patchCode(impl, Process.pageSize, code => {
+  const cw = new X86Writer(code, { pc: impl });
 
-  var libcPuts = Module.findExportByName(null, 'puts');
-  var rl = new X86Relocator(libcPuts, cw);
+  const libcPuts = Module.getExportByName(null, 'puts');
+  const rl = new X86Relocator(libcPuts, cw);
 
   while (rl.readOne() !== 0) {
     console.log('Relocating: ' + rl.input.toString());
@@ -120,7 +120,7 @@ Memory.patchCode(impl, Process.pageSize, function (code) {
   cw.flush();
 });
 
-var puts = new NativeFunction(impl, 'int', ['pointer']);
+const puts = new NativeFunction(impl, 'int', ['pointer']);
 puts(Memory.allocUtf8String('Hello!'));
 {% endhighlight %}
 

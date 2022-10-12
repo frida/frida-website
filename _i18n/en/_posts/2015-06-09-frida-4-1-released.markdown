@@ -110,27 +110,27 @@ const MyConnectionDelegateProxy = ObjC.registerClass({
     '- connection:didReceiveResponse:': {
       retType: 'void',
       argTypes: ['object', 'object'],
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or grab it from an existing class: */
     '- connection:didReceiveResponse:': {
       types: ObjC.classes
           .Foo['- connection:didReceiveResponse:'].types,
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or from an existing protocol: */
     '- connection:didReceiveResponse:': {
       types: ObjC.protocols.NSURLConnectionDataDelegate
           .methods['- connection:didReceiveResponse:'].types,
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     },
     /* Or write the signature by hand if you really want to: */
     '- connection:didReceiveResponse:': {
       types: 'v32@0:8@16@24',
-      implementation: function (conn, resp) {
+      implementation(conn, resp) {
       }
     }
   }
@@ -162,7 +162,7 @@ const MyConnectionDelegateProxy = ObjC.registerProxy({
     }
   },
   events: {
-    forward: function (name) {
+    forward(name) {
       console.log('*** forwarding: ' + name);
     }
   }

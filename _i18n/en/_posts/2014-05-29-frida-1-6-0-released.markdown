@@ -18,10 +18,10 @@ Of course it should!
 Here's what it looks like in action:
 
 {% highlight js %}
-Dalvik.perform(function () {
-    var Activity = Dalvik.use("android.app.Activity");
+Dalvik.perform(() => {
+    const Activity = Dalvik.use('android.app.Activity');
     Activity.onResume.implementation = function () {
-        send("onResume() got called! Let's call the original implementation");
+        send('onResume() got called! Let's call the original implementation');
         this.onResume();
     };
 });
@@ -39,11 +39,11 @@ of course choose to not call the original implementation at all, and emulate
 its behavior. Or, perhaps you'd like to simulate an error scenario:
 
 {% highlight js %}
-Dalvik.perform(function () {
-    var Activity = Dalvik.use("android.app.Activity");
-    var Exception = Dalvik.use("java.lang.Exception");
+Dalvik.perform(() => {
+    const Activity = Dalvik.use('android.app.Activity');
+    const Exception = Dalvik.use('java.lang.Exception');
     Activity.onResume.implementation = function () {
-        throw Exception.$new("Oh noes!");
+        throw Exception.$new('Oh noes!');
     };
 });
 {% endhighlight %}

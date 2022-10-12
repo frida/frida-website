@@ -17,10 +17,10 @@ heap for objects of a certain type. Check this out:
 {% highlight js %}
 const strings = [];
 Dalvik.choose('java.lang.String', {
-  onMatch: function (str) {
+  onMatch(str) {
     strings.push(str);
   },
-  onComplete: function () {
+  onComplete() {
     console.log('Found ' + strings.length + ' strings!');
   }
 });
@@ -32,10 +32,10 @@ same feature for Objective-C:
 {% highlight js %}
 const strings = [];
 ObjC.choose(ObjC.classes.NSString, {
-  onMatch: function (str) {
+  onMatch(str) {
     strings.push(str);
   },
-  onComplete: function () {
+  onComplete() {
     console.log('Found ' + strings.length + ' strings!');
   }
 });

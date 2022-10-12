@@ -51,7 +51,7 @@ const handle = Memory.alloc(128);
 uv_async_init(uv_default_loop(), handle, processPending);
 uv_unref(handle);
 
-Script.bindWeak(handle, function () {
+Script.bindWeak(handle, () => {
   Script.pin();
   uv_close(handle, onClose);
 });

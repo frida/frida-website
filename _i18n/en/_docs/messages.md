@@ -149,9 +149,9 @@ import sys
 session = frida.attach("hello")
 script = session.create_script("""
 Interceptor.attach(ptr("%s"), {
-    onEnter: function(args) {
+    onEnter(args) {
         send(args[0].toString());
-        var op = recv('input', function(value) {
+        const op = recv('input', value => {
             args[0] = ptr(value.payload);
         });
         op.wait();

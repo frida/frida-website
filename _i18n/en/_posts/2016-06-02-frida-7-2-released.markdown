@@ -36,7 +36,7 @@ co(function* () {
   yield systemSession.disableJit();
   const bytecode = yield systemSession.compileScript(`
     rpc.exports = {
-      listThreads: function () {
+      listThreads() {
         return Process.enumerateThreadsSync();
       }
     };
@@ -66,7 +66,7 @@ system_session = frida.attach(0)
 system_session.disable_jit()
 bytecode = system_session.compile_script("""
 rpc.exports = {
-  listThreads: function () {
+  listThreads() {
     return Process.enumerateThreadsSync();
   }
 };

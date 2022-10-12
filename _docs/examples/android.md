@@ -22,12 +22,12 @@ def on_message(message, data):
         print(message)
 
 jscode = """
-Java.perform(function () {
+Java.perform(() => {
   // Function to hook is defined here
-  var MainActivity = Java.use('com.example.seccon2015.rock_paper_scissors.MainActivity');
+  const MainActivity = Java.use('com.example.seccon2015.rock_paper_scissors.MainActivity');
 
   // Whenever button is clicked
-  var onClick = MainActivity.onClick;
+  const onClick = MainActivity.onClick;
   onClick.implementation = function (v) {
     // Show a message to know that the function got called
     send('onClick');
@@ -66,35 +66,35 @@ values those fields refer to.
 Some possibilities with the Java bridge in Frida:
 
 {% highlight js %}
-Java.perform(function () {
+Java.perform(() => {
   // Create an instance of java.lang.String and initialize it with a string
-  var JavaString = Java.use('java.lang.String');
-  var exampleString1 = JavaString.$new('Hello World, this is an example string in Java.');
+  const JavaString = Java.use('java.lang.String');
+  const exampleString1 = JavaString.$new('Hello World, this is an example string in Java.');
   console.log('[+] exampleString1: ' + exampleString1);
   console.log('[+] exampleString1.length(): ' + exampleString1.length());
 
   // Create an instance of java.nio.charset.Charset, and initialize the default character set
-  var Charset = Java.use('java.nio.charset.Charset');
-  var charset = Charset.defaultCharset();
+  const Charset = Java.use('java.nio.charset.Charset');
+  const charset = Charset.defaultCharset();
   // Create a byte array of a Javascript string
-  var charArray = 'This is a Javascript string converted to a byte array.'.split('').map(function(c) {
+  const charArray = 'This is a Javascript string converted to a byte array.'.split('').map(function(c) {
     return c.charCodeAt(0);
   });
 
   // Create an instance of java.lang.String and initialize it through an overloaded $new,
   // with a byte array and a instance of java.nio.charset.Charset
-  var exampleString2 = JavaString.$new.overload('[B', 'java.nio.charset.Charset').call(JavaString, charArray, charset)
+  const exampleString2 = JavaString.$new.overload('[B', 'java.nio.charset.Charset').call(JavaString, charArray, charset)
   console.log('[+] exampleString2: ' + exampleString2);
   console.log('[+] exampleString2.length(): ' + exampleString2.length());
 
   // Intercept the initialization of java.lang.Stringbuilder's overloaded constructor,
   // and write the partial argument to the console
-  var StringBuilder = Java.use('java.lang.StringBuilder');
+  const StringBuilder = Java.use('java.lang.StringBuilder');
   // We need to replace .$init() instead of .$new(), since .$new() = .alloc() + .init()
-  var ctor = StringBuilder.$init.overload('java.lang.String');
+  const ctor = StringBuilder.$init.overload('java.lang.String');
   ctor.implementation = function (arg) {
-    var partial = '';
-    var result = ctor.call(this, arg);
+    let partial = '';
+    const result = ctor.call(this, arg);
     if (arg !== null) {
       partial = arg.toString().replace('\n', '').slice(0, 10);
     }
@@ -105,10 +105,10 @@ Java.perform(function () {
   console.log('[+] new StringBuilder(java.lang.String) hooked');
 
   // Intercept the toString() method of java.lang.StringBuilder and write its partial contents to the console.
-  var toString = StringBuilder.toString;
+  const toString = StringBuilder.toString;
   toString.implementation = function () {
-    var result = toString.call(this);
-    var partial = '';
+    const result = toString.call(this);
+    let partial = '';
     if (result !== null) {
       partial = result.toString().replace('\n', '').slice(0, 10);
     }
@@ -123,14 +123,14 @@ Java.perform(function () {
 ## Example of stacktrace usage
 
 {% highlight js %}
-Java.perform(function () {
-  var Cipher = Java.use('javax.crypto.Cipher');
-  var Exception = Java.use('java.lang.Exception');
-  var Log = Java.use('android.util.Log');
+Java.perform(() => {
+  const Cipher = Java.use('javax.crypto.Cipher');
+  const Exception = Java.use('java.lang.Exception');
+  const Log = Java.use('android.util.Log');
 
-  var init = Cipher.init.overload('int', 'java.security.Key');
+  const init = Cipher.init.overload('int', 'java.security.Key');
   init.implementation = function (opmode, key) {
-    var result = init.call(this, opmode, key);
+    const result = init.call(this, opmode, key);
 
     console.log('Cipher.init() opmode:', opmode, 'key:', key);
     console.log(stackTraceHere());

@@ -178,7 +178,7 @@ This is an implementation of the following
 const handler = new ObjC.Block({
   retType: 'void',
   argTypes: ['object'],
-  implementation: function () {
+  implementation() {
   }
 });
 
@@ -188,7 +188,7 @@ const UIAlertAction = ObjC.classes.UIAlertAction;
 const UIApplication = ObjC.classes.UIApplication;
 
 // Using Grand Central Dispatch to pass messages (invoke methods) in application's main thread
-ObjC.schedule(ObjC.mainQueue, function () {
+ObjC.schedule(ObjC.mainQueue, () => {
   // Using integer numerals for preferredStyle which is of type enum UIAlertControllerStyle
   const alert = UIAlertController.alertControllerWithTitle_message_preferredStyle_('Frida', 'Hello from Frida', 1);
   // Again using integer numeral for style parameter that is enum
@@ -197,7 +197,7 @@ ObjC.schedule(ObjC.mainQueue, function () {
   // Instead of using `ObjC.choose()` and looking for UIViewController instances
   // on the heap, we have direct access through UIApplication:
   UIApplication.sharedApplication().keyWindow().rootViewController().presentViewController_animated_completion_(alert, true, NULL);
-})
+});
 {% endhighlight %}
 
 ### Printing an NSURL argument

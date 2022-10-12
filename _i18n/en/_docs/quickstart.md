@@ -57,7 +57,7 @@ Now, let's have a look at the generated `recvfrom.js`:
      * but instead use "this" which is an object for keeping
      * state local to an invocation.
      */
-    onEnter: function onEnter(log, args, state) {
+    onEnter(log, args, state) {
         log("recvfrom()");
     },
 
@@ -75,7 +75,7 @@ Now, let's have a look at the generated `recvfrom.js`:
      * @param {object} state - Object allowing you to keep
      * state across function calls.
      */
-    onLeave: function onLeave(log, retval, state) {
+    onLeave(log, retval, state) {
     }
 }
 {% endhighlight %}
