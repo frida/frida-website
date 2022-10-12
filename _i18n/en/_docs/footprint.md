@@ -1,5 +1,5 @@
 We put a lot of effort into making sure that Frida can scale from desktops all
-the way down to embedded systems with limited resources.
+the way down to embedded systems.
 
 While our prebuilt binaries ship with all features enabled, building Frida
 yourself means you can tailor it to your needs and build significantly smaller
