@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 15.1.20 Released'
+date: 2022-05-06 00:27:46 +0200
+author: oleavr
+version: 15.1.20
+categories: [release]
+---
+
+It was discovered that 15.1.10 broke inline hooking in frida-java-bridge on
+Android/x86_64. This release [fixes][] it.
+
+This time we're also moving to shipping Node.js prebuilds for v18 instead of
+v17. (Sigh, should port frida-node to [Node-API][] so we can stop this madness!)
+
+Enjoy!
+
+
+[fixes]: https://github.com/frida/frida-java-bridge/commit/32f2faa7064eee629bc03fafcac90cfbeb4e5018
+[Node-API]: https://nodejs.org/api/n-api.html
