@@ -1,0 +1,32 @@
+---
+layout: news_item
+title: 'Frida 15.1.16 Released'
+date: 2022-02-03 22:33:58 +0100
+author: oleavr
+version: 15.1.16
+categories: [release]
+---
+
+This time we're bringing you two bugfixes and one new feature, just in time for
+the weekend.
+
+Gum used to depend on GIO, but that dependency was removed in the previous
+release. The unfortunate result of that change was that agent and gadget no
+longer tore down GIO, as they were relying on Gum's teardown code doing that.
+What this meant was that we were leaving threads behind, and that is never a
+good thing. So that's the first bugfix.
+
+Also in the previous release, over in our Python bindings, setup.py went through
+some heavy changes. We improved the .egg download logic, but managed to break
+the local .egg logic. That's the second bugfix.
+
+Onto the new feature. For those of you using Gum's JavaScript bindings, GumJS,
+we now support `console.count()` and `console.countReset()`. These are
+implemented by browsers and Node.js, and make it easy to count the number of
+times a given label has been seen. Kudos to [@yotamN][] for this nice
+contribution.
+
+Enjoy!
+
+
+[@yotamN]: https://github.com/yotamN
