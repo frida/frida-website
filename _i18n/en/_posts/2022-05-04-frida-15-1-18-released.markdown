@@ -1,0 +1,96 @@
+---
+layout: news_item
+title: 'Frida 15.1.18 Released'
+date: 2022-05-04 19:43:52 +0200
+author: oleavr
+version: 15.1.18
+categories: [release]
+---
+
+Lots of improvements all over the place this time. Many stability improvements.
+
+I have continued improving our CI and build system infrastructure. QNX and MIPS
+support are back from the dead, after long-standing regressions. These went
+unnoticed due to lack of CI coverage. We now have CI in place to ensure that
+won't happen again.
+
+Do check out the changelog below for a full overview of what's new.
+
+Enjoy!
+
+### Changelog
+
+- gadget: Fix deadlock when Gadget is blocking the dynamic linker with its
+  internal lock(s) held while waiting for resume(). In that case we are
+  processing the JS MainContext while blocking, with network I/O handled by the
+  Gadget thread. Because Stalker may interact with the dynamic linker during its
+  class_init(), we must ensure that it happens from the JS thread and not the
+  network I/O thread.
+- exit-monitor: Fix deadlock when a fork() goes unnoticed.
+- darwin: Skip pseudo-signing when running on Corellium.
+- darwin: Fix compatibility with older iOS SDKs.
+- darwin-backtracer: Fix loop variable wrap-around.
+- darwin-mapper: Fix footprint budgeting w/ chained fixups.
+- linux: Fix the Process.modify_thread() wait logic.
+- linux: Fully resolve libc on modern glibc systems.
+- linux: Remove the Linjector cleanup delay.
+- ios: Add config.mk option for building without jailbreak support code, for
+  compatibility with e.g. TestFlight.
+- ios: Eliminate dependency on external Mach VM header.
+- android: Fix unw_getcontext() on Android/x86, which resulted in stack
+  corruption during e.g. Thread.backtrace().
+- freebsd: Add BSDmakefile for convenience.
+- freebsd: Fix gum_clear_cache() reliability.
+- freebsd: Improve the program path query API.
+- freebsd: Try a bit harder when MAP_32BIT fails.
+- mips: Fix long-standing regressions that went unnoticed due to lack of CI.
+- qnx: Fix long-standing regressions that went unnoticed due to lack of CI. Also
+  improve the QNX backend while at it.
+- posix: Use posix_madvise() if madvise() is unavailable.
+- stalker: Detect thread exit implementation on glibc, Android, and FreeBSD.
+- stalker: Fix Linux clone() support in the x86 backend.
+- stalker: Fix backpatching of JECXZ/JRCXZ x86 instructions.
+- stalker: Fix two *pc* vs *code* mixups in the x86 backend.
+- stalker: Optimize Linux syscall logic in the x86 backend.
+- stalker: Move unwind support behind an API.
+- stalker: Simplify and fix the x86 unwind Interceptor logic.
+- stalker: Implement unwind hooking in the arm64 backend. Thanks [@s1341][]!
+- stalker: Add backpatch query support.
+- stalker: Add support for recompiling blocks.
+- process: Add resolve_module_pointer().
+- elf-module: Improve the DT_SYMTAB entry count detection.
+- elf-module: Skip symbols with a dangling name reference.
+- symbolutil-libdwarf: Add support for DWARF v5.
+- libdwarf: Backport upstream fix for handling of DW_FORM_line_strp.
+- dbghelp-backtracer: Improve reliability on 32-bit x86.
+- arm-relocator: Simplify PC-relative *LDR* handling.
+- arm-writer: Add call_reg_with_arguments*().
+- arm-writer: Handle put_call*() w/ more than four args.
+- thumb-writer: Handle put_call*() stack alignment.
+- arm64-writer: Optimize *LDR reg, #0*.
+- x86-relocator: Add *input_pc* to support offline use.
+- x86-relocator: Fix PC vs output mixup in RIP-relative fast-path.
+- x86-relocator: Improve the RIP offset fixup logic.
+- bounds-checker: Fall back to the matching heap API.
+- gumjs: Fix CModule memory allocation logic.
+- gumjs: Fix CModule runtime with internal TinyCC.
+- gumjs: Lower build-time Python requirement to 3.7.
+- heap-api: Improve libc detection on non-Windows OSes.
+- heap-api: Include static MSVC CRT APIs in the list.
+- gum: Improve Meson build system to support MSVC.
+- gum: Improve Gum vapis to expose more APIs.
+- core: Fix build failure with some locales by switching off localization when
+  invoking tools from modulate.py.
+- python: Fix stability issue caused by incorrect refcounting in
+  get_max_argument_count().
+- python: Fix get_index_url_from_pip(). Thanks [@X5tar][]!
+- python: Fix index URL retrieval on Python < 3.6. Thanks [@serfend][]!
+- node: Publish prebuilds for Electron 18 instead of 16.
+- ci: Add Linux/MIPS, FreeBSD/x86_64, FreeBSD/arm64, and QNX/armeabi. For Gum,
+  also add Windows/x86_64, macOS/x86_64, Linux/x86, Linux/x86_64, iOS/arm64,
+  Android/x86, Android/arm, and Android/arm64.
+
+
+[@s1341]: https://github.com/s1341
+[@X5tar]: https://github.com/X5tar
+[@serfend]: https://github.com/serfend
