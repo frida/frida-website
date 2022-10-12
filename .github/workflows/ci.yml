@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Install ruby-bundler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby-bundler
+      - name: Cache gems
+        id: cache-gems
+        uses: actions/cache@v3
+        with:
+          path: |
+            .bundle
+            vendor/bundle
+          key: gems-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Install gems
+        if: steps.cache-gems.outputs.cache-hit != 'true'
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install
+      - name: Build
+        run: bundle exec jekyll build
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: site
+          path: _site/*
+
+  publish:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_SECRET_KEY }}
+          aws-region: us-east-1
+      - name: Configure Cloudflare credentials
+        run: |
+          (
+            echo "defaults:"
+            echo "    domain: frida.re"
+            echo "    email: ${{ secrets.CF_EMAIL }}"
+            echo "    token: ${{ secrets.CF_TOKEN }}"
+          ) > ~/.cfcli.yml
+        shell: bash
+      - name: Install cloudflare-cli
+        run: npm install -g cloudflare-cli
+      - name: Download site
+        uses: actions/download-artifact@v3
+        with:
+          name: site
+          path: _site/
+      - name: Deploy site
+        run: _releng/deploy.py
