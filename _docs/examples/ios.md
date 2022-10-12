@@ -9,18 +9,18 @@ permalink: /docs/examples/ios/
 1. Inject script into process on a USB device via REPL
 -
     Injecting a Frida instrumentation script on an iOS device connected via USB
-    can be achieved through the following command. Here the **-n** switch (default 
+    can be achieved through the following command. Here the **-n** switch (default
     option) specifies the process name to attach to (the associated app must be
-    running before executing this command), and the **-U** switch specifies 
-    that a USB device is being targeted (therefore, this option is used for all 
+    running before executing this command), and the **-U** switch specifies
+    that a USB device is being targeted (therefore, this option is used for all
     **iOS** related commands).
 
     `$ frida -U -n Twitter -l demo1.js`
 
 2. List all running processes names and PIDs on a USB device
 -
-    The following command lists all the running processes from an iOS device in a 
-    tabular format with PID and name columns. Remember, the **-U** specifies that a 
+    The following command lists all the running processes from an iOS device in a
+    tabular format with PID and name columns. Remember, the **-U** specifies that a
     USB device is being queried.
 
     `$ frida-ps -U`
@@ -28,14 +28,14 @@ permalink: /docs/examples/ios/
 3. List all installed apps on a USB device
 -
     The following command lists all installed apps on a **USB device** in
-    a tabular format with PID, name and identifier columns. 
+    a tabular format with PID, name and identifier columns.
 
     `$ frida-ps -Uai`
 
 4. List all running apps on a USB device
 -
     The following command lists all the running apps on a **USB device** in
-    a tabular format with PID, name and identifier columns. 
+    a tabular format with PID, name and identifier columns.
 
     `$ frida-ps -Ua`
 
