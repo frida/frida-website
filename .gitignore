@@ -1,5 +1,7 @@
+/.bundle/
 /.jekyll-cache/
-_site/
+/_site/
+/vendor/
 *.swp
 *~
 .DS_Store
