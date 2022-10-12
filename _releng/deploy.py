@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import os
+from pathlib import Path
+import re
 import subprocess
 
 
@@ -7,35 +8,40 @@ PUBLIC_URL = "https://frida.re"
 BUCKET_URI = "s3://frida.re"
 MAX_PURGES_PER_REQUEST = 30
 
+UPLOAD_PATTERN = re.compile(r"^upload: .+ to (s3:\/\/\S+)", re.MULTILINE)
+DELETE_PATTERN = re.compile(r"^delete: (s3:\/\/\S+)", re.MULTILINE)
+
 
 def main():
-    repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    repo_path = Path(__file__).parent.parent
 
-    urls = []
-    listing = subprocess.check_output([
-        "s3cmd",
-        "ls",
-        "-r",
-        BUCKET_URI
-    ]).decode('utf-8')
-    lines = listing.rstrip().split("\n")
-    for line in lines:
-        path = line[line.index(BUCKET_URI) + len(BUCKET_URI):]
-        urls += compute_urls_for_path(path)
+    changes = subprocess.run(
+        [
+            "aws",
+            "s3",
+            "sync",
+            "--delete",
+            "--output=json",
+            repo_path / "_site",
+            BUCKET_URI + "/",
+        ],
+        capture_output=True,
+        encoding="utf-8",
+        check=True,
+    ).stdout
 
-    subprocess.check_call([
-        "s3cmd",
-        "sync",
-        "--delete-removed",
-        os.path.join(repo_path, "_site") + os.sep,
-        BUCKET_URI + "/"
-    ])
+    urls_to_purge = []
+    for m in re.finditer(UPLOAD_PATTERN, changes):
+        urls_to_purge += compute_urls_for_bucket_uri(m.group(1))
+    for m in re.finditer(DELETE_PATTERN, changes):
+        urls_to_purge += compute_urls_for_bucket_uri(m.group(1))
 
-    for batch in chop(urls, MAX_PURGES_PER_REQUEST):
-        subprocess.check_call(["cfcli", "purge"] + batch)
+    for batch in chop(urls_to_purge, MAX_PURGES_PER_REQUEST):
+        subprocess.run(["cfcli", "purge"] + batch, check=True)
 
 
-def compute_urls_for_path(path):
+def compute_urls_for_bucket_uri(uri):
+    path = uri[len(BUCKET_URI):]
     result = [PUBLIC_URL + path]
 
     if path.endswith("/index.html"):
