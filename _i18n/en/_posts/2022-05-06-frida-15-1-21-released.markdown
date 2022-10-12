@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 15.1.21 Released'
+date: 2022-05-06 20:25:35 +0200
+author: oleavr
+version: 15.1.21
+categories: [release]
+---
+
+Only change this time is an important bugfix for i/macOS, where imports could
+not always be resolved. Kudos to [@mrmacete][] for this [fix][].
+
+Enjoy!
+
+
+[@mrmacete]: https://twitter.com/bezjaje
+[fix]: https://github.com/frida/frida-gum/commit/5582d1f922368ccf0f8c7576be1717e14d64ced0
