@@ -1,0 +1,253 @@
+---
+layout: news_item
+title: 'Frida 15.1.15 Released'
+date: 2022-02-01 00:46:40 +0100
+author: oleavr
+version: 15.1.15
+categories: [release]
+---
+
+Quite a few exciting bits in this release. Let's dive right in.
+
+## FreeBSD
+
+Our ambition is to support all platforms that our users care about. In this
+release I wanted to plant the first seed in expanding that to BSDs. So now I'm
+thrilled to announce that Frida finally also supports FreeBSD! 🎉
+
+For now we only support x86_64 and arm64, but expanding to the remaining
+architectures is straight-forward in case anybody is interested in helping out.
+
+The porting effort resulted in several architectural refinements and improved
+robustness for ELF-based OSes in general. It also gave me some ideas on how to
+improve our Linux injector to support injecting into containers, which is
+something I'd like to do down the road.
+
+## Stalker Performance
+
+Back in 15.1.10, Stalker got a massive performance boost on x86/64. In this
+release those same ideas have been applied to our arm64 backend. This includes
+improved locality, better inline caches, etc. I'm told we were able to beat or
+match QEMU in FuzzBench back then, and now we should be in good shape on arm64
+as well. We also managed to improve stability while at it. Exciting!
+
+## GObject Introspection
+
+Back in 14.1, [@meme][] wired up build system support for
+[GObject Introspection][]. This means we have a machine-readable description of
+all of our APIs, which lets us piggyback on existing language [binding][]
+infrastructure, and even get [auto-generated reference docs][] for free.
+
+This release adds a lot of annotations and doc-strings to Gum, and we are now
+closer than ever to having auto-generated reference docs. Still some work left
+to do before it makes sense to publish the generated documentation, but it's not
+far off. If anyone is interested in pitching in, check out Gum's [CI][] and have
+a look at the warnings output by GObject Introspection.
+
+## Meson subproject support
+
+One thing I really like about the Meson build system is its support for
+[subprojects][]. Gum now supports being used as a subproject. Some of you may
+already be consuming Gum through its [devkit binaries][], and now you have a
+brand new option that is even easier.
+
+The main advantage over using a devkit is that everything is built from source,
+so it's easy to experiment with the code.
+
+Let's say we have a file `hello.c` that contains:
+
+{% highlight c %}
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <gum.h>
+#include <stdio.h>
+#include <unistd.h>
+
+static int (* open_impl) (const char * path, int oflag, ...);
+static int replacement_open (const char * path, int oflag, ...);
+
+int
+main (int argc,
+      char * argv[])
+{
+  gum_init ();
+
+  GumInterceptor * interceptor = gum_interceptor_obtain ();
+
+  gum_interceptor_begin_transaction (interceptor);
+
+  open_impl = dlsym (RTLD_DEFAULT, "open");
+  gum_interceptor_replace (interceptor, open_impl, replacement_open,
+      NULL, NULL);
+
+  gum_interceptor_end_transaction (interceptor);
+
+  close (open_impl ("/etc/hosts", O_RDONLY));
+  close (open_impl ("/etc/fstab", O_RDONLY));
+
+  return 0;
+}
+
+static int
+replacement_open (const char * path,
+                  int oflag,
+                  ...)
+{
+  printf ("!!! open(\"%s\", 0x%x)\n", path, oflag);
+
+  return open_impl (path, oflag);
+}
+{% endhighlight %}
+
+To build it we can create a `meson.build` next to it with the following:
+
+{% highlight meson %}
+project('hello', 'c')
+gum = dependency('frida-gum-1.0')
+executable('hello', 'hello.c', dependencies: [gum])
+{% endhighlight %}
+
+And create `subprojects/frida-gum.wrap` containing:
+
+{% highlight ini %}
+[wrap-git]
+url = https://github.com/frida/frida-gum.git
+revision = main
+depth = 1
+
+[provide]
+dependency_names = frida-gum-1.0, frida-gum-heap-1.0, frida-gum-prof-1.0, frida-gumjs-1.0
+{% endhighlight %}
+
+In case you don't have Meson and Ninja already installed, run
+`pip install meson ninja`.
+
+Then, to build and run:
+
+{% highlight sh %}
+$ meson setup build
+$ meson compile -C build
+$ ./build/hello
+!!! open("/etc/hosts", 0x0)
+!!! open("/etc/fstab", 0x0)
+{% endhighlight %}
+
+## Footprint
+
+We put a lot of effort into making sure that Frida can scale from desktops all
+the way down to embedded systems. In this release I spent some time profiling
+our binary footprint, and based on this I ended up making a slew of tweaks and
+build options to reduce our footprint.
+
+I was curious how small I could make a [Gum Hello World][] program that only
+uses Interceptor. The end result was measured on 32-bit ARM w/ Thumb
+instructions, where Gum and its dependencies are statically linked, and the only
+external dependency is the system's libc.
+
+The result was as small as 55K (!), and that made me really excited. What I did
+was to introduce new build options in Gum, GLib, and Capstone. For Gum we now
+support a "diet" mode where we don't make use of GObject and only offer a plain
+C API. This means it won't support GObject Introspection and fancy language
+bindings. It also means we don't offer the full Gum API, but that is something
+that can be expanded on in the future.
+
+Similarly for GLib there is also a new "diet" mode, and boils down to disabling
+its slice allocator, debugging features, and a few other minor tweaks like that.
+
+As for Capstone, I ended up introducing a new "profile" option that can be set
+to "tiny". The result of doing so is that Capstone only understands enough of
+the instruction set to determine each instruction's length, and provide some
+details on position-dependent instructions. The idea is to only support what
+our Relocator implementations need, as those do most of the heavy lifting
+behind Interceptor and Stalker.
+
+While I wouldn't recommend using these build options unless you really need a
+footprint that small, it's good to be aware of what's possible. We also offer
+other, less extreme options. Read more in our [footprint docs][].
+
+## The curse of multiple build systems
+
+Something that has been bothering me for as long as Frida has existed, is that
+building Frida involves dealing with multiple build systems. While we do of
+course try to hide that complexity behind scripts/makefiles, we are inevitably
+going to have unhappy users who find themselves trying to figure out why Frida
+is not building for them.
+
+Some are also interested in cross-compiling Frida for a slightly different libc,
+toolchain, or what have you. They may even be looking to add support for an OS
+we don't yet support. Chances are that we're going to demotivate them the moment
+they realize they need to deal with four different build-systems: Meson,
+autotools, custom Perl scripts (OpenSSL), and GN (V8).
+
+As we are happy users of Meson, my goal is to "Mesonify all the things!". With
+this release, we have now finally reached the point where virtually all of our
+required dependencies are built using Meson. The only exception is V8, but we
+will hopefully also build that with Meson someday. (Spoiler from the future:
+Frida 16 will get us there!)
+
+## EOF
+
+There's also a bunch of other exciting changes, so definitely check out the
+changelog below.
+
+Enjoy!
+
+### Changelog
+
+- Add support for FreeBSD.
+- Add support for ARMv4, for instrumenting old embedded systems.
+- Add build options for binary footprint reductions (see config.mk).
+- Tweak Capstone and GLib to enable much smaller binary footprints.
+- droidy: Add AXML decoder. Thanks [@meme][]!
+- windows: Fix dbghelp backtracer support for libffi-frames.
+- linux: Fix compatibility with new glibc versions.
+- linux: Only use one frida-helper when assets are installed.
+- qnx: Remove tempfiles when injector is closed.
+- core: Plug leak when agent teardown is cancelled.
+- gumjs: Fix handling of RPC invocations returning *null*.
+- interceptor: Use a "jumbo"-JMP on x86 when needed, when impossible to allocate
+  memory reachable from a "JMP <imm32>".
+- interceptor: Generate variable size x86 NOP padding.
+- stalker: Improve performance of the arm64 backend, by applying ideas recently
+  used to optimize the x86/64 backend -- e.g. improved locality, better inline
+  caches, etc.
+- stalker: Fix handling of zero-sized freeze/thaw().
+- stalker: Rework x86 PLT exclusion code to avoid reentrancy-issues during
+  stalking.
+- stalker: Don't require a C++ runtime to be present.
+- arm-writer: Add put_bl_reg(), put_call_reg().
+- arm-writer: Fix register clobbering in put_call_address*().
+- arm64-reader: Expose disassemble_instruction_at().
+- arm64-writer: Fix handling of mixed-width literals.
+- arm64-writer: Fix TBZ/TBNZ encoding.
+- arm64-writer: Fix put_and_reg_reg_imm() on 32-bit systems.
+- arm64-writer: Add put_{ldr,str}_reg_reg_offset_mode().
+- elf-module: Expose more details, add support for offline mode, add Vala
+  bindings.
+- exceptor: Add reset() for exception handler recovery.
+- gum: Add lots of GObject Introspection annotations and API docs.
+- gum: Add support for using as a Meson subproject.
+- gum: Port Meson build system to Windows.
+- gum: Eliminate the GIO dependency.
+- gum: Add diet mode, allowing a "Hello World" C program that uses Interceptor
+  to be as small as 55K on 32-bit ARM w/ Thumb instructions.
+- gum: Add CI. Thanks [@meme][]!
+- Improve build system with many portability improvements.
+- Build elfutils, libiconv, libdwarf, libunwind, openssl, xz with Meson.
+- Upgrade dependencies: capstone, elfutils, libdwarf, libunwind.
+- Release packages for Fedora 35 instead of 34.
+- python: Use PEP 503 instead of PyPI xmlrpc. Thanks [@GalaxySnail][]!
+- python: Fix support for Python >= 3.10 on Windows.
+
+
+[GObject Introspection]: https://gi.readthedocs.io/en/latest/
+[binding]: https://gi.readthedocs.io/en/latest/users.html
+[auto-generated reference docs]: https://gitlab.gnome.org/GNOME/gi-docgen/
+[CI]: https://github.com/frida/frida-gum/actions
+[subprojects]: https://mesonbuild.com/Subprojects.html
+[devkit binaries]: https://github.com/frida/frida/releases
+[Gum Hello World]: https://github.com/oleavr/hello-gum
+[footprint docs]: /docs/footprint/
+[@meme]: https://github.com/meme
+[@GalaxySnail]: https://github.com/GalaxySnail
