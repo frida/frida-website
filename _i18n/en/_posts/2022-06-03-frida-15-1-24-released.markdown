@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 15.1.24 Released'
+date: 2022-06-03 22:01:41 +0200
+author: oleavr
+version: 15.1.24
+categories: [release]
+---
+
+Only one change this time, but it's an important one for those of you using
+Frida on Android: Our Java method hooking implementation was crashing in some
+cases, where we would pick a scratch register that conflicted with the generated
+code. This is now [fixed][].
+
+Enjoy!
+
+
+[fixed]: https://github.com/frida/frida-java-bridge/commit/d4d2a42ef2f370487a88d108e966de30f2a48322
