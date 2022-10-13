@@ -1,0 +1,76 @@
+---
+layout: news_item
+title: 'Frida 15.1.25 Released'
+date: 2022-06-18 09:57:10 +0200
+author: oleavr
+version: 15.1.25
+categories: [release]
+---
+
+Quite a few exciting bits in this release. Let's dive right in.
+
+## FPU/vector register access
+
+Some great news for those of you using Frida on 32- and 64-bit ARM. Up until
+now, we have only exposed the CPU's integer registers, but as of this release,
+FPU/vector registers are also available! 🎉
+
+For 32-bit ARM this means *q0* through *q15*, *d0* through *d31*, and *s0*
+through *s31*. As for 64-bit ARM they're *q0* through *q31*, *d0* through *d31*,
+and *s0* through *s31*. If you're accessing these from JavaScript, the vector
+properties are represented using *ArrayBuffer*, whereas for the others we're
+using the *number* type.
+
+## Java.backtrace()
+
+Our existing Java.backtrace() API now provides a couple of new properties in the
+returned *frames*, which now also expose *methodFlags* and *origin*.
+
+## Quality
+
+I finally [plugged][] a memory leak in our RPC server-side code. This was
+introduced by me in 15.1.10 when implementing an [optimization][] in the Vala
+compiler's code generation for DBus reply handling. Shoutout to [@rev1si0n][]
+for reporting and helping track down this regression!
+
+## EOF
+
+There are also some other goodies in this release, so definitely check out the
+changelog below.
+
+Enjoy!
+
+### Changelog
+
+- vala: Plug leak in server-side GDBus reply handling. This affected all
+  server-side implementations in Frida.
+- glib: Disable support for “charset.alias”. This means we no longer try to
+  open this file, which could cause sandbox violations on some systems, such
+  as iOS.
+- java: (android) Add *methodFlags* to Java.backtrace() frames.
+- java: (android) Add *origin* to Java.backtrace() frames.
+- java: (android) Prevent ART from compiling replaced methods. Kudos to
+  [@s1341][] for figuring this one out!
+- cpu-context: Add ARM FPU/vector registers and NZCV.
+- cpu-features: Add VFPD32 flag and detection logic.
+- stalker: Fix VFP D32 detection in the arm backend.
+- gumjs: Add vector regs to arm_reg bindings.
+- x86-writer: Add put_fx{save,rstor}_reg_ptr().
+- arm-writer: Add load/store variants without offset.
+- arm-writer: Add put_v{push,pop}_range().
+- arm-writer: Remove noop check from put_ands_reg_reg_imm().
+- arm-writer: Rename *_registers() to *_regs().
+- arm-writer: Support vector push/pop with Q regs.
+- thumb-writer: Add put_v{push,pop}_range().
+- thumb-writer: Support vector push/pop with Q regs.
+- arm64-writer: Add load/store variants without offset.
+- arm64-writer: Add put_mov_{reg_nzcv,nzcv_reg}().
+- libc-shim: Support old system headers on Linux/ARM.
+- node: Bump dependencies.
+- node: Publish prebuilds for Electron 19 instead of 18.
+
+
+[plugged]: https://github.com/frida/vala/commit/d07b689485b3c79116a569696d36ad7c0e299c02
+[optimization]: https://github.com/frida/vala/commit/74a66f908957f9c141e4b50c915a2968721e267a
+[@rev1si0n]: https://github.com/rev1si0n
+[@s1341]: https://github.com/s1341
