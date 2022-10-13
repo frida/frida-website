@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 15.1.27 Released'
+date: 2022-06-20 11:20:27 +0200
+author: oleavr
+version: 15.1.27
+categories: [release]
+---
+
+It appears I should have had some more coffee this morning, so here's another
+release to actually fix [this][] broken fix back in 15.1.25:
+
+> - java: (android) Prevent ART from compiling replaced methods
+
+Turns out the *kAccCompileDontBother* constant changed in Android 8.1. It also
+didn't exist before 7.0. Oops! This release [fixes][] it, for real this time 😊
+
+
+[this]: https://github.com/frida/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
+[fixes]: https://github.com/frida/frida-java-bridge/commit/cdc3d3638c735d008283bfe177cffdd59b0e62c3
