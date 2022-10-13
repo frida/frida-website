@@ -1,0 +1,61 @@
+---
+layout: news_item
+title: 'Frida 15.1.23 Released'
+date: 2022-05-30 10:27:57 +0200
+author: oleavr
+version: 15.1.23
+categories: [release]
+---
+
+The main theme of this release is OS support, where we've fixed some rough edges
+on Android 12, and introduced preliminary support for Android 13. While working
+on frida-java-bridge I also found myself needing some of the JVMTI code in the
+JVM-specific backend. Those bits are now shared, and the JVM-specific code is
+in better shape, with brand new support for JDK 17.
+
+We have also improved stability in several places, and made it easier to use the
+CodeWriter APIs safely. Portability has also been improved, where our
+QuickJS-based JavaScript runtime finally works when cross-compiled for
+big-endian from a little-endian build machine, and vice versa.
+
+To learn more, be sure to check out the changelog below.
+
+Enjoy!
+
+### Changelog
+
+- linux: Handle spurious signals during ptrace().
+- android: Add missing SELinux rule for system_server on Android 12+.
+- android: Fix Android 13 detection on real devices.
+- android: Handle new linker internals in Android 13.
+- java: Improve the Java.enumerateMethods() error message. Thanks [@jpstotz][]!
+- java: (android) Handle inlined GetOatQuickMethodHeader().
+- java: (android) Improve support for non-Google Android 12+ ROMs.
+- java: (android) Fix Java.choose() on Android >= 12.
+- java: (android) Add support for Android 13.
+- java: (android) Fix *threadReg* clobber in the x64 recompilation logic.
+- java: (android) Explain why Java.deoptimizeBootImage() is unavailable.
+- java: (android) Expose JVMTI through *api.jvmti*.
+- java: (android) Improve error messages about OS features.
+- java: (jvm) Add basic support for JDK 17.
+- java: (jvm) Add fallback for thread_from_jni_environment().
+- java: (jvm) Fix UAF in withJvmThread() prologue/epilogue logic.
+- java: (jvm) Improve *InstanceKlass* offset detection.
+- code-writer: Add *flush_on_destroy* option.
+- gumjs: Disable the CodeWriter *flush_on_destroy* option. In this way, the
+  writers are safer to use as they won't be writing to memory once they're
+  garbage-collected. At that point the target memory may no longer be writable,
+  or might be owned by other code.
+- gumjs: Embed byteswapped QuickJS bytecode when needed. This means GumJS can be
+  cross-compiled across endians.
+- gumjs: Fix double free in the Instruction copy logic.
+- gumjs: Fix Relocator instruction accessors.
+- gumjs: Flush CodeWriter on reset() and dispose().
+- gumjs: Improve NativePointer#strip() to support ARM TBI.
+- gumjs: Make Instruction wrapper safer in zero-copy mode.
+- gumjs: Plug Relocator leak in the QuickJS runtime.
+- quickjs: Fix support for byteswapped output. Also upgrade QuickJS to latest
+  upstream version with Unicode 14 updates.
+
+
+[@jpstotz]: https://github.com/jpstotz
