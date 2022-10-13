@@ -1,0 +1,127 @@
+---
+layout: news_item
+title: 'Frida 15.1.28 Released'
+date: 2022-07-06 17:52:24 +0200
+author: oleavr
+version: 15.1.28
+categories: [release]
+---
+
+A couple of exciting new things in this release.
+
+## File API
+
+Those of you using our JavaScript File API may have noticed that it supports
+writing to the given file, but there was no way to read from it. This is now
+supported.
+
+For example, to read each line of a text-file as a string:
+
+{% highlight js %}
+const f = new File('/etc/passwd', 'r');
+let line;
+while ((line = f.readLine()) !== '') {
+  console.log(`Read line: ${line.trimEnd()}`);
+}
+{% endhighlight %}
+
+(Note that this assumes that the text-file is UTF-8-encoded. Other encodings are
+not currently supported.)
+
+You can also read a certain number of bytes at some offset:
+
+{% highlight js %}
+const f = new File('/var/run/utmp', 'rb');
+f.seek(0x2c);
+const data = f.readBytes(3);
+const str = f.readText(3);
+{% endhighlight %}
+
+The argument may also be omitted to read the rest of the file. But if you're
+just looking to read a text file in one go, there's an easier way:
+
+{% highlight js %}
+const text = File.readAllText('/etc/passwd');
+{% endhighlight %}
+
+Reading a binary file is just as easy:
+
+{% highlight js %}
+const bytes = File.readAllBytes('/var/run/utmp');
+{% endhighlight %}
+
+(Where *bytes* is an ArrayBuffer.)
+
+Sometimes you may also want to dump a string into a text file:
+
+{% highlight js %}
+File.writeAllText('/tmp/secret.txt', 'so secret');
+{% endhighlight %}
+
+Or perhaps dump an ArrayBuffer:
+
+{% highlight js %}
+const data = args[0].readByteArray(256);
+File.writeAllBytes('/tmp/mystery.bin', data);
+{% endhighlight %}
+
+Going back to the example earlier, seek() also supports relative offsets:
+
+{% highlight js %}
+f.seek(7, File.SEEK_CUR);
+f.seek(-3, File.SEEK_END);
+{% endhighlight %}
+
+Retrieving the current file offset is just as easy:
+
+{% highlight js %}
+const offset = f.tell();
+{% endhighlight %}
+
+## Checksum API
+
+The other JavaScript API addition this time around is for when you want to
+compute checksums. While this could be implemented in JavaScript entirely in
+"userland", we do get it fairly cheap since Frida depends on GLib, and it
+already provides a [Checksum API][] out of the box. All we needed to do was
+expose it.
+
+Putting it all together, this means we can read a file and compute its SHA-256:
+
+{% highlight js %}
+const utmp = File.readAllBytes('/var/run/utmp');
+const str = Checksum.compute('sha256', utmp);
+{% endhighlight %}
+
+Or, for more control:
+
+{% highlight js %}
+const checksum = new Checksum('sha256');
+checksum.update(File.readAllText('/etc/hosts'));
+checksum.update(File.readAllBytes('/var/run/utmp'));
+console.log('Result:', checksum.getString());
+console.log(hexdump(checksum.getDigest(), { ansi: true }));
+{% endhighlight %}
+
+(You can learn more about this API from our [TypeScript bindings][].)
+
+## EOF
+
+There are also a few other goodies in this release, so definitely check out the
+changelog below.
+
+Enjoy!
+
+### Changelog
+
+- gumjs: Extend the *File* API.
+- gumjs: Add *Checksum* API.
+- gumjs: Fix handling of relative ESM imports from root.
+- glib: (win32) Add Input/OutputStream support for plain files.
+- build: Make XP SDK optional on Windows.
+- node: Target Electron 19.0.0 instead of 19.0.0-alpha.1.
+- node: Define *openssl_fips* to work around node-gyp issue.
+
+
+[Checksum API]: https://docs.gtk.org/glib/struct.Checksum.html
+[TypeScript bindings]: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/edfba0b718c853dea18c23e2f4b5dd9b4c17dd6d/types/frida-gum/index.d.ts#L2500-L2559
