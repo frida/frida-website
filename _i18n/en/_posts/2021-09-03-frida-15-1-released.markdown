@@ -103,7 +103,6 @@ Note that the bridge is still very early in development, and so:
     short-to-medium term.
   - PRs and issues are very welcome!
 
-
 Refer to the [documentation][] for an up-to-date resource on the current API.
 
 Enjoy!
@@ -200,6 +199,8 @@ Enjoy!
 - p2p: Disable ICE-TCP for now.
 - p2p: Rework PeerSocket to fix synchronization issues.
 - socket: Fix WebService teardown.
+- vala: Optimize server-side GDBus reply handling. This means our RPC and
+  network protocols become less chatty/more performant.
 - x86-writer: Add UD2 instructions after/in indirect branches.
 - x86-writer: Emit larger NOPs when possible.
 - stalker: Improve performance of the x86/64 backend.
