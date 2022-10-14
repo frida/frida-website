@@ -16,38 +16,12 @@ we need to do is add the architecture-specific bits.
 - releng/setup-env.sh
 
 This is the script that generates an .rc file that you can source to enter
-the build environment. The top-level *Makefile.$build_os.mk* uses this to
-generate the environment before proceeding to build modules inside of it.
-Fill in the blanks [here](https://github.com/frida/frida/blob/e23516d9d027c35cedc9c3497dde774f0acfce1a/releng/setup-env.sh#L105-L128).
-We use the same terminology as autotools, so *build* means the build machine
+the build environment, along with a .txt that is a Meson machine file. The
+top-level *Makefile.$build_os.mk* uses this script to generate the environment
+before proceeding to build modules inside of it.
+Fill in the blanks [here](https://github.com/frida/frida/blob/829a62a6a984f2c7f90d17b50f12c62fef3359bf/releng/setup-env.sh#L368-L427).
+We use the same terminology as Meson, so *build* means the build machine
 while *host* refers to the machine that will be executing the binaries.
-
-- releng/config.site.in
-
-Instead of passing lots of switches and environment variables to *configure*
-we generate a *config.site* file that we point the `CONFIG_SITE` environment
-variable to. Go fill in the blanks [here](https://github.com/frida/frida/blob/e23516d9d027c35cedc9c3497dde774f0acfce1a/releng/config.site.in#L26-L33).
-*setup-env.sh* will take care of generating the final *config.site* based on
-this template.
-
-- Makefile.sdk.mk
-
-Frida's build system automatically downloads a tarball with all dependencies
-prebuilt for the host OS and architecture. As we're porting to a new
-architecture we will have to build these dependencies by hand. But first,
-we need to update the build recipe to support this new architecture.
-Because most of the dependencies make use of Meson this requires almost
-no changes at all; we just need to add the V8-specific bits as it uses a
-custom build system. Go update them [here](https://github.com/frida/frida/blob/e23516d9d027c35cedc9c3497dde774f0acfce1a/Makefile.sdk.mk#L271-L286).
-
-- frida-gum/configure.ac
-
-Add `HAVE_MIPS` and `ARCH_MIPS` [here](https://github.com/frida/frida-gum/blob/2471ca17df1babd60269a60aab4705737c5485dd/configure.ac#L30-L55)
-by just following the existing patterns.
-
-- frida-core/configure.ac
-
-Repeat the procedure from the previous point [here](https://github.com/frida/frida-core/blob/50408c69968321f653030f5b3fb515f66b846a93/configure.ac#L24-L56).
 
 ### Building the SDK
 
@@ -57,25 +31,25 @@ $ make -f Makefile.sdk.mk FRIDA_HOST=linux-mips
 
 ### Building frida-gum
 
-A user would normally not build a component by hand and instead just invoke the
-toplevel Makefile. However, when porting we recommend focusing on just one
-module at a time and get its tests passing before moving on to the next one.
-We'll start with *frida-gum*, which is the low-level foundation of *frida-core*.
+A user would normally not build a component by hand and instead invoke the
+toplevel Makefile. However, when porting we recommend focusing on one module
+at a time and get its tests passing before moving on to the next one. We'll
+start with frida-gum, which is the low-level foundation of frida-core.
 
-Let's first use the top-level Makefile to just bootstrap the basics:
+Let's first use the top-level Makefile to bootstrap the basics:
 
 {% highlight bash %}
 $ make build/frida-linux-mips/lib/pkgconfig/frida-gum-1.0.pc
 {% endhighlight %}
 
-That may not actually succeed in building *frida-gum*, but should at least get
-the environment set up, configure script generated, etc.
+This may not actually succeed in building frida-gum, but should at least get
+the environment set up.
 
-Now let's change the working directory to *frida-gum* and rinse and repeat this
+Now let's change the working directory to frida-gum and rinse and repeat this
 until all is well:
 
 {% highlight bash %}
-$ (. ../build/frida-env-linux-mips.rc && make -C ../build/tmp-linux-mips/frida-gum)
+$ (. ../build/frida-env-linux-mips.rc && ninja -C ../build/tmp-linux-mips/frida-gum)
 $ scp ../build/tmp-linux-mips/frida-gum/tests/gum-tests target:/tmp/
 $ ssh target "/tmp/gum-tests"
 {% endhighlight %}
@@ -85,37 +59,38 @@ You can add `-p` to limit which tests are run, e.g. `-p /Core/Interceptor/attach
 ### Porting frida-gum
 
 Add the directory *gum/backend-mips* by duplicating for example
-[gum/backend-arm64](https://github.com/frida/frida-gum/tree/master/gum/backend-arm64),
-and just search-replace everything. The important part to port here is
+[gum/backend-arm64](https://github.com/frida/frida-gum/tree/main/gum/backend-arm64),
+and then search-replace everything. The important part to port here is
 *guminterceptor-mips.c* and *gumspinlock-mips.c*. You should leave
 *gumstalker-mips.c* as a stub, as it's an advanced feature that takes a lot
 of effort to port.
 
 ### Building frida-core
 
-Let's first use the top-level Makefile to just bootstrap the basics:
+Let's first use the top-level Makefile to bootstrap the basics:
 
 {% highlight bash %}
 $ make build/frida-linux-mips/lib/pkgconfig/frida-core-1.0.pc
 {% endhighlight %}
 
-That may not actually succeed in building *frida-core*, but should at least get
-the environment set up, configure script generated, etc.
+This may not actually succeed in building frida-core, but should at least get
+the environment set up.
 
-Now let's change the working directory to *frida-core* and rinse and repeat this
+Now let's change the working directory to frida-core and rinse and repeat this
 until all is well:
 
 {% highlight bash %}
-$ (. ../build/frida-env-linux-mips.rc && make -C ../build/tmp-linux-mips/frida-core)
+$ (. ../build/frida-env-linux-mips.rc && ninja -C ../build/tmp-linux-mips/frida-core)
 $ scp ../build/tmp-linux-mips/frida-core/tests/frida-tests target:/tmp/
 $ ssh target "/tmp/frida-tests"
 {% endhighlight %}
 
-You can add `-p` to limit which tests are run, e.g. `-p /Linjector/inject`.
+You can add `-p` to limit which tests are run, e.g.
+`-p /Injector/inject-dynamic-current-arch`.
 
 ### Porting frida-core
 
-This should only be a matter of porting the injector. The implementation is [here](https://github.com/frida/frida-core/blob/master/src/linux/frida-helper-glue.c)
-and it is basically just a matter of following the `HAVE_ARM64` breadcrumbs
-to port the architecture-specific bits. For a walkthrough of the Linux injector,
-check out our presentation [here](https://www.youtube.com/watch?v=uc1mbN9EJKQ).
+This should only be a matter of porting the injector. The implementation is [here](https://github.com/frida/frida-core/blob/main/src/linux/frida-helper-backend-glue.c)
+and the recommended approach is to follow the `HAVE_ARM64` breadcrumbs to port
+the architecture-specific bits. For a walkthrough of the Linux injector, check
+out our presentation [here](https://www.youtube.com/watch?v=uc1mbN9EJKQ).
