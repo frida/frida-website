@@ -13,7 +13,7 @@
 
 ### Design Constraints
 
-Frida has a rather complicated build system due to some design constraints:
+Frida has a fairly complex build system due to some design constraints:
 
 - **Short build time for new contributors.** Frida downloads a prebuilt
 toolchain and SDK to save time. This requires a bit more fiddling to get the
@@ -21,7 +21,7 @@ build environment just right, but it has the added benefit of providing a
 coherent build environment.
 
 - **No moving parts.** The final binary must be self-contained/portable. Some of
-Frida's run-time components, like frida-helper, frida-agent, etc. will at some
+Frida's run-time components, like frida-helper, frida-agent, etc. may at some
 point need to be present on the filesystem. These binaries are serialized and
 linked into the Frida library (for example `_frida.so` in the case of
 frida-python), which means it's portable without relying on external moving
@@ -41,7 +41,7 @@ unfortunately doesn't provide any way to fully clean up statically allocated
 resources, we had to patch that library to add support for this. Upstream
 doesn't consider this a valid use-case, so unfortunately we need to maintain our
 fork of this library. This means we can't make use of a system-wide GLib on
-GNU/Linux systems, which consequently makes the prebuilt SDK much larger.
+GNU/Linux systems, which consequently makes the prebuilt SDK a bit larger.
 
 Frida's build system tries to keep you sane by making use of a prebuilt
 toolchain and SDK for each platform. This is what's used in the steps outlined
@@ -71,7 +71,7 @@ Running `make` will provide you a list of modules to build. See
 
 - Make sure you have:
   - Xcode with command-line tools
-  - [Python 3.8](https://www.python.org/downloads/mac-osx/) on your PATH
+  - [Python 3.10](https://www.python.org/downloads/mac-osx/) on your PATH
   - [Node.js](https://nodejs.org/) on your PATH
 - Clone `frida` and build it:
 {% highlight bash %}
@@ -86,27 +86,17 @@ Running `make` will provide you a list of modules to build. See
 ### Windows
 
 - Make sure you have:
-  - Visual Studio 2019 w/XP support
-    - Select `Desktop development with C++` workload
-    - Select the `C++ Windows XP Support for VS 2017 (v141) tools [Deprecated]` individual component
+  - Visual Studio 2022
   - [Git](https://git-scm.com/downloads) on your PATH
-  - [Python 3.8](https://www.python.org/downloads/windows/) on your path with `py` launcher installed
-    - Select `Add Python 3.8 to PATH`
-    - Specify the installation directory to `C:\Program Files (x86)\Python 3.8\` (with spaces)
-    - Select `Associate files with Python (requires the py launcher)` option
+  - [Python 3.10](https://www.python.org/downloads/windows/) on your PATH
+    - Select `Add Python 3.10 to PATH`
+    - Set the installation directory to `C:\Program Files\Python310\`, or edit
+      releng\frida.props to change the *PythonLocation* values there.
   - [Node.js](https://nodejs.org/) on your PATH
-  - [PowerShell](https://msdn.microsoft.com/en-us/powershell/scripting/setup/installing-windows-powershell)
 
 - Clone the `frida` repository:
 {% highlight bash %}
 $ git clone --recurse-submodules https://github.com/frida/frida
-{% endhighlight %}
-
-- Enter the `frida` folder and execute the Python staging script
-{% highlight bash %}
-$ powershell
-PS> Set-ExecutionPolicy -Scope Process -ExecutionPolicy Unrestricted
-PS> .\releng\stage-python.ps1
 {% endhighlight %}
 
 - Open `frida.sln` and build it.
@@ -120,7 +110,7 @@ following steps assume you have the OS-specific prerequisites mentioned above.
 
 - Make sure your system has the following goodies:
 {% highlight bash %}
-$ sudo apt-get install flex bison
+$ sudo apt-get install bison flex gperf
 {% endhighlight %}
 - Clone the `frida` repository and build away:
 {% highlight bash %}
@@ -135,7 +125,9 @@ $ scp build/toolchain-*.tar.bz2 your@own.server:
 $ scp build/sdk-*.tar.bz2 your@own.server:
 {% endhighlight %}
 - Now you can clone `frida` like above and adjust the URLs in
-`releng/setup-env.sh` (look for `download_command`) before running `make`.
+  `releng/setup-env.sh` (look for `download_command`) before running `make`.
+  You can also copy the files into `build/` and they'll be picked up instead of
+  attempting to download them.
 
 ### Windows Toolchain and SDK
 
@@ -143,13 +135,14 @@ $ scp build/sdk-*.tar.bz2 your@own.server:
 {% highlight bash %}
 $ git clone --recurse-submodules https://github.com/frida/frida
 $ cd frida
-$ py -3 releng\build-deps-windows.py
+$ python releng\build-deps-windows.py
 {% endhighlight %}
 - Transfer the resulting toolchain and SDK to a web server somewhere:
 {% highlight bash %}
 $ scp toolchain-windows-*.exe your@own.server:
 $ scp sdk-windows-*.exe your@own.server:
 {% endhighlight %}
-- Now you can clone `frida` like above and adjust the URLs in
-  `releng\windows-toolchain.txt` and `releng\windows-sdk.txt` before opening
-  `frida.sln`.
+- Now you can clone `frida` like above and adjust `BUNDLE_URL` in
+  `releng\deps.py` before opening `frida.sln`.
+  You can also copy the files into `build\` and they'll be picked up instead of
+  attempting to download them.
