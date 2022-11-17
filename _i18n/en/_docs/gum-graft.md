@@ -20,3 +20,7 @@ Application Options:
   -m, --ingest-imports             Include instrumentation for imports
   -z, --transform-lazy-binds       Transform lazy binds into regular binds (experimental)
 {% endhighlight %}
+
+
+[Gadget]: https://frida.re/docs/gadget/
+[releases page]: https://github.com/frida/frida/releases
