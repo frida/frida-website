@@ -1,6 +1,11 @@
-`gum-graft` is a tool for patching the binaries ahead of time.
-It is especially useful when trying to use the Interceptor api from the gadget on jailed iOS devices with `code_signing` enabled. 
-You can download `gum-graft` from the [releases page](https://github.com/frida/frida/releases).
+The `gum-graft` tool is used for patching binaries ahead of time to allow
+Interceptor to instrument them in environments where runtime code modifications
+are prohibited. For now this only means Apple mobile OSes when strict
+code-signing policies are at play -- i.e. on jailed systems when running an app
+without a debugger having been attached. In such cases, override the [Gadget][]
+`code_signing` option and set it to `required`.
+
+You can download `gum-graft` from the [releases page][].
 
 {% highlight bash %}
 Usage:
