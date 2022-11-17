@@ -33,6 +33,7 @@
   - frida-discover
   - frida-ls-devices
   - frida-kill
+  - gum-graft
 
 - title: API Reference
   docs:
