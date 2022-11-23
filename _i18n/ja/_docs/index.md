@@ -5,7 +5,7 @@ FridaのAPIを用いて独自のツールを開発する方法について紹介
 ## Fridaとは
 
 Fridaは[Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)のネイティブアプリケーション版です。より技術的な用語で言うとするならば、動的解析ツールキットです。
-Fridaを使うことで、Windows、macOS、GNU/Linux、iOS、AndroidやQNXのネイティブアプリケーションに対してJavascriptコードやライブラリをインジェクトすることができます。また、FridaはFrida API上に構築されたいくつかのツールを提供します。
+Fridaを使うことで、Windows、macOS、GNU/Linux、iOS、watchOS、tvOS、Android、FreeBSDやQNXのネイティブアプリケーションに対してJavascriptコードやライブラリをインジェクトすることができます。また、FridaはFrida API上に構築されたいくつかのツールを提供します。
 これらをそのまま使用するのももちろんこと、必要に応じて調整したり、Frida APIの使用例として使うこともできます。
 
 ## なぜこれが必要なの？
