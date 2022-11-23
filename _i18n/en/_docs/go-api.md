@@ -1,9 +1,10 @@
-Go bindings enables usage of frida using Go language.
+The Go bindings make it easy to use Frida's APIs from [Go][].
 
-Some of the functionalities provided are:
+Some of the provided functionality includes:
+
 * Listing devices/applications/processes
 * Attaching to applications/processes
-* Fetching informations about devices/applications/processes
+* Fetching information about devices/applications/processes
 
 For the full documentation please visit [pkg.go.dev][].
 
@@ -33,7 +34,7 @@ func main() {
 }
 {% endhighlight %}
 
-Example above should produce:
+Example above should output something like:
 
 {% highlight bash %}
 $ go build main.go && ./main
@@ -43,4 +44,6 @@ $ go build main.go && ./main
 [*] Local Socket => socket
 {% endhighlight %}
 
+
+[Go]: https://go.dev/
 [pkg.go.dev]: https://pkg.go.dev/github.com/frida/frida-go/frida
