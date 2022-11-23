@@ -53,7 +53,8 @@ on top of this C core there are multiple language bindings, e.g.
 [Python](https://github.com/frida/frida-python),
 [Swift](https://github.com/frida/frida-swift),
 [.NET](https://github.com/frida/frida-clr),
-[Qml](https://github.com/frida/frida-qml), etc.  It is very easy to build
+[Qml](https://github.com/frida/frida-qml),
+[Go](https://github.com/frida/frida-go), etc.  It is very easy to build
 additional bindings for other languages and environments.
 
 ## ProTips™, Notes, and Warnings

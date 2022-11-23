@@ -23,8 +23,8 @@ to piecing together a website and some much needed documentation.
 
 Today, Frida should be a very helpful toolbox for anyone interested in dynamic
 instrumentation and/or reverse-engineering. There are now language bindings
-for [Node.js][], [Python][], [Swift][], [.NET][], [Qt/Qml][], and it is also
-possible to use Frida from C.
+for [Node.js][], [Python][], [Swift][], [.NET][], [Qt/Qml][], [Go][], and it is
+also possible to use Frida from C.
 
 
 [@oleavr]: https://twitter.com/oleavr
@@ -39,5 +39,6 @@ possible to use Frida from C.
 [Swift]: https://github.com/frida/frida-swift
 [.NET]: https://github.com/frida/frida-clr
 [Qt/Qml]: https://github.com/frida/frida-qml
+[Go]: https://github.com/frida/frida-go
 [oSpy]: https://github.com/oleavr/ospy
 [QuickJS]: https://bellard.org/quickjs/
