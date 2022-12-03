@@ -9,7 +9,7 @@ categories: [release]
 
 It's been a busy week. Let's dive in.
 
-## Breaking into Apple sandboxes
+## Sandboxed environments
 
 This week [@hsorbo][] and me spent some days trying to get Frida working better
 in sandboxed environments. Our goal was to be able to get Frida into Apple's
