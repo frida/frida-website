@@ -379,7 +379,8 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
 +   `Module.load(path)`: loads the specified module from the filesystem path
     and returns a [`Module`](#module) object. Throws an exception if the specified
-    module cannot be loaded.
+    module cannot be loaded. It can be used to load known module before or at the 
+    same time to reduce errors and problems.
     {: #module-load}
 
 +   `Module.ensureInitialized(name)`: ensures that initializers of the specified
@@ -846,7 +847,9 @@ Interceptor.attach(f, {
     `glob` and returns their addresses as an array of [`NativePointer`](#nativepointer)
     objects.
 
-+   `DebugSymbol.load(path)`: loads debug symbols for a specific module.
++   `DebugSymbol.load(path)`: loads debug symbols for a specific module. This feature is
+    not fully supported in Windows modules, {modulename}.pdb file must downloaded and 
+    located in the project folder.
 
 
 ### Kernel
