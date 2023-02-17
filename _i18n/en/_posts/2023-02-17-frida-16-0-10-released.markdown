@@ -1,0 +1,36 @@
+---
+layout: news_item
+title: 'Frida 16.0.10 Released'
+date: 2023-02-17 02:05:11 +0100
+author: oleavr
+version: 16.0.10
+categories: [release]
+---
+
+This time we're bringing you additional iOS 15 improvements, an even better
+frida.Compiler, brand new support for musl libc, and more. Do check out the
+changelog below for more details.
+
+Enjoy!
+
+### Changelog
+
+- ios: Fix spawn() on lower versions of iOS 15. Thanks [@as0ler][] and
+  [@mrmacete][]!
+- ios: Ensure launchd prioritizes our daemon. Kudos to [@getorix][] for
+  investigating and suggesting this fix.
+- compiler: Bump frida-compile, frida-fs, and Gum typings. This means that
+  frida.Compiler now also works properly on linux-arm64 and linux-x86.
+- linux: Add support for musl libc, including CI that publishes release assets
+  for x86_64 and arm64.
+- gumjs: Add console.debug() and console.info(). Thanks [@oriori1703][]!
+- gumjs: Fix build when node_modules/@types exists above us.
+- gumjs: Ignore tcclib.h symbols when generating runtime. Thanks [@milahu][]!
+- build: Improve support for shared builds. Thanks [@milahu][]!
+
+
+[@as0ler]: https://twitter.com/as0ler
+[@mrmacete]: https://twitter.com/bezjaje
+[@getorix]: https://twitter.com/getorix
+[@oriori1703]: https://github.com/oriori1703
+[@milahu]: https://github.com/milahu
