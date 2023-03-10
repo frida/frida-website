@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 16.0.11 Released'
+date: 2023-03-10 21:21:55 +0100
+author: oleavr
+version: 16.0.11
+categories: [release]
+---
+
+Only a few bug-fixes this time around:
+
+- darwin: Fix deadlock while pausing threads on non-RWX systems.
+  Thanks [@mrmacete][]!
+- darwin: Fix mapping zero-sized segments. Thanks [@comex][]!
+- linux: Improve Gum to support programs without a runtime linker.
+- linux: Fix error-propagation from Gum.Linux APIs.
+
+
+[@mrmacete]: https://twitter.com/bezjaje
+[@comex]: https://twitter.com/comex
