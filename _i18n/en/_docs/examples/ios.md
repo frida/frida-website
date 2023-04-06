@@ -59,9 +59,11 @@
     >**Tip:** Add the following code to the **onEnter** event-handler in the
     auto-generated JS of the desired API
 
-    ```log('\tBacktrace:\n\t' + Thread.backtrace(this.context,
+    {% highlight js %}
+    log('\tBacktrace:\n\t' + Thread.backtrace(this.context,
 Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
-.join('\n\t'));```
+.join('\n\t'));
+    {% endhighlight %}
 
 8. Writing data to file
 -
@@ -85,11 +87,12 @@ Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
 
 9. Calling a native function
 -
-```
+
+{% highlight js %}
 const address = Module.getExportByName('libsqlite3.dylib', 'sqlite3_sql');
 const sql = new NativeFunction(address, 'char', ['pointer']);
 sql(statement);
-```
+{% endhighlight %}
 
 Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
@@ -99,22 +102,26 @@ Explanation [here](https://gist.github.com/dpnishant/c7c6b47ebfd8cd671ecf).
 
 1. Converting NSData to String
 -
-```
+
+{% highlight js %}
 const data = new ObjC.Object(args[2]);
 data.bytes().readUtf8String(data.length());
-```
+{% endhighlight %}
+
 >**Tip**: 2nd argument (number of bytes) is not required if the string data is null-terminated.
 
 2. Converting NSData to Binary Data
 -
-```
+
+{% highlight js %}
 const data = new ObjC.Object(args[2]);
 data.bytes().readByteArray(data.length());
-```
+{% endhighlight %}
 
 3. Iterating an NSArray
 -
-```
+
+{% highlight js %}
 const array = new ObjC.Object(args[2]);
 /*
  * Be sure to use valueOf() as NSUInteger is a Number in
@@ -125,32 +132,35 @@ const count = array.count().valueOf();
 for (let i = 0; i !== count; i++) {
   const element = array.objectAtIndex_(i);
 }
-```
+{% endhighlight %}
 
 4. Iterating an NSDictionary
 -
-```
+
+{% highlight js %}
 const dict = new ObjC.Object(args[2]);
 const enumerator = dict.keyEnumerator();
 let key;
 while ((key = enumerator.nextObject()) !== null) {
   const value = dict.objectForKey_(key);
 }
-```
+{% endhighlight %}
 
 5. Unarchiving an NSKeyedArchiver
 -
-```
+
+{% highlight js %}
 const parsedValue = ObjC.classes.NSKeyedUnarchiver.unarchiveObjectWithData_(value);
-```
+{% endhighlight %}
 
 6. Reading a struct
 -
 If args[0] is a pointer to a struct, and let's say you want to read the uint32
 at offset 4, you can do it as shown below:
-```
+
+{% highlight js %}
 args[0].add(4).readU32();
-```
+{% endhighlight %}
 
 ## Objective-C examples
 
