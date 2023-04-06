@@ -60,9 +60,7 @@
     auto-generated JS of the desired API
 
     {% highlight js %}
-    log('\tBacktrace:\n\t' + Thread.backtrace(this.context,
-Backtracer.ACCURATE).map(DebugSymbol.fromAddress)
-.join('\n\t'));
+    log('\tBacktrace:\n\t' + Thread.backtrace(this.context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress).join('\n\t'));
     {% endhighlight %}
 
 8. Writing data to file
