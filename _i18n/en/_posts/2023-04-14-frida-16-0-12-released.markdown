@@ -1,0 +1,67 @@
+---
+layout: news_item
+title: 'Frida 16.0.12 Released'
+date: 2023-04-14 13:25:36 +0200
+author: oleavr
+version: 16.0.12
+categories: [release]
+---
+
+Lots of goodies this time around. One of them is our brand new Linux injector.
+This was a lot of fun, especially as it involved lots of pair-programming with
+[@hsorbo][].
+
+We're quite excited about this one. Frida now supports injecting into Linux
+containers, such as Flatpak apps. Not just that, it can finally inject code into
+processes without a dynamic linker present.
+
+Another neat improvement is if you're running Frida on Linux >= 3.17, you may
+notice that it no longer writes out any temporary files. This is accomplished
+through memfd and a reworked injector signaling mechanism.
+
+Our new Linux injector has a fully asynchronous design, without any dangerous
+blocking operations that can result in deadlocks. It is also the first injector
+to support providing a control channel to the injected payload.
+
+Down the road the plan is to implement this in our other backends as well, and
+make it part of our cross-platform Injector API. The thinking there is to make
+it easier to implement custom payloads.
+
+There are also many other goodies in this release, so definitely check out the
+changelog below.
+
+Enjoy!
+
+### Changelog
+
+- linux: Re-engineer injector. Thanks for the productive pair-programming,
+  [@hsorbo][]!
+- linux: Fix the libc-based module enumeration.
+- linux: Fix query_libc_name() on musl.
+- linux: Fix module handle resolver logic on musl.
+- linux: Fix Module.ensure_initialized() on musl.
+- darwin: Make ThreadSuspendMonitor passthrough if called by Frida, to
+  avoid deadlock scenarios. Thanks [@mrmacete][]!
+- darwin: During spawn(), always use PTYs for piped stdio, and enable
+  close-on-exec.
+- windows: Use existing DbgHelp instance if present. Thanks [@fesily][]!
+- windows: Implement Module.enumerate_symbols(). Thanks [@fesily][]!
+- process: Skip cloaked modules in enumerate_modules().
+- cloak: Add has_range_containing().
+- elf-module: Replace has_interp() with get_interpreter().
+- gumjs: Fix runtime serialization unsigned encoding.
+- objc: Add symbol property on method as a means for the method object to fully
+  describe itself in a human readable way. Thanks [@mrmacete][]!
+- java: Use symbols for unique property names. Thanks [@yotamN][]!
+- java: Add toString() method to overloads. Thanks [@oriori1703][]!
+- java: Add toString() method to types and field. Thanks [@yotamN][]!
+- java: Fix toString() for overloaded methods. Thanks [@yotamN][]!
+- server: Support loading as a shared library. Thanks [@Yannayli][]!
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@mrmacete]: https://twitter.com/bezjaje
+[@fesily]: https://github.com/fesily
+[@yotamN]: https://github.com/yotamN
+[@oriori1703]: https://github.com/oriori1703
+[@Yannayli]: https://twitter.com/Yannayli
