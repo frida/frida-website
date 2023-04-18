@@ -1,0 +1,26 @@
+---
+layout: news_item
+title: 'Frida 16.0.15 Released'
+date: 2023-04-19 00:20:30 +0200
+author: oleavr
+version: 16.0.15
+categories: [release]
+---
+
+Here's a release fixing two stability issues affecting users on Apple platforms:
+
+- interceptor: Keep thread ports alive between suspend and resume on Darwin. We
+  were borrowing the Mach thread port right names released by
+  enumerate_threads(), assuming that another reference existed to keep each of
+  them alive. When this wasn't the case we would at best pass an invalid Mach
+  port right name to thread_resume(), and worst-case we would use a totally
+  unrelated port. Regardless, we would leave such threads suspended forever.
+  Thanks [@mrmacete][]!
+- agent: Dispose ThreadSuspendMonitor in its own transaction. Since Interceptor
+  relies on ThreadSuspendMonitor passthrough, disposing of it in its own
+  transaction and after all the other components which use Interceptor at
+  destruction time makes sure no Frida thread will attempt executing code on
+  non-executable pages at teardown time. Thanks [@mrmacete][]!
+
+
+[@mrmacete]: https://twitter.com/bezjaje
