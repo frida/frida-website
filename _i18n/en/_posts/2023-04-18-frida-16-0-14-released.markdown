@@ -1,0 +1,21 @@
+---
+layout: news_item
+title: 'Frida 16.0.14 Released'
+date: 2023-04-18 00:49:44 +0200
+author: oleavr
+version: 16.0.14
+categories: [release]
+---
+
+More exciting bug-fixes:
+
+- linux: Fix ProcMapsEntry major/minor number parsing. Thanks [@chouex][]!
+- interceptor: Fix ARMv8 BTI interoperability. Thanks [@zjw88282740][]!
+- arm64-writer: Add put_ret_reg(). Thanks [@zjw88282740][]!
+- compiler: Fix filesystem access on some Linux systems, e.g. Ubuntu 20.04.
+  Kudos to [@pancake][] for reporting and helping track this one down!
+
+
+[@chouex]: https://github.com/chouex
+[@zjw88282740]: https://github.com/zjw88282740
+[@pancake]: https://twitter.com/trufae
