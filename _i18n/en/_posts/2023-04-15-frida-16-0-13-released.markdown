@@ -1,0 +1,14 @@
+---
+layout: news_item
+title: 'Frida 16.0.13 Released'
+date: 2023-04-15 01:34:01 +0200
+author: oleavr
+version: 16.0.13
+categories: [release]
+---
+
+Only a few bug-fixes this time around:
+
+- android: Fix dynamic linker probing on older systems.
+- android: Limit graceful injection to arm and arm64.
+- linux: Fix syscall wait logic on x86 and x86_64.
