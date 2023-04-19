@@ -1,0 +1,22 @@
+---
+layout: news_item
+title: 'Frida 16.0.17 Released'
+date: 2023-04-19 19:24:51 +0200
+author: oleavr
+version: 16.0.17
+categories: [release]
+---
+
+Time for a bug-fix release with only one change: turns out the ARMv8 BTI interop
+[introduced][] in 16.0.14 is problematic on Apple A12+ SoCs when running in
+arm64e mode, i.e. with pointer authentication enabled.
+
+Kudos to [@miticollo][] for reporting and helping triage the cause, and
+[@mrmacete][] for digging further into it, brainstorming potential fixes, and
+implementing the [fix][]. You guys rock! ❤️
+
+
+[introduced]: https://github.com/frida/frida-gum/commit/ea1e836e70cd5e7976bf680ff7771a5a4bc0a494
+[@miticollo]: https://github.com/miticollo
+[@mrmacete]: https://twitter.com/bezjaje
+[fix]: https://github.com/frida/frida-gum/commit/698b356fef0ecfc3ac2818f0b387be90e93deeda
