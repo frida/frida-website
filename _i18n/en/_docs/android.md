@@ -37,6 +37,8 @@ $ adb shell "chmod 755 /data/local/tmp/frida-server"
 $ adb shell "/data/local/tmp/frida-server &"
 {% endhighlight %}
 
+Some apps might be able to detect frida-server location. Change the frida-server binary to a random name, or moving the frida-server binary to another location such as /dev should work.
+
 For the last step, make sure you start frida-server as root, i.e. if you are
 doing this on a rooted device, you might need to *su* and run it from that
 shell.
