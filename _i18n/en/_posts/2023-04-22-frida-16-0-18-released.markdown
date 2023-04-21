@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 16.0.18 Released'
+date: 2023-04-22 00:05:06 +0200
+author: oleavr
+version: 16.0.18
+categories: [release]
+---
+
+Just a quick bug-fix release reviving support for Android x86/x86_64 systems
+with ARM emulation. This is still a blind spot in our CI, and I forgot all about
+it while working on the new Linux injector. Kudos to [@stopmosk][] for promptly
+reporting and helping triage this regression.
+
+
+[@stopmosk]: https://github.com/stopmosk
