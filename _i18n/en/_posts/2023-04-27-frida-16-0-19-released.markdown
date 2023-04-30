@@ -1,0 +1,38 @@
+---
+layout: news_item
+title: 'Frida 16.0.19 Released'
+date: 2023-04-27 18:28:53 +0200
+author: oleavr
+version: 16.0.19
+categories: [release]
+---
+
+Some exciting stability improvements this time around:
+
+- darwin: Make spawn() aware of the [prewarm][] feature used on iOS >= 15. What
+  happens is that the most frequently used apps are being spawned ahead of time
+  by *dasd* and kept suspended until the user attempts to launch them, in order
+  to save some startup time. This was in the way of Frida's spawn mechanism
+  because:
+  - apps launched this way won't be going through launchd when expected, causing
+    a “timeout was reached” error, or more complex race conditions
+  - Frida needs to spawn a fresh process to ensure early instrumentation
+
+  We solve these problems by:
+  - ignoring prewarm spawns from the launchd agent (though they're still emitted
+    as spawn if spawn gating is enabled)
+  - killing existing prewarmed apps before attempting to spawn them
+  Thanks [@mrmacete][]!
+- glib: Ensure {Input,Output}Stream only g_poll() if pollable. This is essential on
+  Apple OSes and BSDs, where GLib uses kqueue to implement GMainContext, as it
+  may otherwise end up waiting forever when the file-descriptor represents an
+  ordinary file. Thanks [@hsorbo][]!
+- android: Fix x86 devkits by improving libffi to avoid problematic relocations.
+- gadget: Fix deadlock during Windows process termination. Kudos to
+  [@Palacee-hun][] for reporting!
+
+
+[prewarm]: https://developer.apple.com/documentation/uikit/app_and_environment/responding_to_the_launch_of_your_app/about_the_app_launch_sequence?language=objc
+[@mrmacete]: https://twitter.com/bezjaje
+[@hsorbo]: https://twitter.com/hsorbo
+[@Palacee-hun]: https://github.com/Palacee-hun
