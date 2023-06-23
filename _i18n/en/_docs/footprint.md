@@ -16,6 +16,27 @@ FRIDA_OBJC_BRIDGE ?= auto
 FRIDA_SWIFT_BRIDGE ?= auto
 {% endhighlight %}
 
+If working on embedded systems, all the aforementioned features may be disabled.
+
+Specifically, they are only required in the following cases:
+- FRIDA_V8: default Javascript runtime is QuickJS so it can safely disabled if
+  not used. Required if the V8 runtime is needed, for example when specifically
+  requested via the API `create_script(..., runtime='v8')` or through the
+  frida-tools CLI with `--runtime=v8`.
+- FRIDA_CONNECTIVITY: required if using certificates to enable TLS, or if using
+  `setup_peer_connection()` (API) or `--p2p` (CLI). Note that it is not required
+  for network connectivity. For example, it is not required when using
+  frida-server like this: `frida-server -l 0.0.0.0`.
+- FRIDA_DATABASE: required if using [SqliteDatabase]({% link _docs/javascript-api.md#sqlitedatabase %})
+  and related APIs, can be safely disabled if not.
+- FRIDA_JAVA_BRIDGE: required when wanting to call or instrument Java APIs
+  inside processes with a Java Virtual Machine or Android Runtime environment.
+  Note that there are other languages apart from Java which run either on the
+  JVM or the Android Runtime, such as Kotlin and Scala.
+- FRIDA_OBJC_BRIDGE and FRIDA_SWIFT_BRIDGE: required when wanting to call or
+  instrument Objective-C or Swift code. Useful on Apple OSes, like i/macOS, may
+  be safely disabled outside the Apple ecosystem.
+ 
 Let's run through these and look at how the different options impact footprint
 size on Linux/armhf (32-bit ARM).
 
