@@ -27,7 +27,7 @@ Specifically, they are only required in the following cases:
   `setup_peer_connection()` (API) or `--p2p` (CLI). Note that it is not required
   for network connectivity. For example, it is not required when using
   frida-server like this: `frida-server -l 0.0.0.0`.
-- FRIDA_DATABASE: required if using [SqliteDatabase]({% link _docs/javascript-api.md#sqlitedatabase %})
+- FRIDA_DATABASE: required if using [SqliteDatabase](/docs/javascript-api/#sqlitedatabase)
   and related APIs, can be safely disabled if not.
 - FRIDA_JAVA_BRIDGE: required when wanting to call or instrument Java APIs
   inside processes with a Java Virtual Machine or Android Runtime environment.
