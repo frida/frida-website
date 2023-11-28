@@ -133,43 +133,6 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 
 ## Process, Thread, Module and Memory
 
-### Thread
-
-+   `Thread.backtrace([context, backtracer])`: generate a backtrace for the
-    current thread, returned as an array of [`NativePointer`](#nativepointer) objects.
-    {: #thread-backtrace}
-
-    If you call this from Interceptor's [`onEnter`](#interceptor-onenter) or
-    [`onLeave`](#interceptor-onleave) callbacks you
-    should provide `this.context` for the optional `context` argument, as it
-    will give you a more accurate backtrace. Omitting `context` means the
-    backtrace will be generated from the current stack location, which may
-    not give you a very good backtrace due to the JavaScript VM's stack frames.
-    The optional `backtracer` argument specifies the kind of backtracer to use,
-    and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
-    latter is the default if not specified. The accurate kind of backtracers
-    rely on debugger-friendly binaries or presence of debug information to do a
-    good job, whereas the fuzzy backtracers perform forensics on the stack in
-    order to guess the return addresses, which means you will get false
-    positives, but it will work on any binary. The generated backtrace is 
-    currently limited to 16 frames and is not adjustable without recompiling
-    Frida.
-
-{% highlight js %}
-const f = Module.getExportByName('libcommonCrypto.dylib',
-    'CCCryptorCreate');
-Interceptor.attach(f, {
-  onEnter(args) {
-    console.log('CCCryptorCreate called from:\n' +
-        Thread.backtrace(this.context, Backtracer.ACCURATE)
-        .map(DebugSymbol.fromAddress).join('\n') + '\n');
-  }
-});
-{% endhighlight %}
-
-+   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
-    seconds specified as a number. For example 0.05 to sleep for 50 ms.
-
 ### Process
 
 +   `Process.id`: property containing the PID as a number
@@ -298,6 +261,44 @@ Interceptor.attach(f, {
     resume the thread immediately. If you do not return `true`, Frida will
     forward the exception to the hosting process' exception handler, if it has
     one, or let the OS terminate the process.
+
+
+### Thread
+
++   `Thread.backtrace([context, backtracer])`: generate a backtrace for the
+    current thread, returned as an array of [`NativePointer`](#nativepointer) objects.
+    {: #thread-backtrace}
+
+    If you call this from Interceptor's [`onEnter`](#interceptor-onenter) or
+    [`onLeave`](#interceptor-onleave) callbacks you
+    should provide `this.context` for the optional `context` argument, as it
+    will give you a more accurate backtrace. Omitting `context` means the
+    backtrace will be generated from the current stack location, which may
+    not give you a very good backtrace due to the JavaScript VM's stack frames.
+    The optional `backtracer` argument specifies the kind of backtracer to use,
+    and must be either `Backtracer.FUZZY` or `Backtracer.ACCURATE`, where the
+    latter is the default if not specified. The accurate kind of backtracers
+    rely on debugger-friendly binaries or presence of debug information to do a
+    good job, whereas the fuzzy backtracers perform forensics on the stack in
+    order to guess the return addresses, which means you will get false
+    positives, but it will work on any binary. The generated backtrace is 
+    currently limited to 16 frames and is not adjustable without recompiling
+    Frida.
+
+{% highlight js %}
+const f = Module.getExportByName('libcommonCrypto.dylib',
+    'CCCryptorCreate');
+Interceptor.attach(f, {
+  onEnter(args) {
+    console.log('CCCryptorCreate called from:\n' +
+        Thread.backtrace(this.context, Backtracer.ACCURATE)
+        .map(DebugSymbol.fromAddress).join('\n') + '\n');
+  }
+});
+{% endhighlight %}
+
++   `Thread.sleep(delay)`: suspend execution of the current thread for `delay`
+    seconds specified as a number. For example 0.05 to sleep for 50 ms.
 
 
 ### Module
