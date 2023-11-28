@@ -160,6 +160,18 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     property allows you to determine whether the **[Interceptor](#interceptor)** API
     is off limits, and whether it is safe to modify code or run unsigned code.
 
++   `Process.mainModule`: property containing a [`Module`](#module) representing
+    the main executable of the process
+
++   `Process.getCurrentDir()`: returns a string specifying the filesystem path
+    to the current working directory
+
++   `Process.getHomeDir()`: returns a string specifying the filesystem path to
+    the current user's home directory
+
++   `Process.getTmpDir()`: returns a string specifying the filesystem path to
+    the directory to use for temporary files
+
 +   `Process.isDebuggerAttached()`: returns a boolean indicating whether a
     debugger is currently attached
 
@@ -371,6 +383,26 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
 -   `enumerateRanges(protection)`: just like [`Process.enumerateRanges`](#process-enumerateranges),
     except it's scoped to the module.
+
+-   `enumerateSections()`: enumerates sections of module, returning an array of
+    objects containing the following properties:
+
+    -   `id`: string containing section index, segment name (if
+              applicable) and section name – same format as
+              [r2][]'s section IDs
+    -   `name`: section name as a string
+    -   `address`: absolute address as a [`NativePointer`](#nativepointer)
+    -   `size`: size in bytes
+
+-   `enumerateDependencies()`: enumerates dependencies of module, returning an
+    array of objects containing the following properties:
+
+    -   `name`: module name as a string
+    -   `type`: string specifying one of:
+        -   regular
+        -   weak
+        -   reexport
+        -   upward
 
 -   `findExportByName(exportName)`,
     `getExportByName(exportName)`: returns the absolute address of the export
@@ -752,17 +784,22 @@ site.baseurl_root }}/news/2019/09/18/frida-12-7-released/)**.
 ### ApiResolver
 
 +   `new ApiResolver(type)`: create a new resolver of the given `type`, allowing
-    you to quickly find functions by name, with globs permitted. Precisely which
+    you to quickly find APIs by name, with globs permitted. Precisely which
     resolvers are available depends on the current platform and runtimes loaded
     in the current process. As of the time of writing, the available resolvers
     are:
 
-    -   `module`: Resolves exported and imported functions of shared libraries
-                  currently loaded. Always available.
-    -   `objc`: Resolves Objective-C methods of classes currently loaded.
+    -   `module`: Resolves module exports, imports, and sections.
+                  Always available.
+    -   `swift`: Resolves Swift functions.
+                 Available in processes that have a Swift runtime loaded. Use
+                 `Swift.available` to check at runtime, or wrap your
+                 `new ApiResolver('swift')` call in a *try-catch*.
+    -   `objc`: Resolves Objective-C methods.
                 Available on macOS and iOS in processes that have the Objective-C
-                runtime loaded. Use [`ObjC.available`](#objc-available) to check at
-                runtime, or wrap your `new ApiResolver('objc')` call in a *try-catch*.
+                runtime loaded. Use [`ObjC.available`](#objc-available) to check
+                at runtime, or wrap your `new ApiResolver('objc')` call in a
+                *try-catch*.
 
     The resolver will load the minimum amount of data required on creation, and
     lazy-load the rest depending on the queries it receives. It is thus
@@ -775,6 +812,7 @@ site.baseurl_root }}/news/2019/09/18/frida-12-7-released/)**.
 
     -   `name`: name of the API that was found
     -   `address`: address as a [`NativePointer`](#nativepointer)
+    -   `size`: if present, a number specifying the size in bytes
 
 {% highlight js %}
 const resolver = new ApiResolver('module');
@@ -791,11 +829,40 @@ const first = matches[0];
 {% endhighlight %}
 
 {% highlight js %}
+const resolver = new ApiResolver('module');
+const matches = resolver.enumerateMatches('sections:*!*text*');
+const first = matches[0];
+/*
+ * Where `first` is an object similar to:
+ *
+ * {
+ *   name: '/usr/lib/libSystem.B.dylib!0.__TEXT.__text',
+ *   address: ptr('0x191c1e504'),
+ *   size: 1528
+ * }
+ */
+{% endhighlight %}
+
+{% highlight js %}
+const resolver = new ApiResolver('swift');
+const matches = resolver.enumerateMatches('functions:*CoreDevice!*RemoteDevice*');
+const first = matches[0];
+/*
+ * Where `first` is an object similar to:
+ *
+ * {
+ *   name: '/Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice!dispatch thunk of CoreDevice.RemoteDevice.addDeviceInfoChanged(on: __C.OS_dispatch_queue?, handler: (Foundation.UUID, CoreDeviceProtocols.DeviceInfo) -> ()) -> CoreDevice.Invalidatable',
+ *   address: ptr('0x1078c3570')
+ * }
+ */
+{% endhighlight %}
+
+{% highlight js %}
 const resolver = new ApiResolver('objc');
 const matches = resolver.enumerateMatches('-[NSURL* *HTTP*]');
 const first = matches[0];
 /*
- * Where `first` contains an object like this one:
+ * Where `first` is an object similar to:
  *
  * {
  *   name: '-[NSURLRequest valueForHTTPHeaderField:]',
@@ -1766,6 +1833,12 @@ Interceptor.replace(openPtr, new NativeCallback((pathPtr, flags) => {
     API built on top of **[send()](#communication-send)**, like when returning from an
     **[RPC](#rpc-exports)** method, and calling any method on the **[console](#console)** API.
 
++   `Interceptor.breakpointKind`: a string specifying the kind of breakpoints to
+    use for non-inline hooks. Only available in the Barebone backend.
+
+    Defaults to 'soft', i.e. software breakpoints. Set it to 'hard' to use
+    hardware breakpoints.
+
 
 ### Stalker
 
@@ -1846,8 +1919,14 @@ Stalker.follow(mainThread.id, {
   //  const isAppCode = startAddress.compare(appStart) >= 0 &&
   //      startAddress.compare(appEnd) === -1;
   //
+  //  /*
+  //   * Need to be careful on ARM/ARM64 as we may disturb instruction sequences
+  //   * that deal with exclusive stores.
+  //   */
+  //  const canEmitNoisyCode = iterator.memoryAccess === 'open';
+  //
   //  do {
-  //    if (isAppCode && instruction.mnemonic === 'ret') {
+  //    if (isAppCode && canEmitNoisyCode && instruction.mnemonic === 'ret') {
   //      iterator.putCmpRegI32('eax', 60);
   //      iterator.putJccShortLabel('jb', 'nope', 'no-hint');
   //
@@ -3001,9 +3080,17 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putMovRegFsU32Ptr(dstReg, fsOffset)`: put a MOV FS instruction
 
+-   `putMovFsRegPtrReg(fsOffset, srcReg)`: put a MOV FS instruction
+
+-   `putMovRegFsRegPtr(dstReg, fsOffset)`: put a MOV FS instruction
+
 -   `putMovGsU32PtrReg(fsOffset, srcReg)`: put a MOV GS instruction
 
 -   `putMovRegGsU32Ptr(dstReg, fsOffset)`: put a MOV GS instruction
+
+-   `putMovGsRegPtrReg(gsOffset, srcReg)`: put a MOV GS instruction
+
+-   `putMovRegGsRegPtr(dstReg, gsOffset)`: put a MOV GS instruction
 
 -   `putMovqXmm0EspOffsetPtr(offset)`: put a MOVQ XMM0 ESP instruction
 
@@ -3034,6 +3121,10 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putPushfx()`: put a PUSHFX instruction
 
 -   `putPopfx()`: put a POPFX instruction
+
+-   `putSahf()`: put a SAHF instruction
+
+-   `putLahf()`: put a LAHF instruction
 
 -   `putTestRegReg(regA, regB)`: put a TEST instruction
 
@@ -3070,6 +3161,10 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putPadding(n)`: put `n` guard instruction
 
 -   `putNopPadding(n)`: put `n` NOP instructions
+
+-   `putFxsaveRegPtr(reg)`: put a FXSAVE instruction
+
+-   `putFxrstorRegPtr(reg)`: put a FXRSTOR instruction
 
 -   `putU8(value)`: put a uint8
 
@@ -3187,6 +3282,13 @@ const MyWeirdTrustManager = Java.registerClass({
     each element is either a string specifying the register, or a Number or
     **[NativePointer](#nativepointer)** specifying the immediate value.
 
+-   `putCallReg(reg)`: put a CALL instruction
+
+-   `putCallRegWithArguments(reg, args)`: put code needed for calling a C
+    function with the specified `args`, specified as a JavaScript array where
+    each element is either a string specifying the register, or a Number or
+    NativePointer specifying the immediate value.
+
 -   `putBranchAddress(address)`: put code needed for branching/jumping to the
     given address
 
@@ -3212,19 +3314,31 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putBxReg(reg)`: put a BX instruction
 
+-   `putBlReg(reg)`: put a BL instruction
+
 -   `putBlxReg(reg)`: put a BLX instruction
 
 -   `putRet()`: put a RET instruction
 
+-   `putVpushRange(firstReg, lastReg)`: put a VPUSH RANGE instruction
+
+-   `putVpopRange(firstReg, lastReg)`: put a VPOP RANGE instruction
+
 -   `putLdrRegAddress(reg, address)`: put an LDR instruction
 
 -   `putLdrRegU32(reg, val)`: put an LDR instruction
+
+-   `putLdrRegReg(dstReg, srcReg)`: put an LDR instruction
 
 -   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
 
 -   `putLdrCondRegRegOffset(cc, dstReg, srcReg, srcOffset)`: put an LDR COND instruction
 
 -   `putLdmiaRegMask(reg, mask)`: put an LDMIA MASK instruction
+
+-   `putLdmiaRegMaskWb(reg, mask)`: put an LDMIA MASK WB instruction
+
+-   `putStrRegReg(srcReg, dstReg)`: put a STR instruction
 
 -   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
 
@@ -3255,6 +3369,8 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putSubRegRegImm(dstReg, srcReg, immVal)`: put a SUB instruction
 
 -   `putSubRegRegReg(dstReg, srcReg1, srcReg2)`: put a SUB instruction
+
+-   `putRsbRegRegImm(dstReg, srcReg, immVal)`: put a RSB instruction
 
 -   `putAndsRegRegImm(dstReg, srcReg, immVal)`: put an ANDS instruction
 
@@ -3367,6 +3483,12 @@ const MyWeirdTrustManager = Java.registerClass({
     each element is either a string specifying the register, or a Number or
     **[NativePointer](#nativepointer)** specifying the immediate value.
 
+-   `putBranchAddress(address)`: put code needed for branching/jumping to the
+    given address
+
+-   `canBranchDirectlyBetween(from, to)`: determine whether a direct branch is
+    possible between the two given memory locations
+
 -   `putBImm(target)`: put a B instruction
 
 -   `putBLabel(labelId)`: put a B instruction
@@ -3412,6 +3534,10 @@ const MyWeirdTrustManager = Java.registerClass({
     specified as a JavaScript array where each element is a string specifying
     the register name.
 
+-   `putVpushRange(firstReg, lastReg)`: put a VPUSH RANGE instruction
+
+-   `putVpopRange(firstReg, lastReg)`: put a VPOP RANGE instruction
+
 -   `putLdrRegAddress(reg, address)`: put an LDR instruction
 
 -   `putLdrRegU32(reg, val)`: put an LDR instruction
@@ -3455,6 +3581,10 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putSubRegRegImm(dstReg, leftReg, rightValue)`: put a SUB instruction
 
 -   `putAndRegRegImm(dstReg, leftReg, rightValue)`: put an AND instruction
+
+-   `putOrRegRegImm(dstReg, leftReg, rightValue)`: put an OR instruction
+
+-   `putLslRegRegImm(dstReg, leftReg, rightValue)`: put a LSL instruction
 
 -   `putLslsRegRegImm(dstReg, leftReg, rightValue)`: put a LSLS instruction
 
@@ -3533,7 +3663,13 @@ const MyWeirdTrustManager = Java.registerClass({
 ### ARM enum types
 
 -   Register: `r0` `r1` `r2` `r3` `r4` `r5` `r6` `r7` `r8` `r9` `r10` `r11`
-    `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc`
+    `r12` `r13` `r14` `r15` `sp` `lr` `sb` `sl` `fp` `ip` `pc` `s0` `s1` `s2`
+    `s3` `s4` `s5` `s6` `s7` `s8` `s9` `s10` `s11` `s12` `s13` `s14` `s15`
+    `s16` `s17` `s18` `s19` `s20` `s21` `s22` `s23` `s24` `s25` `s26` `s27`
+    `s28` `s29` `s30` `s31` `d0` `d1` `d2` `d3` `d4` `d5` `d6` `d7` `d8` `d9`
+    `d10` `d11` `d12` `d13` `d14` `d15` `d16` `d17` `d18` `d19` `d20` `d21`
+    `d22` `d23` `d24` `d25` `d26` `d27` `d28` `d29` `d30` `d31` `q0` `q1` `q2`
+    `q3` `q4` `q5` `q6` `q7` `q8` `q9` `q10` `q11` `q12` `q13` `q14` `q15`
 -   SystemRegister: `apsr-nzcvq`
 -   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
     `gt` `le` `al`
@@ -3616,11 +3752,21 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putRet()`: put a RET instruction
 
+-   `putRetReg(reg)`: put a RET instruction
+
+-   `putCbzRegImm(reg, target)`: put a CBZ instruction
+
+-   `putCbnzRegImm(reg, target)`: put a CBNZ instruction
+
 -   `putCbzRegLabel(reg, labelId)`: put a CBZ instruction
     referencing `labelId`, defined by a past or future [`putLabel()`](#arm64writer-putlabel)
 
 -   `putCbnzRegLabel(reg, labelId)`: put a CBNZ instruction
     referencing `labelId`, defined by a past or future [`putLabel()`](#arm64writer-putlabel)
+
+-   `putTbzRegImmImm(reg, bit, target)`: put a TBZ instruction
+
+-   `putTbnzRegImmImm(reg, bit, target)`: put a TBNZ instruction
 
 -   `putTbzRegImmLabel(reg, bit, labelId)`: put a TBZ instruction
     referencing `labelId`, defined by a past or future [`putLabel()`](#arm64writer-putlabel)
@@ -3642,7 +3788,13 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putLdrRegAddress(reg, address)`: put an LDR instruction
 
+-   `putLdrRegU32(reg, val)`: put an LDR instruction
+
 -   `putLdrRegU64(reg, val)`: put an LDR instruction
+
+-   `putLdrRegU32Ptr(reg, srcAddress)`: put an LDR instruction
+
+-   `putLdrRegU64Ptr(reg, srcAddress)`: put an LDR instruction
 
 -   `putLdrRegRef(reg)`: put an LDR instruction with a dangling data reference,
     returning an opaque ref value that should be passed to [`putLdrRegValue()`](#arm64writer-putldrregvalue)
@@ -3653,19 +3805,31 @@ const MyWeirdTrustManager = Java.registerClass({
     from a previous [`putLdrRegRef()`](#arm64writer-putldrregref)
     {: #arm64writer-putldrregvalue}
 
+-   `putLdrRegReg(dstReg, srcReg)`: put an LDR instruction
+
 -   `putLdrRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDR instruction
+
+-   `putLdrRegRegOffsetMode(dstReg, srcReg, srcOffset, mode)`: put an LDR MODE instruction
 
 -   `putLdrswRegRegOffset(dstReg, srcReg, srcOffset)`: put an LDRSW instruction
 
 -   `putAdrpRegAddress(reg, address)`: put an ADRP instruction
 
+-   `putStrRegReg(srcReg, dstReg)`: put a STR instruction
+
 -   `putStrRegRegOffset(srcReg, dstReg, dstOffset)`: put a STR instruction
+
+-   `putStrRegRegOffsetMode(srcReg, dstReg, dstOffset, mode)`: put a STR MODE instruction
 
 -   `putLdpRegRegRegOffset(regA, regB, regSrc, srcOffset, mode)`: put an LDP instruction
 
 -   `putStpRegRegRegOffset(regA, regB, regDst, dstOffset, mode)`: put a STP instruction
 
 -   `putMovRegReg(dstReg, srcReg)`: put a MOV instruction
+
+-   `putMovRegNzcv(reg)`: put a MOV NZCV instruction
+
+-   `putMovNzcvReg(reg)`: put a MOV NZCV instruction
 
 -   `putUxtwRegReg(dstReg, srcReg)`: put an UXTW instruction
 
@@ -3679,6 +3843,14 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putAndRegRegImm(dstReg, leftReg, rightValue)`: put an AND instruction
 
+-   `putEorRegRegReg(dstReg, leftReg, rightReg)`: put an EOR instruction
+
+-   `putUbfm(dstReg, srcReg, imms, immr)`: put an UBFM instruction
+
+-   `putLslRegImm(dstReg, srcReg, shift)`: put a LSL instruction
+
+-   `putLsrRegImm(dstReg, srcReg, shift)`: put a LSR instruction
+
 -   `putTstRegImm(reg, immValue)`: put a TST instruction
 
 -   `putCmpRegReg(regA, regB)`: put a CMP instruction
@@ -3688,6 +3860,8 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putNop()`: put a NOP instruction
 
 -   `putBrkImm(imm)`: put a BRK instruction
+
+-   `putMrs(dstReg, systemReg)`: put a MRS instruction
 
 -   `putInstruction(insn)`: put a raw instruction as a JavaScript Number
 
@@ -3995,6 +4169,10 @@ console.log(hexdump(libc, {
     `type`.
     {: #communication-recv}
 
+    The message is passed in the first argument, and in case binary data was
+    passed along with it, the second argument is an
+    **[ArrayBuffer](#arraybuffer)**, otherwise *null*.
+
     This will only give you one message, so you need to call `recv()` again
     to receive the next one.
 
@@ -4132,5 +4310,37 @@ If you want to be notified when the target process exits, use
 
 +   `gc()`: force garbage collection. Useful for testing, especially logic
     involving [`Script.bindWeak()`](#bindweak).
+
+### Worker
+
+Worker script with its own JavaScript heap, lock, etc.
+
+This is useful to move heavy processing to a background thread, allowing hooks
+to be handled in a timely manner.
+
++   `new Worker(url[, options])`: creates a new worker, executing the script at
+    the specified `url`.
+
+    The URL is typically retrieved by having the module export its
+    `import.meta.url`, and importing that from the module that creates the
+    worker.
+
+    If specified, `options` is an object that may contain one or more of the
+    following keys:
+
+    -   `onMessage`: function to call when the worker emits a message using
+        **[send()](#communication-send)**. Callback signature is the same as
+        **[recv()](#communication-recv)**.
+
+-   `terminate()`: terminates the worker.
+
+-   `post(message[, data])`: posts a message to the worker. Signature is
+    identical to **[send()](#communication-send)**. Use
+    **[recv()](#communication-recv)** to receive it inside the worker.
+
+-   `exports`: magic proxy object for calling **[rpc.exports](#rpc-exports)**
+    defined by the worker. Each function returns a *Promise*, which you may
+    *await* inside an *async* function.
+
 
 [r2]: https://radare.org/r/
