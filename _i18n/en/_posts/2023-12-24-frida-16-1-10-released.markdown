@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 16.1.10 Released'
+date: 2023-12-24 09:04:29 +0100
+author: oleavr
+version: 16.1.10
+categories: [release]
+---
+
+Some neat little bug-fixes, just in time for Christmas:
+
+- server: Add missing entitlements for iOS 16, required to remap binary files in
+  memory. Thanks [@as0ler][]!
+- android: Fix Java hooking of interpreter-run methods on Android 14.
+- Fix argv[0] shown in CLI tools such as frida-server and frida-inject. Thanks
+  [@bet4it][]!
+
+
+[@as0ler]: https://x.com/as0ler
+[@bet4it]: https://github.com/bet4it
