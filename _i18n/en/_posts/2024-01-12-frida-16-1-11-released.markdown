@@ -1,0 +1,39 @@
+---
+layout: news_item
+title: 'Frida 16.1.11 Released'
+date: 2024-01-12 15:13:16 +0100
+author: oleavr
+version: 16.1.11
+categories: [release]
+---
+
+Lots of goodies this time around:
+
+- stalker: Improve stability on multiple fronts. Kudos to [@as0ler][],
+  [@hsorbo][], and [@mrmacete][] for the fun and productive mob programming
+  sessions that resulted in these wonderful improvements:
+  - stalker: Copy BLR for excluded calls on arm64, instead of replacing them with
+    functionally-equivalent ones, so that any pointer authentication context is
+    used as expected. Thanks [@mrmacete][]!
+  - stalker: Abort when allocate_near() fails on arm64, instead of crashing due
+    to the subsequent NULL pointer dereference.
+  - gumjs: Fix crash in Stalker.flush() on a stopped sink. This happens if
+    Stalker.garbageCollect() was just called.
+  - gumjs: Fix use-after-free in Stalker QuickJS callback logic. We need to keep
+    the callback values alive in case Stalker.garbageCollect() happens in the
+    middle and releases them.
+- darwin: Improve symbolicator cache invalidator logic. Thanks [@mrmacete][]!
+- swift-api-resolver: Handle signed pointers.
+- linux: Improve spawn() to handle partial link maps.
+- linux: Improve injector to handle XOM pages.
+- linux: Improve injector RTLD API detection.
+- linux: Fix injector ELF SYMTAB name parsing.
+- node: Link against the inspector library on UNIX, to fix RTLD panic when
+  Script#enableDebugger() is called. Thanks [@pandasauce][]!
+- ci: Publish FreeBSD prebuilds for Node.js 20 and Electron 27.
+
+
+[@as0ler]: https://twitter.com/as0ler
+[@hsorbo]: https://twitter.com/hsorbo
+[@mrmacete]: https://twitter.com/bezjaje
+[@pandasauce]: https://github.com/pandasauce
