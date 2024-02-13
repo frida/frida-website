@@ -1439,15 +1439,50 @@ All methods are fully asynchronous and return Promise objects.<br/><br/>
 
 ### File
 
++   `File.readAllBytes(path)`: synchronously read all bytes from the file
+    specified by `path` and return them as an `ArrayBuffer`.
+
++   `File.readAllText(path)`: synchronously read all text from the file
+    specified by `path` and return it as a string. The file must be UTF-8
+    encoded, and an exception will be thrown if this is not the case.
+
++   `File.writeAllBytes(path, data)`: synchronously write `data` to the file
+    specified by `path`, where `data` is an `ArrayBuffer`.
+
++   `File.writeAllText(path, text)`: synchronously write `text` to the file
+    specified by `path`, where `text` is a string. The file will be UTF-8
+    encoded.
+
 +   `new File(filePath, mode)`: open or create the file at `filePath` with
     the `mode` string specifying how it should be opened. For example `"wb"`
     to open the file for writing in binary mode (this is the same format as
     `fopen()` from the C standard library).
 
+-   `tell()`: return the current position of the file pointer within the file.
+
+-   `seek(offset[, whence])`: move the file pointer to a new location. `offset`
+    is the position to move to, and `whence` is the starting point for the
+    offset (`File.SEEK_SET` for the beginning of the file, `File.SEEK_CUR` for
+    the current file position, or `File.SEEK_END` for the end of the file).
+
+-   `readBytes([size])`: read and return `size` bytes from the file starting
+    from the current file pointer position as an `ArrayBuffer`. If `size` is not
+    specified, reads until the end of the file from the current position.
+
+-   `readText([size])`: read and return `size` characters from the file starting
+    from the current file pointer position as a string. If `size` is not
+    specified, reads text until the end of the file from the current position.
+    The bytes being read must be UTF-8 encoded, and an exception will be thrown
+    if this is not the case.
+
+-   `readLine()`: read and return the next line as a string. Starts reading from
+    the current file pointer position. The returned line does not include the
+    newline character.
+
 -   `write(data)`: synchronously write `data` to the file, where `data` is
     either a string or a buffer as returned by [`NativePointer#readByteArray`](#nativepointer-readbytearray)
 
--   `flush()`: flush any buffered data to the underlying file
+-   `flush()`: flush any buffered data to the underlying file.
 
 -   `close()`: close the file. You should call this function when you're done
     with the file unless you are fine with this happening when the object is
