@@ -92,7 +92,7 @@ Alright, let's have some fun. Fire up the Chrome app on your device and return
 to your desktop and run:
 
 {% highlight bash %}
-$ frida-trace -U -i open com.android.chrome
+$ frida-trace -U -i open -N com.android.chrome
 Uploading data...
 open: Auto-generated handler …/linker/open.js
 open: Auto-generated handler …/libc.so/open.js
