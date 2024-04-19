@@ -13,48 +13,34 @@ we need to do is add the architecture-specific bits.
 
 ### Porting the build system
 
-- releng/setup-env.sh
-
-This is the script that generates an .rc file that you can source to enter
-the build environment, along with a .txt that is a Meson machine file. The
-top-level *Makefile.$build_os.mk* uses this script to generate the environment
-before proceeding to build modules inside of it.
-Fill in the blanks [here](https://github.com/frida/frida/blob/829a62a6a984f2c7f90d17b50f12c62fef3359bf/releng/setup-env.sh#L368-L427).
-We use the same terminology as Meson, so *build* means the build machine
-while *host* refers to the machine that will be executing the binaries.
-
-### Building the SDK
-
-{% highlight bash %}
-$ make -f Makefile.sdk.mk FRIDA_HOST=linux-mips
-{% endhighlight %}
+Depending on the architecture, you may need to tweak `releng/machine_spec.py`.
+Review the generated machine file in `build/`, e.g. build/frida-linux-mips.txt,
+to make sure the toolchain is configured correctly.
 
 ### Building frida-gum
 
-A user would normally not build a component by hand and instead invoke the
-toplevel Makefile. However, when porting we recommend focusing on one module
-at a time and get its tests passing before moving on to the next one. We'll
-start with frida-gum, which is the low-level foundation of frida-core.
-
-Let's first use the top-level Makefile to bootstrap the basics:
+This is the lowest level component and where most of the porting effort is
+typically needed. To build it, run:
 
 {% highlight bash %}
-$ make build/frida-linux-mips/lib/pkgconfig/frida-gum-1.0.pc
+$ git clone https://github.com/frida/frida-gum.git
+$ cd frida-gum
+$ make
 {% endhighlight %}
 
-This may not actually succeed in building frida-gum, but should at least get
-the environment set up.
+This will probably not succeed, but should at least get the environment set up.
 
-Now let's change the working directory to frida-gum and rinse and repeat this
-until all is well:
+Once you get the code to compile, it's time to focus on getting tests passing:
 
 {% highlight bash %}
-$ (. ../build/frida-env-linux-mips.rc && ninja -C ../build/tmp-linux-mips/frida-gum)
-$ scp ../build/tmp-linux-mips/frida-gum/tests/gum-tests target:/tmp/
-$ ssh target "/tmp/gum-tests"
+$ make test
 {% endhighlight %}
 
-You can add `-p` to limit which tests are run, e.g. `-p /Core/Interceptor/attach_one`.
+You can also run a single test, e.g.
+
+{% highlight bash %}
+$ FRIDA_TEST_OPTIONS="--test-args='-p /Core/Process/process_modules' -v" make test
+{% endhighlight %}
 
 ### Porting frida-gum
 
@@ -67,30 +53,11 @@ of effort to port.
 
 ### Building frida-core
 
-Let's first use the top-level Makefile to bootstrap the basics:
-
-{% highlight bash %}
-$ make build/frida-linux-mips/lib/pkgconfig/frida-core-1.0.pc
-{% endhighlight %}
-
-This may not actually succeed in building frida-core, but should at least get
-the environment set up.
-
-Now let's change the working directory to frida-core and rinse and repeat this
-until all is well:
-
-{% highlight bash %}
-$ (. ../build/frida-env-linux-mips.rc && ninja -C ../build/tmp-linux-mips/frida-core)
-$ scp ../build/tmp-linux-mips/frida-core/tests/frida-tests target:/tmp/
-$ ssh target "/tmp/frida-tests"
-{% endhighlight %}
-
-You can add `-p` to limit which tests are run, e.g.
-`-p /Injector/inject-dynamic-current-arch`.
+Now that frida-gum works, it's time to repeat the same process for frida-core.
 
 ### Porting frida-core
 
-This should only be a matter of porting the injector. The implementation is [here](https://github.com/frida/frida-core/blob/main/src/linux/frida-helper-backend-glue.c)
-and the recommended approach is to follow the `HAVE_ARM64` breadcrumbs to port
+This should only be a matter of porting the injector. The implementation is [here](https://github.com/frida/frida-core/blob/main/src/linux/frida-helper-backend.vala)
+and the recommended approach is to follow the `#if X86` breadcrumbs to port
 the architecture-specific bits. For a walkthrough of the Linux injector, check
 out our presentation [here](https://www.youtube.com/watch?v=uc1mbN9EJKQ).
