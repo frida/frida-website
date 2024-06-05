@@ -119,9 +119,9 @@ Xcode, Console, etc. a lot less useful.
 
 It didn't take us long to find private APIs that would allow us to determine
 the device-side address inside Apple's tunnel, and also create a so-called
-“assertion” so that tunnel is kept open for as long as we need it. But the part
-we couldn't figure out was how to discover the device-side RSD port inside the
-tunnel.
+“assertion” so that the tunnel is kept open for as long as we need it. But the
+part we couldn't figure out was how to discover the device-side RSD port inside
+the tunnel.
 
 We knew that `remotepairingd`, running as the local user, knows the RSD port,
 but we couldn't find a way to get it to tell us what it is. After lots of
