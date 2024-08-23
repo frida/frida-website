@@ -1,0 +1,23 @@
+---
+layout: news_item
+title: 'Frida 16.4.10 Released'
+date: 2024-08-22 15:40:59 +0200
+author: oleavr
+version: 16.4.10
+categories: [release]
+---
+
+Quick bug-fix release to further improve our Fruity backend, where [@hsorbo][]
+and I filled up our coffee cups and hammered out the following fixes:
+
+- tunnel-connection: Wire up missing stream close logic.
+- tunnel-connection: Ensure JSON request ends up in its own UDP packet. When
+  opening the tunnel, it seems problematic if a datagram and stream data end up
+  in the same UDP packet. We make our dummy-datagram larger to avoid this.
+- tunnel-connection: Consistently avoid writes after connection is gone, which
+  would result in a crash.
+- network-stack: Handle perform_on_lwip_thread() from the lwIP thread instead of
+  deadlocking.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
