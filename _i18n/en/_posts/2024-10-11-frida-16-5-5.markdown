@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 16.5.5 Released'
+date: 2024-10-11 11:18:40 +0200
+author: oleavr
+version: 16.5.5
+categories: [release]
+---
+
+Turns out a serious stability regression made it into Frida 16.5.3, where
+frida-server would crash on incoming connections not originating from a
+CoreDevice tunnel. Kudos to [@mrmacete][] for investigating and fixing
+this only hours after the problematic releases made it out. 🎉 Enjoy!
+
+
+[@mrmacete]: https://twitter.com/bezjaje
