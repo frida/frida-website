@@ -1,0 +1,23 @@
+---
+layout: news_item
+title: 'Frida 16.5.6 Released'
+date: 2024-10-14 15:32:29 +0200
+author: oleavr
+version: 16.5.6
+categories: [release]
+---
+
+Quick bug-fix release to further improve our Fruity backend, where [@hsorbo][]
+and I filled up our coffee cups and hammered out the following fixes:
+
+- fruity: Fix use-after-free in TcpConnection. The error callback might be
+  called at a point where the PCB has already been freed. This meant that us
+  clearing its user data would result in a use-after-free where a NULL pointer
+  was written into the unknown.
+- fruity: Fix DTXArgumentList.parse() GValue init, where we were using the wrong
+  setter when encountering an object. This was caught by GLib's runtime checks,
+  but went unnoticed because we usually build without them.
+- payload: Fix an AddressSanitizer build regression.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
