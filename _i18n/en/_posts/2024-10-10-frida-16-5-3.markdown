@@ -1,0 +1,48 @@
+---
+layout: news_item
+title: 'Frida 16.5.3 Released'
+date: 2024-10-10 20:18:36 +0200
+author: oleavr
+version: 16.5.3
+categories: [release]
+---
+
+Excited to bring you another bug-fix release to further improve our Fruity
+backend, iOS stability, and a fix for memory scanning with regexes.
+
+The changes mentioned without specific attribution were authored by [@hsorbo][]
+and I in a series of fun pair-programming sessions.
+
+Here's the long and short of it:
+
+- memory: Make memory scanning regex patterns raw, so searches are reliable
+  across binary regions that are not valid UTF-8. Thanks [@mrmacete][]!
+- web-service: Close connections of removed dynamic interfaces, to avoid them
+  sticking around until we run out of file-descriptors.
+- network-stack: Handle abrupt disposal of TcpConnection, where we would free
+  the TCP PCB but fail to notify any live TcpIOSource instances and blocked
+  TcpInputStream.read() calls.
+- network-stack: Fix racy TCP data loss upon peer closure, where the closure
+  resulted in us letting go of the PCB, and the recv() logic would return early
+  because the PCB was gone. At that point there might still be data left in the
+  RX buffer, but the application wouldn't see it.
+- network-stack: Fix race in TcpInputStream.read(), where the notify::pending-io
+  signal fires after the call to is_readable() but before our signal handler is
+  connected.
+- fruity: Use USB product string as transport name.
+- fruity: Fix USB mode parsing on iOS < 16, where the mode is a 3 byte blob.
+- fruity: Bubble up USB permission errors.
+- fruity: Bail on iOS tunnel service versions pre-17, instead of crashing.
+- control-service: Fix reliability on CoreDevice systems, where having a single
+  transport broker listening on all interfaces may result in an early TCP RST
+  when trying to communicate with it from inside a tunnel. The exact cause of
+  this is not known, but we have confirmed that having one broker per dynamic
+  interface/tunnel does resolve the issue. We also observed that listening on
+  all interfaces, but restricted to IPv6, also avoids the issue.
+- meson: Fix i/tvOS compilation with GLib as a subproject.
+- meson: Disable Fruity and friends on FreeBSD, as we now rely on a libusb API
+  that only exists in our libusb. If anyone's interested in these backends on
+  FreeBSD it shouldn't be too hard to fix this -- PRs are most welcome.
+
+
+[@mrmacete]: https://twitter.com/bezjaje
