@@ -1,0 +1,22 @@
+---
+layout: news_item
+title: 'Frida 16.5.2 Released'
+date: 2024-09-19 00:01:01 +0200
+author: oleavr
+version: 16.5.2
+categories: [release]
+---
+
+Quick bug-fix release to further improve our Fruity backend, where [@hsorbo][]
+and I filled up our coffee cups and hammered out the following fixes and tweaks:
+
+- fruity: Reuse NCM peer when tunnel setup fails.
+- fruity: Handle iDevice not paired with anyone.
+- fruity: Handle USB TunnelConnection dropping.
+- fruity: Fix unreliable modeswitch activation.
+- fruity: Fix teardown when using our NCM driver.
+- fruity: Fix error marshaling in find_tunnel() for non-macOS.
+- fruity: Advertise our RemoteXPC protocol support.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
