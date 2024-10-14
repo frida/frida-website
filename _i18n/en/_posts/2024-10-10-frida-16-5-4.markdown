@@ -1,0 +1,13 @@
+---
+layout: news_item
+title: 'Frida 16.5.4 Released'
+date: 2024-10-10 22:08:02 +0200
+author: oleavr
+version: 16.5.4
+categories: [release]
+---
+
+Binaries for the previous release did not make it out due to frida-node's NAN
+dependency getting bumped by a script that wasn't meant to bump it, and the
+latest code breaking Electron support. This release rolls it back, and bumps
+frida.Compiler's @types/frida-gum to 18.7.1 while at it.
