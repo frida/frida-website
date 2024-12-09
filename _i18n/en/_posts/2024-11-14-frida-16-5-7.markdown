@@ -1,0 +1,77 @@
+---
+layout: news_item
+title: 'Frida 16.5.7 Released'
+date: 2024-11-14 00:30:50 +0100
+author: oleavr
+version: 16.5.7
+categories: [release]
+---
+
+Exciting new release packed with improvements and new features across platforms.
+Here's what's new:
+
+#### Fruity Backend Improvements
+
+[@hsorbo][] and I have been working hard to enhance our Fruity backend, and
+we're excited to share the following improvements:
+
+- **Added support for the TCP tunnel protocol** and made it the default to match
+  Apple's new behavior. The `FRIDA_FRUITY_TUNNEL_PROTOCOL` environment variable
+  can be used to revert back to QUIC.
+- **Fixed edge-case in tunnel logic for older OS versions**, ensuring reliable
+  operation even when `usbmuxd` is not available.
+- **Gracefully closed `TunnelConnection`** to improve stability.
+- **Fixed a hang that could occur when a USB operation starts during teardown**,
+  preventing transfers from getting stuck.
+- **Fixed `QuicTunnelConnection` teardown logic**, properly handling errors
+  during close operations.
+- **Relaxed NCM interface presence check**, requiring only one operational
+  network interface.
+- **Adjusted to always try USB transport first**, as network transport may be
+  slower or unavailable.
+- **Improved handling of timeout cases** when skipping jailed fallback.
+- **Now expect networked devices to respond quickly** when connecting to the
+  pairing service, improving the user experience when a device has gone to sleep.
+- **Fixed `CoreDevice` UDID logic** for modern devices.
+
+#### Android
+
+- **Gadget now supports loading assets from APKs when `extractNativeLibs` is set to
+  `false`**, improving compatibility with modern Android apps (thanks to
+  [@gergesh][]).
+- **Revived injector's handling of shared `libc` ranges**, ensuring correct
+  behavior when the target process's lowest `libc.so` range is a shared mapping
+  (thanks to [@lx866][]).
+
+#### Linux
+
+- **Improved injector's compatibility with MUSL**, handling differences in the
+  loader string (thanks to [@luckycat889][]).
+- **Added support for overriding configuration when building helpers**, allowing
+  for greater flexibility in builds (thanks to [@luckycat889][]).
+- **Allocated stack for injector's remote calls**, improving compatibility with
+  programs using small stacks, such as Go applications (thanks to
+  [@ajwerner][]).
+- **Added CI that rebuilds helper binaries** to ensure consistency between
+  source and checked-in binaries (thanks to [@ajwerner][]).
+- **Picked alternative temporary directories when `$TMPDIR` is `noexec`**
+
+#### Cross-platform
+
+- **Added support for non-UTF-8 locales** in the build system, ensuring better
+  compatibility on systems with various locale settings (thanks to
+  [@JunGe-Y][]).
+- **Added support for the PowerPC architecture** in the build system.
+- **Added support for binary data handling** in `frida-inject` and RpcClient
+  internals.
+
+Happy hacking!
+
+---
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@gergesh]: https://github.com/gergesh
+[@lx866]: https://github.com/lx866
+[@luckycat889]: https://github.com/luckycat889
+[@ajwerner]: https://github.com/ajwerner
+[@JunGe-Y]: https://github.com/JunGe-Y
