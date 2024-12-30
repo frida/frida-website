@@ -5,18 +5,6 @@ your code for rapid prototyping and easy debugging.
 {% highlight bash %}
 # Connect Frida to an iPad over USB and start debugging Safari
 $ frida -U Safari
-    _____
-   (_____)
-    |   |    Frida 4.0.0 - A world-class dynamic
-    |   |                  instrumentation framework
-    |`-'|
-    |   |    Commands:
-    |   |        help      -> Displays the help system
-    |   |        object?   -> Display information about 'object'
-    |   |        exit/quit -> Exit
-    |   |
-    |   |    More info at https://frida.re/docs/home/
-    `._.'
 
 [USB::iPad 4::Safari]->
 {% endhighlight %}
@@ -26,18 +14,6 @@ $ frida -U Safari
 {% highlight bash %}
 # Connect Frida to a locally-running Calculator.app
 $ frida Calculator
-    _____
-   (_____)
-    |   |    Frida 4.0.0 - A world-class dynamic
-    |   |                  instrumentation framework
-    |`-'|
-    |   |    Commands:
-    |   |        help      -> Displays the help system
-    |   |        object?   -> Display information about 'object'
-    |   |        exit/quit -> Exit
-    |   |
-    |   |    More info at https://frida.re/docs/home/
-    `._.'
 
 # Look at the local variables/context
 [Local::ProcName::Calculator]-> <TAB>
@@ -83,22 +59,11 @@ classes           schedule
 {% highlight bash %}
 # Connect Frida to a locally-running Calculator.app and load calc.js
 $ frida Calculator -l calc.js
-    _____
-   (_____)
-    |   |    Frida 4.0.0 - A world-class dynamic
-    |   |                  instrumentation framework
-    |`-'|
-    |   |    Commands:
-    |   |        help      -> Displays the help system
-    |   |        object?   -> Display information about 'object'
-    |   |        exit/quit -> Exit
-    |   |
-    |   |    More info at https://frida.re/docs/home/
-    `._.'
 
-# The code in calc.js has now been loaded and executed
+# The code in calc.js has now been loaded and executed. Any changes will be reloaded automatically
 [Local::ProcName::Calculator]->
-# Reload it from file at any time
+
+# Manually reload it from file at any time
 [Local::ProcName::Calculator]-> %reload
 [Local::ProcName::Calculator]->
 {% endhighlight %}
@@ -109,18 +74,6 @@ $ frida Calculator -l calc.js
 # Connect Frida to a locally-running Calculator.app
 # and load calc.js with the debugger enabled
 $ frida Calculator -l calc.js --debug
-    _____
-   (_____)
-    |   |    Frida 4.0.0 - A world-class dynamic
-    |   |                  instrumentation framework
-    |`-'|
-    |   |    Commands:
-    |   |        help      -> Displays the help system
-    |   |        object?   -> Display information about 'object'
-    |   |        exit/quit -> Exit
-    |   |
-    |   |    More info at https://frida.re/docs/home/
-    `._.'
 
 Debugger listening on port 5858
 # We can now run node-inspector and start debugging calc.js
