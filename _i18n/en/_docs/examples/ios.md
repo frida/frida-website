@@ -1,9 +1,3 @@
----
-layout: docs
-title: iOS
-permalink: /docs/examples/ios/
----
-
 Frida provides wrapping functions for Objective-C selectors by replacing the `:` with `_`:
 
 {% highlight js %}
