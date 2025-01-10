@@ -12,6 +12,16 @@ symbol handling, performance enhancements, and bug fixes.
 
 Here are the highlights:
 
+- **android**: Improve ART compatibility:
+  - Look for symbols when exports are missing, now that Frida supports parsing
+    `.gnu_debugdata`.
+  - Handle change of signature of runFlip (thanks to [@matbrik][]).
+- **android**: Fix overflow in enumerateLoadedClasses() (thanks to [@123edi10][]).
+  Create and clean up global references incrementally instead of handling them
+  all at once at the beginning and the end.
+- **android**: Support static methods in registerClass() (thanks to
+  [@5andr0][]).
+- **java**: Fix Java.choose() powered by JVMTI on 32-bit systems.
 - **module**: Turn Module APIs into instance methods, so multiple queries can be
   performed efficiently. This was previously only modelled as such at the
   JavaScript (GumJS) level, where such a JS object would have the module's path
@@ -27,6 +37,9 @@ Here are the highlights:
   `enumerate_symbols()` encounters an ELF with no symbols in memory,
   instantiate an offline `ElfModule` instance and parse the `.gnu_debugdata`
   section. Decompress the embedded ELF and reuse its symbols as a fallback.
+- **ncm**: Improve performance of our userspace USB CDC-NCM driver by capping
+  the per-transfer datagram limit at 16 (thanks for the pair-programming,
+  [@hsorbo][]!).
 - Port to the new `Gum.Module` API. Transitioned to instance methods to allow
   multiple queries to be performed efficiently.
 - Drop support for running without GObject. The footprint savings were minimal
@@ -35,3 +48,8 @@ Here are the highlights:
   the `CpuContext` was too narrowly scoped.
 
 As always, happy hacking!
+
+[@matbrik]: https://github.com/matbrik
+[@123edi10]: https://github.com/123edi10
+[@5andr0]: https://github.com/5andr0
+[@hsorbo]: https://twitter.com/hsorbo
