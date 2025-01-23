@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: bundle exec jekyll build
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: site
           path: _site/*
@@ -64,7 +64,7 @@ jobs:
       - name: Install cloudflare-cli
         run: npm install -g cloudflare-cli
       - name: Download site
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: site
           path: _site/
