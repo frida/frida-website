@@ -66,7 +66,7 @@ rpc.exports.enumerateModules = () => {
 script.on("message", on_message)
 script.load()
 
-print([m["name"] for m in script.exports_sync.enumerate_modules()])
+print([m["name"] for m in script.exports.enumerate_modules())
 {% endhighlight %}
 
 If you are on GNU/Linux, issue:
