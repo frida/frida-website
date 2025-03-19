@@ -25,7 +25,7 @@ First off, download the latest `frida-server` for Android from our [releases
 page](https://github.com/frida/frida/releases) and uncompress it.
 
 {% highlight bash %}
-$ adb shell getprop ro.product.cpu.abilist # check your device cup
+$ adb shell getprop ro.product.cpu.abilist # check your device cpu type
 
 $ unxz frida-server.xz
 {% endhighlight %}
