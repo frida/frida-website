@@ -4709,6 +4709,30 @@ OS-specific API to create a given resource.
 
 ### Profiler
 
+Simple worst-case profiler built on top of `Interceptor`.
+
+Unlike a conventional profiler, which samples call stacks at a certain
+frequency, you decide the exact functions that you're interested in profiling.
+
+When any of those functions gets called, the profiler grabs a sample on entry,
+and another one upon return. It then subtracts the two, to compute how expensive
+the call was. If the resulting value is greater than what it's seen previously
+for the specific function, that value becomes its new worst-case.
+
+Whenever a new worst-case has been discovered, it isn't necessarily enough to
+know that most of the time/cycles/etc. was spent by a specific function. That
+function may only be slow with certain input arguments, for example.
+
+This is a situation where you can pass in a [`describe`](#profiler-describe)
+callback for the specific function. Your callback should capture relevant
+context from the argument list and/or other state, and return a string that
+describes the new worst-case that was just discovered.
+
+When you later decide to call `generateReport()`, you'll find your computed
+descriptions embedded in each worst-case entry.
+
++   `new Profiler()`: creates a Profiler.
+
 -   `instrument(functionAddress, sampler[, callbacks])`: starts instrumenting
     the specified function, specified by the `functionAddress`
     [`NativePointer`](#nativepointer), using [`sampler`](#sampler).
@@ -4720,6 +4744,7 @@ OS-specific API to create a given resource.
         and/or other relevant state. The implementation must return a string
         describing the argument list. For more details about `args` and how
         `this` is bound, see Interceptor [`onEnter`](#interceptor-onenter).
+        {: #profiler-describe}
 
 -   `generateReport()`: generates an XML report from the live profiler state,
     returned as a string. May be called at any point, and as many times as
