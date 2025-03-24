@@ -265,6 +265,16 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 
     Returns an observer object that you can call `detach()` on.
 
++   `Process.runOnThread(id, callback)`: runs the JavaScript function `callback`
+    without any arguments, on the thread specified by `id`. Returns a *Promise*
+    that receives the value returned by your callback.
+
+    Must be used with extreme caution due to the thread potentially being
+    interrupted in non-reentrant code. For example, you could be interrupting it
+    while it's in the middle of some delicate code, holding a specific
+    non-recursive lock, which you then try to implicitly acquire again when you
+    call some function.
+
 +   `Process.findModuleByAddress(address)`,
     `Process.getModuleByAddress(address)`,
     `Process.findModuleByName(name)`,
