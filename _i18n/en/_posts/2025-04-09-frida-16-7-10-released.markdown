@@ -1,0 +1,32 @@
+---
+layout: news_item
+title: 'Frida 16.7.10 Released'
+date: 2025-04-09 21:50:31 +0200
+author: oleavr
+version: 16.7.10
+categories: [release]
+---
+
+We're pleased to announce Frida 16.7.10, bringing several stability
+improvements. Special thanks to [@mrmacete][] for identifying the root cause of
+all of them, and fixing a deadlock on Apple OSes.
+
+The following changes are included in this release:
+
+- **network-stack**: Fixed TcpConnection transmit logic.
+- **network-stack**: Improved VirtualStream locking to enhance batching and
+  avoid unnecessary scheduling on Frida's thread.
+- **virtual-stream**: Allowed `update_pending_io()` to be called without holding
+  a lock for convenience when a subclass doesn't need to update any other state
+  before calling it. One of our subclasses was assuming this to be the case, as
+  that was its behavior before the commonalities were factored out into the
+  VirtualStream base-class. This means that this refactoring made in 16.7.4
+  introduced a race condition, and this change fixes it.
+- **darwin**: Optimized thread enumeration by avoiding flags. This eliminates
+  heap allocations, reducing the risk of deadlocks in use cases like the
+  Interceptor, where thread enumeration is used to suspend and resume threads
+  by ID. (Contributed by [@mrmacete][].)
+
+Enjoy!
+
+[@mrmacete]: https://twitter.com/bezjaje
