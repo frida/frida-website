@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 16.7.11 Released'
+date: 2025-04-14 17:59:58 +0200
+author: oleavr
+version: 16.7.11
+categories: [release]
+---
+
+Quick bug-fix release bringing improvements to our Fruity backend, and basic
+support for iOS 18.4:
+
+- darwin: Update injector dyld init detection for iOS 18.4.
+
+- fruity: Update injector dyld init detection for iOS 18.4 (#1154). Thanks to
+  [@pachoo][] for this contribution.
+
+- network-stack: Reduce delay between writes. By flagging as writable as
+  soon as some space is available, without waiting for the low watermark.
+  Thanks to [@mrmacete][] for this improvement.
+
+- network-stack: Fix TCP write chunk length (#1156). Another fix by
+  [@mrmacete][].
+
+- network-stack: Always send enqueued data. This change ensures `pcb.output()`
+  is called even when no more space is available on the queue, preventing stalls.
+  Credits to [@mrmacete][] for preventing those pesky stalls.
+
+[@mrmacete]: https://twitter.com/bezjaje
+[@pachoo]: https://github.com/pachoo
