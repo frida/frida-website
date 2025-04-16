@@ -1,0 +1,27 @@
+---
+layout: news_item
+title: 'Frida 16.7.12 Released'
+date: 2025-04-16 20:26:58 +0200
+author: oleavr
+version: 16.7.12
+categories: [release]
+---
+
+This release brings several important improvements and fixes:
+
+- interceptor: Avoid heap allocation during suspend. By storing the suspended
+  thread IDs into a `GumMetalArray` instead of a `GQueue`, we prevent deadlocks
+  when a suspended thread is holding the `dlmalloc` lock. Thanks to
+  [@mrmacete][] for this improvement.
+- linux: Fix `ModuleRegistry` initialization when ELF is missing. When
+  enumerating RTLD notifiers and loaded modules to find a `DT_DEBUG` entry, we
+  no longer assume the ELF file is present. This fixes issues when the program
+  was loaded from a memfd and spawned without a file.
+- elf-module: Use live memory if unable to map file. For modules backed by a
+  memfd, we now utilize the in-memory ELF rather than giving up if we cannot
+  map the file.
+- linux: Rework glibc pthread internals detection. Instead of parsing machine
+  code to determine internals, we now start threads to solve the puzzle in a
+  more robust fashion.
+
+[@mrmacete]: https://twitter.com/bezjaje
