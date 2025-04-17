@@ -1,0 +1,15 @@
+---
+layout: news_item
+title: 'Frida 16.7.13 Released'
+date: 2025-04-17 13:53:57 +0200
+author: oleavr
+version: 16.7.13
+categories: [release]
+---
+
+Quick bug-fix release to address an issue in our ELF parser:
+
+- elf-module: Fix recursion in check_str_bounds() when falling back to live
+  memory. The function assumed a file-backed ELF; falling back to live memory
+  could trigger unbounded recursion. An explicit live-memory check has been
+  added to return an error instead.
