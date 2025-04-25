@@ -1,0 +1,28 @@
+---
+layout: news_item
+title: 'Frida 16.7.14 Released'
+date: 2025-04-25 22:36:07 +0200
+author: oleavr
+version: 16.7.14
+categories: [release]
+---
+
+This release brings improved support for Google's latest ART runtime on 32-bit
+ARM, better error-handling on Linux, and improved support for big-endian ARM
+architectures.
+
+Here are the highlights:
+
+- **Improved frida-java-bridge to support Google's latest 32-bit ARM binaries.**
+  Thanks to [@Rwkeith][].
+- **Propagated ptrace errors on failure in the Linux backend.** Thanks to
+  [@DoranekoSystems][].
+- **Improved support for big-endian ARM architectures (armbe8, arm64be,
+  arm64beilp32).**
+- **Removed redundant hardware breakpoint code in the Linux backend.**
+
+As always, we thank our contributors for their valuable efforts in making
+Frida better.
+
+[@Rwkeith]: https://github.com/Rwkeith
+[@DoranekoSystems]: https://github.com/DoranekoSystems
