@@ -1,0 +1,28 @@
+---
+layout: news_item
+title: 'Frida 16.7.15 Released'
+date: 2025-05-08 21:31:10 +0200
+author: oleavr
+version: 16.7.15
+categories: [release]
+---
+
+We are excited to announce a major update to our Node.js bindings! They have
+been rewritten from scratch. Instead of depending on Node.js and V8 APIs that
+inevitably change between releases, requiring separate builds per ABI, our
+bindings now target Node-API. This means that a single binary can be used across
+all modern versions of Node.js, Electron, nw.js, etc. We only need to build one
+binary per OS/arch/libc combo. Not only that, but our new bindings are also
+auto-generated, ensuring that API changes in frida-core are instantly reflected,
+with only customizations needing tweaking if applicable.
+
+This release also contains some other goodies:
+
+- *DeviceManager*: Fixed crash on early `close()` in situations where
+  `HostSessionService` `start()` gets cancelled.
+- *Web Service*: Fixed handling of TLS connections, as the remote address
+  logic did not take them into account.
+- *API*: Fixed up `FridaBase` references in the `.gir` files.
+- *Bus*: Removed the `device` property, which wasn't meant to be exposed.
+
+As always, a big thank you to all contributors and users for your support.
