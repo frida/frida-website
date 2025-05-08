@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 16.7.16 Released'
+date: 2025-05-08 22:43:23 +0200
+author: oleavr
+version: 16.7.16
+categories: [release]
+---
+
+Another quick bug-fix release, because software is hard! This release
+addresses the following issue:
+
+- node: Fix module resolution when not built from source. Turns out the
+  `package.json` generated inside our build directory confused the module root
+  detection in the `bindings` package. This means that our search path was
+  actually wrong, and relied on this being misdetected.
