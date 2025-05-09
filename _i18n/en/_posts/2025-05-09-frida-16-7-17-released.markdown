@@ -1,0 +1,25 @@
+---
+layout: news_item
+title: 'Frida 16.7.17 Released'
+date: 2025-05-09 11:56:06 +0200
+author: oleavr
+version: 16.7.17
+categories: [release]
+---
+
+This release brings several improvements and fixes to our Fruity backend,
+enhancing compatibility and error handling across platforms. Below are the
+changes included in this release:
+
+- fruity: Initiate pairing on macOS too, if needed.
+- fruity: Tweak macOS CreateAssertion error handling. So we provide a clean
+  error message when it fails.
+- fruity: Handle OPACK boolean and compact integers. Support for the latter is
+  needed during pairing on iOS 18.4.1.
+- fruity: Improve portable tunnel error-handling. When we use lockdown to
+  determine if the iDevice supports tunnels, and that fails due to lack of
+  lockdown-level pairing, simply assume that the OS supports it.
+- fruity: Add timeout to the Linux netif wait logic.
+- fruity: Handle NetworkManager DISCONNECTED+CARRIER. So we actually wait until
+  the device is ready when it quickly passes through state=DISCONNECTED with
+  reason=CARRIER.
