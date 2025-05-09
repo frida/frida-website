@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 16.7.18 Released'
+date: 2025-05-09 15:00:00 +0200
+author: oleavr
+version: 16.7.18
+categories: [release]
+---
+
+Back-to-back releases! Software is hard, and sometimes we need to push quick
+fixes to keep things running smoothly. Here's what's new in this release:
+
+- **frida-node** Fixed a regression where the `Device.openChannel()` return type
+  had changed compared to before.
+- **Fruity backend improvements**: Use Apple's CoreDeviceProxy as fallback, so
+  we can support systems where NCM is problematic. Also retransmit mDNS-SD
+  request every 250 ms, for added robustness.
+
+Happy hacking!
