@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 16.7.19 Released'
+date: 2025-05-14 15:27:00 +0200
+author: oleavr
+version: 16.7.19
+categories: [release]
+---
+
+This release improves Linux thread enumeration under glibc and hardens our
+static OpenSSL build against unintended config loading.
+
+**Changes:**
+- **linux**: Skip glibc threads with `tid = 0` (exited but unjoined) to avoid
+  false “Unsupported Linux system” panics.
+- **linux**: List glibc threads in creation order (oldest first) to mirror
+  real thread lifecycles.
+- **deps (TLS)**: Build OpenSSL with `OPENSSL_NO_AUTOLOAD_CONFIG` to block
+  loading any system config file, preventing crashes when initializing TLS.
