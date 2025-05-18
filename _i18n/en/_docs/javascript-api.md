@@ -484,6 +484,11 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
 -   `path`: full filesystem path as a string
 
+-   `ensureInitialized()`: ensures that the module initializers have been run.
+    This is important during early instrumentation, i.e. run early in the
+    process lifetime, to be able to safely interact with APIs. One such use-case
+    is interacting with **[ObjC](#objc)** classes provided by a given module.
+
 -   `enumerateImports()`: enumerates imports of module, returning an array of
     objects containing the following properties:
 
@@ -568,6 +573,7 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
     `name`. In the event that no such export could be found, the *find*-prefixed
     function returns *null* whilst the *get*-prefixed function throws an
     exception.
+    {: #module-getexportbyname}
 
 -   `findSymbolByName(name)`,
     `getSymbolByName(name)`: returns the absolute address of the symbol named
@@ -580,26 +586,12 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
     module cannot be loaded.
     {: #module-load}
 
-+   `Module.ensureInitialized(name)`: ensures that initializers of the specified
-    module have been run. This is important during early instrumentation, i.e.
-    code run early in the process lifetime, to be able to safely interact with
-    APIs. One such use-case is interacting with **[ObjC](#objc)** classes provided
-    by a given module.
-
-+   `Module.findBaseAddress(name)`,
-    `Module.getBaseAddress(name)`: returns the base address of the `name`
-    module. In the event that no such module could be found, the *find*-prefixed
-    function returns *null* whilst the *get*-prefixed function throws an
-    exception.
-
-+   `Module.findExportByName(moduleName|null, exportName)`,
-    `Module.getExportByName(moduleName|null, exportName)`: returns the absolute
-    address of the export named `exportName` in `moduleName`. If the module
-    isn't known you may pass `null` instead of its name, but this can be a
-    costly search and should be avoided. In the event that no such module or
-    export could be found, the *find*-prefixed function returns *null* whilst
-    the *get*-prefixed function throws an exception.
-    {: #module-getexportbyname}
++   `Module.findGlobalExportByName(name)`,
+    `Module.getGlobalExportByName(name)`: returns the absolute address of the
+    global export named `name`. This can be a costly search and should be
+    avoided. In the event that no such export could be found, the
+    *find*-prefixed function returns *null* whilst the *get*-prefixed function
+    throws an exception.
 
 
 ### ModuleMap
@@ -1899,7 +1891,7 @@ smt.reset();
     of the function you would like to intercept calls to. Note that on 32-bit ARM this
     address must have its least significant bit set to 0 for ARM functions, and
     1 for Thumb functions. Frida takes care of this detail for you if you get
-    the address from a Frida API (for example [`Module.getExportByName()`](#module-getexportbyname)).
+    the address from a Frida API (for example [`Module#getExportByName()`](#module-getexportbyname)).
     {: #interceptor-attach}
 
     The `callbacks` argument is an object containing one or more of:
@@ -2396,6 +2388,21 @@ Stalker.follow(mainThread.id, {
 
 ### ObjC
 
+<div class="note">
+<h5>Moved</h5>
+<p markdown="1">
+    As of Frida 17, this runtime bridge is no longer baked into Frida's GumJS
+    runtime, and can be fetched by running: `npm install frida-objc-bridge`.
+    <br/>
+
+    Import it into your agent like this:<br/>
+    `import ObjC from 'frida-objc-bridge';`<br/>
+
+    For now this is not needed in scripts loaded by the Frida REPL, as well as
+    frida-trace.
+</p>
+</div>
+
 +   `ObjC.available`: a boolean specifying whether the current process has an
     Objective-C runtime loaded. Do not invoke any other `ObjC` properties or
     methods unless this is the case.
@@ -2810,6 +2817,21 @@ function isAppModule(m) {
 
 ### Java
 
+<div class="note">
+<h5>Moved</h5>
+<p markdown="1">
+    As of Frida 17, this runtime bridge is no longer baked into Frida's GumJS
+    runtime, and can be fetched by running: `npm install frida-java-bridge`.
+    <br/>
+
+    Import it into your agent like this:<br/>
+    `import Java from 'frida-java-bridge';`<br/>
+
+    For now this is not needed in scripts loaded by the Frida REPL, as well as
+    frida-trace.
+</p>
+</div>
+
 +   `Java.available`: a boolean specifying whether the current process has the
     a Java VM loaded, i.e. Dalvik or ART. Do not invoke any other `Java`
     properties or methods unless this is the case.
@@ -3193,7 +3215,7 @@ const MyWeirdTrustManager = Java.registerClass({
     Note that on 32-bit ARM this address must have its least significant bit
     set to 0 for ARM functions, and 1 for Thumb functions. Frida takes care
     of this detail for you if you get the address from a Frida API (for
-    example [`Module.getExportByName()`](#module-getexportbyname)).
+    example [`Module#getExportByName()`](#module-getexportbyname)).
 
     The object returned has the fields:
 
