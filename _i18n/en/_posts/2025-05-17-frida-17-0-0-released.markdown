@@ -101,7 +101,7 @@ These legacy-style APIs are now finally gone. Those of you writing your agents
 in TypeScript won't need to do anything, unless you're using ancient versions of
 our typings.
 
-## Memoy read/write APIs
+## Memory read/write APIs
 
 Back in the day, you'd access memory like this:
 
