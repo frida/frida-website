@@ -41,6 +41,7 @@
   - c-api
   - swift-api
   - go-api
+  - bridges
 
 - title: Miscellaneous
   docs:

@@ -55,6 +55,8 @@ individually meant we no longer needed a JavaScript bundler. This means faster
 build times for Gum itself: on a Linux-powered i9-12900K system, builds dropped
 from ~24s → ~6s.
 
+You can see a quick reference tutorial inside [bridges][].
+
 ## Legacy-style enumeration APIs
 
 Back in the day, our synchronous enumeration APIs all looked like this:
@@ -222,3 +224,4 @@ So that's about it. Happy hacking!
 [CodeShare]: https://codeshare.frida.re/
 [15.2]: /news/2022/07/21/frida-15-2-0-released/
 [@yotamN]: https://github.com/yotamN
+[bridges]: /docs/bridges
