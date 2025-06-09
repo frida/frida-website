@@ -22,6 +22,8 @@ See the [frida-core](https://github.com/frida/frida-core) repository for the sou
 
 frida-gum allows you to augment and replace functions using C.
 
+[This project](https://github.com/0xXA/snapchat-emulator-bypass) shows you how to augment `open`, `execve`, `__system_property_find`, and `__system_property_get` as well as how a patch can be applied from c only.
+
 The example in the devkit shows you how to augment `open` and `close` from C only.
 
 See the [frida-gum](https://github.com/frida/frida-gum) repository for the source.
