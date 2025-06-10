@@ -1,10 +1,14 @@
-Starting from Frida 17.0.0 bridges are no longer bundled together with Frida's GumJS runtime which you can read inside of release [notes][] meaning that the users now will have to specify the bridges they want to use. Frida REPL and `frida-trace` include all three bridges inside of them, so you don't have to deal with it.
+Starting with Frida 17.0.0, bridges are no longer bundled with Frida's GumJS
+runtime. You can read more about it in the [release notes][]. This means that
+users now have to explicitly pull in the bridges they want to use. The Frida
+REPL and `frida-trace` do however come with all three bridges bundled, for
+compatibility with existing scripts.
 
 ## Table of contents
 
 1. **REPL and frida-trace**
     1. [Using plain JavaScript](#using-plain-javascript)
-    1. [REPL and frida-trace do compilation automatically](#repl-and-frida-trace-do-compilation-automatically)
+    1. [REPL automatic compilation](#repl-automatic-compilation)
     1. [Manually compiling using frida-compile](#manually-compiling-using-frida-compile)
 1. **Using API**
     1. [Python example](#python-example)
@@ -12,7 +16,7 @@ Starting from Frida 17.0.0 bridges are no longer bundled together with Frida's G
 
 ## REPL and frida-trace
 
-We will use the simple script to print `ObjC.available` on the screen.
+We will use a simple script to print `ObjC.available` to the screen.
 
 {% highlight javascript %}
 // script.js
@@ -20,7 +24,9 @@ console.log(ObjC.available);
 {% endhighlight %}
 
 ### Using plain JavaScript
-This works exactly like before since REPL and frida-trace are bundled with all three bridges.
+
+This works exactly like before since REPL and frida-trace have all three bridges
+bundled.
 
 {% highlight bash %}
 $ frida -p0 -l script.js
@@ -40,18 +46,22 @@ true
 [Local::SystemSession ]->
 {% endhighlight %}
 
-### REPL and frida-trace do compilation automatically
+### REPL automatic compilation
 
-REPL and `frida-trace` can also work with `.ts` files, although you need to first run `npm init` and add `"type":"module"` inside `package.json` file.
+The REPL can also work with `.ts` files: use `frida-create -t agent` in an empty
+directory to set up the needed scaffolding.
 
 ### Manually compiling using frida-compile
-You need to specify which bridges you want to use (ObjC, Java, Swift) by adding lines inside your script:
 
-* `import ObjC from "frida-objc-bridge"` - for ObjC
-* `import Java from "frida-java-bridge"` - for Java
-* `import Swift from "frida-swift-bridge"` - for Swift
+You need to specify which bridges you want to use (ObjC, Java, Swift) by adding
+lines inside your script:
 
-We will recreate the example above where we used plain JavaScript to print `ObjC.available`.
+* `import ObjC from "frida-objc-bridge";` - for ObjC
+* `import Swift from "frida-swift-bridge";` - for Swift
+* `import Java from "frida-java-bridge";` - for Java
+
+We will recreate the example above where we used plain JavaScript to print
+`ObjC.available`.
 
 {% highlight typescript %}
 // script.ts
@@ -60,17 +70,18 @@ import ObjC from "frida-objc-bridge";
 console.log(ObjC.available);
 {% endhighlight %}
 
-Initialize and install necessary packages:
+Initialize and install necessary packages in an empty directory:
 
 {% highlight bash %}
-$ npm install frida-objc-bridge 
-$ npm install --save-dev @types/frida-gum frida-compile @types/node@~20.9
+$ frida-create -t agent
+$ npm install
+$ npm install frida-objc-bridge
 {% endhighlight %}
 
-Add `"type":"module"` to `package.json` and run `node_modules/.bin/frida-compile -S -c script.ts -o _agent.js`.
+Then compile the agent and load it:
 
 {% highlight bash %}
-$ node_modules/.bin/frida-compile -S -c script.ts -o _agent.js
+$ frida-compile script.ts -o _agent.js -S -c
 $ frida -p0 -l _agent.js
      ____
     / _  |   Frida 17.0.5 - A world-class dynamic instrumentation toolkit
@@ -89,27 +100,30 @@ true
 {% endhighlight %}
 
 ## Using API
-There are fewer steps to do it using API provided by bindings and they are:
+
+There are a few steps needed to do it using APIs provided by bindings, which
+are:
+
 * Write the script
-* Run `npm init`
+* Run `frida-create -t agent`
 * Install bridge(s) you want, e.g. `frida-objc-bridge`
-* Write the code to compile the script and load it to the process
+* Write the code to compile the script and load it in the process
 
 ### Python example
 
 {% highlight python %}
 import frida
 
-def on_diag(diag):
+def on_diagnostics(diag):
     print("diag", diag)
 
 def on_message(message, data):
     print(message)
 
 compiler = frida.Compiler()
-compiler.on("diagnostics", on_diag)
+compiler.on("diagnostics", on_diagnostics)
 # script is located in /tmp, so we set project root to /tmp
-bundle = compiler.build("script.ts", "/tmp")
+bundle = compiler.build("script.ts", project_root="/tmp")
 
 session = frida.attach(0)
 
@@ -168,4 +182,4 @@ func main() {
 }
 {% endhighlight %}
 
-[notes]: /news/2025/05/17/frida-17-0-0-released/
+[release notes]: /news/2025/05/17/frida-17-0-0-released/
