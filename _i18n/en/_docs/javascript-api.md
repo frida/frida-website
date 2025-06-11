@@ -484,11 +484,6 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
 -   `path`: full filesystem path as a string
 
--   `ensureInitialized()`: ensures that the module initializers have been run.
-    This is important during early instrumentation, i.e. run early in the
-    process lifetime, to be able to safely interact with APIs. One such use-case
-    is interacting with **[ObjC](#objc)** classes provided by a given module.
-
 -   `enumerateImports()`: enumerates imports of module, returning an array of
     objects containing the following properties:
 
@@ -567,19 +562,6 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
         -   weak
         -   reexport
         -   upward
-
--   `findExportByName(name)`,
-    `getExportByName(name)`: returns the absolute address of the export named
-    `name`. In the event that no such export could be found, the *find*-prefixed
-    function returns *null* whilst the *get*-prefixed function throws an
-    exception.
-    {: #module-getexportbyname}
-
--   `findSymbolByName(name)`,
-    `getSymbolByName(name)`: returns the absolute address of the symbol named
-    `name`. In the event that no such symbol could be found, the *find*-prefixed
-    function returns *null* whilst the *get*-prefixed function throws an
-    exception.
 
 +   `Module.load(path)`: loads the specified module from the filesystem path
     and returns a [`Module`](#module) object. Throws an exception if the specified
