@@ -1,0 +1,25 @@
+---
+layout: news_item
+title: 'Frida 17.2.11 Released'
+date: 2025-07-03 16:10:25 +0200
+author: oleavr
+version: 17.2.11
+categories: [release]
+---
+
+Just when we thought we had it all figured out, software reminded us how hard it
+can be! Thanks to [@mrmacete][], [@hsorbo][], and [@0xmurphy][], we quickly
+addressed the issues and present you with the following fixes:
+
+- frida-node: Fix `fdn_keep_alive_until()` TSFN lifetime issue. We were setting
+  the TSFN to `NULL`, which led to crashes when other reference-holders tried to
+  schedule cleanup.
+
+- fruity: Fix issue when killing prewarmed targets. Killing a prewarmed process
+  at spawn time resulted in a "connection closed" error. This change catches the
+  error so it's possible to spawn a fresh instance.
+
+
+[@as0ler]: https://x.com/as0ler
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje
