@@ -1,0 +1,27 @@
+---
+layout: news_item
+title: 'Frida 17.2.10 Released'
+date: 2025-07-03 12:57:12 +0200
+author: oleavr
+version: 17.2.10
+categories: [release]
+---
+
+Quick bug-fix release addressing two important issues:
+
+- **frida-node**: Fix keep-alive ThreadSafeFunction teardown. Use
+  `napi_release_threadsafe_function()` in keep-alive scenarios so that
+  pending microtasks have time to run before the libuv handle is dropped.
+  This prevents "unsettled top-level await" during teardown. Co-authored by
+  [@as0ler][], [@hsorbo][], and [@mrmacete][].
+
+- **barebone**: Ensure RustModule C ABI entrypoints survive garbage collection.
+  Newer Rust toolchains use `--gc-sections`, which strips unused sections.
+  We refactored `make_linker_script()` to scan the Rust source for symbols
+  intended to be visible, and emit `KEEP(*(.text.<symbol>))` directives so
+  those entrypoints are retained.
+
+
+[@as0ler]: https://x.com/as0ler
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje
