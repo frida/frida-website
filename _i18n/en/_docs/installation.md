@@ -48,7 +48,7 @@ $ cp /bin/cat /tmp/cat
 $ /tmp/cat
 {% endhighlight %}
 
-In another terminal, make a file example.py with the following contents:
+In another terminal, make a file `example.py` with the following contents:
 
 {% highlight py %}
 import frida
@@ -66,7 +66,7 @@ rpc.exports.enumerateModules = () => {
 script.on("message", on_message)
 script.load()
 
-print([m["name"] for m in script.exports.enumerate_modules()])
+print([m["name"] for m in script.exports_sync.enumerate_modules()])
 {% endhighlight %}
 
 If you are on GNU/Linux, issue:
