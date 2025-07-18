@@ -1,0 +1,71 @@
+---
+layout: news_item
+title: 'Frida 17.2.12 Released'
+date: 2025-07-18 10:32:31 +0200
+author: oleavr
+version: 17.2.12
+categories: [release]
+---
+
+We're excited to announce Frida 17.2.12, which brings preliminary support for
+running Gum without an operating system, significant enhancements to our
+Barebone backend, and various improvements and fixes.
+
+- android: Bumped `frida-java-bridge` in `system-server` to include a fix
+  for incorrect ART class spec offset detection. This prevents crashes caused
+  by `libart.so` being updated independently of the SDK version, which previously
+  led to offset mismatches. The fix now uses runtime detection via known classes
+  instead of SDK heuristics, improving reliability across Android updates.
+
+  **Massive thanks to [@AeonLucid][] for spearheading this work — a truly
+  heroic effort that brings rock-solid reliability to Frida’s Android support
+  in the face of ever-changing ART internals.**
+
+- gum: Added preliminary support for running without an operating system,
+  enabling Frida to run on bare-metal targets. The integrator overrides the
+  needed weak symbols with target-/firmware-specific ones. We have a
+  work-in-progress agent for XNU that lets us run JavaScript in Apple's
+  OS kernels.
+
+- barebone: Added support for APRR in the arm64 backend (thanks for the
+  pair-programming [@hsorbo][]).
+
+- barebone: Added support for R_AARCH64_PREL32 relocations (thanks [@hsorbo][]),
+  improving compatibility with more ARM64 binaries.
+
+- barebone: Implemented `Memory.protect()`, providing the ability to change
+  memory protection on bare-metal targets.
+
+- fruity: Sprayed Gadget's `r-x` pages before uploading to turn them into
+  debugger mappings (thanks to [@hsorbo][], [@mrmacete][], and [@as0ler][]),
+  fixing issues on newer hardware generations.
+
+- buffer: Added new methods: `read_bytes()`, `write_bytes()`, `write_int64()`,
+  `write_uint32()`, `write_int32()`, `write_uint16()`, `write_int16()`,
+  `write_uint8()`, `write_int8()`, extending Buffer's API for handling various
+  data types.
+
+- gumjs: Avoided regex for inline source map parsing to reduce stack usage,
+  improving stability on platforms with constrained stack sizes.
+
+- build: Added support for 'armv6kz-' prefixed toolchains (thanks
+  [@zetierhg][]), improving compatibility with more toolchains.
+
+- build: Fixed typings for Python < 3.9 (thanks [@oriori1703][]), ensuring
+  compatibility with older Python versions.
+
+- build: Special-cased `ld` script for FreeBSD linker to fix build issues
+  (thanks [@grimler][]), improving FreeBSD support.
+
+- devkit: Made symbol prefixing optional (thanks [@Hexploitable][]), allowing
+  consumers to choose whether to prefix third-party symbols to avoid clashes.
+
+
+[@AeonLucid]: https://x.com/AeonLucid
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje
+[@as0ler]: https://x.com/as0ler
+[@zetierhg]: https://github.com/zetier-hg
+[@oriori1703]: https://github.com/oriori1703
+[@grimler]: https://mastodon.social/@grimler
+[@Hexploitable]: https://x.com/Hexploitable
