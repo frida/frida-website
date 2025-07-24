@@ -1,0 +1,50 @@
+---
+layout: news_item
+title: 'Frida 17.2.14 Released'
+date: 2025-07-24 11:16:55 +0200
+author: oleavr
+version: 17.2.14
+categories: [release]
+---
+
+This release brings several improvements to the Cloak API and module handling,
+along with some essential updates and bug fixes. A special shout-out to
+[@AeonLucid][] for contributing to the Android support.
+
+- **android:** Updated `frida-java-bridge` in `system-server` to include the
+  improved ART offset lookup by [@AeonLucid][]. See [frida-java-bridge#362][]
+  for details.
+
+- **cloak:** Added support for `Art::GetOsThreadStat` on Android, addressing an
+  issue similar to [frida-core#500][], where Zygote waits for the process to
+  become single-threaded before continuing, otherwise it crashes. This change
+  accommodates the new usage of `art::GetOsThreadStat`. (Thanks to
+  [@AeonLucid][])
+
+- **cloak:** Plugged a memory leak in `ThreadCountCloaker.dispose()`, where we
+  were failing to chain up to `GObject.dispose()`.
+
+- **module:** Added an optional `get_version()` virtual function.
+
+- **module:** Made most interface methods optional to reduce the amount of
+  boilerplate required for Barebone integrations.
+
+- **darwin:** Implemented `Module.get_version()`, exposing the
+  `LC_SOURCE_VERSION` when available.
+
+- **darwin-module:** Added `source-version` property to expose
+  `LC_SOURCE_VERSION` if present.
+
+- **darwin-module:** Added support for non-Darwin in-memory usage, e.g., inside
+  XNU.
+
+- **gumjs:** Exposed `Module#version` to JavaScript.
+
+- **barebone:** Added support for registering modules.
+
+- **compiler:** Bumped `@types/frida-gum` to 19.0.1.
+
+
+[@AeonLucid]: https://x.com/AeonLucid
+[frida-java-bridge#362]: https://github.com/frida/frida-java-bridge/pull/362
+[frida-core#500]: https://github.com/frida/frida-core/issues/500
