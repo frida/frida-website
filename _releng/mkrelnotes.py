@@ -68,7 +68,7 @@ def generate_release_notes(summary: dict, example_note: str, client) -> str:
         ]
     )
     completion = client.chat.completions.create(
-        model="o1-preview",
+        model="o3",
         messages=[
             {
                 "role": "user",
