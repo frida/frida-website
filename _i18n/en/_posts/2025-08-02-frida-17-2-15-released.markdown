@@ -1,0 +1,35 @@
+---
+layout: news_item
+title: 'Frida 17.2.15 Released'
+date: 2025-08-02 09:42:58 +0200
+author: oleavr
+version: 17.2.15
+categories: [release]
+---
+
+This one has been brewing for a while, and a whole bunch of goodies just
+landed:
+
+- darwin / fruity: Support iOS 26 through dual-mapping, and enable injection on
+  palera1n. Massive shout-out to [@mrmacete][] for driving this effort.
+- android: Bump frida-java-bridge in system-server to pick up [@AeonLucid][]’s
+  ART offset-lookup improvements.
+- platform: Add preliminary visionOS support. Huge thanks to [@demonguy][] for
+  pioneering this brand-new frontier.
+- freebsd: Bring x86 (32-bit) to the party. Hat-tip to [@saruman9][] for the
+  implementation.
+- threads: Wire up NEON register access on ARM/arm64 for both Linux and Darwin
+  – kudos to [@londek][] for the patch-set.
+- barebone: Add support for the uint type in NativeFunction / NativeCallback,
+  and gracefully handle the MMU being disabled.
+- buffer: Fix BufferReader.read_pointer(), where we mistakenly expected an
+  offset to be passed in.
+
+Enjoy!
+
+
+[@mrmacete]: https://x.com/bezjaje
+[@AeonLucid]: https://x.com/AeonLucid
+[@demonguy]: https://github.com/demonguy
+[@saruman9]: https://github.com/saruman9
+[@londek]: https://github.com/londek
