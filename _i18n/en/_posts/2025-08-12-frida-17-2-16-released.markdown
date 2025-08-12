@@ -1,0 +1,27 @@
+---
+layout: news_item
+title: 'Frida 17.2.16 Released'
+date: 2025-08-12 10:15:55 +0200
+author: oleavr
+version: 17.2.16
+categories: [release]
+---
+
+Fresh maintenance release bringing a handful of fixes and quality-of-life
+improvements across the board:
+
+- gumjs: Ensure that `onLeave` is only invoked after its matching `onEnter`
+  actually ran, eliminating unpredictable behaviour when hooks are attached
+  mid-call. Thanks [@mrmacete][]!
+- darwin-module: Swap-hook the `lldb_image_notifier` pointer in dyld’s “all
+  image infos” to keep the module registry functional even on modern iOS
+  devices where the notifier is just one instruction long. Cheers
+  [@mrmacete][]!
+- barebone: Add `try_remap_writable_pages()`.
+- barebone: Allow overriding `query_rwx_support()` to tailor RWX capability
+  probing to exotic platforms.
+- frida-node: Honour `package-lock.json` during the TypeScript stage to keep the
+  JS dependency tree fully deterministic.
+
+
+[@mrmacete]: https://x.com/bezjaje
