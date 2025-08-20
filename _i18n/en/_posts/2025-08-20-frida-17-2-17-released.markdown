@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 17.2.17 Released'
+date: 2025-08-20 12:07:29 +0200
+author: oleavr
+version: 17.2.17
+categories: [release]
+---
+
+Tiny release, big impact: these two one-liner fixes from [@mrmacete][] make sure
+Interceptor behaves correctly on newer iOS versions.
+
+- code-allocator: Use `pc` for slice address checks so `is_near` and
+  `is_aligned` stay in sync even when `data` and `pc` differ, e.g. on iOS 26
+  Thanks [@mrmacete][]!
+
+
+[@mrmacete]: https://x.com/bezjaje
