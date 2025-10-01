@@ -457,8 +457,8 @@ Objects returned by e.g.
     Frida.
 
 {% highlight js %}
-const f = Module.getExportByName('libcommonCrypto.dylib',
-    'CCCryptorCreate');
+const commonCrypto = Process.getModuleByName('libcommonCrypto.dylib');
+const f = commonCrypto.getExportByName('CCCryptorCreate');
 Interceptor.attach(f, {
   onEnter(args) {
     console.log('CCCryptorCreate called from:\n' +
@@ -758,7 +758,8 @@ Memory.protect(ptr('0x1234'), 4096, 'rw-');
     For example:
 
 {% highlight js %}
-const getLivesLeft = Module.getExportByName('game-engine.so', 'get_lives_left');
+const gameEngine = Process.getModuleByName('game-engine.so');
+const getLivesLeft = gameEngine.getExportByName('get_lives_left');
 const maxPatchSize = 64; // Do not write out of bounds, may be a temporary buffer!
 Memory.patchCode(getLivesLeft, maxPatchSize, code => {
   const cw = new X86Writer(code, { pc: getLivesLeft });
@@ -1089,8 +1090,8 @@ const first = matches[0];
     with [`Thread.backtrace()`](#thread-backtrace):
 
 {% highlight js %}
-const f = Module.getExportByName('libcommonCrypto.dylib',
-    'CCCryptorCreate');
+const commonCrypto = Process.getModuleByName('libcommonCrypto.dylib');
+const f = commonCrypto.getExportByName('CCCryptorCreate');
 Interceptor.attach(f, {
   onEnter(args) {
     console.log('CCCryptorCreate called from:\n' +
@@ -1941,7 +1942,8 @@ smt.reset();
     For example:
 
 {% highlight js %}
-Interceptor.attach(Module.getExportByName('libc.so', 'read'), {
+const libc = Process.getModuleByName('libc.so');
+Interceptor.attach(libc.getExportByName('read'), {
   onEnter(args) {
     this.fileDescriptor = args[0].toInt32();
   },
@@ -1974,7 +1976,7 @@ Interceptor.attach(Module.getExportByName('libc.so', 'read'), {
     For example:
 
 {% highlight js %}
-Interceptor.attach(Module.getExportByName(null, 'read'), {
+Interceptor.attach(Module.getGlobalExportByName('read'), {
   onEnter(args) {
     console.log('Context information:');
     console.log('Context  : ' + JSON.stringify(this.context));
@@ -2054,7 +2056,8 @@ Interceptor.attach(Module.getExportByName(null, 'read'), {
     Here's an example:
 
 {% highlight js %}
-const openPtr = Module.getExportByName('libc.so', 'open');
+const libc = Process.getModuleByName('libc.so');
+const openPtr = libc.getExportByName('open');
 const open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
 Interceptor.replace(openPtr, new NativeCallback((pathPtr, flags) => {
   const path = pathPtr.readUtf8String();
