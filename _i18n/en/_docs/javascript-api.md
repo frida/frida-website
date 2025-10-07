@@ -4464,7 +4464,7 @@ const MyWeirdTrustManager = Java.registerClass({
     For example:
 
 {% highlight js %}
-const libc = Module.findBaseAddress('libc.so');
+const libc = Process.getModuleByName('libc.so').base;
 console.log(hexdump(libc, {
   /* address: ptr('0x1000'), -- to override the base address */
   offset: 0,

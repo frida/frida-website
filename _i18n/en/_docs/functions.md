@@ -379,9 +379,9 @@ send('Allocating memory and writing bytes...');
 const st = Memory.alloc(16);
 // Now we need to fill it - this is a bit blunt, but works...
 st.writeByteArray([0x02, 0x00, 0x13, 0x89, 0x7F, 0x00, 0x00, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30]);
-// Module.getExportByName() can find functions without knowing the source
+// Module.getGlobalExportByName() can find functions without knowing the source
 // module, but it's slower, especially over large binaries! YMMV...
-Interceptor.attach(Module.getExportByName(null, 'connect'), {
+Interceptor.attach(Module.getGlobalExportByName('connect'), {
     onEnter(args) {
         send('Injecting malicious byte array:');
         args[1] = st;
@@ -407,7 +407,7 @@ script.load()
 sys.stdin.read()
 {% endhighlight %}
 
-Note that this script demonstrates how the `Module.getExportByName()` API can
+Note that this script demonstrates how the `Module.getGlobalExportByName()` API can
 be used to find any exported function by name in our target. If we can supply a
 module then it will be faster on larger binaries, but that is less critical
 here.

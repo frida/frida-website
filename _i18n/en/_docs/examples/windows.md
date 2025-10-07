@@ -21,7 +21,7 @@ def main(target_process):
     script = session.create_script("""
 
     // Find base address of current imported jvm.dll by main process fledge.exe
-    const baseAddr = Module.findBaseAddress('Jvm.dll');
+    const baseAddr = Process.getModuleByName('Jvm.dll').base;
     console.log('Jvm.dll baseAddr: ' + baseAddr);
 
     const setAesDecrypt0 = resolveAddress('0x1FF44870'); // Here we use the function address as seen in our disassembler
