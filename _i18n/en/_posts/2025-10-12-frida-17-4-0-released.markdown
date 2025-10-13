@@ -29,7 +29,7 @@ Time for another feature-packed release! Highlights:
 - android: Update `system-server` to `frida-java-bridge` 7.0.9. Changes:
   - Fix Java.deoptimize\*() and Java.backtrace() on Android 16. Thanks
     [@hsorbo][]!
-  - Improce typings. Thanks [@yotamN][]!
+  - Improve typings. Thanks [@yotamN][]!
 
 - host-session: Add cross-backend communication, so devices discovered through
   one backend are now available to internals in another.
