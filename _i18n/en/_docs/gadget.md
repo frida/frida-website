@@ -39,7 +39,7 @@ changes. Example:
 ```
 lib
 └── arm64-v8a
-    ├── libgadget.config.so
+    ├── libgadget.config
     ├── libgadget.so
 ```
 For more information, please check
