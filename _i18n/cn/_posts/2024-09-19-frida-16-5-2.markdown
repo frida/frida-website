@@ -1,0 +1,21 @@
+---
+layout: news_item
+title: 'Frida 16.5.2 发布'
+date: 2024-09-19 00:01:01 +0200
+author: oleavr
+version: 16.5.2
+categories: [release]
+---
+
+快速的错误修复版本，旨在进一步改进我们的 Fruity 后端，[@hsorbo][] 和我倒满咖啡，敲定了以下修复和调整：
+
+- fruity: 当隧道设置失败时重用 NCM 对等体。
+- fruity: 处理未与任何人配对的 iDevice。
+- fruity: 处理 USB TunnelConnection 掉线。
+- fruity: 修复不可靠的模式切换激活。
+- fruity: 修复使用我们的 NCM 驱动程序时的拆卸。
+- fruity: 修复非 macOS 的 find_tunnel() 中的错误编组。
+- fruity: 宣传我们的 RemoteXPC 协议支持。
+
+
+[@hsorbo]: https://twitter.com/hsorbo

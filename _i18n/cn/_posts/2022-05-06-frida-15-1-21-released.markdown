@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 15.1.21 发布'
+date: 2022-05-06 20:25:35 +0200
+author: oleavr
+version: 15.1.21
+categories: [release]
+---
+
+这次唯一的更改是针对 i/macOS 的一个重要错误修复，其中导入并不总是能被解析。感谢 [@mrmacete][] 的这个 [fix][]。
+
+享受吧！
+
+
+[@mrmacete]: https://twitter.com/bezjaje
+[fix]: https://github.com/frida/frida-gum/commit/5582d1f922368ccf0f8c7576be1717e14d64ced0

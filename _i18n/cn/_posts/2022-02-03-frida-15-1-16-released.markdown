@@ -1,0 +1,21 @@
+---
+layout: news_item
+title: 'Frida 15.1.16 发布'
+date: 2022-02-03 22:33:58 +0100
+author: oleavr
+version: 15.1.16
+categories: [release]
+---
+
+这次我们为您带来了两个错误修复和一个新功能，正好赶上周末。
+
+Gum 过去依赖于 GIO，但在上一版本中删除了该依赖项。该更改的不幸结果是 agent 和 gadget 不再拆除 GIO，因为它们依赖于 Gum 的拆除代码来执行此操作。这意味着我们留下了线程，这绝不是一件好事。所以这是第一个错误修复。
+
+同样在上一版本中，在我们的 Python 绑定中，setup.py 经历了一些重大更改。我们改进了 .egg 下载逻辑，但设法破坏了本地 .egg 逻辑。这是第二个错误修复。
+
+关于新功能。对于那些使用 Gum 的 JavaScript 绑定 GumJS 的人，我们现在支持 `console.count()` 和 `console.countReset()`。这些由浏览器和 Node.js 实现，可以轻松计算给定标签被看到的次数。感谢 [@yotamN][] 的这一美好贡献。
+
+享受吧！
+
+
+[@yotamN]: https://github.com/yotamN

@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 15.1.22 发布'
+date: 2022-05-09 11:20:25 +0200
+author: oleavr
+version: 15.1.22
+categories: [release]
+---
+
+事实证明，Gum 在 15.1.15 中经历的大手术引入了一些错误处理回归。Vala 代码抛出的错误与 frida-core 实际预期的错误不匹配，这导致进程崩溃，而不是将友好的错误冒泡到例如 Python 绑定。这现在终于得到了解决。我希望我们能早点注意到它，但是 —— 我们显然在这个领域缺乏测试覆盖率。
+
+除了错误处理修复之外，我们还包括一个针对增量构建问题的构建系统 [fix][]。感谢 [Londek][] 的这一美好贡献。
+
+享受吧！
+
+
+[fix]: https://github.com/frida/frida/commit/6a717d636a87c501327c77a70080b495556c8d25
+[Londek]: https://github.com/londek

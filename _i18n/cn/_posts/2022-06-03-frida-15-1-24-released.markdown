@@ -1,0 +1,15 @@
+---
+layout: news_item
+title: 'Frida 15.1.24 发布'
+date: 2022-06-03 22:01:41 +0200
+author: oleavr
+version: 15.1.24
+categories: [release]
+---
+
+这次只有一个更改，但对于那些在 Android 上使用 Frida 的人来说，这是一个重要的更改：我们的 Java 方法 hook 实现在某些情况下会崩溃，因为我们会选择一个与生成的代码冲突的暂存寄存器。这现在已 [fixed][]。
+
+享受吧！
+
+
+[fixed]: https://github.com/frida/frida-java-bridge/commit/d4d2a42ef2f370487a88d108e966de30f2a48322

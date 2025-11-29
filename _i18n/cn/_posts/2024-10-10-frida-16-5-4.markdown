@@ -1,0 +1,10 @@
+---
+layout: news_item
+title: 'Frida 16.5.4 发布'
+date: 2024-10-10 22:08:02 +0200
+author: oleavr
+version: 16.5.4
+categories: [release]
+---
+
+上一版本的二进制文件没有发布，因为 frida-node 的 NAN 依赖项被一个本不该升级它的脚本升级了，而且最新的代码破坏了 Electron 支持。此版本将其回滚，并同时将 frida.Compiler 的 @types/frida-gum 升级到 18.7.1。

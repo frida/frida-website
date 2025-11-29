@@ -1,0 +1,37 @@
+---
+layout: news_item
+title: 'Frida 17.2.14 发布'
+date: 2025-07-24 11:16:55 +0200
+author: oleavr
+version: 17.2.14
+categories: [release]
+---
+
+此版本带来了对 Cloak API 和模块处理的若干改进，以及一些必要的更新和错误修复。特别感谢 [@AeonLucid][] 为 Android 支持做出的贡献。
+
+- **android:** 更新了 `system-server` 中的 `frida-java-bridge` 以包含 [@AeonLucid][] 改进的 ART 偏移查找。详见 [frida-java-bridge#362][]。
+
+- **cloak:** 在 Android 上添加了对 `Art::GetOsThreadStat` 的支持，解决了类似于 [frida-core#500][] 的问题，即 Zygote 在继续之前等待进程变为单线程，否则会崩溃。此更改适应了 `art::GetOsThreadStat` 的新用法。(感谢 [@AeonLucid][])
+
+- **cloak:** 堵住了 `ThreadCountCloaker.dispose()` 中的内存泄漏，我们未能链接到 `GObject.dispose()`。
+
+- **module:** 添加了一个可选的 `get_version()` 虚拟函数。
+
+- **module:** 使大多数接口方法可选，以减少 Barebone 集成所需的样板代码量。
+
+- **darwin:** 实现了 `Module.get_version()`，在可用时公开 `LC_SOURCE_VERSION`。
+
+- **darwin-module:** 添加了 `source-version` 属性以公开 `LC_SOURCE_VERSION`（如果存在）。
+
+- **darwin-module:** 添加了对非 Darwin 内存中使用的支持，例如在 XNU 内部。
+
+- **gumjs:** 向 JavaScript 公开了 `Module#version`。
+
+- **barebone:** 添加了对注册模块的支持。
+
+- **compiler:** 将 `@types/frida-gum` 升级到 19.0.1。
+
+
+[@AeonLucid]: https://x.com/AeonLucid
+[frida-java-bridge#362]: https://github.com/frida/frida-java-bridge/pull/362
+[frida-core#500]: https://github.com/frida/frida-core/issues/500

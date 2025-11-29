@@ -1,0 +1,81 @@
+---
+layout: news_item
+title: 'Frida 15.1.18 发布'
+date: 2022-05-04 19:43:52 +0200
+author: oleavr
+version: 15.1.18
+categories: [release]
+---
+
+这次到处都有很多改进。许多稳定性改进。
+
+我继续改进我们的 CI 和构建系统基础设施。QNX 和 MIPS 支持在长期回归后起死回生。由于缺乏 CI 覆盖，这些问题一直未被注意到。我们现在有了 CI 来确保这种情况不再发生。
+
+请务必查看下面的变更日志，以全面了解新内容。
+
+享受吧！
+
+### 变更日志
+
+- gadget: 修复 Gadget 在等待 resume() 时持有其内部锁并阻塞动态链接器时的死锁。在这种情况下，我们在阻塞时处理 JS MainContext，而网络 I/O 由 Gadget 线程处理。因为 Stalker 可能会在其 class_init() 期间与动态链接器交互，所以我们必须确保它发生在 JS 线程而不是网络 I/O 线程中。
+- exit-monitor: 修复 fork() 未被注意到时的死锁。
+- darwin: 在 Corellium 上运行时跳过伪签名。
+- darwin: 修复与旧版 iOS SDK 的兼容性。
+- darwin-backtracer: 修复循环变量回绕。
+- darwin-mapper: 修复带有链式修复的足迹预算。
+- linux: 修复 Process.modify_thread() 等待逻辑。
+- linux: 在现代 glibc 系统上完全解析 libc。
+- linux: 移除 Linjector 清理延迟。
+- ios: 添加 config.mk 选项以在没有越狱支持代码的情况下构建，以便与例如 TestFlight 兼容。
+- ios: 消除对外部 Mach VM 头文件的依赖。
+- android: 修复 Android/x86 上的 unw_getcontext()，这会导致例如 Thread.backtrace() 期间的堆栈损坏。
+- freebsd: 为方便起见添加 BSDmakefile。
+- freebsd: 提高 gum_clear_cache() 的可靠性。
+- freebsd: 改进程序路径查询 API。
+- freebsd: 当 MAP_32BIT 失败时再试一次。
+- mips: 修复由于缺乏 CI 而未被注意到的长期回归。
+- qnx: 修复由于缺乏 CI 而未被注意到的长期回归。同时改进 QNX 后端。
+- posix: 如果 madvise() 不可用，则使用 posix_madvise()。
+- stalker: 检测 glibc、Android 和 FreeBSD 上的线程退出实现。
+- stalker: 修复 x86 后端中的 Linux clone() 支持。
+- stalker: 修复 JECXZ/JRCXZ x86 指令的回补。
+- stalker: 修复 x86 后端中的两个 *pc* vs *code* 混淆。
+- stalker: 优化 x86 后端中的 Linux 系统调用逻辑。
+- stalker: 将展开支持移至 API 后面。
+- stalker: 简化并修复 x86 展开 Interceptor 逻辑。
+- stalker: 在 arm64 后端实现展开 hook。感谢 [@s1341][]！
+- stalker: 添加回补查询支持。
+- stalker: 添加对重新编译块的支持。
+- process: 添加 resolve_module_pointer()。
+- elf-module: 改进 DT_SYMTAB 条目计数检测。
+- elf-module: 跳过具有悬空名称引用的符号。
+- symbolutil-libdwarf: 添加对 DWARF v5 的支持。
+- libdwarf: 向后移植上游修复以处理 DW_FORM_line_strp。
+- dbghelp-backtracer: 提高 32 位 x86 上的可靠性。
+- arm-relocator: 简化 PC 相对 *LDR* 处理。
+- arm-writer: 添加 call_reg_with_arguments*()。
+- arm-writer: 处理带有超过四个参数的 put_call*()。
+- thumb-writer: 处理 put_call*() 堆栈对齐。
+- arm64-writer: 优化 *LDR reg, #0*。
+- x86-relocator: 添加 *input_pc* 以支持离线使用。
+- x86-relocator: 修复 RIP 相对快速路径中的 PC 与输出混淆。
+- x86-relocator: 改进 RIP 偏移修复逻辑。
+- bounds-checker: 回退到匹配的堆 API。
+- gumjs: 修复 CModule 内存分配逻辑。
+- gumjs: 修复带有内部 TinyCC 的 CModule 运行时。
+- gumjs: 将构建时 Python 要求降低到 3.7。
+- heap-api: 改进非 Windows 操作系统上的 libc 检测。
+- heap-api: 在列表中包含静态 MSVC CRT API。
+- gum: 改进 Meson 构建系统以支持 MSVC。
+- gum: 改进 Gum vapis 以公开更多 API。
+- core: 修复某些语言环境下的构建失败，方法是在从 modulate.py 调用工具时关闭本地化。
+- python: 修复由 get_max_argument_count() 中不正确的引用计数引起的稳定性问题。
+- python: 修复 get_index_url_from_pip()。感谢 [@X5tar][]！
+- python: 修复 Python < 3.6 上的索引 URL 检索。感谢 [@serfend][]！
+- node: 发布 Electron 18 而不是 16 的预构建。
+- ci: 添加 Linux/MIPS, FreeBSD/x86_64, FreeBSD/arm64, 和 QNX/armeabi。对于 Gum，还添加 Windows/x86_64, macOS/x86_64, Linux/x86, Linux/x86_64, iOS/arm64, Android/x86, Android/arm, 和 Android/arm64。
+
+
+[@s1341]: https://github.com/s1341
+[@X5tar]: https://github.com/X5tar
+[@serfend]: https://github.com/serfend

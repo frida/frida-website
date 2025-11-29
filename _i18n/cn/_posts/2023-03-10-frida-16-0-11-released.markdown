@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 16.0.11 发布'
+date: 2023-03-10 21:21:55 +0100
+author: oleavr
+version: 16.0.11
+categories: [release]
+---
+
+这次只有几个错误修复：
+
+- darwin: 修复在非 RWX 系统上暂停线程时的死锁。感谢 [@mrmacete][]！
+- darwin: 修复映射零大小段的问题。感谢 [@comex][]！
+- linux: 改进 Gum 以支持没有运行时链接器的程序。
+- linux: 修复 Gum.Linux API 的错误传播。
+
+
+[@mrmacete]: https://twitter.com/bezjaje
+[@comex]: https://twitter.com/comex

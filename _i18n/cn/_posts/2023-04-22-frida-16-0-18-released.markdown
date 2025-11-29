@@ -1,0 +1,13 @@
+---
+layout: news_item
+title: 'Frida 16.0.18 发布'
+date: 2023-04-22 00:05:06 +0200
+author: oleavr
+version: 16.0.18
+categories: [release]
+---
+
+只是一个快速的错误修复版本，恢复了对具有 ARM 仿真的 Android x86/x86_64 系统的支持。这仍然是我们 CI 中的盲点，我在开发新的 Linux 注入器时完全忘记了它。感谢 [@stopmosk][] 及时报告并帮助分类此回归。
+
+
+[@stopmosk]: https://github.com/stopmosk

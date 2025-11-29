@@ -1,0 +1,27 @@
+---
+layout: news_item
+title: 'Frida 17.2.15 发布'
+date: 2025-08-02 09:42:58 +0200
+author: oleavr
+version: 17.2.15
+categories: [release]
+---
+
+这个版本已经酝酿了一段时间，一大堆好东西刚刚落地：
+
+- darwin / fruity: 通过双重映射支持 iOS 26，并在 palera1n 上启用注入。非常感谢 [@mrmacete][] 推动这项工作。
+- android: 升级 system-server 中的 frida-java-bridge 以获取 [@AeonLucid][] 的 ART 偏移查找改进。
+- platform: 添加初步的 visionOS 支持。非常感谢 [@demonguy][] 开拓这个全新的领域。
+- freebsd: 将 x86 (32-bit) 带入派对。感谢 [@saruman9][] 的实现。
+- threads: 在 Linux 和 Darwin 的 ARM/arm64 上连接 NEON 寄存器访问 – 感谢 [@londek][] 的补丁集。
+- barebone: 在 NativeFunction / NativeCallback 中添加对 uint 类型的支持，并优雅地处理 MMU 被禁用的情况。
+- buffer: 修复 BufferReader.read_pointer()，我们错误地期望传入偏移量。
+
+享受吧！
+
+
+[@mrmacete]: https://x.com/bezjaje
+[@AeonLucid]: https://x.com/AeonLucid
+[@demonguy]: https://github.com/demonguy
+[@saruman9]: https://github.com/saruman9
+[@londek]: https://github.com/londek

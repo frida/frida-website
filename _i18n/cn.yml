@@ -1,0 +1,54 @@
+- title: 入门指南
+  docs:
+  - home
+  - quickstart
+  - installation
+  - modes
+  - gadget
+  - hacking
+  - presentations
+
+- title: 教程
+  docs:
+  - functions
+  - messages
+  - ios
+  - android
+
+- title: 示例
+  docs:
+  - examples/windows
+  - examples/macos
+  - examples/linux
+  - examples/ios
+  - examples/android
+  - examples/javascript
+
+- title: 工具
+  docs:
+  - frida-cli
+  - frida-ps
+  - frida-trace
+  - frida-discover
+  - frida-ls-devices
+  - frida-kill
+
+- title: API 参考
+  docs:
+  - javascript-api
+  - c-api
+  - swift-api
+
+- title: 其他
+  docs:
+  - best-practices
+  - troubleshooting
+  - building
+  - footprint
+
+- title: 关于
+  docs:
+  - contributing
+  - gsoc-ideas-2015
+  - gsod-ideas-2023
+  - history

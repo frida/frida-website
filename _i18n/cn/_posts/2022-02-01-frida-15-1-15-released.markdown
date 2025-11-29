@@ -1,0 +1,193 @@
+---
+layout: news_item
+title: 'Frida 15.1.15 发布'
+date: 2022-02-01 00:46:40 +0100
+author: oleavr
+version: 15.1.15
+categories: [release]
+---
+
+此版本中有许多令人兴奋的位。让我们直接潜入。
+
+## FreeBSD
+
+我们的雄心是支持我们的用户关心的所有平台。在这个版本中，我想播下第一颗种子，将其扩展到 BSD。所以我现在很高兴地宣布 Frida 终于也支持 FreeBSD 了！🎉
+
+目前我们只支持 x86_64 和 arm64，但如果有任何人有兴趣提供帮助，扩展到其余架构是很简单的。
+
+移植工作导致了一些架构上的改进，并总体上提高了基于 ELF 的操作系统的健壮性。它还给了我一些关于如何改进我们的 Linux 注入器以支持注入容器的想法，这是我以后想做的事情。
+
+## Stalker 性能
+
+早在 15.1.10 中，Stalker 在 x86/64 上获得了巨大的性能提升。在这个版本中，同样的想法已应用于我们的 arm64 后端。这包括改进的局部性、更好的内联缓存等。有人告诉我，那时我们能够在 FuzzBench 中击败或匹配 QEMU，现在我们在 arm64 上也应该处于良好状态。我们还设法在改进稳定性的同时做到了这一点。令人兴奋！
+
+## GObject Introspection
+
+早在 14.1 中，[@meme][] 就为 [GObject Introspection][] 连接了构建系统支持。这意味着我们拥有所有 API 的机器可读描述，这使我们可以利用现有的语言 [binding][] 基础设施，甚至免费获得 [auto-generated reference docs][]。
+
+此版本向 Gum 添加了大量注释和文档字符串，我们现在比以往任何时候都更接近拥有自动生成的参考文档。在发布生成的文档之前还有一些工作要做，但并不遥远。如果有人有兴趣参与，请查看 Gum 的 [CI][] 并查看 GObject Introspection 输出的警告。
+
+## Meson 子项目支持
+
+我非常喜欢 Meson 构建系统的一点是它对 [subprojects][] 的支持。Gum 现在支持作为子项目使用。你们中的一些人可能已经通过其 [devkit binaries][] 使用 Gum，现在您有了一个甚至更简单的全新选项。
+
+与使用 devkit 相比，主要优势在于所有内容都是从源代码构建的，因此很容易试验代码。
+
+假设我们有一个 `hello.c` 文件，其中包含：
+
+{% highlight c %}
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <gum.h>
+#include <stdio.h>
+#include <unistd.h>
+
+static int (* open_impl) (const char * path, int oflag, ...);
+static int replacement_open (const char * path, int oflag, ...);
+
+int
+main (int argc,
+      char * argv[])
+{
+  gum_init ();
+
+  GumInterceptor * interceptor = gum_interceptor_obtain ();
+
+  gum_interceptor_begin_transaction (interceptor);
+
+  open_impl = dlsym (RTLD_DEFAULT, "open");
+  gum_interceptor_replace (interceptor, open_impl, replacement_open,
+      NULL, NULL);
+
+  gum_interceptor_end_transaction (interceptor);
+
+  close (open_impl ("/etc/hosts", O_RDONLY));
+  close (open_impl ("/etc/fstab", O_RDONLY));
+
+  return 0;
+}
+
+static int
+replacement_open (const char * path,
+                  int oflag,
+                  ...)
+{
+  printf ("!!! open(\"%s\", 0x%x)\n", path, oflag);
+
+  return open_impl (path, oflag);
+}
+{% endhighlight %}
+
+要构建它，我们可以在它旁边创建一个 `meson.build`，内容如下：
+
+{% highlight meson %}
+project('hello', 'c')
+gum = dependency('frida-gum-1.0')
+executable('hello', 'hello.c', dependencies: [gum])
+{% endhighlight %}
+
+并创建包含以下内容的 `subprojects/frida-gum.wrap`：
+
+{% highlight ini %}
+[wrap-git]
+url = https://github.com/frida/frida-gum.git
+revision = main
+depth = 1
+
+[provide]
+dependency_names = frida-gum-1.0, frida-gum-heap-1.0, frida-gum-prof-1.0, frida-gumjs-1.0
+{% endhighlight %}
+
+如果您尚未安装 Meson 和 Ninja，请运行 `pip install meson ninja`。
+
+然后，构建并运行：
+
+{% highlight sh %}
+$ meson setup build
+$ meson compile -C build
+$ ./build/hello
+!!! open("/etc/hosts", 0x0)
+!!! open("/etc/fstab", 0x0)
+{% endhighlight %}
+
+## 足迹
+
+我们付出了很多努力来确保 Frida 可以从桌面一直扩展到嵌入式系统。在这个版本中，我花了一些时间分析我们的二进制足迹，并基于此，我最终进行了一系列调整和构建选项，以减少我们的足迹。
+
+我很好奇我可以让仅使用 Interceptor 的 [Gum Hello World][] 程序变得多小。最终结果是在带有 Thumb 指令的 32 位 ARM 上测量的，其中 Gum 及其依赖项是静态链接的，唯一的外部依赖项是系统的 libc。
+
+结果小至 55K (!)，这让我非常兴奋。我所做的是在 Gum、GLib 和 Capstone 中引入新的构建选项。对于 Gum，我们现在支持“diet”模式，在这种模式下，我们不使用 GObject 并仅提供纯 C API。这意味着它不支持 GObject Introspection 和花哨的语言绑定。这也意味着我们不提供完整的 Gum API，但这可以在将来扩展。
+
+同样，对于 GLib，也有一种新的“diet”模式，归结为禁用其切片分配器、调试功能以及其他一些类似的微小调整。
+
+至于 Capstone，我最终引入了一个新的“profile”选项，可以设置为“tiny”。这样做的结果是 Capstone 仅了解足以确定每条指令长度的指令集，并提供有关位置相关指令的一些详细信息。这个想法是只支持我们的 Relocator 实现所需要的，因为它们在 Interceptor 和 Stalker 背后完成了大部分繁重的工作。
+
+虽然我不建议使用这些构建选项，除非您真的需要那么小的足迹，但了解什么是可能的还是很好的。我们还提供其他不太极端的选项。在我们的 [footprint docs][] 中阅读更多内容。
+
+## 多重构建系统的诅咒
+
+只要 Frida 存在，一直困扰我的一件事是，构建 Frida 涉及处理多个构建系统。虽然我们当然试图将这种复杂性隐藏在 scripts/makefiles 后面，但我们不可避免地会有不快乐的用户，他们发现自己试图弄清楚为什么 Frida 没有为他们构建。
+
+有些人也有兴趣为稍微不同的 libc、工具链或其他什么交叉编译 Frida。他们甚至可能希望添加对我们尚不支持的操作系统的支持。当我们意识到他们需要处理四个不同的构建系统时，我们很可能会让他们失去动力：Meson、autotools、自定义 Perl 脚本 (OpenSSL) 和 GN (V8)。
+
+由于我们是 Meson 的快乐用户，我的目标是“Mesonify all the things!”。在这个版本中，我们终于达到了几乎所有必需的依赖项都使用 Meson 构建的地步。唯一的例外是 V8，但我们希望有一天也能用 Meson 构建它。（来自未来的剧透：Frida 16 将带我们到达那里！）
+
+## EOF
+
+还有很多其他令人兴奋的更改，所以一定要查看下面的变更日志。
+
+享受吧！
+
+### 变更日志
+
+- 添加对 FreeBSD 的支持。
+- 添加对 ARMv4 的支持，用于检测旧的嵌入式系统。
+- 添加用于减少二进制足迹的构建选项（请参阅 config.mk）。
+- 调整 Capstone 和 GLib 以启用更小的二进制足迹。
+- droidy: 添加 AXML 解码器。感谢 [@meme][]！
+- windows: 修复对 libffi-frames 的 dbghelp backtracer 支持。
+- linux: 修复与新 glibc 版本的兼容性。
+- linux: 安装资产时仅使用一个 frida-helper。
+- qnx: 关闭注入器时删除临时文件。
+- core: 取消 agent 拆除时堵塞泄漏。
+- gumjs: 修复返回 *null* 的 RPC 调用的处理。
+- interceptor: 在 x86 上需要时使用“jumbo”-JMP，当无法分配可从“JMP <imm32>”到达的内存时。
+- interceptor: 生成可变大小的 x86 NOP 填充。
+- stalker: 改进 arm64 后端的性能，通过应用最近用于优化 x86/64 后端的想法 —— 例如改进的局部性、更好的内联缓存等。
+- stalker: 修复零大小 freeze/thaw() 的处理。
+- stalker: 重做 x86 PLT 排除代码以避免 stalking 期间的重入问题。
+- stalker: 不要求存在 C++ 运行时。
+- arm-writer: 添加 put_bl_reg(), put_call_reg()。
+- arm-writer: 修复 put_call_address*() 中的寄存器破坏。
+- arm64-reader: 公开 disassemble_instruction_at()。
+- arm64-writer: 修复混合宽度文字的处理。
+- arm64-writer: 修复 TBZ/TBNZ 编码。
+- arm64-writer: 修复 32 位系统上的 put_and_reg_reg_imm()。
+- arm64-writer: 添加 put_{ldr,str}_reg_reg_offset_mode()。
+- elf-module: 公开更多细节，添加对离线模式的支持，添加 Vala 绑定。
+- exceptor: 为异常处理程序恢复添加 reset()。
+- gum: 添加大量 GObject Introspection 注释和 API 文档。
+- gum: 添加对作为 Meson 子项目使用的支持。
+- gum: 将 Meson 构建系统移植到 Windows。
+- gum: 消除 GIO 依赖。
+- gum: 添加 diet 模式，允许使用 Interceptor 的“Hello World” C 程序在带有 Thumb 指令的 32 位 ARM 上小至 55K。
+- gum: 添加 CI。感谢 [@meme][]！
+- 通过许多可移植性改进改进构建系统。
+- 使用 Meson 构建 elfutils, libiconv, libdwarf, libunwind, openssl, xz。
+- 升级依赖项: capstone, elfutils, libdwarf, libunwind。
+- 发布 Fedora 35 而不是 34 的包。
+- python: 使用 PEP 503 而不是 PyPI xmlrpc。感谢 [@GalaxySnail][]！
+- python: 修复 Windows 上对 Python >= 3.10 的支持。
+
+
+[GObject Introspection]: https://gi.readthedocs.io/en/latest/
+[binding]: https://gi.readthedocs.io/en/latest/users.html
+[auto-generated reference docs]: https://gitlab.gnome.org/GNOME/gi-docgen/
+[CI]: https://github.com/frida/frida-gum/actions
+[subprojects]: https://mesonbuild.com/Subprojects.html
+[devkit binaries]: https://github.com/frida/frida/releases
+[Gum Hello World]: https://github.com/oleavr/hello-gum
+[footprint docs]: /docs/footprint/
+[@meme]: https://github.com/meme
+[@GalaxySnail]: https://github.com/GalaxySnail

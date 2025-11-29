@@ -1,0 +1,46 @@
+---
+layout: news_item
+title: 'Frida 17.2.12 发布'
+date: 2025-07-18 10:32:31 +0200
+author: oleavr
+version: 17.2.12
+categories: [release]
+---
+
+我们很高兴宣布 Frida 17.2.12，它带来了在没有操作系统的情况下运行 Gum 的初步支持，对我们的 Barebone 后端的重大增强，以及各种改进和修复。
+
+- android: 升级了 `system-server` 中的 `frida-java-bridge` 以包含对不正确的 ART 类规范偏移检测的修复。这防止了由于 `libart.so` 独立于 SDK 版本更新而导致的崩溃，这以前会导致偏移不匹配。该修复现在使用通过已知类的运行时检测而不是 SDK 启发式方法，提高了跨 Android 更新的可靠性。
+
+  **非常感谢 [@AeonLucid][] 带头开展这项工作 —— 这是一项真正的英雄努力，面对不断变化的 ART 内部结构，为 Frida 的 Android 支持带来了坚如磐石的可靠性。**
+
+- gum: 添加了对在没有操作系统的情况下运行的初步支持，使 Frida 能够在裸机目标上运行。集成商用特定于目标/固件的符号覆盖所需的弱符号。我们有一个正在进行的 XNU 代理，让我们可以 Apple 的 OS 内核中运行 JavaScript。
+
+- barebone: 在 arm64 后端添加了对 APRR 的支持（感谢结对编程 [@hsorbo][]）。
+
+- barebone: 添加了对 R_AARCH64_PREL32 重定位的支持（感谢 [@hsorbo][]），提高了与更多 ARM64 二进制文件的兼容性。
+
+- barebone: 实现了 `Memory.protect()`，提供了在裸机目标上更改内存保护的能力。
+
+- fruity: 在上传之前喷射 Gadget 的 `r-x` 页面以将其转换为调试器映射（感谢 [@hsorbo][]、[@mrmacete][] 和 [@as0ler][]），修复了较新硬件代上的问题。
+
+- buffer: 添加了新方法：`read_bytes()`、`write_bytes()`、`write_int64()`、`write_uint32()`、`write_int32()`、`write_uint16()`、`write_int16()`、`write_uint8()`、`write_int8()`，扩展了 Buffer 处理各种数据类型的 API。
+
+- gumjs: 避免用于内联源映射解析的正则表达式以减少堆栈使用，提高了在堆栈大小受限的平台上的稳定性。
+
+- build: 添加了对 'armv6kz-' 前缀工具链的支持（感谢 [@zetierhg][]），提高了与更多工具链的兼容性。
+
+- build: 修复了 Python < 3.9 的类型定义（感谢 [@oriori1703][]），确保与旧 Python 版本的兼容性。
+
+- build: 为 FreeBSD 链接器特殊处理 `ld` 脚本以修复构建问题（感谢 [@grimler][]），改进了 FreeBSD 支持。
+
+- devkit: 使符号前缀可选（感谢 [@Hexploitable][]），允许消费者选择是否为第三方符号添加前缀以避免冲突。
+
+
+[@AeonLucid]: https://x.com/AeonLucid
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje
+[@as0ler]: https://x.com/as0ler
+[@zetierhg]: https://github.com/zetier-hg
+[@oriori1703]: https://github.com/oriori1703
+[@grimler]: https://mastodon.social/@grimler
+[@Hexploitable]: https://x.com/Hexploitable

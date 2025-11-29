@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 16.1.11 发布'
+date: 2024-01-12 15:13:16 +0100
+author: oleavr
+version: 16.1.11
+categories: [release]
+---
+
+这次有很多好东西：
+
+- stalker: 在多个方面提高稳定性。感谢 [@as0ler][], [@hsorbo][] 和 [@mrmacete][] 进行的有趣且富有成效的 mob 编程会议，从而产生了这些精彩的改进：
+  - stalker: 在 arm64 上复制排除调用的 BLR，而不是用功能等效的调用替换它们，以便按预期使用任何指针身份验证上下文。感谢 [@mrmacete][]！
+  - stalker: 当 allocate_near() 在 arm64 上失败时中止，而不是由于随后的 NULL 指针取消引用而崩溃。
+  - gumjs: 修复 Stalker.flush() 在停止的 sink 上的崩溃。如果刚刚调用了 Stalker.garbageCollect()，就会发生这种情况。
+  - gumjs: 修复 Stalker QuickJS 回调逻辑中的 use-after-free。我们需要保持回调值处于活动状态，以防 Stalker.garbageCollect() 在中间发生并释放它们。
+- darwin: 改进符号化器缓存失效逻辑。感谢 [@mrmacete][]！
+- swift-api-resolver: 处理签名指针。
+- linux: 改进 spawn() 以处理部分链接映射。
+- linux: 改进注入器以处理 XOM 页面。
+- linux: 改进注入器 RTLD API 检测。
+- linux: 修复注入器 ELF SYMTAB 名称解析。
+- node: 在 UNIX 上链接 inspector 库，以修复调用 Script#enableDebugger() 时的 RTLD panic。感谢 [@pandasauce][]！
+- ci: 发布 Node.js 20 和 Electron 27 的 FreeBSD 预构建版本。
+
+
+[@as0ler]: https://twitter.com/as0ler
+[@hsorbo]: https://twitter.com/hsorbo
+[@mrmacete]: https://twitter.com/bezjaje
+[@pandasauce]: https://github.com/pandasauce

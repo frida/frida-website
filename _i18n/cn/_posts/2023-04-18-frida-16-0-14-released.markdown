@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 16.0.14 发布'
+date: 2023-04-18 00:49:44 +0200
+author: oleavr
+version: 16.0.14
+categories: [release]
+---
+
+更多令人兴奋的错误修复：
+
+- linux: 修复 ProcMapsEntry 主/次设备号解析。感谢 [@chouex][]！
+- interceptor: 修复 ARMv8 BTI 互操作性。感谢 [@zjw88282740][]！
+- arm64-writer: 添加 put_ret_reg()。感谢 [@zjw88282740][]！
+- compiler: 修复某些 Linux 系统（例如 Ubuntu 20.04）上的文件系统访问。感谢 [@pancake][] 报告并帮助追踪此问题！
+
+
+[@chouex]: https://github.com/chouex
+[@zjw88282740]: https://github.com/zjw88282740
+[@pancake]: https://twitter.com/trufae

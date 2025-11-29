@@ -1,0 +1,14 @@
+---
+layout: news_item
+title: 'Frida 16.0.13 发布'
+date: 2023-04-15 01:34:01 +0200
+author: oleavr
+version: 16.0.13
+categories: [release]
+---
+
+这次只有几个错误修复：
+
+- android: 修复旧系统上的动态链接器探测。
+- android: 将优雅注入限制为 arm 和 arm64。
+- linux: 修复 x86 和 x86_64 上的 syscall 等待逻辑。

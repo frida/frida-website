@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 17.2.13 发布'
+date: 2025-07-21 15:06:29 +0200
+author: oleavr
+version: 17.2.13
+categories: [release]
+---
+
+这是一个快速的错误修复版本：
+
+- android: 升级 system-server 中的 frida-java-bridge 以获取 [@AeonLucid][] 的 ART 偏移检测修复。
+- barebone: 支持实现 DebugSymbol API。
+
+
+[@AeonLucid]: https://x.com/AeonLucid

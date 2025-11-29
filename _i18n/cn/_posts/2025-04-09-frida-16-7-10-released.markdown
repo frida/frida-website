@@ -1,0 +1,21 @@
+---
+layout: news_item
+title: 'Frida 16.7.10 发布'
+date: 2025-04-09 21:50:31 +0200
+author: oleavr
+version: 16.7.10
+categories: [release]
+---
+
+我们很高兴宣布 Frida 16.7.10，带来了几个稳定性改进。特别感谢 [@mrmacete][] 确定了所有这些问题的根本原因，并修复了 Apple 操作系统上的死锁。
+
+此版本包含以下更改：
+
+- **network-stack**: 修复了 TcpConnection 传输逻辑。
+- **network-stack**: 改进了 VirtualStream 锁定以增强批处理并避免在 Frida 线程上进行不必要的调度。
+- **virtual-stream**: 允许在不持有锁的情况下调用 `update_pending_io()`，以便在子类在调用它之前不需要更新任何其他状态时提供便利。我们的一个子类假设情况就是这样，因为这是在共性被分解到 VirtualStream 基类之前的行为。这意味着 16.7.4 中进行的重构引入了竞争条件，此更改修复了它。
+- **darwin**: 通过避免标志优化了线程枚举。这消除了堆分配，降低了死锁风险，例如在 Interceptor 中，线程枚举用于按 ID 挂起和恢复线程。（由 [@mrmacete][] 贡献。）
+
+享受吧！
+
+[@mrmacete]: https://twitter.com/bezjaje

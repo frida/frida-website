@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 17.2.16 发布'
+date: 2025-08-12 10:15:55 +0200
+author: oleavr
+version: 17.2.16
+categories: [release]
+---
+
+新鲜的维护版本，带来了一系列修复和生活质量改进：
+
+- gumjs: 确保仅在其匹配的 `onEnter` 实际运行后才调用 `onLeave`，消除了在调用中途附加 hook 时的不可预测行为。感谢 [@mrmacete][]！
+- darwin-module: 交换 hook dyld “所有图像信息” 中的 `lldb_image_notifier` 指针，以保持模块注册表即使在通知程序只有一条指令长的现代 iOS 设备上也能正常工作。干杯 [@mrmacete][]！
+- barebone: 添加 `try_remap_writable_pages()`。
+- barebone: 允许覆盖 `query_rwx_support()` 以针对奇异平台定制 RWX 能力探测。
+- frida-node: 在 TypeScript 阶段遵守 `package-lock.json`，以保持 JS 依赖树完全确定性。
+
+
+[@mrmacete]: https://x.com/bezjaje
