@@ -1,0 +1,12 @@
+---
+layout: news_item
+title: 'Frida 16.7.13 发布'
+date: 2025-04-17 13:53:57 +0200
+author: oleavr
+version: 16.7.13
+categories: [release]
+---
+
+快速的错误修复版本，解决了我们的 ELF 解析器中的一个问题：
+
+- elf-module: 修复回退到实时内存时 check_str_bounds() 中的递归。该函数假设有文件支持的 ELF；回退到实时内存可能会触发无限递归。已添加显式实时内存检查以返回错误。

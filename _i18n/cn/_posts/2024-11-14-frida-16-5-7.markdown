@@ -1,0 +1,55 @@
+---
+layout: news_item
+title: 'Frida 16.5.7 发布'
+date: 2024-11-14 00:30:50 +0100
+author: oleavr
+version: 16.5.7
+categories: [release]
+---
+
+令人兴奋的新版本，包含了跨平台的改进和新功能。以下是新内容：
+
+#### Fruity 后端改进
+
+[@hsorbo][] 和我一直在努力增强我们的 Fruity 后端，我们很高兴分享以下改进：
+
+- **添加了对 TCP 隧道协议的支持** 并将其设为默认值以匹配 Apple 的新行为。可以使用 `FRIDA_FRUITY_TUNNEL_PROTOCOL` 环境变量恢复为 QUIC。
+- **修复了旧 OS 版本隧道逻辑中的边缘情况**，即使在 `usbmuxd` 不可用的情况下也能确保可靠运行。
+- **优雅地关闭 `TunnelConnection`** 以提高稳定性。
+- **修复了拆卸期间启动 USB 操作时可能发生的挂起**，防止传输卡住。
+- **修复了 `QuicTunnelConnection` 拆卸逻辑**，正确处理关闭操作期间的错误。
+- **放宽了 NCM 接口存在检查**，只需要一个可操作的网络接口。
+- **调整为始终首先尝试 USB 传输**，因为网络传输可能较慢或不可用。
+- **改进了跳过 jailed 回退时的超时情况处理**。
+- **现在期望联网设备在连接到配对服务时快速响应**，改善设备进入睡眠状态时的用户体验。
+- **修复了现代设备的 `CoreDevice` UDID 逻辑**。
+
+#### Android
+
+- **Gadget 现在支持在 `extractNativeLibs` 设置为 `false` 时从 APK 加载资产**，提高了与现代 Android 应用程序的兼容性（感谢 [@gergesh][]）。
+- **恢复了注入器对共享 `libc` 范围的处理**，确保当目标进程的最低 `libc.so` 范围是共享映射时的正确行为（感谢 [@lx866][]）。
+
+#### Linux
+
+- **改进了注入器与 MUSL 的兼容性**，处理加载器字符串中的差异（感谢 [@luckycat889][]）。
+- **添加了对构建助手时覆盖配置的支持**，允许在构建中具有更大的灵活性（感谢 [@luckycat889][]）。
+- **为注入器的远程调用分配了堆栈**，提高了与使用小堆栈的程序（如 Go 应用程序）的兼容性（感谢 [@ajwerner][]）。
+- **添加了重建助手二进制文件的 CI**，以确保源代码和签入的二进制文件之间的一致性（感谢 [@ajwerner][]）。
+- **当 `$TMPDIR` 为 `noexec` 时选择替代临时目录**
+
+#### 跨平台
+
+- **在构建系统中添加了对非 UTF-8 语言环境的支持**，确保在具有各种语言环境设置的系统上有更好的兼容性（感谢 [@JunGe-Y][]）。
+- **在构建系统中添加了对 PowerPC 架构的支持**。
+- **在 `frida-inject` 和 RpcClient 内部添加了对二进制数据处理的支持**。
+
+祝黑客愉快！
+
+---
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@gergesh]: https://github.com/gergesh
+[@lx866]: https://github.com/lx866
+[@luckycat889]: https://github.com/luckycat889
+[@ajwerner]: https://github.com/ajwerner
+[@JunGe-Y]: https://github.com/JunGe-Y

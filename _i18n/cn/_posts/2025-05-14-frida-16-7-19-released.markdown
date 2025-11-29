@@ -1,0 +1,15 @@
+---
+layout: news_item
+title: 'Frida 16.7.19 发布'
+date: 2025-05-14 15:27:00 +0200
+author: oleavr
+version: 16.7.19
+categories: [release]
+---
+
+此版本改进了 glibc 下的 Linux 线程枚举，并加强了我们的静态 OpenSSL 构建以防止意外的配置加载。
+
+**变化：**
+- **linux**: 跳过 `tid = 0` 的 glibc 线程（已退出但未加入），以避免错误的“不支持的 Linux 系统”恐慌。
+- **linux**: 按创建顺序列出 glibc 线程（最旧的在前），以反映真实的线程生命周期。
+- **deps (TLS)**: 使用 `OPENSSL_NO_AUTOLOAD_CONFIG` 构建 OpenSSL 以阻止加载任何系统配置文件，防止初始化 TLS 时崩溃。

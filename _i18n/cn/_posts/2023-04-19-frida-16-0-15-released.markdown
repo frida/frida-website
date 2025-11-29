@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 16.0.15 发布'
+date: 2023-04-19 00:20:30 +0200
+author: oleavr
+version: 16.0.15
+categories: [release]
+---
+
+这是一个修复了影响 Apple 平台用户的两个稳定性问题的版本：
+
+- interceptor: 在 Darwin 上暂停和恢复之间保持线程端口处于活动状态。我们借用了 `enumerate_threads()` 释放的 Mach 线程端口权限名称，假设存在另一个引用来保持它们中的每一个处于活动状态。如果情况并非如此，我们充其量会将无效的 Mach 端口权限名称传递给 `thread_resume()`，最坏的情况是我们会使用完全不相关的端口。无论如何，我们会让这些线程永远处于暂停状态。感谢 [@mrmacete][]！
+- agent: 在其自己的事务中处理 ThreadSuspendMonitor。由于 Interceptor 依赖于 ThreadSuspendMonitor 直通，因此在其自己的事务中以及在销毁时使用 Interceptor 的所有其他组件之后处理它，可以确保没有 Frida 线程会在拆卸时尝试在不可执行页面上执行代码。感谢 [@mrmacete][]！
+
+
+[@mrmacete]: https://twitter.com/bezjaje

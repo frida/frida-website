@@ -1,0 +1,52 @@
+---
+layout: news_item
+title: 'Frida 16.0.12 发布'
+date: 2023-04-14 13:25:36 +0200
+author: oleavr
+version: 16.0.12
+categories: [release]
+---
+
+这次有很多好东西。其中之一是我们全新的 Linux 注入器。这很有趣，尤其因为它涉及与 [@hsorbo][] 的大量结对编程。
+
+我们对此感到非常兴奋。Frida 现在支持注入 Linux 容器，例如 Flatpak 应用程序。不仅如此，它终于可以将代码注入到没有动态链接器的进程中。
+
+另一个整洁的改进是，如果您在 Linux >= 3.17 上运行 Frida，您可能会注意到它不再写出任何临时文件。这是通过 memfd 和重做的注入器信号机制实现的。
+
+我们新的 Linux 注入器具有完全异步的设计，没有任何可能导致死锁的危险阻塞操作。它也是第一个支持向注入的有效载荷提供控制通道的注入器。
+
+未来的计划是在我们的其他后端中也实现这一点，并使其成为我们跨平台 Injector API 的一部分。这样做的想法是使其更容易实现自定义有效载荷。
+
+此版本中还有许多其他好东西，所以一定要查看下面的变更日志。
+
+享受吧！
+
+### 变更日志
+
+- linux: 重新设计注入器。感谢与 [@hsorbo][] 进行富有成效的结对编程！
+- linux: 修复基于 libc 的模块枚举。
+- linux: 修复 musl 上的 query_libc_name()。
+- linux: 修复 musl 上的模块句柄解析器逻辑。
+- linux: 修复 musl 上的 Module.ensure_initialized()。
+- darwin: 如果由 Frida 调用，则使 ThreadSuspendMonitor 直通，以避免死锁情况。感谢 [@mrmacete][]！
+- darwin: 在 spawn() 期间，始终使用 PTY 进行管道 stdio，并启用 close-on-exec。
+- windows: 如果存在，使用现有的 DbgHelp 实例。感谢 [@fesily][]！
+- windows: 实现 Module.enumerate_symbols()。感谢 [@fesily][]！
+- process: 在 enumerate_modules() 中跳过隐藏的模块。
+- cloak: 添加 has_range_containing()。
+- elf-module: 用 get_interpreter() 替换 has_interp()。
+- gumjs: 修复运行时序列化无符号编码。
+- objc: 在方法上添加 symbol 属性，作为方法对象以人类可读的方式完全描述自身的一种手段。感谢 [@mrmacete][]！
+- java: 使用符号作为唯一属性名称。感谢 [@yotamN][]！
+- java: 向重载添加 toString() 方法。感谢 [@oriori1703][]！
+- java: 向类型和字段添加 toString() 方法。感谢 [@yotamN][]！
+- java: 修复重载方法的 toString()。感谢 [@yotamN][]！
+- server: 支持作为共享库加载。感谢 [@Yannayli][]！
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@mrmacete]: https://twitter.com/bezjaje
+[@fesily]: https://github.com/fesily
+[@yotamN]: https://github.com/yotamN
+[@oriori1703]: https://github.com/oriori1703
+[@Yannayli]: https://twitter.com/Yannayli

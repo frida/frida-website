@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 16.7.17 发布'
+date: 2025-05-09 11:56:06 +0200
+author: oleavr
+version: 16.7.17
+categories: [release]
+---
+
+此版本为我们的 Fruity 后端带来了一些改进和修复，增强了跨平台的兼容性和错误处理。以下是此版本中包含的更改：
+
+- fruity: 如果需要，也在 macOS 上启动配对。
+- fruity: 调整 macOS CreateAssertion 错误处理。所以当它失败时我们提供一个干净的错误消息。
+- fruity: 处理 OPACK 布尔值和紧凑整数。iOS 18.4.1 上的配对期间需要对后者的支持。
+- fruity: 改进便携式隧道错误处理。当我们使用 lockdown 来确定 iDevice 是否支持隧道，并且由于缺乏 lockdown 级配对而失败时，只需假设 OS 支持它。
+- fruity: 为 Linux netif 等待逻辑添加超时。
+- fruity: 处理 NetworkManager DISCONNECTED+CARRIER。所以当设备快速通过 state=DISCONNECTED 且 reason=CARRIER 时，我们实际上会等到设备准备好。

@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 16.0.17 发布'
+date: 2023-04-19 19:24:51 +0200
+author: oleavr
+version: 16.0.17
+categories: [release]
+---
+
+是时候发布一个只有一个更改的错误修复版本了：事实证明，16.0.14 中 [introduced][] 的 ARMv8 BTI 互操作在 arm64e 模式下（即启用了指针身份验证）运行时，在 Apple A12+ SoC 上存在问题。
+
+感谢 [@miticollo][] 报告并帮助分类原因，以及 [@mrmacete][] 进一步挖掘、集思广益潜在修复并实施 [fix][]。你们太棒了！❤️
+
+
+[introduced]: https://github.com/frida/frida-gum/commit/ea1e836e70cd5e7976bf680ff7771a5a4bc0a494
+[@miticollo]: https://github.com/miticollo
+[@mrmacete]: https://twitter.com/bezjaje
+[fix]: https://github.com/frida/frida-gum/commit/698b356fef0ecfc3ac2818f0b387be90e93deeda

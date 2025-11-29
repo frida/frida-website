@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 16.0.16 发布'
+date: 2023-04-19 13:37:37 +0200
+author: oleavr
+version: 16.0.16
+categories: [release]
+---
+
+鉴于 TypeScript 5.0 上个月发布，而 frida.Compiler 仍处于 4.9，我们认为通过升级它是时候了。所以在这个版本中，我们现在发布 5.0.4。此次升级还揭示了我们基于 V8 的运行时中的几个错误，以及我们嵌入的 frida-gum 类型定义稍微过时了。
+
+享受吧！
+
+### 变更日志
+
+- gumjs: 修复 V8 Isolate 拆卸期间的任务死锁。
+- gumjs: 修复 V8 快照创建期间的未定义行为。
+- compiler: 升级 frida-compile。
+- compiler: 使用正确的 @types/frida-gum。

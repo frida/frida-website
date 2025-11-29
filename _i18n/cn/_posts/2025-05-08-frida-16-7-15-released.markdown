@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 16.7.15 发布'
+date: 2025-05-08 21:31:10 +0200
+author: oleavr
+version: 16.7.15
+categories: [release]
+---
+
+我们很高兴宣布我们的 Node.js 绑定的重大更新！它们已从头开始重写。我们的绑定现在针对 Node-API，而不是依赖于在版本之间不可避免地更改的 Node.js 和 V8 API（需要每个 ABI 单独构建）。这意味着单个二进制文件可用于所有现代版本的 Node.js、Electron、nw.js 等。我们只需要为每个 OS/arch/libc 组合构建一个二进制文件。不仅如此，我们的新绑定也是自动生成的，确保 frida-core 中的 API 更改立即反映出来，如果适用，只需要调整自定义。
+
+此版本还包含其他一些好东西：
+
+- *DeviceManager*: 修复了在 `HostSessionService` `start()` 被取消的情况下早期 `close()` 时的崩溃。
+- *Web Service*: 修复了 TLS 连接的处理，因为远程地址逻辑没有考虑到它们。
+- *API*: 修复了 `.gir` 文件中的 `FridaBase` 引用。
+- *Bus*: 删除了 `device` 属性，该属性不打算公开。
+
+一如既往，非常感谢所有贡献者和用户的支持。

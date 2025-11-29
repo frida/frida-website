@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 16.0.10 发布'
+date: 2023-02-17 02:05:11 +0100
+author: oleavr
+version: 16.0.10
+categories: [release]
+---
+
+这次我们为您带来了额外的 iOS 15 改进，更好的 frida.Compiler，对 musl libc 的全新支持等等。请务必查看下面的变更日志以获取更多详细信息。
+
+享受吧！
+
+### 变更日志
+
+- ios: 修复较低版本 iOS 15 上的 spawn()。感谢 [@as0ler][] 和 [@mrmacete][]！
+- ios: 确保 launchd 优先考虑我们的守护进程。感谢 [@getorix][] 调查并建议此修复。
+- compiler: 升级 frida-compile, frida-fs 和 Gum 类型定义。这意味着 frida.Compiler 现在也可以在 linux-arm64 和 linux-x86 上正常工作。
+- linux: 添加对 musl libc 的支持，包括为 x86_64 和 arm64 发布发布资产的 CI。
+- gumjs: 添加 console.debug() 和 console.info()。感谢 [@oriori1703][]！
+- gumjs: 修复 node_modules/@types 存在于我们之上时的构建。
+- gumjs: 生成运行时时忽略 tcclib.h 符号。感谢 [@milahu][]！
+- build: 改进对共享构建的支持。感谢 [@milahu][]！
+
+
+[@as0ler]: https://twitter.com/as0ler
+[@mrmacete]: https://twitter.com/bezjaje
+[@getorix]: https://twitter.com/getorix
+[@oriori1703]: https://github.com/oriori1703
+[@milahu]: https://github.com/milahu

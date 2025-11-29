@@ -1,0 +1,15 @@
+---
+layout: news_item
+title: 'Frida 17.2.17 发布'
+date: 2025-08-20 12:07:29 +0200
+author: oleavr
+version: 17.2.17
+categories: [release]
+---
+
+微小的发布，巨大的影响：来自 [@mrmacete][] 的这两个单行修复确保了 Interceptor 在较新的 iOS 版本上表现正确。
+
+- code-allocator: 使用 `pc` 进行 slice 地址检查，以便即使 `data` 和 `pc` 不同（例如在 iOS 26 上），`is_near` 和 `is_aligned` 也能保持同步。感谢 [@mrmacete][]！
+
+
+[@mrmacete]: https://x.com/bezjaje

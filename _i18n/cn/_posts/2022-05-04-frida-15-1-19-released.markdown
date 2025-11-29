@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 15.1.19 发布'
+date: 2022-05-04 23:16:38 +0200
+author: oleavr
+version: 15.1.19
+categories: [release]
+---
+
+事实证明，15.1.18 有一个发布自动化错误，导致上传了陈旧的 Python 绑定工件。
+
+为了让这个版本更快乐一点，我还为 x86/64 增加了一个 Stalker 改进，其中 *clone3* 系统调用现在也得到了 [handled][]。这是由 Stalker 的测试套件在某些系统上捕获的。
+
+享受吧！
+
+
+[handled]: https://github.com/frida/frida-gum/commit/eb7621136af07d3db38a68effafa37087d23b8d4

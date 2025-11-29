@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 15.1.20 发布'
+date: 2022-05-06 00:27:46 +0200
+author: oleavr
+version: 15.1.20
+categories: [release]
+---
+
+我们发现 15.1.10 破坏了 Android/x86_64 上 frida-java-bridge 中的内联 hook。此版本 [fixes][] 了它。
+
+这次我们还将 Node.js 预构建版本从 v17 迁移到 v18。（唉，应该将 frida-node 移植到 [Node-API][]，这样我们就可以停止这种疯狂了！）
+
+享受吧！
+
+
+[fixes]: https://github.com/frida/frida-java-bridge/commit/32f2faa7064eee629bc03fafcac90cfbeb4e5018
+[Node-API]: https://nodejs.org/api/n-api.html

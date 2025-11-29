@@ -1,0 +1,23 @@
+---
+layout: news_item
+title: 'Frida 16.7.11 发布'
+date: 2025-04-14 17:59:58 +0200
+author: oleavr
+version: 16.7.11
+categories: [release]
+---
+
+快速的错误修复版本，改进了我们的 Fruity 后端，并基本支持 iOS 18.4：
+
+- darwin: 更新针对 iOS 18.4 的注入器 dyld init 检测。
+
+- fruity: 更新针对 iOS 18.4 的注入器 dyld init 检测 (#1154)。感谢 [@pachoo][] 的贡献。
+
+- network-stack: 减少写入之间的延迟。通过一旦有一些空间可用就标记为可写，而无需等待低水位线。感谢 [@mrmacete][] 的改进。
+
+- network-stack: 修复 TCP 写入块长度 (#1156)。[@mrmacete][] 的另一个修复。
+
+- network-stack: 始终发送排队的数据。此更改确保即使队列上没有更多可用空间，也会调用 `pcb.output()`，从而防止停顿。归功于 [@mrmacete][] 防止了那些讨厌的停顿。
+
+[@mrmacete]: https://twitter.com/bezjaje
+[@pachoo]: https://github.com/pachoo

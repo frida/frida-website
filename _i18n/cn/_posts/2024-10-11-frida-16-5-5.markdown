@@ -1,0 +1,13 @@
+---
+layout: news_item
+title: 'Frida 16.5.5 发布'
+date: 2024-10-11 11:18:40 +0200
+author: oleavr
+version: 16.5.5
+categories: [release]
+---
+
+事实证明，一个严重的稳定性回归进入了 Frida 16.5.3，其中 frida-server 会在非 CoreDevice 隧道发起的传入连接上崩溃。感谢 [@mrmacete][] 在有问题的版本发布仅几小时后就调查并修复了此问题。🎉 享受吧！
+
+
+[@mrmacete]: https://twitter.com/bezjaje

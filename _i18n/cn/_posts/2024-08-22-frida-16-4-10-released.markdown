@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 16.4.10 发布'
+date: 2024-08-22 15:40:59 +0200
+author: oleavr
+version: 16.4.10
+categories: [release]
+---
+
+快速的错误修复版本，旨在进一步改进我们的 Fruity 后端，[@hsorbo][] 和我倒满咖啡，敲定了以下修复：
+
+- tunnel-connection: 连接缺失的流关闭逻辑。
+- tunnel-connection: 确保 JSON 请求最终在自己的 UDP 数据包中。打开隧道时，如果数据报和流数据最终在同一个 UDP 数据包中，似乎会出现问题。我们使虚拟数据报更大以避免这种情况。
+- tunnel-connection: 始终避免在连接消失后写入，这将导致崩溃。
+- network-stack: 从 lwIP 线程处理 perform_on_lwip_thread()，而不是死锁。
+
+
+[@hsorbo]: https://twitter.com/hsorbo
