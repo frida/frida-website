@@ -250,6 +250,13 @@ rpc.exports = {
 };
 {% endhighlight %}
 
+<div class="note">
+  <h5>Java Instrumentation</h5>
+  <p>
+    Scripts using <code>Java.perform()</code> must import <code>frida-java-bridge</code>
+    and be compiled with <code>frida-compile</code> (Frida 17.0.0+).
+  </p>
+</div>
 The [rpc.exports][] part is actually optional, and is useful when your script
 needs to be aware of its lifecycle.
 
@@ -326,7 +333,7 @@ Supported configuration keys are:
     will monitor the directory and rescan it anytime it changes. The default is
     `ignore`, but `rescan` is highly recommended during development.
 
-Each script's optional configuration file may contain the following keys:
+Each 's optional configuration file may contain the following keys:
 
 -   `filter`: object containing criteria for this script to be loaded. Only one
     of them has to match, so complex filtering should be implemented in the
