@@ -1,0 +1,12 @@
+---
+layout: news_item
+title: 'Frida 16.7.16 发布'
+date: 2025-05-08 22:43:23 +0200
+author: oleavr
+version: 16.7.16
+categories: [release]
+---
+
+另一个快速的错误修复版本，因为软件很难！此版本解决了以下问题：
+
+- node: 修复非从源代码构建时的模块解析。事实证明，在我们构建目录中生成的 `package.json` 混淆了 `bindings` 包中的模块根检测。这意味着我们的搜索路径实际上是错误的，并且依赖于这种误检。

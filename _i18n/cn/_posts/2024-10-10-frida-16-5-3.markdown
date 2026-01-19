@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 16.5.3 发布'
+date: 2024-10-10 20:18:36 +0200
+author: oleavr
+version: 16.5.3
+categories: [release]
+---
+
+很高兴为您带来另一个错误修复版本，以进一步改进我们的 Fruity 后端、iOS 稳定性，并修复使用正则表达式进行的内存扫描。
+
+未具体归属的更改是由 [@hsorbo][] 和我在一系列有趣的结对编程会议中编写的。
+
+长话短说：
+
+- memory: 使内存扫描正则表达式模式原始化，以便搜索在非有效 UTF-8 的二进制区域中是可靠的。感谢 [@mrmacete][]！
+- web-service: 关闭已删除的动态接口的连接，以避免它们一直存在直到我们耗尽文件描述符。
+- network-stack: 处理 TcpConnection 的突然处置，我们会释放 TCP PCB 但未能通知任何活动的 TcpIOSource 实例和阻塞的 TcpInputStream.read() 调用。
+- network-stack: 修复对等关闭时的竞争性 TCP 数据丢失，其中关闭导致我们释放 PCB，并且 recv() 逻辑会因为 PCB 消失而提前返回。此时 RX 缓冲区中可能仍有数据，但应用程序看不到它。
+- network-stack: 修复 TcpInputStream.read() 中的竞争，其中 notify::pending-io 信号在调用 is_readable() 之后但在连接我们的信号处理程序之前触发。
+- fruity: 使用 USB 产品字符串作为传输名称。
+- fruity: 修复 iOS < 16 上的 USB 模式解析，其中模式是一个 3 字节的 blob。
+- fruity: 冒泡 USB 权限错误。
+- fruity: 在 iOS 隧道服务版本早于 17 时退出，而不是崩溃。
+- control-service: 修复 CoreDevice 系统上的可靠性，其中在所有接口上侦听的单个传输代理可能会在尝试从隧道内部与其通信时导致早期 TCP RST。确切原因尚不清楚，但我们已确认每个动态接口/隧道拥有一个代理确实可以解决此问题。我们还观察到，在所有接口上侦听但仅限于 IPv6 也可以避免此问题。
+- meson: 修复将 GLib 作为子项目的 i/tvOS 编译。
+- meson: 在 FreeBSD 上禁用 Fruity 及其朋友，因为我们现在依赖于仅存在于我们的 libusb 中的 libusb API。如果有人对 FreeBSD 上的这些后端感兴趣，修复这个问题应该不难——非常欢迎 PR。
+
+
+[@mrmacete]: https://twitter.com/bezjaje

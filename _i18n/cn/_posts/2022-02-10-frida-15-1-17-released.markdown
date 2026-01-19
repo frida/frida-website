@@ -1,0 +1,36 @@
+---
+layout: news_item
+title: 'Frida 15.1.17 发布'
+date: 2022-02-10 22:51:56 +0100
+author: oleavr
+version: 15.1.17
+categories: [release]
+---
+
+此版本中一个显著的改进是 `Java.backtrace()` 进行了重大改革。它现在是惰性的，速度提高了 10 倍以上。我还改进了它的 [API][]，现在被认为是稳定的。
+
+在开发 [frida-java-bridge][] 时，我优化了 Env 对象的处理方式，因此如果我们已经为当前线程拥有一个实例，我们可以回收它。
+
+其余的好东西都在下面的变更日志中涵盖，所以一定要查看一下。
+
+享受吧！
+
+### 变更日志
+
+- 修复 i/macOS、Android 和 QNX 上的 devkits，其中缺少部分 libiconv。
+- 改进 LLVM 工具链上的 devkit 打包。
+- 改进 GLib 中的 diet 模式支持。
+- cmodule: 公开 g_strndup()。
+- cmodule: 公开 Gum 的线程本地存储 API。
+- java: 重做 Java.backtrace() 以使其惰性且速度提高 10 倍以上。
+  - 将线程转换和堆栈遍历逻辑移动到 CModule。
+  - 返回一个 Backtrace 对象而不是带有帧的数组。
+  - 提供一个廉价的 *id* 属性，可用于去重。
+  - 访问 *frames* 属性时惰性计算帧。
+- java: 尽可能避免昂贵的 Env 创建。
+- python: 改进索引 URL 处理。感谢 [@GalaxySnail][]！
+
+
+[API]: https://github.com/DefinitelyTyped/DefinitelyTyped/commit/37db50ef28bb33d3dbbd3250107d15213861bbf5
+[frida-java-bridge]: https://github.com/frida/frida-java-bridge
+[@GalaxySnail]: https://github.com/GalaxySnail

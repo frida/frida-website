@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 16.1.10 发布'
+date: 2023-12-24 09:04:29 +0100
+author: oleavr
+version: 16.1.10
+categories: [release]
+---
+
+一些整洁的小错误修复，正好赶上圣诞节：
+
+- server: 添加 iOS 16 缺失的 entitlement，这是在内存中重新映射二进制文件所必需的。感谢 [@as0ler][]！
+- android: 修复 Android 14 上解释器运行方法的 Java hook。
+- 修复 frida-server 和 frida-inject 等 CLI 工具中显示的 argv[0]。感谢 [@bet4it][]！
+
+
+[@as0ler]: https://x.com/as0ler
+[@bet4it]: https://github.com/bet4it

@@ -1,0 +1,22 @@
+---
+layout: news_item
+title: 'Frida 16.7.14 发布'
+date: 2025-04-25 22:36:07 +0200
+author: oleavr
+version: 16.7.14
+categories: [release]
+---
+
+此版本改进了对 32 位 ARM 上 Google 最新 ART 运行时的支持，改善了 Linux 上的错误处理，并改进了对大端 ARM 架构的支持。
+
+以下是亮点：
+
+- **改进 frida-java-bridge 以支持 Google 最新的 32 位 ARM 二进制文件。** 感谢 [@Rwkeith][]。
+- **在 Linux 后端失败时传播 ptrace 错误。** 感谢 [@DoranekoSystems][]。
+- **改进对大端 ARM 架构 (armbe8, arm64be, arm64beilp32) 的支持。**
+- **删除了 Linux 后端中多余的硬件断点代码。**
+
+一如既往，我们感谢贡献者为使 Frida 变得更好而付出的宝贵努力。
+
+[@Rwkeith]: https://github.com/Rwkeith
+[@DoranekoSystems]: https://github.com/DoranekoSystems

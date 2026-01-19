@@ -1,0 +1,10 @@
+---
+layout: news_item
+title: 'Frida 16.5.1 发布'
+date: 2024-09-06 23:00:05 +0200
+author: oleavr
+version: 16.5.1
+categories: [release]
+---
+
+上一版本的二进制文件没有发布，因为 watchOS 上出现了构建回归，此版本已迅速修复。

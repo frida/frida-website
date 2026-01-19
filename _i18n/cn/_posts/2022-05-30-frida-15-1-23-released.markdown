@@ -1,0 +1,49 @@
+---
+layout: news_item
+title: 'Frida 15.1.23 发布'
+date: 2022-05-30 10:27:57 +0200
+author: oleavr
+version: 15.1.23
+categories: [release]
+---
+
+此版本的主题是操作系统支持，我们修复了 Android 12 上的一些粗糙边缘，并引入了对 Android 13 的初步支持。在开发 frida-java-bridge 时，我还发现自己在 JVM 特定的后端中需要一些 JVMTI 代码。这些位现在已共享，JVM 特定的代码状况更好，对 JDK 17 提供了全新的支持。
+
+我们还在几个地方提高了稳定性，并使安全地使用 CodeWriter API 变得更加容易。可移植性也得到了改善，我们基于 QuickJS 的 JavaScript 运行时终于可以在从小端构建机器为大端交叉编译时工作，反之亦然。
+
+要了解更多信息，请务必查看下面的变更日志。
+
+享受吧！
+
+### 变更日志
+
+- linux: 处理 ptrace() 期间的虚假信号。
+- android: 为 Android 12+ 上的 system_server 添加缺失的 SELinux 规则。
+- android: 修复真实设备上的 Android 13 检测。
+- android: 处理 Android 13 中的新链接器内部结构。
+- java: 改进 Java.enumerateMethods() 错误消息。感谢 [@jpstotz][]！
+- java: (android) 处理内联的 GetOatQuickMethodHeader()。
+- java: (android) 改进对非 Google Android 12+ ROM 的支持。
+- java: (android) 修复 Android >= 12 上的 Java.choose()。
+- java: (android) 添加对 Android 13 的支持。
+- java: (android) 修复 x64 重新编译逻辑中的 *threadReg* 破坏。
+- java: (android) 解释为什么 Java.deoptimizeBootImage() 不可用。
+- java: (android) 通过 *api.jvmti* 公开 JVMTI。
+- java: (android) 改进有关 OS 功能的错误消息。
+- java: (jvm) 添加对 JDK 17 的基本支持。
+- java: (jvm) 为 thread_from_jni_environment() 添加回退。
+- java: (jvm) 修复 withJvmThread() 序言/结语逻辑中的 UAF。
+- java: (jvm) 改进 *InstanceKlass* 偏移检测。
+- code-writer: 添加 *flush_on_destroy* 选项。
+- gumjs: 禁用 CodeWriter *flush_on_destroy* 选项。通过这种方式，writer 更安全，因为一旦它们被垃圾回收，它们就不会再写入内存。在那时，目标内存可能不再可写，或者可能由其他代码拥有。
+- gumjs: 需要时嵌入字节交换的 QuickJS 字节码。这意味着 GumJS 可以跨端序交叉编译。
+- gumjs: 修复 Instruction 复制逻辑中的双重释放。
+- gumjs: 修复 Relocator 指令访问器。
+- gumjs: 在 reset() 和 dispose() 上刷新 CodeWriter。
+- gumjs: 改进 NativePointer#strip() 以支持 ARM TBI。
+- gumjs: 在零复制模式下使 Instruction 包装器更安全。
+- gumjs: 堵塞 QuickJS 运行时中的 Relocator 泄漏。
+- quickjs: 修复对字节交换输出的支持。还将 QuickJS 升级到具有 Unicode 14 更新的最新上游版本。
+
+
+[@jpstotz]: https://github.com/jpstotz

@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 16.7.12 发布'
+date: 2025-04-16 20:26:58 +0200
+author: oleavr
+version: 16.7.12
+categories: [release]
+---
+
+此版本带来了几个重要的改进和修复：
+
+- interceptor: 避免挂起期间的堆分配。通过将挂起的线程 ID 存储到 `GumMetalArray` 而不是 `GQueue` 中，我们防止了当挂起的线程持有 `dlmalloc` 锁时发生死锁。感谢 [@mrmacete][] 的改进。
+- linux: 修复 ELF 丢失时的 `ModuleRegistry` 初始化。当枚举 RTLD 通知程序和已加载模块以查找 `DT_DEBUG` 条目时，我们不再假设 ELF 文件存在。这修复了程序从 memfd 加载并在没有文件的情况下生成时的问题。
+- elf-module: 如果无法映射文件，则使用实时内存。对于由 memfd 支持的模块，如果我们无法映射文件，我们现在利用内存中的 ELF 而不是放弃。
+- linux: 重做 glibc pthread 内部检测。我们不再解析机器代码来确定内部结构，而是启动线程以更稳健的方式解决难题。
+
+[@mrmacete]: https://twitter.com/bezjaje

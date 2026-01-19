@@ -1,0 +1,28 @@
+---
+layout: news_item
+title: 'Frida 16.0.19 发布'
+date: 2023-04-27 18:28:53 +0200
+author: oleavr
+version: 16.0.19
+categories: [release]
+---
+
+这次有一些令人兴奋的稳定性改进：
+
+- darwin: 使 spawn() 意识到 iOS >= 15 上使用的 [prewarm][] 功能。发生的情况是，最常用的应用程序由 *dasd* 提前生成并保持挂起状态，直到用户尝试启动它们，以节省一些启动时间。这妨碍了 Frida 的 spawn 机制，因为：
+  - 以这种方式启动的应用程序不会在预期时通过 launchd，导致“超时已达到”错误，或更复杂的竞争条件
+  - Frida 需要生成一个新的进程以确保早期插桩
+
+  我们通过以下方式解决这些问题：
+  - 忽略来自 launchd 代理的 prewarm spawns（尽管如果启用了 spawn gating，它们仍会作为 spawn 发出）
+  - 在尝试生成它们之前杀死现有的 prewarmed 应用程序
+  感谢 [@mrmacete][]！
+- glib: 确保 {Input,Output}Stream 仅在可轮询时 g_poll()。这在 Apple OS 和 BSD 上至关重要，其中 GLib 使用 kqueue 实现 GMainContext，否则当文件描述符表示普通文件时，它最终可能会永远等待。感谢 [@hsorbo][]！
+- android: 通过改进 libffi 以避免有问题的重定位来修复 x86 devkits。
+- gadget: 修复 Windows 进程终止期间的死锁。感谢 [@Palacee-hun][] 的报告！
+
+
+[prewarm]: https://developer.apple.com/documentation/uikit/app_and_environment/responding_to_the_launch_of_your_app/about_the_app_launch_sequence?language=objc
+[@mrmacete]: https://twitter.com/bezjaje
+[@hsorbo]: https://twitter.com/hsorbo
+[@Palacee-hun]: https://github.com/Palacee-hun

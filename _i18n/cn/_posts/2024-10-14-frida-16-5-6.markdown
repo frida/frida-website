@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 16.5.6 发布'
+date: 2024-10-14 15:32:29 +0200
+author: oleavr
+version: 16.5.6
+categories: [release]
+---
+
+快速的错误修复版本，旨在进一步改进我们的 Fruity 后端，[@hsorbo][] 和我倒满咖啡，敲定了以下修复：
+
+- fruity: 修复 TcpConnection 中的 use-after-free。错误回调可能会在 PCB 已经被释放的时候被调用。这意味着我们清除其用户数据会导致 use-after-free，其中 NULL 指针被写入未知区域。
+- fruity: 修复 DTXArgumentList.parse() GValue 初始化，我们在遇到对象时使用了错误的设置器。这被 GLib 的运行时检查捕获了，但由于我们通常在没有它们的情况下构建，因此未被注意到。
+- payload: 修复 AddressSanitizer 构建回归。
+
+
+[@hsorbo]: https://twitter.com/hsorbo

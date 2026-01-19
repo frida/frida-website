@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 15.1.26 发布'
+date: 2022-06-20 07:44:22 +0200
+author: oleavr
+version: 15.1.26
+categories: [release]
+---
+
+这次只有一个更改，与上一版本中的 [this][] 修复有关：
+
+> - java: (android) 防止 ART 编译被替换的方法
+
+好吧，事实证明 *kAccCompileDontBother* 常量是不正确的。此版本 [fixes][] 了它。（来自未来的剧透：它没有。）
+
+
+[this]: https://github.com/frida/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
+[fixes]: https://github.com/frida/frida-java-bridge/commit/13451378145e10de880dbc2dfb4fc241e6629959

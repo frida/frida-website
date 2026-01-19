@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 17.2.10 发布'
+date: 2025-07-03 12:57:12 +0200
+author: oleavr
+version: 17.2.10
+categories: [release]
+---
+
+快速的错误修复版本，解决了两个重要问题：
+
+- **frida-node**: 修复 keep-alive ThreadSafeFunction 拆卸。在 keep-alive 场景中使用 `napi_release_threadsafe_function()`，以便在丢弃 libuv 句柄之前有时间运行挂起的微任务。这可以防止拆卸期间出现“未解决的顶级 await”。由 [@as0ler][]、[@hsorbo][] 和 [@mrmacete][] 共同编写。
+
+- **barebone**: 确保 RustModule C ABI 入口点在垃圾回收中存活。较新的 Rust 工具链使用 `--gc-sections`，这会剥离未使用的部分。我们重构了 `make_linker_script()` 以扫描 Rust 源代码中旨在可见的符号，并发出 `KEEP(*(.text.<symbol>))` 指令，以便保留这些入口点。
+
+
+[@as0ler]: https://x.com/as0ler
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje

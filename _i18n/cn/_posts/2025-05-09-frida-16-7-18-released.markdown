@@ -1,0 +1,15 @@
+---
+layout: news_item
+title: 'Frida 16.7.18 发布'
+date: 2025-05-09 15:00:00 +0200
+author: oleavr
+version: 16.7.18
+categories: [release]
+---
+
+背靠背发布！软件很难，有时我们需要推送快速修复以保持事情顺利运行。以下是此版本的新内容：
+
+- **frida-node** 修复了一个回归，其中 `Device.openChannel()` 返回类型与之前相比发生了变化。
+- **Fruity 后端改进**: 使用 Apple 的 CoreDeviceProxy 作为后备，以便我们可以支持 NCM 有问题的系统。另外每 250 毫秒重新传输 mDNS-SD 请求，以增加稳健性。
+
+祝黑客愉快！

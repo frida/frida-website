@@ -1,0 +1,19 @@
+---
+layout: news_item
+title: 'Frida 17.2.11 发布'
+date: 2025-07-03 16:10:25 +0200
+author: oleavr
+version: 17.2.11
+categories: [release]
+---
+
+就在我们以为我们已经搞定一切的时候，软件提醒我们它有多难！感谢 [@mrmacete][]、[@hsorbo][] 和 [@0xmurphy][]，我们迅速解决了问题并为您提供以下修复：
+
+- frida-node: 修复 `fdn_keep_alive_until()` TSFN 生命周期问题。我们将 TSFN 设置为 `NULL`，这导致当其他引用持有者尝试安排清理时崩溃。
+
+- fruity: 修复杀死预热目标时的问题。在 spawn 时杀死预热进程会导致“连接关闭”错误。此更改捕获错误，以便可以 spawn 一个新实例。
+
+
+[@as0ler]: https://x.com/as0ler
+[@hsorbo]: https://x.com/hsorbo
+[@mrmacete]: https://x.com/bezjaje

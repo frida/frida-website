@@ -1,0 +1,118 @@
+---
+layout: news_item
+title: 'Frida 15.1.28 发布'
+date: 2022-07-06 17:52:24 +0200
+author: oleavr
+version: 15.1.28
+categories: [release]
+---
+
+此版本中有几个令人兴奋的新事物。
+
+## File API
+
+那些使用我们的 JavaScript File API 的人可能已经注意到它支持写入给定文件，但无法从中读取。现在支持此功能。
+
+例如，要将文本文件的每一行作为字符串读取：
+
+{% highlight js %}
+const f = new File('/etc/passwd', 'r');
+let line;
+while ((line = f.readLine()) !== '') {
+  console.log(`Read line: ${line.trimEnd()}`);
+}
+{% endhighlight %}
+
+（请注意，这假设文本文件是 UTF-8 编码的。目前不支持其他编码。）
+
+您还可以读取某个偏移量处的特定字节数：
+
+{% highlight js %}
+const f = new File('/var/run/utmp', 'rb');
+f.seek(0x2c);
+const data = f.readBytes(3);
+const str = f.readText(3);
+{% endhighlight %}
+
+也可以省略参数以读取文件的其余部分。但是，如果您只想一次性读取文本文件，有一种更简单的方法：
+
+{% highlight js %}
+const text = File.readAllText('/etc/passwd');
+{% endhighlight %}
+
+读取二进制文件同样容易：
+
+{% highlight js %}
+const bytes = File.readAllBytes('/var/run/utmp');
+{% endhighlight %}
+
+（其中 *bytes* 是一个 ArrayBuffer。）
+
+有时您可能还想将字符串转储到文本文件中：
+
+{% highlight js %}
+File.writeAllText('/tmp/secret.txt', 'so secret');
+{% endhighlight %}
+
+或者转储一个 ArrayBuffer：
+
+{% highlight js %}
+const data = args[0].readByteArray(256);
+File.writeAllBytes('/tmp/mystery.bin', data);
+{% endhighlight %}
+
+回到前面的示例，seek() 也支持相对偏移量：
+
+{% highlight js %}
+f.seek(7, File.SEEK_CUR);
+f.seek(-3, File.SEEK_END);
+{% endhighlight %}
+
+检索当前文件偏移量同样容易：
+
+{% highlight js %}
+const offset = f.tell();
+{% endhighlight %}
+
+## Checksum API
+
+这次添加的另一个 JavaScript API 是用于计算校验和的。虽然这可以完全在“用户空间”的 JavaScript 中实现，但我们相当便宜地获得了它，因为 Frida 依赖于 GLib，并且它已经开箱即用地提供了 [Checksum API][]。我们需要做的就是公开它。
+
+综上所述，这意味着我们可以读取文件并计算其 SHA-256：
+
+{% highlight js %}
+const utmp = File.readAllBytes('/var/run/utmp');
+const str = Checksum.compute('sha256', utmp);
+{% endhighlight %}
+
+或者，为了更多的控制：
+
+{% highlight js %}
+const checksum = new Checksum('sha256');
+checksum.update(File.readAllText('/etc/hosts'));
+checksum.update(File.readAllBytes('/var/run/utmp'));
+console.log('Result:', checksum.getString());
+console.log(hexdump(checksum.getDigest(), { ansi: true }));
+{% endhighlight %}
+
+（您可以从我们的 [TypeScript bindings][] 了解有关此 API 的更多信息。）
+
+## EOF
+
+此版本中还有其他一些好东西，所以一定要查看下面的变更日志。
+
+享受吧！
+
+### 变更日志
+
+- gumjs: 扩展 *File* API。
+- gumjs: 添加 *Checksum* API。
+- gumjs: 修复从根目录相对 ESM 导入的处理。
+- glib: (win32) 为普通文件添加 Input/OutputStream 支持。
+- build: 在 Windows 上使 XP SDK 可选。
+- node: 目标 Electron 19.0.0 而不是 19.0.0-alpha.1。
+- node: 定义 *openssl_fips* 以解决 node-gyp 问题。
+
+
+[Checksum API]: https://docs.gtk.org/glib/struct.Checksum.html
+[TypeScript bindings]: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/edfba0b718c853dea18c23e2f4b5dd9b4c17dd6d/types/frida-gum/index.d.ts#L2500-L2559
