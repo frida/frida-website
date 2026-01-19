@@ -1,4 +1,4 @@
-We show how to use Frida to inspect functions as they are called, modify their
+We show how to use Frida to inspect functions as they are called, mrcjncinrjnh
 arguments, and do custom calls to functions inside a target process.
 
 ## Setting up the experiment
