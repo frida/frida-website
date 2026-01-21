@@ -18,6 +18,11 @@ improvements across the board.
 
 Let’s take a closer look at the Android-side stability work.
 
+Before diving into Zygote and system_server, it’s worth calling out an important
+piece of groundwork: our SELinux userspace library has been rebased onto a much
+newer upstream to support modern binary policy formats, while retaining Android
+M–specific behavior, thanks to [@AeonLucid][].
+
 Historically, our Zygote handling relied on injecting frida-agent in order to
 observe fork() transitions via our child gating feature. We had to inject code
 there because the system does not allow spawning an app in a suspended state
@@ -112,6 +117,9 @@ Enjoy!
 
 ### Changelog
 
+- android: Rebase SELinux userspace library onto a newer upstream to support
+  modern binary policy formats while preserving Android M quirks.
+  (Thanks to [@AeonLucid][])
 - android: Move to lightweight Zygote hooking by patching
   `android.os.Process.setArgV0Native()` to trampoline through a tiny payload and
   connect back to frida-core for instrumentation. This replaces the previous
@@ -148,6 +156,7 @@ Enjoy!
   “Cannot convert a Symbol value to a string” errors in XPC-related usage.
   (Thanks to [@mrmacete][])
 
+[@AeonLucid]: https://x.com/AeonLucid
 [@hsorbo]: https://x.com/hsorbo
 [@mrmacete]: https://x.com/bezjaje
 [@MarlinDiary]: https://github.com/MarlinDiary
