@@ -667,6 +667,8 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
 
     -   `address`: absolute address as a [`NativePointer`](#nativepointer).
     -   `size`: size in bytes
+    -   
+    A JavaScript exception will be thrown if a memory access error occurred while scanning.
 
     For example:
 
