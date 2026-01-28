@@ -133,6 +133,10 @@ script.on("message", on_message)
 script.load()
 {% endhighlight %}
 
+If you want to perform the preliminary steps (agent creation and 
+bridge installation) in your virtual environment, you can use or
+modify the example script [frida_17_manager](https://github.com/RaffaDNDM/frida_17_manager).
+
 ### Go example
 
 {% highlight go %}
