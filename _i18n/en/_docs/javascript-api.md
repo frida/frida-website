@@ -379,6 +379,9 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     forward the exception to the hosting process' exception handler, if it has
     one, or let the OS terminate the process.
 
+    Note that any **[NativeFunctions](#nativefunction)** you call will need to have
+    their exception behavior set to `propagate` if you intend to catch them using the handler.
+
 
 ### Thread
 
@@ -420,7 +423,7 @@ Objects returned by e.g.
     is a number specifying the breakpoint ID previously set by calling
     [`setHardwareBreakpoint()`](#thread-sethardwarebreakpoint).
 
--   `setHardwareWatchpoint(id, address, size, conditions)`: sets a harware
+-   `setHardwareWatchpoint(id, address, size, conditions)`: sets a hardware
     watchpoint, where `id` is a number specifying the watchpoint ID, `address`
     is a [`NativePointer`](#nativepointer) specifying the address of the region
     to be watched, `size` is a number specifying the size of that region, and
