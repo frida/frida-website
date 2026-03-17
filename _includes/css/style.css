@@ -460,11 +460,6 @@ article h2:first-child {
   color: #f2f2f2;
 }
 
-.post-content img {
-  max-width: 100%;
-  height: auto;
-}
-
 .label {
   float: left;
   text-transform: uppercase;
@@ -633,6 +628,11 @@ article ul ul {
   margin-left: 40px;
   margin-top: 10px;
   list-style-type: circle;
+}
+
+article img {
+  max-width: 100%;
+  height: auto;
 }
 
 blockquote {
