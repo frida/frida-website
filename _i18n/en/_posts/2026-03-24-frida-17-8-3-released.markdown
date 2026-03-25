@@ -17,7 +17,7 @@ This release brings another round of fixes and documentation improvements:
   Kudos to [@hsorbo][] for reporting and helping track this down, and
   [@tux-mind][] for identifying the root cause.
 
-- **fruity**: Fix jailed `spawn()` on iOS 16.4 betas.
+- **fruity**: Fix jailed `spawn()` on iOS 26.4 betas.
   Thanks [@mrmacete][]!
 
 - **fruity**: Fix `TreeSet` comparator behavior where transports with the same
