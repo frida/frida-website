@@ -1,0 +1,22 @@
+---
+layout: news_item
+title: 'Frida 17.9.10 Released'
+date: 2026-05-15 14:23:42 +0200
+author: oleavr
+version: 17.9.10
+categories: [release]
+---
+
+Quick bug-fix release with a couple of fixes to keep things moving smoothly:
+
+- android: Handle `android:process` when matching pending spawns. Activities
+  declaring a custom process end up with a zygote-forked process named like
+  `com.example.app:foo`, while spawn requests are keyed by the package name.
+  We now strip the colon suffix before matching, avoiding spawn timeouts.
+  Thanks to [@pakbaz-dev][] for tracking this down and fixing it.
+- package-manager: Fix parsing of scoped package names like `@scope/name`, where
+  we were treating `scope/name` as the version range and fetching the registry
+  root, ultimately failing with a misleading `missing dist-tags` error.
+
+
+[@pakbaz-dev]: https://github.com/pakbaz-dev
