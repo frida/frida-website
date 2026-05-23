@@ -1,0 +1,34 @@
+---
+layout: news_item
+title: 'Frida 17.9.11 Released'
+date: 2026-05-23 14:22:45 +0200
+author: oleavr
+version: 17.9.11
+categories: [release]
+---
+
+Quick bug-fix release with more Darwin hardening compatibility, some Barebone
+target polish, and an arm32 relocator fix contributed by [@Lixhr][]:
+
+- agent: Enable Gum.Exceptor on hardened Darwin tasks. The old opt-out was from
+  the Mach exception port days, while the POSIX-signal backend now works on
+  arm64e thanks to recent Gum improvements.
+- darwin: Launder the embedded agent through anonymous pages before remapping it
+  into the target. This avoids carrying code-signing state from frida-server's
+  own `__DATA` mapping on newer hardened kernels.
+- exceptor: Let exception handlers redirect PC and modify registers on arm64e by
+  long-jumping through a trampoline, bypassing XNU's sigreturn validation.
+- exceptor: Fix arm64e scope recovery by long-jumping directly from the signal
+  handler instead of trying to redirect PC through the signal context.
+- darwin: Skip `pid_for_task()` when operating on the current task, saving a Mach
+  roundtrip.
+- process-darwin: Strip PAC when reading dyld image metadata out-of-process on
+  recent arm64e systems, and handle NULL reads gracefully.
+- process-darwin: Tolerate `sysctlbyname("kern.version")` failing in restricted
+  XPC sandboxes.
+- arm32-relocator: Preserve the condition code when relocating `B<cond>`.
+- meson: Skip the inspector on barebone targets, where libsoup is not available.
+- vapi: Bind the `gum_memory_allocate()` family of APIs.
+
+
+[@Lixhr]: https://github.com/Lixhr
