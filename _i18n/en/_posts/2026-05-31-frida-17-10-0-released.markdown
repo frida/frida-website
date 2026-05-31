@@ -1,0 +1,57 @@
+---
+layout: news_item
+title: 'Frida 17.10.0 Released'
+date: 2026-05-31 21:06:16 +0200
+author: oleavr
+version: 17.10.0
+categories: [release]
+---
+
+Frida 17.10.0 is here, with a big serving of Gum internals getting new
+superpowers and a bunch of sharp edges sanded down.
+
+Highlights:
+
+- gum: Add a generic unwind broker for generated code. Interceptor now obtains
+  unwind support on creation so exceptions and backtraces can propagate through
+  trampolines, while Stalker switches to always-on PC translation on Darwin and
+  Linux.
+- core: Migrate the Darwin unwind machinery to Gum's new generic UnwindBroker
+  and UnwindSectionsProvider APIs. The old UnwindSitter now only registers the
+  invader's range.
+- interceptor: Replace the old attach flags with composable option structs,
+  covering scratch register selection, online/offline scenarios, relocation
+  policy, replacement data, and listener data.
+- gumjs: Expose the new Interceptor instrumentation options to JavaScript.
+  `attach()`, `replace()`, and `replaceFast()` may now take an options object
+  carrying the target and the new instrumentation knobs.
+- interceptor: Add support for custom redirect emitters and process-wide
+  default options. This lets callers provide the instruction sequence written
+  over a hooked function's prologue, making hook sites less predictable.
+- gumjs: Expose custom redirect emitters, redirect-space hints, and default
+  Interceptor options in both the QuickJS and V8 runtimes.
+- interceptor: Fix hangs after exceptions or `longjmp()` unwind past hooked
+  calls. Invocation frames that never reach their on-leave trampoline are now
+  reaped correctly, preventing `gum_interceptor_flush()` from spinning forever.
+- unwind-broker: Add support for the 32-bit ARM EH ABI, including ARM-specific
+  personality and exidx handling.
+- unwind-broker: Fix exception handling through stalked code by reading throw
+  and resume instruction pointers through the original unwind routines.
+- stalker-x86: Enable unwind support on Android, matching the arm64 backend.
+- stalker-arm64: Stop requiring nearby slab allocation, allowing code and data
+  slabs to be allocated anywhere.
+- memory: Restore page protections after patching code, tightening pages back
+  to RX unless they were originally RWX.
+- exceptor: Add a handler-only mode that installs Frida's signal handlers
+  without hooking `signal()` and `sigaction()`.
+- module-registry: Allow custom RTLD notifier offsets on ELF and Darwin, useful
+  for making Frida more stealthy.
+- core: Expose agent feature toggles and linker notifier offsets through
+  `SessionOptions`, including exceptor mode, unwind broker, exit monitor, and
+  thread suspend monitor settings.
+- base: Fix asset resolution in installed layouts using
+  `frida-1.0/<arch>/`, where the probe previously checked a path still
+  containing the literal `<arch>` token.
+- devkit: Sync Gum examples with the new attach options.
+- deps: Bump dependencies to 20260531, including Capstone d536b15, and update
+  `@types/frida-gum` to 19.3.0.
