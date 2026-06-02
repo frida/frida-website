@@ -1,0 +1,44 @@
+---
+layout: news_item
+title: 'Frida 17.10.1 Released'
+date: 2026-06-02 02:10:53 +0200
+author: oleavr
+version: 17.10.1
+categories: [release]
+---
+
+Bug-fix release with a shiny new memory-scanning helper mixed in, plus some
+Darwin, Android, and build-system fixes. Big thanks to [@cylentsec][] and
+[@AeonLucid][] for their contributions.
+
+- darwin: Support ElleKit/palera1n in the launchd agent. We now detect
+  ElleKit's injector gate function and make it return false for Frida-managed
+  PIDs, preventing double-injection for spawned processes. Thanks
+  [@cylentsec][]!
+- darwin: Fix ElleKit spawn compatibility by restoring a selective exception
+  mask and forwarding non-breakpoint exceptions to the system handler, while
+  keeping the existing arm64e PAC fixup path alive. Fixes #1239. Thanks
+  [@cylentsec][]!
+- android: Fix helper initialization on Nothing OS. Thanks [@AeonLucid][]!
+- gumjs: Expose `Memory.findPointers()`, backed by the new
+  `gum_memory_find_pointers()` helper. This provides a focused,
+  SIMD-accelerated way to find pointer-aligned words matching one or more
+  values, across one or more ranges.
+- memory: Add `gum_memory_find_pointers()`, with parallel range tiling and
+  per-architecture kernels such as SSE2 and NEON.
+- interceptor: Fix x86 stdcall on-leave reaping, where callee-clean returns
+  could make the invocation stack lose track of the returning frame and crash.
+- process: Reject stale Darwin file mapping results, fixing anonymous regions
+  under Rosetta being misattributed to unrelated file mappings.
+- vapi: Bind `gum_darwin_read` length as `gsize`, avoiding an 8-byte write into
+  a 4-byte slot.
+- gir: Ensure the introspection helper executable is linked before
+  `g-ir-scanner` tries to run it, fixing a race exposed by Ubuntu noble.
+- ci: Keep macOS/x86_64 coverage going by building on arm64 hosts through
+  Rosetta, now that GitHub's Intel macOS runners are gone.
+- build: Fix warnings when building for arm64e.
+- bindings: Bump `@types/frida-gum` to 19.4.0.
+
+
+[@cylentsec]: https://x.com/cylentsec
+[@AeonLucid]: https://x.com/AeonLucid
