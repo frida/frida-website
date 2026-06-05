@@ -1,0 +1,67 @@
+---
+layout: news_item
+title: 'Frida 17.11.0 Released'
+date: 2026-06-05 17:08:20 +0200
+author: oleavr
+version: 17.11.0
+categories: [release]
+---
+
+This is a packed release focused on getting Frida into even trickier places,
+with lots of love poured into our Barebone backend, Linux injection paths, and
+Gum's low-level machinery. Big thanks to [@hsorbo][] for the fun we had during
+our iOS kernel hackathon and for his PR adding Segger J-Link support, and to
+[@ltlly][] for their Stalker contribution.
+
+Highlights:
+
+- linux: Add a ptrace-free injection fallback for targets whose ptrace slot is
+  already owned by another tracer. Frida now falls back to /proc/$pid/mem,
+  patching a bootstrap into the target that maps and runs our loader. This works
+  on x86, x86_64, and arm64. For quiet targets where malloc is never called,
+  Frida samples on-CPU activity, resolves the hottest libc leaf function, and
+  re-hooks there instead.
+- barebone: Major progress on in-kernel instrumentation of Virtualization
+  framework guests. We now have a VZ kernel GDB stub client, a physical-memory
+  bridge, fileset kernelcache and kext handling, per-segment relocation, and
+  support for patching kernel text through the host.
+- barebone: Bring up the in-kernel hostlink over vsock, including PAC-signed
+  callbacks and async connect handling. W^X operations now travel over RPC, so
+  NativeCallback, Interceptor, Memory.patchCode(), and friends can work without
+  relying on BRK callbacks that panic research kernels.
+- barebone: Make Interceptor and Stalker work in the kernel. This includes
+  writable-remap support through the physical bridge, TLB flushing after
+  page-table edits, excluding the agent's own range from Stalker, and making
+  thread IDs safe to round-trip through JavaScript.
+- barebone: Improve robustness during kernel injection. We now detach the debug
+  stub once the agent is in place, tolerate thread migration while invoking
+  functions, query page size from cached MMU parameters, and return NULL instead
+  of panicking when near allocation fails.
+- barebone: Add CI for `none-arm64` assets, devkits, and the barebone agent.
+- barebone: Omit Arm64 vector context to avoid overflowing tiny kernel stacks.
+- gdb: Improve remote-stub compatibility. We now fall back to per-register
+  access when `g/G` are missing, detect `vCont` support with a fallback, accept
+  empty `qRcmd` replies, load target properties based on `qXfer` support, switch
+  threads before register access, and always send proper checksums. Thanks
+  [@hsorbo][]!
+- compiler: Fix archive symbol renaming. We now rewrite symbols only in string
+  tables instead of matching bytes across the whole archive, and also update the
+  archive index so COFF archives keep linking correctly after renaming.
+- module: Add `size` to `GumExportDetails`, exposing export sizes through
+  `enumerateExports()` in both QuickJS and V8. ELF reports `st_size`; platforms
+  without this information report `-1`.
+- memory: Speed up Linux protection queries by using the `PROCMAP_QUERY` ioctl
+  on Linux 6.11 and newer, with a cached fallback to `/proc/self/maps` parsing.
+  We also preserve page protections when making code readable, and share the
+  `O_CLOEXEC` fallback needed by older manylinux toolchains.
+- stalker: Reserve space for pending literals in the Arm and Arm64 backends, so
+  large branchless blocks with callouts on every instruction no longer overflow
+  the slab and corrupt adjacent memory. Thanks [@ltlly][]!
+- process: Bound the aarch64 ucontext record walk so malformed records, or
+  libunwind's smaller context layout, no longer crash the backtracer.
+- vapi: Add X86Writer bindings so Vala code can generate x86 and x86_64
+  instructions, mirroring the existing Arm64Writer support.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@ltlly]: https://github.com/ltlly
