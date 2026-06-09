@@ -1,0 +1,66 @@
+---
+layout: news_item
+title: 'Frida 17.12.0 Released'
+date: 2026-06-10 00:48:10 +0200
+author: oleavr
+version: 17.12.0
+categories: [release]
+---
+
+Fresh release packing a new code-shape analysis toolbox in Gum/GumJS, a pile
+of Linux injector hardening and teardown fixes, a big Windows arm64 stability
+push, and documented public APIs across Gum and Core.
+
+Highlights:
+
+- gum: Add native control-flow graph module, including resolver-based graph
+  construction, Cooper-Harvey-Kennedy dominators, and nearest-first dominating
+  site enumeration.
+- gumjs: Add `ControlFlowGraph` and `BasicBlock`.
+- gum: Add `Process.find_function_range()`. Works on stripped binaries as it
+  does not require symbols.
+- gumjs: Add `Process.findFunctionRange()`.
+- interceptor: Add per-function and per-listener flushing, allowing callers to
+  wait for their own hooks to drain without getting stuck behind unrelated
+  pending work.
+- linux: Improve injector reliability in multi-threaded targets by walking the
+  stack to find a hookable trigger when a sampled PC lands in a tiny syscall
+  wrapper.
+- linux: Load the agent through `/proc/<pid>/fd` instead of
+  `/proc/self/fd`, so attached debuggers resolve the same object path as the
+  target process.
+- linux: Restore patched trigger functions symmetrically with installation,
+  avoiding races where another thread could execute a half-written prologue.
+- linux: Capture libbpf diagnostics and include them in thrown errors instead
+  of spilling them to stderr.
+- linux: Size trigger candidates using the actual bootstrap stub, avoiding
+  needless rejection of small but frequently executed libc routines.
+- linux: Fall back to polling `/proc/<pid>/task/<tid>/syscall` when eBPF/perf
+  sampling is unavailable due to missing privileges.
+- linux: Drain the thread registry on teardown, fixing a use-after-free when
+  threads are churning during unload.
+- linux: Relocate the `start_thread` hook using the new CFG machinery, so the
+  hook lands on a safe dominating instruction instead of overwriting a live call
+  site.
+- linux: Harden pthread layout detection under heavy thread churn by retrying
+  anchor probing and lock cross-checking until they agree.
+- x86: Make `can_relocate()` aware of the relocation scenario, rejecting online
+  relocations that would have to cross calls or syscall-like instructions.
+- meson: Build the bundled Capstone with all architectures enabled, matching the
+  prebuilt SDK and making cross-architecture disassembly work everywhere.
+- stalker: Fix far backpatch epilog losing its BL when code slabs end up more
+  than 128 MB apart, which would corrupt the stack and crash. Surfaced on
+  Windows arm64's wide address space.
+- stalker: Detect thread exit on Windows, so terminating threads are no longer
+  followed down into ntdll's teardown.
+- exceptor: Fix crash-recovery on Windows arm64 by resuming via
+  `RtlRestoreContext()` instead of `longjmp()`, whose unwinding rejects our
+  synthetic frame and terminates the process.
+- gdb: Fix register access on LLDB stubs such as iOS' debugserver, which
+  surfaced as “Failed to attach: invalid integer value: E03”.
+- gum: Document the public APIs: Interceptor, Stalker, Exceptor, Module,
+  ModuleMap, ModuleRegistry, MemoryMap, MemoryAccessMonitor, and DarwinGrafter.
+- core: Document the public API, with Vala doc comments injected into the GIR.
+- ci: Publish GObject introspection data.
+- ci: Add windows-arm64 native jobs.
+- barebone/compiler: Bump `@types/frida-gum` to 19.6.0.
