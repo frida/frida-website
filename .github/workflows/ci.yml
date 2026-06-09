@@ -33,6 +33,14 @@ jobs:
           bundle install
       - name: Build
         run: bundle exec jekyll build
+      - name: Install API doc toolchain
+        run: |
+          sudo apt-get install -y gobject-introspection libglib2.0-dev libgirepository1.0-dev
+          # Pinned: the Frida theme patches gi-docgen's base.html block anchors
+          # (see _releng/gen-api-docs.py). An upgrade fails loudly if they move.
+          pip install 'gi-docgen==2026.1'
+      - name: Generate API reference
+        run: _releng/gen-api-docs.py --allow-missing
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
