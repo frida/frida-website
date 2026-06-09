@@ -39,6 +39,8 @@
   docs:
   - javascript-api
   - c-api
+  - gum-api
+  - frida-core-api
   - swift-api
   - go-api
   - bridges
