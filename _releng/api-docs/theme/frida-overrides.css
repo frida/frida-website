@@ -1,0 +1,43 @@
+/*
+ * Frida branding for the gi-docgen "basic" theme.
+ *
+ * Loaded after the stock style.css (see the patched base.html), so it only
+ * needs to override the theme's CSS custom properties plus add the Frida
+ * header/footer chrome. Keeping this as a thin overlay means gi-docgen
+ * upgrades don't require re-forking the whole theme.
+ *
+ * Palette mirrors frida.re: coral accent #ef6456, mauve chrome #412d42.
+ */
+
+:root {
+  --primary: #ef6456;
+  --sidebar-bg: #412d42;
+  --sidebar-primary: #f3a99f;
+  --sidebar-selected-bg: #ef6456;
+  --sidebar-search-focus-bg: rgba(239, 100, 86, 0.35);
+  --accent-bg-color: rgba(239, 100, 86, 0.85);
+  --accent-fg-color: #ffffff;
+}
+
+/* Tie links and the search "go to" highlight to the coral accent. */
+a,
+a:visited {
+  color: #d8463a;
+}
+.sidebar a:hover {
+  color: #ffffff;
+}
+
+/* "Back to Frida Docs" link in the sidebar. */
+.sidebar .frida-nav {
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+.sidebar .frida-nav a {
+  color: var(--sidebar-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.sidebar .frida-nav a:hover {
+  color: #ffffff;
+}

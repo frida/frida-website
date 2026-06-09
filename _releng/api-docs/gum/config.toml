@@ -1,0 +1,19 @@
+[library]
+name = "Gum"
+# version is injected at build time by gen-api-docs.py
+version = "0.0.0"
+browse_url = "https://github.com/frida/frida-gum/"
+repository_url = "https://github.com/frida/frida-gum.git"
+website_url = "https://frida.re/"
+authors = "Frida Development Team"
+logo_url = "https://frida.re/img/logotype.svg"
+license = "wxWindows"
+description = "Cross-platform instrumentation and introspection library written in C."
+devhelp = true
+search_index = true
+
+[source-location]
+base_url = "https://github.com/frida/frida-gum/blob/main/"
+
+[extra]
+content_base_url = "https://github.com/frida/frida-website/blob/main/_releng/api-docs/gum/"

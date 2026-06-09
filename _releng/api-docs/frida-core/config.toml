@@ -1,0 +1,19 @@
+[library]
+name = "Frida"
+# version is injected at build time by gen-api-docs.py
+version = "0.0.0"
+browse_url = "https://github.com/frida/frida-core/"
+repository_url = "https://github.com/frida/frida-core.git"
+website_url = "https://frida.re/"
+authors = "Frida Development Team"
+logo_url = "https://frida.re/img/logotype.svg"
+license = "wxWindows"
+description = "Dynamic instrumentation toolkit: inject into processes, attach scripts, and orchestrate sessions from C and beyond."
+devhelp = true
+search_index = true
+
+[source-location]
+base_url = "https://github.com/frida/frida-core/blob/main/"
+
+[extra]
+content_base_url = "https://github.com/frida/frida-website/blob/main/_releng/api-docs/frida-core/"
