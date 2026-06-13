@@ -379,6 +379,10 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     forward the exception to the hosting process' exception handler, if it has
     one, or let the OS terminate the process.
 
+    Note that any **[NativeFunctions](#nativefunction)** you call will need to
+    have their exception behavior set to `propagate` if you intend to catch them
+    using the handler.
+
 
 ### Thread
 
