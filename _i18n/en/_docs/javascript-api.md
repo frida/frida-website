@@ -424,7 +424,7 @@ Objects returned by e.g.
     is a number specifying the breakpoint ID previously set by calling
     [`setHardwareBreakpoint()`](#thread-sethardwarebreakpoint).
 
--   `setHardwareWatchpoint(id, address, size, conditions)`: sets a harware
+-   `setHardwareWatchpoint(id, address, size, conditions)`: sets a hardware
     watchpoint, where `id` is a number specifying the watchpoint ID, `address`
     is a [`NativePointer`](#nativepointer) specifying the address of the region
     to be watched, `size` is a number specifying the size of that region, and
