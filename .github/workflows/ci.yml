@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
@@ -18,6 +18,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ruby-bundler
+      - name: Detect Ruby version
+        id: ruby
+        run: echo "version=$(ruby -e 'puts RUBY_VERSION')" >> "$GITHUB_OUTPUT"
       - name: Cache gems
         id: cache-gems
         uses: actions/cache@v3
@@ -25,7 +28,7 @@ jobs:
           path: |
             .bundle
             vendor/bundle
-          key: gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: gems-ruby${{ steps.ruby.outputs.version }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Install gems
         if: steps.cache-gems.outputs.cache-hit != 'true'
         run: |
@@ -50,7 +53,7 @@ jobs:
   publish:
     if: github.ref == 'refs/heads/main'
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
