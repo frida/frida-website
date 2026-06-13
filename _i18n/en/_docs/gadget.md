@@ -250,6 +250,17 @@ rpc.exports = {
 };
 {% endhighlight %}
 
+<div class="note">
+  <h5>Using the language bridges</h5>
+  <p>
+    As of Frida 17.0.0 the language bridges are no longer bundled with the
+    runtime. Scripts that use <code>Java.perform()</code> must therefore
+    <code>import Java from 'frida-java-bridge'</code> (and likewise for
+    <code>frida-objc-bridge</code> and <code>frida-swift-bridge</code>), then be
+    processed by a bundler such as <a href="/docs/bridges/">frida-compile</a>.
+  </p>
+</div>
+
 The [rpc.exports][] part is actually optional, and is useful when your script
 needs to be aware of its lifecycle.
 
