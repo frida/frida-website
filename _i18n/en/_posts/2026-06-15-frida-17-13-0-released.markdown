@@ -1,0 +1,21 @@
+---
+layout: news_item
+title: 'Frida 17.13.0 Released'
+date: 2026-06-15 19:09:39 +0200
+author: oleavr
+version: 17.13.0
+categories: [release]
+---
+
+Time for another Frida release, bringing a handful of API and introspection
+improvements:
+
+- core: Add `argv` to enumerated process parameters. When requesting full scope,
+  Frida now exposes the target process' command-line arguments on Windows,
+  macOS, Linux, and FreeBSD.
+- swift: Expose the new `argv` process parameter through a typed accessor,
+  returning the target's command-line arguments when provided by the backend.
+- gumjs: Add `toJSON()` support to `ControlFlowGraph` and related classes, so
+  they render nicely when passed to `JSON.stringify()`.
+- gir: Emit filename and line information on synthesized documentation, making
+  it easier to trace generated API docs back to their source.
