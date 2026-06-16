@@ -1,0 +1,32 @@
+---
+layout: news_item
+title: 'Frida 17.14.0 Released'
+date: 2026-06-16 16:40:30 +0200
+author: oleavr
+version: 17.14.0
+categories: [release]
+---
+
+Today's release is all about making runaway scripts less scary. Big thanks to
+[@tpetsas][] for the original Gum PR that kicked this off.
+
+- script: Add `Script.interrupt()`, which aborts any JavaScript currently
+  executing while leaving the script loaded and ready to run again. This is
+  especially handy for REPLs that want Ctrl+C to recover from a runaway
+  evaluation. Interrupting while nothing is executing is a no-op, so a Ctrl+C
+  arriving just after an operation finishes won't disturb the next one.
+- script: Add `Script.terminate()`, which interrupts execution and unloads the
+  script, so one stuck in a long-running or infinite operation can still be torn
+  down cleanly.
+- gumjs: Implement interrupt and terminate support for both QuickJS and V8.
+  QuickJS now polls a per-script interrupt flag, while V8 uses
+  `Isolate::TerminateExecution()` and clears the sticky termination state once
+  execution unwinds.
+- core: Plumb the new APIs through `AgentSession`, the payload script engine,
+  and the public `Script` class. Barebone sessions report these operations as
+  unsupported.
+- core: Expose the process `argv` from `enumerate_processes()` at metadata
+  scope, mirroring `path`, instead of restricting it to full scope.
+
+
+[@tpetsas]: https://github.com/tpetsas
