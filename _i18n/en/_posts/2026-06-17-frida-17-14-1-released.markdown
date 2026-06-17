@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 17.14.1 Released'
+date: 2026-06-17 12:42:41 +0200
+author: oleavr
+version: 17.14.1
+categories: [release]
+---
+
+Quick bug-fix release with a fix in GumJS:
+
+- gumjs: Fix stack overflow in ControlFlowGraph.toJSON(). Serializing a cyclic
+  block graph recursed without bound, as BasicBlock.toJSON() emitted successors,
+  predecessors, and immediateDominator as fresh BasicBlock objects. This meant
+  JSON's identity-based cycle detection never kicked in, eventually overflowing
+  the native stack. Neighbouring blocks are now emitted by start address instead,
+  while blocks are still listed in full at the top level.
