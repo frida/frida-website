@@ -1,0 +1,36 @@
+---
+layout: news_item
+title: 'Frida 17.15.0 Released'
+date: 2026-06-19 12:38:42 +0200
+author: oleavr
+version: 17.15.0
+categories: [release]
+---
+
+Time for a fresh release with some exciting improvements across Gum and our
+dynamic linker integrations:
+
+- gumjs: Add `Process.getThreadById()` and `Process.findThreadById()`, backed
+  by a new native `find_thread_by_id()` API for looking up a single thread by
+  ID without enumerating all threads.
+- gumjs: Add `Process.getFunctionRange()`, a convenience wrapper that throws
+  instead of returning `null`, matching the existing `findFunctionRange()`.
+- gumjs: Fix a thread enumeration deadlock when a thread observer is attached.
+  We now release the JS runtime lock while performing the native enumeration,
+  and build the JS objects afterwards.
+- gumjs: Modernize the remaining string-concatenated lookup errors to use
+  template strings.
+- darwin: Rework module observation for modern dyld. Recent dyld invokes its
+  image-load notifier while holding the loader write lock on a protected stack,
+  which meant observers could not safely call back into dyld. We now use a
+  resident `_dyld_register_func_for_add_image()` trampoline for FULL teardown,
+  delivered on a regular stack off the write lock, and hook
+  `RuntimeState::decDlRefCount` for removals.
+- darwin: Resolve module exports without `dlopen()`. This avoids forcing module
+  initializers, including Objective-C `+load`, to run while an image is still
+  being brought up by dyld.
+- linux: Fix musl RTLD notifier hooking. Instead of inline-hooking the
+  one-instruction `_dl_debug_state` stub and clobbering the following
+  `__dl_seterr`, we now hook the linker's call sites.
+- ci: Move our GitHub Actions usage off the deprecated Node.js 20 runtime.
+- barebone, compiler: Bump `@types/frida-gum` to 19.7.0.
