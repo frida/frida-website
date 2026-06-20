@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 17.15.1 Released'
+date: 2026-06-20 15:57:05 +0200
+author: oleavr
+version: 17.15.1
+categories: [release]
+---
+
+Quick bug-fix release with the following fixes:
+
+- darwin: Fix an unused variable warning on non-arm64e builds.
+- linux: Fix musl RTLD call-site discovery when multiple GumModuleRegistry
+  instances are involved. We now scan the linker's on-disk image instead of
+  live memory, preserving the original instructions and allowing chained
+  interceptors to hook the same loaded addresses.
