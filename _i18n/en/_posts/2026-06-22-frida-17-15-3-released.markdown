@@ -1,0 +1,17 @@
+---
+layout: news_item
+title: 'Frida 17.15.3 Released'
+date: 2026-06-22 23:31:35 +0200
+author: oleavr
+version: 17.15.3
+categories: [release]
+---
+
+Quick bug-fix release, shipped later the same day because software is hard and
+apparently enjoys reminding us.
+
+- darwin: Populate the module registry before activating the interceptor. The
+  first gum_interceptor_obtain() activates the unwind broker, whose backend
+  resolves libdyld through the module registry. Doing this before taking the
+  initial snapshot could re-enter an empty registry and crash on a NULL module
+  lookup. We now snapshot the modules first, then start change tracking.
