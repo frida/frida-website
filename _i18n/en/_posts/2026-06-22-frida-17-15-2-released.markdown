@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 17.15.2 Released'
+date: 2026-06-22 11:46:34 +0200
+author: oleavr
+version: 17.15.2
+categories: [release]
+---
+
+Quick bug-fix release, with a fix from [@wave-sky][] for spawning processes on
+Android 10:
+
+- linux: Fix payload base selection on Android 10. Spawning processes could fail
+  with a remote connection error due to Android's XOM mechanism making
+  libstagefright.so execute-only. We now avoid requiring read permission when
+  picking target libraries, consider more media shared libraries, and force
+  read-execute permissions so the payload can run.
+
+
+[@wave-sky]: https://github.com/wave-sky
