@@ -1,0 +1,23 @@
+---
+layout: news_item
+title: 'Frida 17.15.4 Released'
+date: 2026-07-06 19:05:24 +0200
+author: oleavr
+version: 17.15.4
+categories: [release]
+---
+
+Quick release with a couple of handy improvements:
+
+- gumjs: Add Checksum copy and peek methods. Thanks [@mrmacete][]!
+- defs: Add support for Capstone 6. Thanks [@kripticni][]!
+- darwin-symbolicator: Add missing locking, and initialize module before
+  jumping to cleanup. Thanks [@comex][]!
+- qml: Suppress Qt `__yield` error on recent clang.
+- barebone, compiler: Bump @types/frida-gum to 19.8.0.
+- Bump FridaCore to 17.15.3.
+
+
+[@mrmacete]: https://github.com/mrmacete
+[@kripticni]: https://github.com/kripticni
+[@comex]: https://github.com/comex
