@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 17.15.5 Released'
+date: 2026-07-13 12:56:02 +0200
+author: oleavr
+version: 17.15.5
+categories: [release]
+---
+
+Quick bug-fix release with an Android fix from [@dezige131][], along with
+several Darwin and Gum.Memory-related improvements from [@hsorbo][]:
+
+- android: Tolerate transient USAP patch misses when the target process does not
+  have the boot image mapped.
+- darwin: Re-enable CodeSegment on newer kernels. The `vm_remap` `OVERWRITE`
+  trick works again on iOS 17.6 and newer, allowing CodeSegment to be enabled
+  there once more.
+- memory: Fix a suspend deadlock in `patch_code`. Patches are now prepared in a
+  scratch buffer first, allowing the apply callback to allocate freely before
+  other threads are suspended for the lock-free copy back into place.
+- memory: Make `patch_code` safer under concurrency and when failures occur. All
+  target pages are made writable before any bytes are committed, only modified
+  bytes are copied back, and pages are restored to RX before the instruction
+  cache is flushed.
+- memory: Extract the three patching strategies into dedicated helpers,
+  simplifying the dispatcher without changing behavior.
+
+
+[@dezige131]: https://github.com/dezige131
+[@hsorbo]: https://twitter.com/hsorbo
