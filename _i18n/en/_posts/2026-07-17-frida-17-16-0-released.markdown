@@ -1,0 +1,84 @@
+---
+layout: news_item
+title: 'Frida 17.16.0 Released'
+date: 2026-07-17 23:28:26 +0200
+author: oleavr
+version: 17.16.0
+categories: [release]
+---
+
+Big release this time, with a mix of safety hardening, platform fixes, and some
+API polishing. Huge thanks to [@hsorbo][] and [@SamSunNV][] for their
+contributions.
+
+Highlights include:
+
+- spawn-gating: Make it fail-safe and scoped. The system-wide Linux eBPF spawn
+  gater is now opt-in through the new `SpawnGatingScope`, and all suspending
+  gaters now share a watchdog that disables gating and resumes everything if a
+  caught process is left suspended for too long. This avoids wedging process
+  creation system-wide when a client disappears or stops resuming spawns.
+- spawn-gating: Add a `spawn_gating_disabled(reason)` signal on `HostSession`,
+  bubbled up to `Device`, so clients can tell when the watchdog had to step in.
+- python: Auto-generate the Python bindings from Frida's GIR. This also adds
+  support for asyncio, through the new `frida.aio` package.
+- swift: Auto-generate the Swift bindings from Frida's GIR.
+- auth: Flush the pending `INVALID_ARGUMENT` reply before closing the
+  authentication channel, so clients reliably see the token rejection instead of
+  a closed connection.
+- fruity: Fix upload injection on arm64e by applying each segment's protection
+  before running threaded and chained fixups. This lets writable data segments
+  receive their rebased and authenticated pointers without faulting, while still
+  avoiding any rwx mapping. Thanks [@hsorbo][]!
+- darwin: Revive `CodeSegment` realization on modern iOS by emitting a modern
+  SHA-256 CodeDirectory with exec-segment fields and a non-empty identifier.
+  The implementation probes the modern flavor first, falls back to the legacy
+  one when needed, and caches the working strategy.
+- darwin: Probe `CodeSegment` support at runtime by patching a scratch page,
+  instead of relying on XNU version guesses for behavior that varies across
+  kernels.
+- gumjs: Let V8 JIT inside the iOS app sandbox by avoiding the macOS-specific
+  `MAP_JIT` path on iOS and instead using Gum's own JIT allocation path.
+- darwin: Fix arm64e attach crashes by signing resident notifier handler
+  pointers before the add-image stub branches through them.
+- darwin-mapper: Skip stores for threaded binds, where the resolved target
+  already lives in the chain processor's symbol table and the default
+  segment/offset may point into read-only `__TEXT`. Thanks [@hsorbo][]!
+- arm64-writer: Add `PACIA` and `MOVK` instruction emitters, useful for signing
+  pointers inline and building ptrauth discriminators in generated code.
+  Thanks [@hsorbo][]!
+- x86: Preserve AVX-512 state in Stalker. On AVX-512 hosts we now save and
+  restore the upper halves of zmm0-15, zmm16-31, and the k0-k7 opmask
+  registers, fixing crashes when stalking EVEX-using libc routines.
+- x86: Add AVX-512 CPU feature detection and writer emitters for the spills
+  needed by Stalker.
+- x86: Expose XMM registers in `CpuContext`, backed by the live save area where
+  available, and add `gum_cpu_context_copy()` plus a boxed type for safe
+  persistence. Thanks for the fun team-work, [@hsorbo][]!
+- interceptor: Discard hooks when a module is unloaded, without trying to
+  restore prologues in memory that is no longer mapped. Thanks [@SamSunNV][]!
+- module-registry: Fix ELF range computation for modules whose program headers
+  are not mapped next to the ELF header, such as libgit2. We compute ranges
+  from program headers when possible and fall back to `/proc/self/maps` only
+  when needed.
+- memory: Finish migrating internal callers to `gum_memory_allocate()` and
+  `gum_memory_free()`, and remove the old `gum_alloc_n_pages()` family.
+- windows: Fix installed-assets helper discovery by expanding `<arch>`, finding
+  helpers in per-architecture directories, and having the manager mint and pass
+  a unique rendezvous name to all helper services.
+- windows: Improve MSVC cross builds by keeping the arm64->x86 build cross,
+  pointing each compiler at its own include and library paths, and preserving
+  the environment's `INCLUDE`/`LIB` for native build-machine tools.
+- build: Resolve GLib up front through a new `glib.wrap`, base in-tree payloads
+  on the GLib flavor, configure native languages for cross builds, and avoid
+  forwarding parent build-machine options into compat builds.
+- deps: Rebuild prebuilts with the current GitHub Actions Xcode, picking up the
+  updated arm64e ABI.
+- compiler/barebone: Bump `@types/frida-gum` to 19.10.0.
+- tests: Make the bytecode test unload its script before dropping the last
+  reference, fixing an intermittent teardown race under load. Thanks
+  [@hsorbo][]!
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@SamSunNV]: https://github.com/SamSunNV
