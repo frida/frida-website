@@ -3501,6 +3501,18 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putFxrstorRegPtr(reg)`: put a FXRSTOR instruction
 
+-   `putVmovdqu64RegOffsetPtrZmm(dstBase, dstOffset, srcZmm)`: put a VMOVDQU64 ZMM instruction
+
+-   `putVmovdqu64ZmmRegOffsetPtr(dstZmm, srcBase, srcOffset)`: put a VMOVDQU64 ZMM instruction
+
+-   `putVextracti64x4RegOffsetPtrZmm(dstBase, dstOffset, srcZmm, imm)`: put a VEXTRACTI64X4 ZMM instruction
+
+-   `putVinserti64x4ZmmRegOffsetPtr(dstZmm, srcBase, srcOffset, imm)`: put a VINSERTI64X4 ZMM instruction
+
+-   `putKmovqRegOffsetPtrKreg(dstBase, dstOffset, srcKreg)`: put a KMOVQ KREG instruction
+
+-   `putKmovqKregRegOffsetPtr(dstKreg, srcBase, srcOffset)`: put a KMOVQ KREG instruction
+
 -   `putU8(value)`: put a uint8
 
 -   `putS8(value)`: put an int8
@@ -4166,6 +4178,8 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putMovNzcvReg(reg)`: put a MOV NZCV instruction
 
+-   `putMovkRegImm(reg, imm, shift)`: put a MOVK instruction
+
 -   `putUxtwRegReg(dstReg, srcReg)`: put an UXTW instruction
 
 -   `putAddRegRegImm(dstReg, leftReg, rightValue)`: put an ADD instruction
@@ -4191,6 +4205,8 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putCmpRegReg(regA, regB)`: put a CMP instruction
 
 -   `putXpaciReg(reg)`: put an XPACI instruction
+
+-   `putPaciaRegReg(dstReg, modReg)`: put a PACIA instruction
 
 -   `putNop()`: put a NOP instruction
 
