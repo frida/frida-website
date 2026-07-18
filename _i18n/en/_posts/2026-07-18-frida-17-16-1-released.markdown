@@ -1,0 +1,20 @@
+---
+layout: news_item
+title: 'Frida 17.16.1 Released'
+date: 2026-07-18 13:30:39 +0200
+author: oleavr
+version: 17.16.1
+categories: [release]
+---
+
+Quick bug-fix release with a couple of Darwin-focused fixes:
+
+- apple: Stop forcing the classic linker. This was a workaround for an Xcode
+  15.0 beta 7 issue where the modern linker over-linked libresolv. The modern
+  linker no longer does this, while ld-classic omits SG_READ_ONLY on
+  __DATA_CONST, causing newer dyld versions to reject our images.
+- darwin: Restrict CodeSegment to old kernels. The revived signed-dylib realize
+  path lets modern XNU accept our signature and map the page, which can later
+  panic the kernel on iOS 15.6.1 and newer. Modern kernels now fall back to
+  mprotect, suspending threads as before, while the signed-segment path remains
+  available for old jailbroken kernels that need it.
