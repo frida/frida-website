@@ -1,0 +1,18 @@
+---
+layout: news_item
+title: 'Frida 17.16.2 Released'
+date: 2026-07-19 22:25:34 +0200
+author: oleavr
+version: 17.16.2
+categories: [release]
+---
+
+Another quick bug-fix release, fixing an issue where `frida-helper` on Darwin
+and Linux kept the embedder's stdio pipes open.
+
+The helper previously inherited these streams at launch so they could later be
+used by `Device#spawn()` with `stdio='inherit'`. The streams are now passed to
+the helper with each such request instead.
+
+- darwin: Redirect the helper's own stdin, stdout, and stderr to `/dev/null`.
+- linux: Apply the same fix as on Darwin.
