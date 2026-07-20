@@ -1,0 +1,16 @@
+---
+layout: news_item
+title: 'Frida 17.16.3 Released'
+date: 2026-07-20 17:56:10 +0200
+author: oleavr
+version: 17.16.3
+categories: [release]
+---
+
+Another quick bug-fix release, addressing two issues in the Python bindings:
+
+- bindgen: Fixed marshalling of option keyword arguments. None values are now
+  omitted instead of being passed to typed setters.
+- bindgen: Fixed collection-valued keyword arguments by mapping them to the
+  appropriate select_ or add_ methods while traversing the parent chain.
+  This affects specs, omits, externals, PIDs, and identifiers.
