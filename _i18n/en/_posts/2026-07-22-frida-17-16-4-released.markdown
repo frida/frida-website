@@ -1,0 +1,24 @@
+---
+layout: news_item
+title: 'Frida 17.16.4 Released'
+date: 2026-07-22 00:30:23 +0200
+author: oleavr
+version: 17.16.4
+categories: [release]
+---
+
+Quick bug-fix release to restore some Python binding API and typing surface
+area that regressed in the recent bindgen rewrite:
+
+- bindgen: Restore the remaining public names. The cancellable decorator,
+  RPCResult, make_rpc_call_request(), make_auth_callback(), and
+  ScriptExportsAsync are now exposed again from frida.core.
+- bindgen: Generate signal callback overloads for the facade's on()/off()
+  helpers. This means malformed signal handlers should now be caught by type
+  checkers instead of silently passing as any callable.
+- bindgen: Restore missing facade members omitted by the .gir-based generator:
+  get_device(), get_device_matching(), enumerate_devices(), shutdown(),
+  Cancellable.connect(), and Cancellable.disconnect().
+- bindgen: Restore the facade typing surface. The generated package once again
+  ships the expected type aliases and annotations, including module functions,
+  read-only options properties, and the _frida.pyi entries that went missing.
