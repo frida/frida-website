@@ -1,0 +1,55 @@
+---
+layout: news_item
+title: 'Frida 17.17.0 Released'
+date: 2026-08-05 00:47:29 +0200
+author: oleavr
+version: 17.17.0
+categories: [release]
+---
+
+This is a big release with lots of bare-metal goodness. The Barebone agent—
+written in Rust and embedding the GumJS devkit—previously supported only XNU.
+It can now also run in the Linux kernel, where a small C shim provides the
+kernel glue.
+
+The agent is packaged as a `.ko`: load it with `insmod`, then exchange
+length-prefixed GVariant messages through `/dev/frida`. Configure the Barebone
+backend to use this transport, and run `frida-server --device=barebone` on the
+device. Here it is running on my Pixel 6 Pro:
+
+![linux-kernel](/img/barebone-linux-kernel.png "Linux kernel"){: width="100%" }
+
+Full changelog:
+
+- gumjs: Fix a detach hang when a native fault inside JS is recovered by a
+  later handler. We now rebalance the Interceptor transaction when the thread
+  survives, instead of ending it twice. Kudos to [@pandasauce][] for reporting
+  the issue and helping track it down.
+- arm64: Detect branches into the range being relocated, preventing Interceptor
+  from rewriting a branch so that it lands in the middle of its own redirect
+  patch. Thanks to [@WHW0x455][] for this fix.
+- python: Fix the `linker_notifier_offsets` keyword argument to `attach()`,
+  restore the default port for `Script.enable_debugger()`, and reinstate
+  marshalling of certificate options for remote devices and related APIs.
+- barebone: Add support for running the agent as a Linux kernel module. The
+  agent now starts inside the target as a `.ko`, exposes a character device for
+  transport, and can be reached through a regular
+  `frida-server --device=barebone` instance.
+- deps: Add a soft-float bare-metal SDK comprising picolibc and compiler-rt.
+  This gives the `none-arm64-softfloat` flavour a libc and runtime that agree
+  on passing floating-point values through general-purpose registers.
+- deps: Build the soft-float SDK in CI, check for published bundles before
+  spending time installing a toolchain, keep libc headers out of devkit
+  headers, use the SDK as the sysroot, and ensure configure-time link checks
+  resolve libc correctly.
+- deps: Bump GLib, libffi, and QuickJS for freestanding fixes, vector assembler
+  directive fixes, the precedence-climbing parser, and the corresponding x18
+  fix.
+- arm64: Avoid FP and SIMD code on soft-float targets by using scalar fallbacks
+  for `memcpy`, pointer scanning, and Interceptor's register shuffling.
+- gumjs: Bound the QuickJS stack on bare metal, re-enabling its stack check so
+  the parser stops before exhausting the small stacks such hosts may provide.
+
+
+[@WHW0x455]: https://github.com/WHW0x455
+[@pandasauce]: https://github.com/pandasauce
