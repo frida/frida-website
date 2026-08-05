@@ -19,6 +19,88 @@ device. Here it is running on my Pixel 6 Pro:
 
 ![linux-kernel](/img/barebone-linux-kernel.png "Linux kernel"){: width="100%" }
 
+## Build the module for your device
+
+The release page has a GumJS devkit for the `none-arm64-softfloat` target. You
+do not have to build Gum yourself. The steps below make a `frida-agent.ko` for
+a Pixel 6 Pro. Other arm64 Linux systems use the same steps with a different
+kernel.
+
+Do the build on an x86-64 Linux host. The kernel build tree contains x86-64
+programs.
+
+1. Install the tools:
+
+       sudo apt-get install build-essential clang binutils-aarch64-linux-gnu
+       rustup target add aarch64-unknown-none
+       rustup component add rust-src
+
+   Your clang must be version 19 or newer. GCC does not implement the
+   soft-float ABI.
+
+2. Download the source:
+
+       git clone --recurse-submodules https://github.com/frida/frida-core.git
+       cd frida-core
+
+3. Download the devkit:
+
+       version=17.17.0
+       base=https://github.com/frida/frida/releases/download/$version
+       curl -LO $base/frida-gumjs-devkit-$version-none-arm64-softfloat.tar.xz
+       mkdir -p ~/gumjs-devkit
+       tar -C ~/gumjs-devkit -xf frida-gumjs-devkit-$version-none-arm64-softfloat.tar.xz
+
+4. Download the SDK:
+
+       releng/deps.py sync sdk none-arm64-softfloat ~/sdk-none-arm64-softfloat
+
+   The SDK contains picolibc and the compiler-rt builtins. The devkit needs
+   them.
+
+5. Read the kernel version from the device:
+
+       adb shell uname -r
+       6.1.145-android14-11-gc1de4747ac59-ab14219743
+
+   The name ends with the GKI commit and the build number. Here the commit is
+   `c1de4747ac59`. The build number is `14219743`.
+
+6. Download the kernel files:
+
+       commit=c1de4747ac59
+       build=14219743
+       ci=https://ci.android.com/builds/submitted/$build/kernel_aarch64/latest/raw
+       mkdir -p ~/kernel-prepared ~/kernel-source
+       curl -sSL $ci/modules_prepare_outdir.tar.gz | tar -xz -C ~/kernel-prepared
+       curl -sSL $ci/kernel_aarch64_Module.symvers -o ~/kernel-prepared/Module.symvers
+       curl -sSL https://android.googlesource.com/kernel/common/+archive/$commit.tar.gz \
+           | tar -xz -C ~/kernel-source
+
+7. Build the module:
+
+       make -C src/barebone/agent/linux \
+           FRIDA_SDK=$HOME/sdk-none-arm64-softfloat \
+           GUMJS_DEVKIT_DIR=$HOME/gumjs-devkit \
+           AGENT_LD=aarch64-linux-gnu-ld \
+           AGENT_AR=aarch64-linux-gnu-ar \
+           AGENT_NM=aarch64-linux-gnu-nm \
+           AGENT_OBJCOPY=aarch64-linux-gnu-objcopy \
+           KDIR=$HOME/kernel-source \
+           KOUT=$HOME/kernel-prepared \
+           LLVM=1
+
+8. Load the module:
+
+       adb push src/barebone/agent/linux/frida-agent.ko /data/local/tmp/
+       adb shell su -c 'insmod /data/local/tmp/frida-agent.ko'
+
+The module loads only on the kernel build that you made it for. The kernel
+compares the version string exactly. A different build of the same kernel
+branch does not work.
+
+For more information, read the [module README][].
+
 Full changelog:
 
 - gumjs: Fix a detach hang when a native fault inside JS is recovered by a
@@ -51,5 +133,6 @@ Full changelog:
   the parser stops before exhausting the small stacks such hosts may provide.
 
 
+[module README]: https://github.com/frida/frida-core/blob/main/src/barebone/agent/linux/README.md
 [@WHW0x455]: https://github.com/WHW0x455
 [@pandasauce]: https://github.com/pandasauce
