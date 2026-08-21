@@ -53,7 +53,7 @@ programs.
 
 4. Download the SDK:
 
-       releng/deps.py sync sdk none-arm64-softfloat ~/sdk-none-arm64-softfloat
+       releng/deps.py sync sdk none-arm64-softfloat_nopic ~/sdk-none-arm64-softfloat_nopic
 
    The SDK contains picolibc and the compiler-rt builtins. The devkit needs
    them.
@@ -80,7 +80,7 @@ programs.
 7. Build the module:
 
        make -C src/barebone/agent/linux \
-           FRIDA_SDK=$HOME/sdk-none-arm64-softfloat \
+           FRIDA_SDK=$HOME/sdk-none-arm64-softfloat_nopic \
            GUMJS_DEVKIT_DIR=$HOME/gumjs-devkit \
            AGENT_LD=aarch64-linux-gnu-ld \
            AGENT_AR=aarch64-linux-gnu-ar \
