@@ -1,0 +1,65 @@
+---
+layout: news_item
+title: 'Frida 17.19.0 Released'
+date: 2026-09-25 13:15:55 +0200
+author: oleavr
+version: 17.19.0
+categories: [release]
+---
+
+This release brings Frida to the PlayStation 5, expands Barebone's reach
+across virtual machines and kernels, and fixes a range of injection and
+instrumentation issues.
+
+- prospero: Add a PS5 backend and ship builds of frida-server, portal,
+  inject, Gadget, and the devkits. The backend can enumerate apps, spawn
+  programs and apps, and inject agents within the console's restrictions.
+- barebone: Add support for the Android emulator. Kernel symbol discovery
+  now handles more Linux images and older kernels, while new hostlink
+  options include pipe-over-vsock and serial connections.
+- barebone: Extend WinNT support to arm64, including process injection,
+  and add support for VirtualBox and Parallels guests. Numerous fixes
+  improve agent reliability across Windows and Linux kernels.
+- device: Add connection-progress events, so applications can show what
+  Frida is doing while a device connects or a Barebone agent is uploaded.
+  The new signals are also available in the bindings.
+- fruity: Fix RSD port discovery on macOS 27 and refresh the service
+  snapshot when a newly published service is not found. A new
+  `force_transport=usbmux` channel option lets callers choose usbmux even
+  when a tunnel is available. Thanks to [@mrmacete][] for the option.
+- darwin: Fix an iOS 27 injection leak that could retain a 40 MB agent
+  blob after each attach. Also improve memory protection handling and
+  preserve suspension across policy softening. Thanks to [@jiska][]
+  for these fixes.
+- gum: Improve arm64 relocation and Interceptor handling of function
+  prologues, including cases where X16 and X17 are both in use. Grafting
+  now uses Arm64Relocator, allowing PC-relative instructions to be
+  relocated. Thanks to [@jiska][] and [@daniillnull][] for their work here.
+- interceptor: Track the C stack associated with each frame, improving
+  handling of stackful coroutines. Thanks to [@wertyutreethgfd][] for the
+  contribution.
+- linux: Reclaim temporary stack and TLS mappings after kernel-assisted
+  injection, and release the loader region when an agent unloads.
+  Validate auxiliary-vector program headers before reading them, fixing
+  a problem exposed by Wine's preloader. Thanks to [@tntljc][] for the
+  latter fix.
+- socket: Handle a peer disconnecting between the WebSocket handshake
+  and connection acceptance instead of aborting the process. Thanks to
+  [@it4ch1-007][] for the fix.
+- darwin: Use jailbreak-provided memory hooks when available. Thanks to
+  [@devnoname120][] for the contribution.
+- gdb: Improve thread selection, timeouts, stop handling, and
+  compatibility with stubs that do not support binary writes.
+
+There are also fixes for Windows unwinding through Interceptor
+trampolines, Swift event delivery and variant lifetimes, generated
+bindings, and a variety of platform-specific build issues.
+
+
+[@mrmacete]: https://twitter.com/bezjaje
+[@jiska]: https://chaos.social/@jiska
+[@daniillnull]: https://github.com/daniillnull
+[@wertyutreethgfd]: https://github.com/wertyutreethgfd
+[@tntljc]: https://github.com/tntljc
+[@it4ch1-007]: https://github.com/it4ch1-007
+[@devnoname120]: https://github.com/devnoname120
