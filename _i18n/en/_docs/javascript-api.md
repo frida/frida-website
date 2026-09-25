@@ -3491,6 +3491,8 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putNop()`: put a NOP instruction
 
+-   `putEndbr()`: put an ENDBR instruction
+
 -   `putBreakpoint()`: put an OS/architecture-specific breakpoint instruction
 
 -   `putPadding(n)`: put `n` guard instruction
@@ -4092,6 +4094,13 @@ const MyWeirdTrustManager = Java.registerClass({
 -   `putBrRegNoAuth(reg)`: put a BR instruction expecting a raw pointer
     without any authentication bits
 
+-   `putJmpReg(reg)`: put code needed for jumping to the address in
+    `reg`, emitting RET rather than BR so a BTI-guarded target needs no landing
+    pad. Emits BR on arm64e, which doesn't guard pages this way.
+
+-   `putJmpRegNoAuth(reg)`: like `putJmpReg()`, but expecting a raw pointer
+    without any authentication bits
+
 -   `putBlrReg(reg)`: put a BLR instruction
 
 -   `putBlrRegNoAuth(reg)`: put a BLR instruction expecting a raw pointer
@@ -4208,7 +4217,11 @@ const MyWeirdTrustManager = Java.registerClass({
 
 -   `putPaciaRegReg(dstReg, modReg)`: put a PACIA instruction
 
+-   `putSvcImm(imm)`: put a SVC instruction
+
 -   `putNop()`: put a NOP instruction
+
+-   `putBti()`: put a BTI instruction
 
 -   `putBrkImm(imm)`: put a BRK instruction
 
@@ -4253,6 +4266,20 @@ const MyWeirdTrustManager = Java.registerClass({
     now `true`.
     {: #arm64relocator-readone}
 
+-   `setScratchReg(reg)`: set the register that exits from the relocated code
+    may use when it is still untouched by the relocated instructions
+
+-   `setCodeRange(range)`: set the range of code that register liveness
+    analysis may look at. Branches leaving it are assumed to clobber X16 and
+    X17.
+
+-   `readUntilResumable(scenario)`: read further until a scratch register is
+    available for jumping back to the input code, or the end of input is
+    reached. Returns `false` if neither happens.
+
+-   `pickExitReg(target)`: pick a register that an exit branching to `target`
+    may use, or `null` if none is known to be free
+
 -   `peekNextWriteInsn()`: peek at the next **[Instruction](#instruction)** to be
     written or skipped
 
@@ -4288,6 +4315,7 @@ const MyWeirdTrustManager = Java.registerClass({
 -   ConditionCode: `eq` `ne` `hs` `lo` `mi` `pl` `vs` `vc` `hi` `ls` `ge` `lt`
     `gt` `le` `al` `nv`
 -   IndexMode: `post-adjust` `signed-offset` `pre-adjust`
+-   Scenario: `offline` `online`
 
 
 ### MipsWriter
