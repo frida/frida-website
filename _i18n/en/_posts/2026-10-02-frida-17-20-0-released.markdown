@@ -429,9 +429,10 @@ generated declarations.
 
 ## Luma
 
-All of this is already put to use in [Luma][], our GUI for Frida, as of its
-upcoming release. Luma gains a *Patterns* section in the sidebar, where patterns
-and shared libraries live, with an editor backed by the language server:
+All of this is already put to use in [Luma][], the official Frida GUI, as of
+its upcoming release. Luma gains a *Patterns* section in the sidebar, where
+patterns and shared libraries live, with an editor backed by the language
+server:
 
 ![luma-pattern-editor](/img/luma-pattern-editor.png "Luma's pattern editor"){: width="100%" }
 
