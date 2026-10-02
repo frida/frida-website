@@ -254,8 +254,9 @@ run into inside a process. But the pattern language can do a lot more: arrays
 sized by earlier fields, conditionals, pointers with custom bases, locals,
 functions, attributes like *[[format]]* and *[[color]]*, the *std* library, and
 so on. For those there's *parse()*, which decodes a snapshot of the memory with
-the full ImHex semantics. Let's try it on something every process has: the
-Mach-O header of its main executable. We'll put this in *macho.hexpat*:
+the full ImHex semantics. Let's try it on something every process on macOS
+and iOS has: the Mach-O header of its main executable. We'll put this in
+*macho.hexpat*:
 
 {% highlight cpp %}
 #pragma endian little
