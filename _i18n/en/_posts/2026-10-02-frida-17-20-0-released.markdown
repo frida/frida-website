@@ -350,8 +350,9 @@ API covered next, and ignored inside agents.
 
 Frida.Compiler takes care of agents, but tools built on top of Frida often want
 to decode memory on the host side, without injecting any pattern code into the
-target. For that there's a new *PatternCompiler* API in frida-core, exposed by
-all of our language bindings. You hand it a pattern source, and it hands you a
+target. For that there's a new *PatternCompiler* API in frida-core, which the
+auto-generated bindings, i.e. frida-python, frida-node and frida-swift, pick up
+automatically. You hand it a pattern source, and it hands you a
 *PatternModule* that describes the types the pattern declares, and that can
 decode a chunk of bytes against any of them. Let's use it from Python to decode
 the same Mach-O header we looked at above:
