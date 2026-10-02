@@ -58,6 +58,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     1. [Java](#java)
 1. **CPU Instruction**
     1. [Instruction](#instruction)
+    1. [ControlFlowGraph](#controlflowgraph)
     1. [X86Writer](#x86writer)
     1. [X86Relocator](#x86relocator)
     1. [x86 enum types](#x86-enum-types)
@@ -75,6 +76,7 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 1. **Other**
     1. [Console](#console)
     1. [Hexdump](#hexdump)
+    1. [Checksum](#checksum)
     1. [Shorthand](#shorthand)
     1. [Communication between host and injected process](#communication-between-host-and-injected-process)
     1. [Timing events](#timing-events)
@@ -233,6 +235,13 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
 
 +   `Process.getCurrentThreadId()`: get this thread's OS-specific id as a number
 
++   `Process.findThreadById(id)`, `Process.getThreadById(id)`: returns a
+    **[Thread](#thread)** whose *id* matches the one specified. In the event
+    that no such thread could be found, *findThreadById()* returns *null* whilst
+    *getThreadById()* throws an exception. Unlike
+    [`enumerateThreads()`](#process-enumeratethreads), cloaked threads are not
+    hidden, as an explicit lookup by ID always returns the thread if it exists.
+
 +   `Process.enumerateThreads()`: enumerates running threads, returning an array
     of **[Thread](#thread)** objects.
     {: #process-enumeratethreads}
@@ -313,6 +322,18 @@ Clone **[this repo](https://github.com/oleavr/frida-agent-example)** to get star
     *null* whilst *getRangeByAddress()* throws an exception.  See
     [`Process.enumerateRanges()`](#process-enumerateranges) for details about which
     fields are included.
+
++   `Process.findFunctionRange(address)`, `getFunctionRange(address)`: return
+    an object with `base` and `size` properties describing the code range of
+    the function that *address* belongs to, derived from the platform's unwind
+    tables. A function whose body is split across several ranges, e.g. a cold
+    fragment, is represented by one range per fragment, and the one covering
+    *address* is returned. Where no unwind information is available, e.g. for a
+    leaf function or a binary lacking unwind tables altogether, the containing
+    symbol's bounds are used as a best-effort fallback. In the event that
+    neither yields a range, *findFunctionRange()* returns *null* whilst
+    *getFunctionRange()* throws an exception.
+    {: #process-findfunctionrange}
 
 +   `Process.enumerateRanges(protection|specifier)`: enumerates memory ranges
     satisfying `protection` given as a string of the form: `rwx`, where `rw-`
@@ -400,7 +421,10 @@ Objects returned by e.g.
     `sp`, which are **[NativePointer](#nativepointer)** objects specifying
     EIP/RIP/PC and ESP/RSP/SP, respectively, for ia32/x64/arm. Other
     processor-specific keys are also available, e.g. `eax`, `rax`, `r0`, `x0`,
-    etc.
+    etc. Vector registers like `xmm0` and `q0` are exposed as
+    **[ArrayBuffer](#arraybuffer)** objects, floating point registers like `d0`
+    and `s0` as numbers, and status registers like `cpsr` (32-bit ARM) and
+    `nzcv` (AArch64) as numbers.
     {: #thread-context}
 
 -   `entrypoint`: where the thread started its execution, if applicable and
@@ -481,6 +505,8 @@ Interceptor.attach(f, {
 Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerateModules()`](#process-enumeratemodules).<br/><br/>
 
 -   `name`: canonical module name as a string
+
+-   `version`: module version as a string, or `null` if not available
 
 -   `base`: base address as a [`NativePointer`](#nativepointer)
 
@@ -651,6 +677,10 @@ Objects returned by e.g. [`Module.load()`](#module-load) and [`Process.enumerate
         For example: "13 37 13 37 : 1f ff ff f1".
         For convenience it is also possible to specify nibble-level wildcards,
         like "?3 37 13 ?7", which gets translated into masks behind the scenes.
+        Alternatively, `pattern` may be a regular expression enclosed in
+        slashes, e.g. "/Some\s*Pattern/".
+        You may also pass a [`MatchPattern`](#matchpattern) instead of a
+        string.
 
     -   `callbacks` is an object with:
 
@@ -709,6 +739,47 @@ Memory.scan(m.base, m.size, pattern, {
 const results = Memory.scanSync(m.base, m.size, pattern);
 console.log('Memory.scanSync() result:\n' +
     JSON.stringify(results));
+{% endhighlight %}
+
++   `new MatchPattern(pattern)`: compiles `pattern`, a string of the same
+    format as accepted by [`Memory.scan()`](#memory-scan), into a match pattern
+    that may be passed to [`Memory.scan()`](#memory-scan),
+    [`Memory.scanSync()`](#memory-scan), [`Kernel.scan()`](#kernel-scan), and
+    [`Kernel.scanSync()`](#kernel-scan). This is useful to avoid parsing the
+    same pattern over and over when scanning many ranges. Throws an exception
+    if the pattern is invalid.
+    {: #matchpattern}
+
++   `Memory.findPointers(ranges, values[, options])`: scan one or more memory
+    ranges for pointer-aligned words matching any of `values`, an array of
+    [`NativePointer`](#nativepointer) values. This is a focused,
+    SIMD-accelerated alternative to [`Memory.scan()`](#memory-scan) for the
+    common task of finding pointers, e.g. references to a given address.
+    `ranges` is either a single range object or an array of such objects, each
+    of which contains `base` and `size` properties – like the objects returned
+    by [`Process.enumerateRanges()`](#process-enumerateranges). The optional
+    `options` object may contain:
+
+    -   `mask`: [`NativePointer`](#nativepointer) bitmask applied to each
+        scanned word and each value before comparing. Defaults to an exact
+        match. Pass e.g. `ptr('0x00007ffffffffff8')` to strip arm64e PAC and
+        non-pointer-isa bits.
+
+    Returns an array of matches sorted by address, each an object containing:
+
+    -   `address`: address where a matching word was found, as a
+        [`NativePointer`](#nativepointer)
+    -   `value`: the matching word, i.e. the value stored at `address`, before
+        masking
+
+    For example:
+
+{% highlight js %}
+const target = Memory.allocUtf8String('Hello');
+const ranges = Process.enumerateRanges('rw-');
+for (const { address } of Memory.findPointers(ranges, [target])) {
+  console.log('Found reference at', address);
+}
 {% endhighlight %}
 
 +   `Memory.alloc(size[, options])`: allocate `size` bytes of memory on the
@@ -986,6 +1057,9 @@ Compiles Rust source code to machine code, straight to memory.
     specify which Cargo dependencies to use, e.g.:
     `{ dependencies: ['base64 = "0.22.1"', 'anyhow = "1.0.97"'] }`.
 
+-   `dispose()`: eagerly unmaps the module from memory. Useful for short-lived
+    modules when waiting for a future garbage collection isn't desirable.
+
 
 ### ApiResolver
 
@@ -1182,6 +1256,38 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
     [`NativePointer#writeByteArray`](#nativepointer-writebytearray), but writing to
     kernel memory.
 
++   `Kernel.readS8(address)`, `Kernel.readU8(address)`,
+    `Kernel.readS16(address)`, `Kernel.readU16(address)`,
+    `Kernel.readS32(address)`, `Kernel.readU32(address)`,
+    `Kernel.readS64(address)`, `Kernel.readU64(address)`,
+    `Kernel.readShort(address)`, `Kernel.readUShort(address)`,
+    `Kernel.readInt(address)`, `Kernel.readUInt(address)`,
+    `Kernel.readLong(address)`, `Kernel.readULong(address)`,
+    `Kernel.readFloat(address)`, `Kernel.readDouble(address)`:
+    just like the corresponding [`NativePointer`](#nativepointer) methods, but
+    reading from kernel memory at `address`, specified as a
+    **[UInt64](#uint64)**.
+
++   `Kernel.readCString(address, size)`,
+    `Kernel.readUtf8String(address, size)`,
+    `Kernel.readUtf16String(address, length)`:
+    just like the corresponding [`NativePointer`](#nativepointer) methods, but
+    reading from kernel memory. Note that the `size` / `length` argument is
+    required, as NUL-terminated strings are not supported.
+
++   `Kernel.writeS8(address, value)`, `Kernel.writeU8(address, value)`,
+    `Kernel.writeS16(address, value)`, `Kernel.writeU16(address, value)`,
+    `Kernel.writeS32(address, value)`, `Kernel.writeU32(address, value)`,
+    `Kernel.writeS64(address, value)`, `Kernel.writeU64(address, value)`,
+    `Kernel.writeShort(address, value)`, `Kernel.writeUShort(address, value)`,
+    `Kernel.writeInt(address, value)`, `Kernel.writeUInt(address, value)`,
+    `Kernel.writeLong(address, value)`, `Kernel.writeULong(address, value)`,
+    `Kernel.writeFloat(address, value)`, `Kernel.writeDouble(address, value)`,
+    `Kernel.writeUtf8String(address, str)`,
+    `Kernel.writeUtf16String(address, str)`:
+    just like the corresponding [`NativePointer`](#nativepointer) methods, but
+    writing to kernel memory at `address`, specified as a **[UInt64](#uint64)**.
+
 +   `Kernel.scan(address, size, pattern, callbacks)`: just like [`Memory.scan`](#memory-scan),
     but scanning kernel memory.
     {: #kernel-scan}
@@ -1209,6 +1315,11 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 -   `shr(n)`, `shl(n)`:
     make a new Int64 with this Int64 shifted right/left by `n` bits
 
+-   `not()`: make a new Int64 with this Int64's bits inverted
+
+-   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
+    this one
+
 -   `compare(rhs)`: returns an integer comparison result just like
     **[String#localeCompare()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)**
 
@@ -1232,6 +1343,11 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
 
 -   `shr(n)`, `shl(n)`:
     make a new UInt64 with this UInt64 shifted right/left by `n` bits
+
+-   `not()`: make a new UInt64 with this UInt64's bits inverted
+
+-   `equals(rhs)`: returns a boolean indicating whether `rhs` is equal to
+    this one
 
 -   `compare(rhs)`: returns an integer comparison result just like
     **[String#localeCompare()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)**
@@ -1301,6 +1417,8 @@ Kernel.protect(UInt64('0x1234'), 4096, 'rw-');
     **[String#localeCompare()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)**
 
 -   `toInt32()`: casts this **[NativePointer](#nativepointer)** to a signed 32-bit integer
+
+-   `toUInt32()`: casts this **[NativePointer](#nativepointer)** to an unsigned 32-bit integer
 
 -   `toString([radix = 16])`: converts to a string of optional radix (defaults
     to 16)
@@ -1875,6 +1993,16 @@ smt.reset();
 
 ### SqliteStatement
 
+-   `columnNames`: array of strings with the names of the columns in the
+    prepared statement
+-   `columnTypes`: array of strings with the types of the values in the
+    current result row, each specifying one of: `integer`, `float`, `text`,
+    `blob`, or `null`. Only meaningful after `step()` has returned a row, as
+    SQLite column types may vary from one row to the next.
+-   `declaredTypes`: array with the declared types of the columns as specified
+    in the table schema, each either a string like `TEXT` or `INTEGER`, or
+    `null` if the column has no declared type, e.g. for expression columns
+-   `paramsCount`: number of SQL parameters in the prepared statement
 -   `bindInteger(index, value)`: bind the integer `value` to `index`
 -   `bindFloat(index, value)`: bind the floating point `value` to `index`
 -   `bindText(index, value)`: bind the text `value` to `index`
@@ -1901,6 +2029,12 @@ smt.reset();
     1 for Thumb functions. Frida takes care of this detail for you if you get
     the address from a Frida API (for example [`Module#getExportByName()`](#module-getexportbyname)).
     {: #interceptor-attach}
+
+    The `target` may also be an object with a `target` property containing the
+    address, alongside one or more
+    [instrumentation options](#interceptor-instrumentation-options) that
+    control how the inline hook is set up. The same goes for
+    [`replace()`](#interceptor-replace) and `replaceFast()`.
 
     The `callbacks` argument is an object containing one or more of:
 
@@ -2099,6 +2233,87 @@ Interceptor.replace(openPtr, new NativeCallback((pathPtr, flags) => {
 
     Defaults to 'soft', i.e. software breakpoints. Set it to 'hard' to use
     hardware breakpoints.
+
++   `Interceptor.defaults`: object with default
+    [instrumentation options](#interceptor-instrumentation-options) applied to
+    every subsequent `attach()`, `replace()`, and `replaceFast()` call. Options
+    specified per call take precedence over these.
+
+The instrumentation options are:
+{: #interceptor-instrumentation-options}
+
+-   `scratchRegister`: name of the register that Interceptor may clobber when
+    building the trampoline, e.g. `x16`. Only supported on architectures that
+    expose scratch registers, i.e. arm64 and mips.
+
+-   `scenario`: string specifying whether another thread might be executing
+    the target while it is being instrumented. Use `online` when calls may be
+    in flight, i.e. a thread could have executed an instruction with call
+    semantics (CALL/BL/etc.) but not yet returned. Use `offline` when that
+    cannot happen, e.g. after spawning a process but before resuming it, or
+    when no calls will occur until some external input you control. The
+    `offline` scenario allows writing past the end of such an instruction,
+    which would be unsafe online. Defaults to `online`.
+
+-   `relocation`: string specifying how to deal with relocation of the
+    instructions overwritten by the hook, either:
+
+    -   `checked`: verify that the chosen scratch register is not used in the
+        function's early prologue, that there are no branches back into the
+        overwritten instruction(s), and similar constraints. This is the
+        default.
+    -   `unchecked`: skip those checks.
+    -   `forced`: like `unchecked`, but also allow overwriting past the end of
+        the function, for cases where you know it is safe, e.g. because of
+        alignment padding between this function and the next.
+
+-   `writeRedirect(details)`: callback function that emits a custom redirect
+    from the instrumented function or instruction to Interceptor's
+    trampoline. The primary use-case is defeating fingerprinting, by emitting
+    a redirect that a RASP implementation won't recognize as an inline hook.
+    It is also useful when space is tight and you want to locate a nearby code
+    cave reachable through a short branch, and then branch from there to the
+    trampoline farther away. The `details` argument is an object containing:
+
+    -   `writer`: code writer to emit the redirect with, e.g. an
+        **[X86Writer](#x86writer)** on x86 and an
+        **[Arm64Writer](#arm64writer)** on arm64. On 32-bit ARM it may be
+        either an **[ArmWriter](#armwriter)** or a
+        **[ThumbWriter](#thumbwriter)**, depending on the instruction set at
+        the instrumented site.
+    -   `target`: address of Interceptor's trampoline, i.e. where your
+        redirect should branch to, as a [`NativePointer`](#nativepointer)
+    -   `scratchRegister`: name of the register that the redirect may
+        clobber. Only present on arm64 and mips.
+    -   `capacity`: number of bytes available for the redirect
+
+    Throwing from the callback declines the redirect. There is no fallback to
+    the default strategy in that case, so the `attach()`, `replace()`, or
+    `replaceFast()` call fails as if the target could not be instrumented.
+
+-   `redirectSpaceHint`: upper bound on the number of bytes that
+    `writeRedirect` will need. Your callback may end up using less. Specifying
+    a larger value means Interceptor has to explore further to determine that
+    it is safe to use that much space – looking for back-branches, call
+    return sites, etc. – which is more expensive. Defaults to the size needed
+    for a full redirect, e.g. 16 bytes on arm64.
+
+For example, on arm64:
+
+{% highlight js %}
+const open = Module.getGlobalExportByName('open');
+Interceptor.attach({
+  target: open,
+  writeRedirect({ writer, target, scratchRegister }) {
+    writer.putLdrRegAddress(scratchRegister, target);
+    writer.putBrReg(scratchRegister);
+  }
+}, {
+  onEnter(args) {
+    console.log('open:', args[0].readUtf8String());
+  }
+});
+{% endhighlight %}
 
 
 ### Stalker
@@ -3237,15 +3452,89 @@ const MyWeirdTrustManager = Java.registerClass({
     -   `operands`: array of objects describing each operand, each specifying
                     the `type` and `value`, at a minimum, but potentially also
                     additional properties depending on the architecture
+    -   `regsAccessed`: object with `read` and `written` properties, each an
+        array of register names read or written by this instruction, either
+        implicitly or explicitly
     -   `regsRead`: array of register names implicitly read by this instruction
     -   `regsWritten`: array of register names implicitly written to by this
         instruction
     -   `groups`: array of group names that this instruction belongs to
     -   `toString()`: convert to a human-readable string
 
+    Each operand also has an `access` property on x86, ARM and AArch64,
+    a string specifying either `r`, `w`, `rw`, or an empty string if not
+    applicable. ARM and AArch64 operands may additionally specify `shift`,
+    `vectorIndex`, `subtracted` (ARM), `ext` and `vas` (AArch64).
+
     For details about `operands` and `groups`, please consult the
     **[Capstone](http://www.capstone-engine.org/)** documentation for your
     architecture.
+
+
+### ControlFlowGraph
+
++   `new ControlFlowGraph(entrypoint)`: builds the control-flow graph of the
+    function containing `entrypoint`, specified as a
+    [`NativePointer`](#nativepointer). The function's bounds are resolved the
+    same way as [`Process.findFunctionRange()`](#process-findfunctionrange),
+    and its architecture and mode are determined automatically. On 32-bit ARM,
+    a least significant bit set to 1 indicates Thumb. Throws an exception if
+    the bounds of the function cannot be determined.
+
+-   `entrypoint`: address that the graph was built from, as a
+    [`NativePointer`](#nativepointer)
+
+-   `entryBlock`: the [`BasicBlock`](#basicblock) that the function begins
+    with
+
+-   `blocks`: array of all [`BasicBlock`](#basicblock) objects making up the
+    graph
+
+-   `findBlockContaining(address)`: returns the [`BasicBlock`](#basicblock)
+    containing `address`, or `null` if no block covers it
+
+-   `dominates(a, b)`: returns a boolean indicating whether the block
+    containing `a` dominates the block containing `b`, i.e. whether every path
+    from the entry block to `b` passes through `a`
+
+-   `enumerateDominatingSites(target)`: enumerates the sites that dominate
+    `target`, nearest first, returning an array of objects containing:
+
+    -   `address`: instruction-aligned address that dominates `target`, as a
+        [`NativePointer`](#nativepointer)
+    -   `capacity`: number of contiguous bytes at `address`, within a single
+        range and with no incoming branch, that a redirect may overwrite
+        without another control-flow edge landing inside the patched region
+
+    This is useful for finding alternative places to hook when `target`
+    itself is unsuitable, e.g. when combined with the `writeRedirect`
+    [instrumentation option](#interceptor-instrumentation-options).
+
+Basic blocks are not constructable, but obtained through the graph. Each
+`BasicBlock` has the following properties:
+{: #basicblock}
+
+-   `start`: address of the first instruction in the block, as a
+    [`NativePointer`](#nativepointer)
+-   `end`: address just past the last instruction in the block, as a
+    [`NativePointer`](#nativepointer)
+-   `successors`: array of blocks that control may flow to from this block
+-   `predecessors`: array of blocks that control may flow to this block from
+-   `immediateDominator`: block that immediately dominates this one, or `null`
+    for the entry block
+-   `instructions`: array of [`Instruction`](#instruction) objects making up
+    this block
+
+For example:
+
+{% highlight js %}
+const f = Module.getGlobalExportByName('open');
+const cfg = new ControlFlowGraph(f);
+for (const block of cfg.blocks) {
+  console.log(`${block.start}-${block.end}:`,
+      block.successors.map(b => b.start).join(', '));
+}
+{% endhighlight %}
 
 
 ### X86Writer
@@ -4531,6 +4820,46 @@ console.log(hexdump(libc, {
 00000010  03 00 28 00 01 00 00 00 00 00 00 00 34 00 00 00  ..(.........4...
 00000020  34 a8 04 00 00 00 00 05 34 00 20 00 08 00 28 00  4.......4. ...(.
 00000030  1e 00 1d 00 06 00 00 00 34 00 00 00 34 00 00 00  ........4...4...
+{% endhighlight %}
+
+
+### Checksum
+
++   `Checksum.compute(type, data)`: computes the checksum of `data`, which is
+    either a string, an **[ArrayBuffer](#arraybuffer)**, or an array of byte
+    values. The `type` is a string specifying one of: `md5`, `sha1`, `sha256`,
+    `sha384`, or `sha512`. Returns the checksum as an all-lowercase hexadecimal
+    string.
+
++   `new Checksum(type)`: creates an instance used to compute a checksum of
+    type `type` for a stream of data. It starts out in "open" state where data
+    is fed in through one or more calls to `update()`. Once done, `getString()`
+    or `getDigest()` is called to obtain the computed checksum. This also moves
+    the instance to "closed" state, which means `update()` may no longer be
+    called.
+
+-   `update(data)`: feeds `data` into the checksum, where `data` is of the same
+    type as accepted by `Checksum.compute()`. Returns the checksum instance,
+    allowing calls to be chained.
+
+-   `getString()`: closes the checksum and returns the digest as an
+    all-lowercase hexadecimal string.
+
+-   `getDigest()`: closes the checksum and returns the digest as an
+    **[ArrayBuffer](#arraybuffer)**.
+
+-   `peekString()`, `peekDigest()`: just like `getString()` and `getDigest()`,
+    but without closing the checksum, so it may still be updated afterwards.
+
+-   `copy()`: creates a copy of the checksum instance. The copy is in the same
+    state as the original, so a closed checksum is copied as closed.
+
+{% highlight js %}
+console.log(Checksum.compute('sha256', 'Hello'));
+
+const checksum = new Checksum('md5');
+checksum.update('ab').update('c');
+console.log(checksum.getString());
 {% endhighlight %}
 
 
