@@ -358,6 +358,8 @@ decode a chunk of bytes against any of them. Let's use it from Python to decode
 the same Mach-O header we looked at above:
 
 {% highlight python %}
+from pathlib import Path
+
 import frida
 
 session = frida.attach(0)
@@ -378,7 +380,7 @@ name, base = script.exports_sync.main_module()
 base = int(base, 16)
 data = script.exports_sync.read(base, 4096)
 
-module = frida.PatternCompiler().compile(open("macho.hexpat").read(),
+module = frida.PatternCompiler().compile(Path("macho.hexpat").read_text(),
                                          platform="darwin", arch="arm64")
 assert len(module.diagnostics) == 0
 
