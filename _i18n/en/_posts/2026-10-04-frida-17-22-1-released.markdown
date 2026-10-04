@@ -1,0 +1,66 @@
+---
+layout: news_item
+title: 'Frida 17.22.1 Released'
+date: 2026-10-04 11:35:42 +0200
+author: oleavr
+version: 17.22.1
+categories: [release]
+---
+
+A bugfix release, with [@hsorbo][] behind most of the fixes, and a new
+contributor making the C++ bindings a bit more complete.
+
+## Memory scans finding themselves
+
+Håvard noticed that a pointer scan on Linux could find the very values it
+was looking for, in a stack that no thread was using anymore. The workers of
+a scan spill their search values onto their stacks, and once the pool was
+freed and its extra workers had exited, glibc kept their stacks around for
+reuse, with everything above the exiting frame still mapped and readable.
+After our deferred cleanup had uncloaked them, the next scan happily found
+its own leftovers. The same goes for anything that ran on the script
+scheduler's thread pool.
+
+The fix is to discard what a Gum thread spilled on its stack right as it
+exits, from the finalize callback that frida-glib runs on the thread itself,
+before the thread library gets to cache the stack. Other libcs unmap exited
+stacks outright, so only glibc pays for the extra syscall.
+
+## Other fixes
+
+Håvard also fixed two more Linux-related issues. Instrumenting a function
+again while its last listener's detach was still pending, which is what
+GumJS does within its script-wide transaction, could resolve a stale redirect
+into a trampoline that was then freed along with the old context. The
+function is now treated as still instrumented, reusing its context when both
+old and new instrumentation are of the default type, and otherwise
+deactivating it on the spot. And *dlsym()* no longer crashes on modules that
+were pulled in as dependencies by *dlopen()*, where glibc has yet to compute
+a local scope for the link map we used as the handle.
+
+Last but not least, [@mnalmahmud][] made it possible to attach probes to
+arbitrary instructions from the C++ bindings, through a new *ProbeListener*
+interface, so that no longer requires dropping down to the C API.
+
+Enjoy!
+
+### Changelog
+
+- glibc: Discard dead Gum thread stacks on exit, so memory scans no longer
+  find leftovers from the scan workers or the script scheduler's pool.
+  Thanks for tracking this one down, [@hsorbo][]!
+- interceptor: Fix re-attach during a pending detach, which could resolve a
+  stale redirect into a trampoline that was then freed. Thanks [@hsorbo][]!
+- linux: Fix *dlsym()* crash on modules discovered as dependencies of a
+  *dlopen()*, by creating the handle on demand with *RTLD_NOLOAD*. Thanks
+  [@hsorbo][]!
+- gumpp: Add probe listener support, exposing *gum_make_probe_listener()* as
+  a *ProbeListener* interface accepted by *Interceptor::attach()* and
+  *detach()*. Thanks [@mnalmahmud][]!
+- frida-compile: Create the output file's directory as needed, both in
+  frida-tools and in the npm package. Thanks [@fourcels][]!
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@mnalmahmud]: https://github.com/mnalmahmud
+[@fourcels]: https://github.com/fourcels
