@@ -1,0 +1,52 @@
+---
+layout: news_item
+title: 'Frida 17.22.2 Released'
+date: 2026-10-05 10:00:41 +0200
+author: oleavr
+version: 17.22.2
+categories: [release]
+---
+
+A quick follow-up to fix a regression in 17.22.1, plus a couple of other
+fixes that landed in the meantime.
+
+The stack discard we added for glibc in 17.22.1 assumed every exiting thread
+had been set up by us. Threads that GLib merely adopted, because a foreign
+pthread called into it, are still finalized on exit but were never realized,
+so the discard dereferenced NULL and took the process down with it. A
+frida-node consumer that attached, loaded a script and exited died with
+SIGSEGV, and so did a long test run once one of these threads went away
+mid-run. [@hsorbo][] fixed it to skip the discard when there is nothing to
+work from, and added a test that adopts a foreign thread and lets it exit.
+
+Håvard also fixed a long-standing issue in our QuickJS fork. When the cycle
+collector frees an object, it releases the values of any WeakMap entries
+keyed by it. Those values are live objects that survived the scan, and if
+such a release dropped one's refcount to zero, it was ignored because the
+runtime was busy removing cycles, and nothing ever revisited it. It sat there
+with a zero refcount until runtime teardown, by which time its finalizer might
+touch state that no longer existed. Such objects are now collected on a
+deferred list and freed once cycle removal has finished, like any other
+object whose refcount reaches zero.
+
+Finally, [@mbv06][] noticed that newer ART copies the boot image's methods
+section into its own memfd mapping, so our Android spawn support now also
+looks for the *setArgV0()* JNI slot in *boot-image-methods.art*.
+
+Enjoy!
+
+### Changelog
+
+- glibc: Skip the stack discard for adopted threads, fixing a crash on thread
+  exit introduced in 17.22.1. Thanks [@hsorbo][]!
+- quickjs: Free live objects released while removing cycles, so values
+  released through WeakMap entries during cycle collection get their
+  finalizers run instead of lingering until runtime teardown. Thanks
+  [@hsorbo][]!
+- android: Scan *boot-image-methods.art* for the *setArgV0()* JNI slot, as
+  newer ART maps the boot image's methods section separately. Thanks
+  [@mbv06][]!
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@mbv06]: https://github.com/mbv06
