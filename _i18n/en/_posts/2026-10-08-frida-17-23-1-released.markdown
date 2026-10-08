@@ -1,0 +1,79 @@
+---
+layout: news_item
+title: 'Frida 17.23.1 Released'
+date: 2026-10-08 14:49:13 +0200
+author: oleavr
+version: 17.23.1
+categories: [release]
+---
+
+Mostly a Barebone release, teaching the agents it injects into user
+processes a few things that regular agents take for granted, but also with a
+frida-fs fix that anyone using it should know about.
+
+## frida-fs
+
+[frida-fs][] is our implementation of Node.js' *fs* module for GumJS, which
+is what makes *import fs from "fs"* work in an agent. It's there so that code
+can be written once and run both in Node.js and inside a process, and so that
+packages written for Node.js can be used by Frida users as well.
+Frida.Compiler bundles it, and its *stat()* read each field by passing the
+path to *NativePointer#read\*()*, which has been fine for years, until
+17.20.0 gave those readers an optional offset argument. The path was then
+taken as that offset, and *stat()* broke. frida-fs 7.0.1 fixes it, and this
+release bundles 7.1.1, which also skips the *.* and *..* entries when listing
+a directory, works on Windows 9x, and leaves a missing wrapped function as
+*null* instead of throwing at import. If your agent touches the filesystem,
+rebuild it with this release.
+
+## Barebone
+
+The agents that the Barebone backend injects into user processes, on Windows
+NT, Windows 9x and Linux, now back a few more of the APIs that scripts
+expect. Streams are there, so *Win32InputStream* and *Win32OutputStream*,
+and their UNIX counterparts, work in such a process, with the agent handing
+Gum the poll, read, write and close it needs. ANSI strings are converted
+through the code page of the process. *SystemFunction* and *Interceptor*
+report *lastError* on Windows and *errno* on Linux, where the agent reads the
+C library's thread-local errno rather than returning zero. And on Windows,
+*Module.enumerateImports()* no longer comes back empty, while
+*Process.getModuleByName("kernel32.dll")* finds its module regardless of the
+case the guest uses.
+
+A number of fixes came along with that work, listed below, from kernel
+symbols being freed too early on Linux to the Windows 9x main loop not being
+wakeable while idle.
+
+Enjoy!
+
+### Changelog
+
+- compiler: Bump frida-fs to 7.1.1, fixing *stat()* on 17.20.0 and later,
+  skipping *.* and *..* in directory listings, supporting Windows 9x, and
+  leaving a missing wrapped function as *null*.
+- barebone: Back streams and ANSI strings in the agents injected into user
+  processes, so *Win32InputStream*, *Win32OutputStream* and their UNIX
+  counterparts work there, with ANSI strings converted through the code page
+  of the process.
+- barebone: Report *lastError* on Windows and *errno* on Linux through
+  *SystemFunction* and *Interceptor*.
+- barebone: Enumerate the imports of Windows modules, so
+  *Module.enumerateImports()* works on Windows 9x and NT.
+- barebone: Let the agent decide module name case, so
+  *Process.getModuleByName()* finds modules in Windows guests.
+- barebone: Resolve a Linux agent's own exports, so userspace names like
+  *opendir* no longer fall through to the kernel symbol table.
+- barebone: Keep the Linux kernel symbols alive, fixing a use-after-free
+  once the config was parsed.
+- barebone: Enable GLib's IO features for the agent, and warm async I/O
+  before the loop runs, so the first GIO user neither faults nor wedges the
+  loop.
+- barebone: Give the Windows 9x loop its own wake event, so it can be woken
+  while sleeping with nothing to watch.
+- barebone: Drop the Linux copy-status logging, as the kernel half already
+  detects an agent's exit.
+- gumjs: Build the stream module everywhere, and pick the system error field
+  at runtime, so one Barebone build serves every flavor of agent.
+
+
+[frida-fs]: https://github.com/nowsecure/frida-fs
