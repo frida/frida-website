@@ -9,7 +9,8 @@ categories: [release]
 
 Mostly a Barebone release, teaching the agents it injects into user
 processes a few things that regular agents take for granted, but also with a
-frida-fs fix that anyone using it should know about.
+frida-fs fix that anyone using it should know about, and a fix for app icons
+coming back truncated on Android.
 
 ## frida-fs
 
@@ -74,6 +75,8 @@ Enjoy!
   detects an agent's exit.
 - gumjs: Build the stream module everywhere, and pick the system error field
   at runtime, so one Barebone build serves every flavor of agent.
+- android: Stop truncating app icons. The helper never closed its Base64
+  encoder, so the final group of each icon was never written.
 
 
 [frida-fs]: https://github.com/nowsecure/frida-fs
