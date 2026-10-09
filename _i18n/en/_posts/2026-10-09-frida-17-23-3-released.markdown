@@ -1,0 +1,69 @@
+---
+layout: news_item
+title: 'Frida 17.23.3 Released'
+date: 2026-10-09 19:47:19 +0200
+author: oleavr
+version: 17.23.3
+categories: [release]
+---
+
+Our .NET bindings are reborn, thanks to [@AeonLucid][], and [@Cassian433][]
+is back with two more fixes.
+
+## .NET
+
+frida-clr has been around since the early days, as a C++/CLI wrapper that
+only ever worked on Windows, against the .NET Framework. It hasn't kept up
+with the rest of our bindings, and more and more of the API was missing.
+
+AeonLucid rewrote it from scratch as [frida-net][], and kindly contributed
+it back. The new bindings are plain C# on .NET 9, generated from the same
+GIR that frida-python, frida-node and frida-swift are generated from, through
+[gir.core][]. That means they cover the full API, and that they'll keep up
+with it automatically. And since nothing in there is Windows-specific
+anymore, they run on Windows, macOS and Linux, with the native runtime
+packaged per platform.
+
+The result is a *Frida.NET* package with *FridaDeviceManager*,
+*FridaDevice*, *FridaSession* and *FridaScript* at the center, events for
+devices coming and going, sessions detaching and scripts posting messages,
+and option classes for spawning, attaching and loading scripts, plus a
+*Frida.NET.Runtime* package for each of Windows x64 and x86, macOS x64 and
+arm64, and Linux x86, x64, arm64, arm32 and mips64.
+
+A word of caution before you build on it: the API is not stable. I'm in the
+middle of moving it to a fully async design, among other things, so expect
+it to change shape over the next few releases. We'll publish to NuGet at a
+later point, so for now you build the packages from the repo. Thanks a lot
+for this, AeonLucid!
+
+## Fixes
+
+Cassian433 found that a code slice taken from the free list was handed out
+with the reference count of zero it was left with when last freed, so its
+next unref took it to minus one and returned early instead of putting it
+back on the list. On hosts where we can allocate RWX memory, each slice could
+thus only be reused once, after which it leaked along with the pages backing
+it. The count is now reset on reuse, as for a slice from a fresh batch.
+
+They also fixed *SqliteStatement* on V8, where *REAL* columns were fetched
+as 64-bit integers, so *SELECT 1.5* stepped to *1* while QuickJS returned
+*1.5*. Thanks for both!
+
+Enjoy!
+
+### Changelog
+
+- clr: Rewrite the bindings to .NET 9 on top of gir.core, generated from
+  the GIR like our other bindings, for Windows, macOS and Linux. The API is
+  not stable, and NuGet packages will follow later. Thanks [@AeonLucid][]!
+- codeallocator: Fix the reference count of reused slices, which leaked
+  after one reuse on RWX-capable hosts. Thanks [@Cassian433][]!
+- gumjs: Read *REAL* columns as doubles on V8, matching QuickJS. Thanks
+  [@Cassian433][]!
+
+
+[@AeonLucid]: https://github.com/AeonLucid
+[@Cassian433]: https://github.com/Cassian433
+[frida-net]: https://github.com/AeonLucid/frida-net
+[gir.core]: https://gircore.github.io/
