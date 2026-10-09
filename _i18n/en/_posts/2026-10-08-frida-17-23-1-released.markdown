@@ -1,7 +1,7 @@
 ---
 layout: news_item
 title: 'Frida 17.23.1 Released'
-date: 2026-10-08 14:49:13 +0200
+date: 2026-10-08 17:12:34 +0200
 author: oleavr
 version: 17.23.1
 categories: [release]
