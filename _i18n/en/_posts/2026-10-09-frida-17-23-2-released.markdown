@@ -1,0 +1,57 @@
+---
+layout: news_item
+title: 'Frida 17.23.2 Released'
+date: 2026-10-09 15:01:16 +0200
+author: oleavr
+version: 17.23.2
+categories: [release]
+---
+
+Three fixes, and all three thanks to contributors: two well-researched pull
+requests from [@Cassian433][], a new contributor who showed up with both in
+one day, and a bug report from [@alex19EP][] that had already done the
+detective work.
+
+The first is for Linux module enumeration. When syncing modules from the
+dynamic linker's *r_debug* list, we treated *l_addr* as the address of the
+ELF header, when it is actually the load bias. The two coincide for the vast
+majority of images, but not for one whose first *PT_LOAD* segment isn't at
+virtual address zero, such as a binary linked with *-Ttext-segment*. For
+those we either reported the module at address zero with an empty range, or
+read unmapped memory and crashed. We now only trust *l_addr* when it holds
+an ELF header describing an image that contains the module's dynamic
+section, and otherwise locate the image through the mapping that holds it.
+
+The second is for *SqliteStatement.bindInteger()*, which parsed its value as
+a 32-bit integer before handing it to SQLite's 64-bit binding. QuickJS
+silently truncated 4294967301 to 5, while V8 refused the call. It now parses
+a 64-bit value, which also means you can pass an *Int64* or a *BigInt*.
+
+The third fixes a leak that kept Interceptor hooks alive past script unload.
+Since 17.19.0, the interceptor and its unwind broker kept each other alive,
+so neither was disposed when the agent unloaded, on any platform, and the
+hooks the broker had placed outlived the agent. On Windows that was our hook
+on *RtlVirtualUnwind*'s implementation, so the target's next exception
+unwound into the unloaded agent and crashed it. [@alex19EP][] ran into this
+while inspecting a game for an accessibility mod, and filed a report that
+bisected it to the exact commit, with a repro, snapshots of the leftover
+hook, and the reference cycle spelled out: the unwind broker's backend held
+a reference to the interceptor, which held the broker. All I had to do was
+break the cycle. Thanks!
+
+Enjoy!
+
+### Changelog
+
+- linux: Stop taking *l_addr* for the ELF header when syncing modules from
+  *r_debug*, fixing images whose first *PT_LOAD* isn't at virtual address
+  zero. Thanks [@Cassian433][]!
+- gumjs: Support 64-bit values in *SqliteStatement.bindInteger()*, including
+  *Int64* and *BigInt*. Thanks [@Cassian433][]!
+- interceptor: Fix a leak that kept hooks alive past unload, by letting the
+  interceptor activate the unwind backend and deactivate it on dispose.
+  Thanks for the stellar bug report, [@alex19EP][]!
+
+
+[@Cassian433]: https://github.com/Cassian433
+[@alex19EP]: https://github.com/alex19EP
