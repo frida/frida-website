@@ -1,0 +1,167 @@
+---
+layout: news_item
+title: 'Frida 17.24.0 Released'
+date: 2026-10-16 15:37:57 +0200
+author: oleavr
+version: 17.24.0
+categories: [release]
+---
+
+This one has been brewing for a while. Our JavaScript runtimes jump years
+ahead, with V8 going from 10.x to 15.7 and QuickJS catching up with upstream.
+The .NET bindings got an async API and are on NuGet. [@hsorbo][] has been
+busy with the Swift ApiResolver, Darwin, Windows and patterns. And there's a
+long tail of fixes, with [@Cassian433][], [@mrmacete][] and
+[@ink-splatters][] contributing.
+
+## JavaScript runtimes
+
+Our V8 was stuck on 10.x since 2022, as each new major reshaped the embedder
+API and we had other fish to fry. That debt is paid: GumJS now builds against
+V8 15.7, which also means C++20. Nothing changes in how you use it, but you
+get a few years' worth of V8's engine improvements.
+
+QuickJS saw a similar leap. Our fork was rebased onto current upstream, so
+scripts running on the default runtime gain everything the language picked up
+recently: iterator helpers, the new *Set* methods, resizable *ArrayBuffer*s
+and *ArrayBuffer.prototype.transfer()*, *Float16Array*, *RegExp.escape()*
+along with the *v* flag and modifiers, *Promise.try()*, *Error.isError()*,
+*Math.sumPrecise()*, *Map* and *WeakMap* upsert methods, JSON modules with
+import attributes, and *WeakRef* and *FinalizationRegistry* on top of a
+reworked weak reference implementation. Under the hood there's a new BigInt
+implementation, string ropes for fast concatenation of long strings, a new
+dtoa, and a round of interpreter optimizations. On our side, QuickJS now
+reports column numbers in stack frames, which we map through source maps
+like we already did for V8, and *Script.bindWeak()* callbacks fire promptly
+again, as the new weak reference design only sweeps dead keys during a full
+GC and we now run the cheap sweep when leaving the outermost scope.
+
+The SDK refresh behind this also brings newer TinyCC, minizip-ng 4.x,
+libunwind and friends, and the toolchain is now at Meson's current option
+store, Vala's current GIO bindings, and so on.
+
+## .NET
+
+Last week's rewrite has moved fast. The repo is now [frida-net][], since the
+bindings target modern .NET on Windows, macOS and Linux rather than the .NET
+Framework, and the meta repo builds them wherever the *dotnet* CLI is found.
+
+The API is now async: device, session and script operations return *Task*s,
+with the calls scheduled on Frida's thread. Scripts support RPC through an
+*Exports* accessor as well as binary messages, devices report spawns, and
+*Frida.Compiler* is bound too. All of it is generated from the GIR through a
+new high-level generator, on top of the gir.core-based low-level layer. The
+packages target .NET 10, cover Windows arm64 as well now, and macOS builds
+are signed with our Developer ID.
+
+And they're on NuGet, as *Frida.NET* plus a *Frida.NET.Runtime* package per
+platform, published by CI through trusted publishing. The API is still
+settling, so expect changes, but trying it is now a package reference away.
+
+## Swift
+
+Håvard kept going on the Swift ApiResolver. The dispatch thunk parser, which
+gives class vtable slots their method names, only existed for arm64, so on
+x86-64 every slot stayed a synthetic *vtable[N]* entry. There's now an x86-64
+parser, and both parsers learned a few more shapes: static method thunks,
+async methods, whose thunks read an *AsyncFunctionPointer* rather than
+branching through the slot, and classes with a resilient superclass, where
+the slot index is relative to a base offset loaded from a global. The
+lookups also now account for the descriptor's vtable offset, so the names
+line up with the entries they describe.
+
+Two platform fixes came out of the same work. On Darwin, function ranges are
+now resolved from *LC_FUNCTION_STARTS*, which lists every function exactly,
+instead of compact unwind info, where the linker merges entries with equal
+encodings so a run of similar functions shared one range. And on Windows,
+DLLs pulled in as dependencies of an *LdrLoadDll()* call now reach the module
+registry, so *Process.enumerateModules()* no longer omits them.
+
+## Patterns
+
+Håvard also fixed *pointer_base* in patterns. A base function returns an
+offset in pattern space, like *$* and *addressof(parent)*, but the decoder
+and *parse()* added it to the raw value as if it were an address, which only
+worked at address zero. Pointers with a base now resolve as the raw value
+plus the base, sized pointers such as *T \*p : s32* are sign-extended, zero
+means no target, and *std::mem::base_address()* returns the address the data
+is loaded at, as in ImHex, so a pattern can turn an absolute pointer into an
+offset. ImHex's *std::ptr::relative_to_\** functions came along for the
+ride. Such fields are left out of the generated views, as a view cannot run
+the base function, and the declarations say so.
+
+## Other fixes
+
+- Stalker on 32-bit ARM could emit broken code in large blocks: the Thumb
+  writer's literal pools could land between the halves of a wide instruction,
+  push a short branch's target out of reach, or spill an LDR offset into its
+  register field, and a flush could commit the same pool twice. All four are
+  fixed, found while chasing SIGILLs on QNX.
+- QNX got a couple more fixes along the way: its *stdout* is an object rather
+  than a pointer, which crashed our libc shim on the first log message, and
+  merged *CANTUNWIND* unwind entries could span over a megabyte of code,
+  exhausting memory when building a *ControlFlowGraph*.
+- Interceptor now defers freeing a detached listener's entry until no thread
+  is inside the function, as a thread leaving it may already have read the
+  entry's slot.
+- *Instruction* handles the data entries Capstone yields for literal pools in
+  a *ControlFlowGraph* instead of crashing on them.
+- Enumerating ranges on Darwin after a huge anonymous reservation took tens
+  of seconds, as each path lookup walked the rest of the map. Thanks
+  [@Cassian433][]!
+- All *rx* allocations on Darwin are now blessed through page plans, so
+  *Memory.alloc()* with *rx* protection works like our own allocations. Thanks
+  [@mrmacete][]!
+- Releasing a *Compiler* right after starting a watch could delete the same
+  handle twice. Thanks [@ink-splatters][]!
+- Library builds could crash on concurrent output writes, and a watch
+  rebuild after the sources were deleted panicked.
+- The glibc stack discard no longer reaches into the next thread's stack on
+  glibc older than 2.27, and it scrubs the pages it keeps, so pointer scans
+  stop finding their own needles.
+
+Enjoy!
+
+### Changelog
+
+- gumjs: Port to V8 15.7.
+- quickjs: Rebase onto current upstream, bringing iterator helpers, *Set*
+  methods, resizable *ArrayBuffer*s, *Float16Array*, *RegExp.escape()*,
+  *Promise.try()*, *Error.isError()*, JSON modules and more.
+- gumjs: Map columns in QuickJS stack frames, and sweep dead weak refs when
+  leaving a scope so *Script.bindWeak()* callbacks run promptly.
+- net: Rename frida-clr to frida-net, make the API async, add RPC, binary
+  messages, spawn events and *Compiler* bindings, target .NET 10, add Windows
+  arm64, sign macOS builds, and publish to NuGet.
+- swift-api-resolver: Parse x86-64 dispatch thunks, match static method
+  thunks, name async method slots, and fix arm64 resilient bases. Thanks
+  [@hsorbo][]!
+- darwin: Find function ranges via *LC_FUNCTION_STARTS*. Thanks [@hsorbo][]!
+- windows: Track dependency DLLs in the module registry. Thanks [@hsorbo][]!
+- patterns: Fix *pointer_base* offset resolution, skip such fields in views,
+  fix *std::mem::base_address()*, and add *std::ptr::relative_to_\**.
+  Thanks [@hsorbo][]!
+- memory: Hide pointer scan worker stacks from scans, and scrub the kept top
+  of dead thread stacks on glibc. Thanks [@hsorbo][]!
+- linux: Keep the guard page out of pre-2.27 glibc stack ranges.
+- thumb-writer: Keep literal pools out of instructions and short branches,
+  keep literals within LDR (T1) reach, and fix double commit on flush.
+- gumprocess: Skip *CANTUNWIND* EXIDX entries, falling back to symbol
+  bounds.
+- libc-shim: Provide QNX's stdio objects.
+- interceptor: Defer freeing detached listener entries.
+- gumjs: Handle Capstone data entries in *Instruction*.
+- darwin: Avoid quadratic path lookups for ranges. Thanks [@Cassian433][]!
+- darwin: Bless all rx allocations. Thanks [@mrmacete][]!
+- compiler: Stop the watch session on dispose. Thanks [@ink-splatters][]!
+- compiler: Serialize library output captures, and tolerate library builds
+  without sources.
+- gadget, elf: Adapt to minizip-ng 4.x.
+- meson: Disable zstd in the libsoup fallback, matching the SDK.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@Cassian433]: https://github.com/Cassian433
+[@mrmacete]: https://twitter.com/bezjaje
+[@ink-splatters]: https://github.com/ink-splatters
+[frida-net]: https://github.com/frida/frida-net
