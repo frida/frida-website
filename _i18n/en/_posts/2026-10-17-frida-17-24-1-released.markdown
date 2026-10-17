@@ -1,0 +1,104 @@
+---
+layout: news_item
+title: 'Frida 17.24.1 Released'
+date: 2026-10-17 12:54:41 +0200
+author: oleavr
+version: 17.24.1
+categories: [release]
+---
+
+A quick follow-up to yesterday's release. Frida.Compiler got a lot better at
+running code written for Node.js, [@hsorbo][] taught the Swift ApiResolver to
+read symbol tables, and the .NET packages now ship with the compiler built
+in.
+
+## Node.js compatibility
+
+Getting the [@frida/net examples][] working again turned into a tour of
+what Frida.Compiler's Node.js shims were missing. Those examples run an FTP
+server, a Koa-based HTTP server and an IRC client inside the target process,
+built on packages written for Node.js that know nothing about Frida. They all
+work now, and the fixes benefit any agent that pulls in such packages.
+
+The biggest one is *require()*. Node hands it *module.exports*, which for a
+module like *events* is *EventEmitter* itself, so *require("events")* is
+expected to return a constructor. We returned the ES module namespace, and
+anything written in CommonJS style got an object with a *default* property
+instead. The named exports are now merged into the default export, so both
+styles work.
+
+Builtins we don't support, such as *child_process*, *zlib*, *tls* and
+*worker_threads*, now resolve to an empty module, like the old frida-compile
+did, so a package that only touches them on an optional path loads instead of
+failing at bundle time. And the globals that Node code tends to assume are
+injected: *global* as an alias for *globalThis*, *Blob*, *ReadableStream* and
+*Response*.
+
+A few shims are new. *stream/web* is backed by *@frida/web-streams*, *depd*
+by a version without the deprecation warnings, as the real one needs V8 stack
+traces, and *@frida/fetch* provides the Fetch API classes so code can probe
+for them. The existing ones got updates too. *crypto* now has *randomBytes()*,
+*randomFillSync()* and *getRandomValues()*, drawing from the OS CSPRNG, and
+*Hash.update()* honors views into a larger buffer along with the input
+encoding, thanks to [@Furtif][] and [@Flechaa][], and validates hex input,
+thanks to Håvard. *Hash.copy()* is there as well. *http-parser-js* is synced
+with upstream and no longer trips strict mode, thanks to [@thinhbuzz][].
+*process* grew *stdin*, *stdout* and *stderr*, which packages like *debug*
+check for, and *buffer* provides *Blob*.
+
+## Swift
+
+Håvard found that the Swift ApiResolver only collected functions from a
+module's exports and its class vtables, never from its symbol table. A module
+that keeps its symbols thus still listed only its exported functions, leaving
+internal methods, free functions and value type initializers invisible to
+*functions:* queries. The symbol table is now walked as well, with an address
+already seen through the exports listed once.
+
+## .NET
+
+17.24.0 made it to NuGet, and the frida-net CI now builds frida-core with the
+compiler backend enabled, so from this release the *Frida.NET.Runtime*
+packages expose *Frida.Compiler*, except on Linux mips64 where Go cannot
+cross-compile with cgo. Windows arm64 is built on a native runner for the same
+reason.
+
+## Darwin
+
+Our V8 build linked CoreFoundation for abseil's time zone support, which made
+the V8-flavored agent depend on more than libSystem. The few calls involved
+are now stubbed, with the local time zone read from */etc/localtime* instead.
+
+Enjoy!
+
+### Changelog
+
+- compiler: Return the default export from *require()*, with the named
+  exports merged into it, so CommonJS-style code gets what Node gives it.
+- compiler: Stub out unsupported Node builtins as empty modules.
+- compiler: Inject *global*, *Blob*, *ReadableStream* and *Response* as
+  globals.
+- compiler: Add *stream/web*, *depd* and *@frida/fetch* shims.
+- compiler: Bump *@frida/crypto* to 1.1.0, adding *randomBytes()*,
+  *randomFillSync()*, *getRandomValues()* and *Hash.copy()*, and fixing
+  *Hash.update()* for views and input encodings. Thanks [@Furtif][],
+  [@Flechaa][] and [@hsorbo][]!
+- compiler: Bump *@frida/http-parser-js* to 1.1.0, syncing with upstream and
+  fixing a strict mode violation. Thanks [@thinhbuzz][]!
+- compiler: Bump *@frida/process* to 1.3.0, adding *stdin*, *stdout* and
+  *stderr*.
+- compiler: Bump *@frida/buffer* to 7.1.0, adding *Blob*.
+- swift-api-resolver: List functions from the symbol table, so internal
+  methods, free functions and value type initializers show up in
+  *functions:* queries. Thanks [@hsorbo][]!
+- net: Enable the compiler backend in CI, so the NuGet packages expose
+  *Frida.Compiler*.
+- v8: Stop linking CoreFoundation on Darwin.
+- process: Fix glib-mkenums warnings.
+
+
+[@hsorbo]: https://twitter.com/hsorbo
+[@frida/net examples]: https://github.com/frida/gumjs-net/tree/main/examples
+[@Furtif]: https://github.com/Furtif
+[@Flechaa]: https://github.com/Flechaa
+[@thinhbuzz]: https://github.com/thinhbuzz
