@@ -1,0 +1,66 @@
+---
+layout: news_item
+title: 'Frida 17.24.2 Released'
+date: 2026-10-18 13:53:51 +0200
+author: oleavr
+version: 17.24.2
+categories: [release]
+---
+
+A Darwin fix release, all of it by [@hsorbo][], centered on thread-locals in
+images mapped by our out-of-process mapper, which lets us inject the agent on
+macOS and iOS without relying on *dlopen()* in the target, where a sandbox
+may not allow it.
+
+## Thread-locals in mapped images
+
+Our Darwin mapper only provisioned thread-local storage for the thread that
+ran the constructors, and pointed every TLV descriptor at dyld's
+*tlv_get_addr*. Any other thread then went through dyld's slow path, which
+knows nothing about an image it didn't load, and got zero-filled storage of
+an unknown size. With the V8 runtime that crashed on its JS thread, and on
+macOS 26 the *__dyld_apis* layout also made *tlv_get_addr* read as *NULL*.
+
+The descriptors now point at our own thunk, for arm64 and x86-64. On first
+use from a thread it allocates the block, copies in the *__thread_data*
+template and stores it through *pthread_setspecific()*, so libpthread frees
+it when the thread exits. Like dyld's, it clobbers nothing but the result
+register, so compiled code may keep live values, vector registers included,
+across a thread-local access. On unload, the calling thread's block is freed
+before the key is deleted, as *pthread_key_delete()* clears the slot in every
+thread without running the destructor.
+
+Along the way, the TLV runtime stopped calling *pthread_key_create()* and
+*pthread_key_delete()* through pointers signed in our own process. Such
+pointers only authenticate in the target if it shares our PAC keys, which it
+does not when the two are signed by different teams. They are now called
+without authentication, like the injector does, and the thunk is signed in
+the target, since the descriptors are IA auth binds that compiled code calls
+through *blraaz*. *Arm64Writer* gained *PACIZA* for that, as *PACIA* treats
+register 31 as *SP* rather than *XZR*. All of it is covered by a new test
+that maps a small dylib with thread-locals and checks the lifecycle from
+fresh per-thread storage to unload.
+
+## Helper
+
+The macOS helper inherited the parent's end of the control socket, so it
+held both ends of the pair. The parent's end is now close-on-exec, with a
+test that spawns a process and checks the helper's descriptors.
+
+Enjoy!
+
+### Changelog
+
+- darwin-mapper: Allocate TLV storage per thread through our own thunk, on
+  arm64 and x86-64, fixing V8 crashes on its JS thread and *NULL*
+  *tlv_get_addr* on macOS 26. Thanks [@hsorbo][]!
+- darwin-mapper: Free the calling thread's TLV block on unload. Thanks
+  [@hsorbo][]!
+- darwin-mapper: Call the pthread key functions without authentication, and
+  sign the TLV thunk in the target, so it works when the target is signed by
+  another team. Thanks [@hsorbo][]!
+- arm64-writer: Add *PACIZA*. Thanks [@hsorbo][]!
+- darwin: Don't leak the control socket to the helper. Thanks [@hsorbo][]!
+
+
+[@hsorbo]: https://twitter.com/hsorbo
