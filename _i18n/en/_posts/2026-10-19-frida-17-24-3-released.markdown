@@ -1,0 +1,85 @@
+---
+layout: news_item
+title: 'Frida 17.24.3 Released'
+date: 2026-10-19 10:33:41 +0200
+author: oleavr
+version: 17.24.3
+categories: [release]
+---
+
+Fallout from the QuickJS rebase, found by [@ShenKecyes][], a V8 fix for
+pointer authentication by [@hsorbo][], and better iOS device discovery on
+Linux.
+
+## QuickJS
+
+ShenKecyes read our allocator hooks and noticed that they never updated the
+heap statistics QuickJS keeps. QuickJS decides when to collect cycles based
+on the amount of memory allocated, so with that counter stuck at zero, cyclic
+garbage lived until an explicit *gc()*. The hooks now track usage, and
+collection kicks in on its own again.
+
+They also spotted that current QuickJS keeps the source along with the
+bytecode by default, which the old version never did. Our precompiled runtime
+is now stripped of its source, while the debug info stays so that stack
+frames in it still resolve. The runtime bytecode went from 71 to 28 KB.
+Thanks for the thorough report!
+
+Along the way I found that QuickJS finalizers are per class, and only the
+base *Sampler* had one, so every sampler created from JS leaked. A
+*CallCountSampler* thus stayed attached after unload, and a later Stalker test
+following a thread through the stale hook deadlocked on the allocator lock.
+
+## V8 on arm64e
+
+Håvard tracked down a fault in the first garbage collection that scanned the
+stack, in processes using pointer authentication. V8's register-pushing stack
+walker calls its callback through a plain *BLR*, but the callback arrives as
+a C function pointer signed with the IA key, so the branch landed on the
+signed value. It now branches through *BLRAAZ* when the host authenticates
+pointers. Thanks!
+
+## iOS devices on Linux
+
+Discovering an iOS device over the network on Linux relied on
+systemd-resolved for mDNS browsing. Where it isn't running, or has multicast
+DNS turned off, we now fall back to Avahi over D-Bus, resolving the pairing
+service the same way. And if the mDNS reply never arrives, the timeout error
+now suggests that a netfilter rule may be dropping it, as that is what it
+usually turns out to be.
+
+Two XPC fixes came out of the same session. Replies larger than the HTTP/2
+window stalled, as only the connection-level window was replenished and
+never the stream's. And *double* and *date* objects are now decoded instead
+of being rejected.
+
+## macOS
+
+Our OpenSSL-backed glib-networking crashed on every macOS trust store
+lookup. Mistakes were made when porting our existing patch to the new
+glib-networking: two of the Security framework constants it looked up are
+*CFSTR()* macros rather than exported symbols, so *dlsym()* returned *NULL*.
+They are now created as strings.
+
+Enjoy!
+
+### Changelog
+
+- gumjs: Track QuickJS heap usage in the allocator hooks, so cycles are
+  collected without an explicit *gc()*. Thanks [@ShenKecyes][]!
+- gumjs: Strip the source from the QuickJS runtime bytecode, keeping debug
+  info, shrinking it from 71 to 28 KB. Thanks [@ShenKecyes][]!
+- gumjs: Finalize QuickJS sampler subclasses, fixing a leak that kept
+  samplers attached after unload.
+- v8: Authenticate the stack scan callback on arm64e. Thanks [@hsorbo][]!
+- fruity: Fall back to Avahi for mDNS browsing when systemd-resolved isn't
+  available or has multicast DNS disabled.
+- fruity: Suggest a firewall rule as the cause when an mDNS reply times out.
+- fruity: Fix XPC flow control for replies larger than the HTTP/2 window.
+- fruity: Decode *double* and *date* XPC objects.
+- glib-networking: Fix the macOS trust store lookup, which crashed since the
+  last SDK bump.
+
+
+[@ShenKecyes]: https://github.com/ShenKecyes
+[@hsorbo]: https://twitter.com/hsorbo
