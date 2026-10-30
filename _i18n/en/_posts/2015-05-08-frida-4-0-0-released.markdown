@@ -188,7 +188,7 @@ Anyway, this is getting long, so let's summarize the other key changes:
   and this is also provided on the *frida-core* end, which for example is
   exposed by *frida-python* through `frida.__version__`.
 - *Stalker* now supports the *jecxz* and *jrcxz* instructions. This is good news
-  for [CryptoShark](https://github.com/frida/cryptoshark), which should soon
+  for [CryptoShark](https://github.com/frida-labs/cryptoshark), which should soon
   provide some updated binaries to bundle the latest version of Frida.
 - V8 has been updated to 4.3.62, and a lot of ES6 features have been enabled.
 - We're now using a development version of the upcoming Capstone 4.0.

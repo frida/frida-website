@@ -447,7 +447,7 @@ Enjoy!
 
 
 [@alkalinesec]: https://twitter.com/alkalinesec
-[Java bridge]: https://github.com/frida/frida-java-bridge
+[Java bridge]: https://github.com/frida-packages/frida-java-bridge
 [@muhzii]: https://github.com/muhzii
 [@mephi42]: https://github.com/mephi42
 [dynamic linker]: https://github.com/frida/frida-gum/blob/master/gum/backend-darwin/gumdarwinmapper.h

@@ -16,5 +16,5 @@ Well, turns out the *kAccCompileDontBother* constant was incorrect. This release
 [fixes][] it. (Spoiler from the future: it didn't.)
 
 
-[this]: https://github.com/frida/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
-[fixes]: https://github.com/frida/frida-java-bridge/commit/13451378145e10de880dbc2dfb4fc241e6629959
+[this]: https://github.com/frida-packages/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
+[fixes]: https://github.com/frida-packages/frida-java-bridge/commit/13451378145e10de880dbc2dfb4fc241e6629959

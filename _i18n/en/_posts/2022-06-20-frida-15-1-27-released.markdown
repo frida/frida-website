@@ -16,5 +16,5 @@ Turns out the *kAccCompileDontBother* constant changed in Android 8.1. It also
 didn't exist before 7.0. Oops! This release [fixes][] it, for real this time 😊
 
 
-[this]: https://github.com/frida/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
-[fixes]: https://github.com/frida/frida-java-bridge/commit/cdc3d3638c735d008283bfe177cffdd59b0e62c3
+[this]: https://github.com/frida-packages/frida-java-bridge/commit/e9a24559e967dac39edf6f74db37b1287063010c
+[fixes]: https://github.com/frida-packages/frida-java-bridge/commit/cdc3d3638c735d008283bfe177cffdd59b0e62c3

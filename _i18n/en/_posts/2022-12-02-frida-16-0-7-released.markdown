@@ -97,6 +97,6 @@ That's all this time. Enjoy!
 
 
 [@hsorbo]: https://twitter.com/hsorbo
-[patch]: https://github.com/frida/glib/commit/99ec1f987dfbc9b0ab45ac32dd98464cc023cd42
+[patch]: https://github.com/frida-forks/glib/commit/99ec1f987dfbc9b0ab45ac32dd98464cc023cd42
 [tackled]: https://github.com/frida/frida-core/commit/d31a5437c583eee49da9c710d10b8c3aa89710bb
 [@mrmacete]: https://twitter.com/bezjaje

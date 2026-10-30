@@ -214,7 +214,7 @@ Enjoy!
   of the following arguments.
 
 
-[CryptoShark 0.2.0]: https://github.com/frida/cryptoshark/releases/tag/0.2.0
+[CryptoShark 0.2.0]: https://github.com/frida-labs/cryptoshark/releases/tag/0.2.0
 [releases]: https://github.com/frida/frida/releases
 [@mrmacete]: https://twitter.com/bezjaje
 [@sowdust]: https://github.com/sowdust

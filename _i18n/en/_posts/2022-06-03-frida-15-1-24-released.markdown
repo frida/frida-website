@@ -15,4 +15,4 @@ code. This is now [fixed][].
 Enjoy!
 
 
-[fixed]: https://github.com/frida/frida-java-bridge/commit/d4d2a42ef2f370487a88d108e966de30f2a48322
+[fixed]: https://github.com/frida-packages/frida-java-bridge/commit/d4d2a42ef2f370487a88d108e966de30f2a48322

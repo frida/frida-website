@@ -98,7 +98,7 @@ Enjoy!
 
 
 [@hsorbo]: https://twitter.com/hsorbo
-[@frida/net examples]: https://github.com/frida/gumjs-net/tree/main/examples
+[@frida/net examples]: https://github.com/frida-packages/gumjs-net/tree/main/examples
 [@Furtif]: https://github.com/Furtif
 [@Flechaa]: https://github.com/Flechaa
 [@thinhbuzz]: https://github.com/thinhbuzz

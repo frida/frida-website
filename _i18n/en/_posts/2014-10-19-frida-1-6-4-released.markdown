@@ -29,6 +29,6 @@ Script runtime:
 - More than one NativeFunction with the same target address no longer results
   in use-after-free.
 
-Also, [CryptoShark 0.1.2](https://github.com/frida/cryptoshark) is out,
+Also, [CryptoShark 0.1.2](https://github.com/frida-labs/cryptoshark) is out,
 with an upgraded Frida engine and lots of performance improvements so the GUI
 is able to keep up with the Stalker. Go get it while it's hot!

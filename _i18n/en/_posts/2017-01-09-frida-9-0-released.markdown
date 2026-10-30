@@ -185,7 +185,7 @@ we should revive in the longer term. [↩](#v8-stack-sup)
 
 [Duktape]: http://duktape.org/
 [V8]: https://developers.google.com/v8/
-[frida-compile]: https://github.com/frida/frida-compile
+[frida-compile]: https://github.com/frida-packages/frida-compile
 [launchd.js]: https://github.com/frida/frida-core/blob/12be27ab171c8bac9b4a60db5b3957f30f4be938/src/darwin/agent/launchd.js
 [prepareForLaunch()]: https://github.com/frida/frida-core/blob/12be27ab171c8bac9b4a60db5b3957f30f4be938/src/darwin/agent/launchd.js#L18-L21
 [SBSLaunchApplicationWithIdentifierAndLaunchOptions()]: https://github.com/frida/frida-core/blob/12be27ab171c8bac9b4a60db5b3957f30f4be938/src/darwin/frida-helper-backend-glue.m#L560-L563

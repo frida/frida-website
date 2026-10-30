@@ -43,7 +43,7 @@ material becomes available, we will try to put it here.
 - [NLUUG 2015](https://www.nluug.nl/activiteiten/events/nj15/index.html):
   [Frida: Putting the open back into closed software](https://www.nluug.nl/activiteiten/events/nj15/abstracts/ab08.html)
   ([Slides](https://slides.com/oleavr/nluug-2015-frida-putting-the-open-back-into-closed-software)
-  · [Demos](https://github.com/frida/frida-presentations/tree/master/NLUUG2015)
+  · [Demos](https://github.com/frida-labs/frida-presentations/tree/master/NLUUG2015)
   · [Recording](https://youtu.be/3lo1Y2oKkE4))
 
   Have this black box process that you're just dying to peek inside of? Is
@@ -63,7 +63,7 @@ material becomes available, we will try to put it here.
 - [ZeroNights 2015](http://2015.zeronights.org/):
   [Cross-platform reversing with Frida](http://2015.zeronights.org/workshops.html)
   ([PDF]({{ site.baseurl_root }}/slides/zeronights-2015-cross-platform-reversing-with-frida.pdf)
-  · [Demos](https://github.com/frida/frida-presentations/tree/master/ZeroNights2015))
+  · [Demos](https://github.com/frida-labs/frida-presentations/tree/master/ZeroNights2015))
 
   Frida is a scriptable dynamic binary instrumentation toolkit aiming to
   dramatically shorten the development cycle of dynamic analysis and
@@ -88,7 +88,7 @@ material becomes available, we will try to put it here.
 - [No cON Name 2015](https://www.noconname.org/):
   [Cross-platform reversing with Frida](https://www.noconname.org/)
   ([PDF]({{ site.baseurl_root }}/slides/ncn-2015-cross-platform-reversing-with-frida.pdf)
-  · [Demos](https://github.com/frida/frida-presentations/tree/master/NcN2015))
+  · [Demos](https://github.com/frida-labs/frida-presentations/tree/master/NcN2015))
 
   Frida is a scriptable dynamic binary instrumentation toolkit aiming to
   dramatically shorten the development cycle of dynamic analysis and

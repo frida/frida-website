@@ -28,7 +28,7 @@ Memory.protect(ptr("0x1234"), 4096, 'rw-');
 
 - Python 3 binaries are now built against Python 3.4.
 
-So with this release out, let's talk about [CryptoShark](https://github.com/frida/cryptoshark):
+So with this release out, let's talk about [CryptoShark](https://github.com/frida-labs/cryptoshark):
 
 <iframe width="560" height="315" src="//www.youtube.com/embed/hzDsxtcRavY?rel=0" frameborder="0" allowfullscreen></iframe>
 

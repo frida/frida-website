@@ -38,5 +38,5 @@ Enjoy!
 
 
 [API]: https://github.com/DefinitelyTyped/DefinitelyTyped/commit/37db50ef28bb33d3dbbd3250107d15213861bbf5
-[frida-java-bridge]: https://github.com/frida/frida-java-bridge
+[frida-java-bridge]: https://github.com/frida-packages/frida-java-bridge
 [@GalaxySnail]: https://github.com/GalaxySnail

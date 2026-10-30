@@ -258,7 +258,7 @@ Enjoy!
 [dsdump]: https://github.com/DerekSelander/dsdump
 [include/swift/Basic/RelativePointer.h]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/include/swift/Basic/RelativePointer.h
 [docs]: https://github.com/apple/swift/blob/52e852a7a9758e6edcb872761ab997b552eec565/docs/ABI/CallingConvention.rst
-[documentation]: https://github.com/frida/frida-swift-bridge/blob/master/docs/api.md
+[documentation]: https://github.com/frida-packages/frida-swift-bridge/blob/master/docs/api.md
 [@mrmacete]: https://twitter.com/bezjaje
 [@pandasauce]: https://github.com/pandasauce
 [@hot3eed]: https://github.com/hot3eed

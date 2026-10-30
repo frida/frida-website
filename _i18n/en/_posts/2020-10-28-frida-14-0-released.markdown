@@ -226,13 +226,13 @@ So with that, I hope you'll enjoy this new release!
   [@mrmacete][]!
 
 
-[frida-compile]: https://github.com/frida/frida-compile
+[frida-compile]: https://github.com/frida-packages/frida-compile
 [QuickJS]: https://bellard.org/quickjs/
 [performs]: https://bellard.org/quickjs/bench.html
 [test-suite]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/tests/gumjs/script.c
 [ScriptBackend]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/bindings/gumjs/gumscriptbackend.h
 [Script]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/bindings/gumjs/gumscript.h
-[QuickJS multi-threading API]: https://github.com/frida/quickjs/commit/7ec1392b19bcf6ae2b109cda3e2133c5d6918a6c
+[QuickJS multi-threading API]: https://github.com/frida-forks/quickjs/commit/7ec1392b19bcf6ae2b109cda3e2133c5d6918a6c
 [done]: https://github.com/frida/frida-gum/commit/c47c0711c72a87e729e3e59110b7f611ff392fe2
 [test]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/tests/gumjs/script.c#L5089-L5137
 [baseline memory usage]: https://github.com/frida/frida-gum/blob/6873f1504e40ad1a8bbc51d469c95519a2076fb0/tests/gumjs/script.c#L7356-L7399

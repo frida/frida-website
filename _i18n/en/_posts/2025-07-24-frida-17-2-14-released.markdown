@@ -46,5 +46,5 @@ along with some essential updates and bug fixes. A special shout-out to
 
 
 [@AeonLucid]: https://x.com/AeonLucid
-[frida-java-bridge#362]: https://github.com/frida/frida-java-bridge/pull/362
+[frida-java-bridge#362]: https://github.com/frida-packages/frida-java-bridge/pull/362
 [frida-core#500]: https://github.com/frida/frida-core/issues/500

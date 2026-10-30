@@ -88,7 +88,7 @@ to a future version of Frida, but will at least be architecture-neutral; i.e.
 you can compile to bytecode on a 64-bit x86 desktop and load it just fine in
 a 32-bit iOS app on ARM.
 
-So that's bytecode compilation through the API, but you probably want to use the [frida-compile](https://github.com/frida/frida-compile)
+So that's bytecode compilation through the API, but you probably want to use the [frida-compile](https://github.com/frida-packages/frida-compile)
 CLI tool for this instead:
 
 {% highlight bash %}

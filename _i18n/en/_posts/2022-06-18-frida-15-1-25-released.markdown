@@ -70,7 +70,7 @@ Enjoy!
 - node: Publish prebuilds for Electron 19 instead of 18.
 
 
-[plugged]: https://github.com/frida/vala/commit/d07b689485b3c79116a569696d36ad7c0e299c02
-[optimization]: https://github.com/frida/vala/commit/74a66f908957f9c141e4b50c915a2968721e267a
+[plugged]: https://github.com/frida-forks/vala/commit/d07b689485b3c79116a569696d36ad7c0e299c02
+[optimization]: https://github.com/frida-forks/vala/commit/74a66f908957f9c141e4b50c915a2968721e267a
 [@rev1si0n]: https://github.com/rev1si0n
 [@s1341]: https://github.com/s1341

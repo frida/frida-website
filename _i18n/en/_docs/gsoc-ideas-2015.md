@@ -50,7 +50,7 @@ deprecated alias kept around until the next major Frida release.
 
 **Brief explanation:** Frida's Stalker is a very powerful code tracing engine
 based on dynamic recompilation. It is currently only available for x86. Porting
-it to ARM would allow [CryptoShark](https://github.com/frida/cryptoshark) to be
+it to ARM would allow [CryptoShark](https://github.com/frida-labs/cryptoshark) to be
 used on mobile apps.
 
 Want to know more about how it's implemented for x86? Read more [here](https://medium.com/@oleavr/anatomy-of-a-code-tracer-b081aadb0df8).
@@ -66,7 +66,7 @@ Want to know more about how it's implemented for x86? Read more [here](https://m
 
 **Brief explanation:** Frida's Stalker is a very powerful code tracing engine
 based on dynamic recompilation. It is currently only available for x86. Porting
-it to ARM64 would allow [CryptoShark](https://github.com/frida/cryptoshark) to
+it to ARM64 would allow [CryptoShark](https://github.com/frida-labs/cryptoshark) to
 be used on mobile apps.
 
 Want to know more about how it's implemented for x86? Read more [here](https://medium.com/@oleavr/anatomy-of-a-code-tracer-b081aadb0df8).

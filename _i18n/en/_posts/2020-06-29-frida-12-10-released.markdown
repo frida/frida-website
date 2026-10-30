@@ -211,7 +211,7 @@ Enjoy!
 - Fix encoding of *Module.name* in the V8 runtime. Thanks [@mrmacete][]!
 
 
-[frida-java-bridge]: https://github.com/frida/frida-java-bridge
+[frida-java-bridge]: https://github.com/frida-packages/frida-java-bridge
 [Razvan Sima]: https://twitter.com/0xraaz
 [frida-tools]: https://github.com/frida/frida-tools
 [@0xraaz]: https://twitter.com/0xraaz

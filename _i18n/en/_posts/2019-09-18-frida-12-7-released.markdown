@@ -587,7 +587,7 @@ Enjoy!
   [Jon Wilson][]!
 
 
-[frida-java-bridge]: https://github.com/frida/frida-java-bridge
+[frida-java-bridge]: https://github.com/frida-packages/frida-java-bridge
 [TinyCC]: https://bellard.org/tcc/
 [frida-compile]: https://github.com/oleavr/frida-agent-example
 [GLib.Array]: https://developer.gnome.org/glib/stable/glib-Arrays.html

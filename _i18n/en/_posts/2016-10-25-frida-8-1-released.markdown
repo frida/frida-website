@@ -318,4 +318,4 @@ Enjoy!
 [SocketListener]: https://developer.gnome.org/gio/stable/GSocketListener.html
 [SocketClient]: https://developer.gnome.org/gio/stable/GSocketClient.html
 [browserify]: http://browserify.org/
-[plug in]: https://github.com/frida/frida-compile/blob/1eeb38d9453f812e7b404e83cb9b5d0e5dc26241/index.js#L22-L23
+[plug in]: https://github.com/frida-packages/frida-compile/blob/1eeb38d9453f812e7b404e83cb9b5d0e5dc26241/index.js#L22-L23
