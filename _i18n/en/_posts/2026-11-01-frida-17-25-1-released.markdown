@@ -1,0 +1,115 @@
+---
+layout: news_item
+title: 'Frida 17.25.1 Released'
+date: 2026-11-01 15:11:56 +0100
+author: oleavr
+version: 17.25.1
+categories: [release]
+---
+
+Fallout from the new mapper, reported within days by [@Albasha0x0][] on
+Windows and [@quakquak86][] on Android, along with a reorganization of our
+repositories on GitHub.
+
+## Android
+
+Attaching to a Unity game on Android 16 crashed the target, trying to
+execute non-executable memory in libc. A process may map a library file
+on its own, outside of the dynamic linker, and when such a mapping came
+before the loaded image, the mapper used it as the library's base and bound
+imports into memory that was never executable. Each library's base is now
+picked through the same lookup that prefers the mapping the linker actually
+loaded. Thanks for the thorough A/B report, quakquak86!
+
+The same device turned up a second problem. An agent mapped by our mapper
+is unknown to Bionic, which attributes its *dlsym()* calls to the anonymous
+namespace. In an untrusted app that namespace is isolated, so *RTLD_DEFAULT*
+couldn't see libc, and the agent aborted on startup. We now resolve libc
+through the unrestricted linker API, using our own import of *open()* as the
+trusted caller rather than something obtained from *dlsym()*, which suffers
+from the same problem.
+
+## Windows
+
+Albasha0x0 noticed that a .NET program's main assembly went missing from
+*Process.enumerateModules()*, and never showed up through the module
+observer either. The loader doesn't send DLL notifications for images that
+lack the *IMAGE_FILE_DLL* characteristic, and that is how CoreCLR loads the
+main assembly, through *LoadLibrary()*. The *LdrLoadDll()* and
+*LdrUnloadDll()* hooks are now kept alongside the notifications, and the
+registry synchronizes when either returns.
+
+They also found that an attached program crashed at exit. When a process
+exits, its other threads are terminated before DLL detach notifications
+run, including the agent's. The injector then saw its thread end without
+the agent having asked to stay resident, and unmapped it while hooks such
+as the unwind broker's were still in place, so anything running during the
+rest of the shutdown, like the compatibility shim engine walking the stack,
+called into unmapped memory. The agent is now left mapped when the process
+is already exiting. Thanks for both reports!
+
+Processes running with Arbitrary Code Guard delegate their code memory to
+the host, and tearing down the module registry there could abort, as
+reverting its loader hooks patches code and the memory hooks needed for
+that were gone by the time final destructors ran. The registry is now torn
+down in *gum_shutdown()*, which the agent calls as the last step of
+removing instrumentation, while the host connection is still up.
+
+## GitHub
+
+The frida organization on GitHub had grown to the point where Frida itself
+sat next to patched forks of GLib and V8, npm packages, and demos and
+conference material going back a decade. It has been split into four:
+
+- [frida][] is Frida itself: the runtime, tools, language bindings, and the
+  Luma GUI.
+- [frida-packages][] holds the packages you build on: runtime bridges such
+  as frida-java-bridge and frida-objc-bridge, agent tooling like
+  frida-compile and frida-itrace, and the Node.js compatibility modules
+  published as *@frida/\<name\>*.
+- [frida-forks][] is our patched forks of third-party projects. It is not a
+  list of Frida's dependencies, as which forks a build uses depends on the
+  platform and configuration, and some are only used by tooling or by Luma.
+- [frida-labs][] has the experiments, proof-of-concept apps, demos, and
+  conference material, with the retired ones archived for reference.
+
+GitHub redirects the old URLs, but ours have all been updated, and the
+release engineering tooling now supports dependencies hosted outside the
+frida organization.
+
+For distro packaging, Efni and Idun now build against GLib older than 2.84,
+and Idun falls back to its bundled libusb when the system one is older than
+1.0.30.
+
+Enjoy!
+
+### Changelog
+
+- linux: Ignore library mappings made outside the dynamic linker when
+  picking a library's base in the mapper. Thanks [@quakquak86][]!
+- linux: Look up libc through the unrestricted linker API on Android, as
+  Bionic isolates mapped agents in untrusted apps. Thanks [@quakquak86][]!
+- windows: Register images that the loader doesn't send DLL notifications
+  for, such as a .NET program's main assembly. Thanks [@Albasha0x0][]!
+- windows: Keep the agent mapped while the target exits, fixing a crash at
+  exit. Thanks [@Albasha0x0][]!
+- windows: Tear down the module registry while patching still works, fixing
+  an abort on unload in processes with Arbitrary Code Guard.
+- windows: Include *winternl.h* for *NTSTATUS*, fixing the build with
+  recent SDKs.
+- linux: Add a test checking that spawn leaves *SIGCHLD* alone. Thanks
+  [@leonitousconforti][]!
+- efni: Support GLib older than 2.84.
+- idun: Support GLib older than 2.84, and fall back to the bundled libusb
+  when the system one is older than 1.0.30.
+- releng: Support dependencies hosted outside the frida organization, and
+  point at the forks' new home in [frida-forks][].
+
+
+[@Albasha0x0]: https://github.com/Albasha0x0
+[@quakquak86]: https://github.com/quakquak86
+[@leonitousconforti]: https://github.com/leonitousconforti
+[frida]: https://github.com/frida
+[frida-packages]: https://github.com/frida-packages
+[frida-forks]: https://github.com/frida-forks
+[frida-labs]: https://github.com/frida-labs
