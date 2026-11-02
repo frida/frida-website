@@ -1,0 +1,88 @@
+---
+layout: news_item
+title: 'Frida 17.25.2 Released'
+date: 2026-11-02 22:10:51 +0100
+author: oleavr
+version: 17.25.2
+categories: [release]
+---
+
+More mapper fallout on Android, this time on x86_64, tracked down by
+[@leonitousconforti][], two GumJS fixes from [@esauvisky][], and Idun fixes
+from [@hsorbo][] and [@miikaoskari][] for those upgrading from an earlier
+Frida or using an older iPhone.
+
+## Android
+
+Leo found that 17.25.1 crashed on attach on x86_64 Android, one page past
+*dladdr()* in libdl.so. The heuristic we introduced in that release for
+picking a library's base starts a new candidate at every mapping with file
+offset zero and prefers executable ones, which breaks libraries whose code
+shares the first file page with their headers, as libdl.so does there: the
+code mapping was picked as the base, one page too high. The mapper now uses
+the library's own ELF layout instead, accepting a mapping at file offset
+zero as the base only if the code segments are mapped executable where the
+linker would have put them. That also rejects stray mappings of the file,
+so the special case for Android's libc is gone.
+
+He also found that with a native bridge, the arm64 guest libraries may be
+mapped before the x86_64 host ones, and since the mapper looked up
+dependencies by basename, the x86_64 agent got bound to the guest libc. It
+now only accepts libraries whose machine and pointer size match the agent.
+Thanks for the precise reports!
+
+## GumJS
+
+Emi found that bytecode produced through *compile_script()* still carried
+the source. Since QuickJS bytecode version 5, the serializer includes each
+function's source slice unless source stripping is enabled on the runtime,
+so nested function bodies were duplicated throughout the blob. The compile
+task now strips the source, matching what we did for the prebuilt runtime
+in 17.24.3.
+
+They also found a window where *Script._derefWeak()* could resurrect a
+half-freed object. QuickJS sweeps dead weak references when the scope
+exits, so a target collected mid-scope lingers in our callback table with
+its children already freed, and dereferencing it then duplicated the dead
+value. Dead targets now return *undefined* right away. Thanks!
+
+## Idun
+
+Håvard found that upgrading to 17.25 made paired devices ask to pair again.
+Idun's device monitor created its pairing store eagerly, which generated
+and persisted a fresh host identity under *~/.config/idun* even for clients
+using *idund*, where the store is never used. That also defeated Frida's
+migration of pre-Idun pairing records, which skips when the Idun config
+directory already exists. The store is now created only on the in-process
+path that uses it. Thanks!
+
+Miika got Frida working against an iPhone SE on iOS 15.8.8 from Ubuntu. On
+devices predating CoreDevice, the tunnel lookup reported *NOT_SUPPORTED* as
+an error rather than falling back to USB, resulting in a misleading
+complaint about a missing Developer Disk Image. And on Linux, the OpenSSL
+GIO backend was never registered, so loading a TLS certificate from PEM
+failed. Thanks!
+
+Enjoy!
+
+### Changelog
+
+- linux: Find module bases using the ELF layout in the mapper, fixing a
+  crash on x86_64 Android. Thanks [@leonitousconforti][]!
+- linux: Skip libraries of a foreign ABI in the mapper, fixing a crash on
+  x86_64 Android with a native bridge. Thanks [@leonitousconforti][]!
+- gumjs: Strip source in bytecode produced by *compile_script()*. Thanks
+  [@esauvisky][]!
+- gumjs: Return *undefined* from *Script._derefWeak()* for targets already
+  collected. Thanks [@esauvisky][]!
+- idun: Only create the pairing store when needed, fixing the migration of
+  pairing records from earlier Frida versions. Thanks [@hsorbo][]!
+- idun: Fall back to USB for devices predating CoreDevice. Thanks
+  [@miikaoskari][]!
+- idun: Register the OpenSSL GIO backend on Linux. Thanks [@miikaoskari][]!
+
+
+[@leonitousconforti]: https://github.com/leonitousconforti
+[@esauvisky]: https://github.com/esauvisky
+[@hsorbo]: https://twitter.com/hsorbo
+[@miikaoskari]: https://github.com/miikaoskari
