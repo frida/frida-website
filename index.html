@@ -5,385 +5,410 @@ overview: true
 
 <main class="landing">
 
-<section class="hero">
-  <div class="inner">
-    <div>
-      <p class="eyebrow">Dynamic instrumentation toolkit</p>
-      <h1>Reprogram running software, from the app <em>down to the kernel.</em></h1>
-      <p class="lede">Frida puts your code inside live processes and operating system kernels. Hook any function, trace private code, rewrite behavior, and see the result the moment you hit save. No source, no recompile, no restart.</p>
-      <div class="ctas">
-        <a class="btn primary" href="#quickstart">Get started</a>
-        <a class="btn ghost" href="{{ site.baseurl }}/docs/home/">Read the docs</a>
-      </div>
-      <p class="platforms">
-        <strong>User mode:</strong> Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, QNX, PlayStation 5.<br>
-        <strong>Kernel mode:</strong> Windows NT from XP through 11, Windows 9x/ME, XNU, and Linux, in virtual machines or on physical hardware.<br>
-        <strong>Bare metal:</strong> microcontrollers and custom kernels over a debug stub.
+<section class="intro">
+  <div class="grid">
+    <div class="unit whole center-on-mobiles">
+      <p class="first">Reprogram running software, from the app down to the kernel.</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="unit golden-large center-on-mobiles">
+      <p class="lede">Frida is a dynamic instrumentation toolkit. It puts your code inside live processes and operating system kernels, where you can hook any function, trace private code, and change behavior while the target keeps running. No source code, no rebuild, no restart.</p>
+      <p class="actions">
+        <a class="button" href="#quickstart">Get started</a>
+        <a class="textlink" href="{{ site.baseurl }}/docs/home/">Read the docs</a>
       </p>
     </div>
-    <figure class="section-fig" aria-label="Frida's reach across privilege levels">
-      <svg class="reach" viewBox="0 0 420 440" role="img" aria-labelledby="reach-title">
-        <title id="reach-title">Your tooling reaches processes directly, or goes in through the kernel, loaded as a driver or over a GDB remote stub, and from there into every process.</title>
-        <!-- host -->
-        <rect class="hostbox" x="0.5" y="0.5" width="419" height="58" rx="8"/>
-        <text class="name" x="16" y="34">Your tooling</text>
-        <text class="lbl" x="404" y="34" text-anchor="end">PYTHON · NODE.JS · RUST · SWIFT · LUMA</text>
-        <!-- target -->
-        <rect class="chassis" x="30.5" y="84.5" width="389" height="355" rx="10"/>
-        <text class="lbl" x="404" y="106" text-anchor="end">TARGET · VM OR HARDWARE</text>
-        <!-- wires -->
-        <path class="wire" d="M98,58 V122"/>
-        <path class="wire" d="M14,58 V282 H40"/>
-        <path class="wire" d="M98,252 V182"/>
-        <path class="wire" d="M226,252 V182"/>
-        <path class="wire" d="M354,252 V182"/>
-        <path class="wire" d="M76,372 V312"/>
-        <path class="wire" d="M419,396 H112"/>
-        <!-- pulses -->
-        <path class="pulse p-inject" d="M98,58 V122" pathLength="26"/>
-        <path class="pulse p-bus" d="M14,58 V282 H40" pathLength="101"/>
-        <path class="pulse p-fan" d="M98,252 V182" pathLength="28"/>
-        <path class="pulse p-fan" d="M226,252 V182" pathLength="28"/>
-        <path class="pulse p-fan" d="M354,252 V182" pathLength="28"/>
-        <path class="pulse p-probe" d="M419,396 H112" pathLength="123"/>
-        <path class="pulse p-up" d="M76,372 V312" pathLength="24"/>
-        <!-- band labels, backed so the wires pass behind them -->
-        <rect class="mask" x="38" y="96" width="150" height="14"/>
-        <text class="lbl" x="42" y="106">USER SPACE · RING 3</text>
-        <line class="div" x1="31" y1="215.5" x2="419" y2="215.5"/>
-        <rect class="mask" x="38" y="226" width="120" height="14"/>
-        <text class="lbl" x="42" y="236">KERNEL · RING 0</text>
-        <line class="div" x1="31" y1="335.5" x2="419" y2="335.5"/>
-        <rect class="mask" x="38" y="346" width="68" height="14"/>
-        <text class="lbl" x="42" y="356">HARDWARE</text>
-        <!-- processes -->
-        <g class="proc">
-          <rect class="pbox" x="40" y="122" width="116" height="60" rx="6"/>
-          <text class="name" x="52" y="145">app</text>
-          <circle class="dot" cx="56" cy="163" r="3.5"/>
-          <text class="chip" x="65" y="167">gum agent</text>
-          <g class="lit lit-a"><rect x="40" y="122" width="116" height="60" rx="6"/><circle cx="56" cy="163" r="3.5"/></g>
-        </g>
-        <g class="proc">
-          <rect class="pbox" x="168" y="122" width="116" height="60" rx="6"/>
-          <text class="name" x="180" y="145">service</text>
-          <circle class="dot" cx="184" cy="163" r="3.5"/>
-          <text class="chip" x="193" y="167">gum agent</text>
-          <g class="lit lit-b"><rect x="168" y="122" width="116" height="60" rx="6"/><circle cx="184" cy="163" r="3.5"/></g>
-        </g>
-        <g class="proc">
-          <rect class="pbox" x="296" y="122" width="116" height="60" rx="6"/>
-          <text class="name" x="308" y="145">daemon</text>
-          <circle class="dot" cx="312" cy="163" r="3.5"/>
-          <text class="chip" x="321" y="167">gum agent</text>
-          <g class="lit lit-b"><rect x="296" y="122" width="116" height="60" rx="6"/><circle cx="312" cy="163" r="3.5"/></g>
-        </g>
-        <!-- kernel -->
-        <rect class="kbox" x="40" y="252" width="372" height="60" rx="6"/>
-        <text class="name k" x="52" y="275">Kernel agent</text>
-        <circle class="dot k" cx="56" cy="293" r="3.5"/>
-        <text class="chip k" x="65" y="297">frida-barebone-agent</text>
-        <text class="kfact" x="236" y="269">hooks the kernel itself</text>
-        <text class="kfact" x="236" y="284">reaches every process</text>
-        <text class="kfact" x="236" y="299">invisible to user space</text>
-        <g class="lit lit-k"><rect x="40" y="252" width="372" height="60" rx="6"/><circle cx="56" cy="293" r="3.5"/></g>
-        <!-- hardware -->
-        <rect class="cpu" x="40" y="372" width="72" height="48" rx="5"/>
-        <rect class="cpu-in" x="48" y="380" width="56" height="32" rx="3"/>
-        <text class="lbl cpu-t" x="76" y="400" text-anchor="middle">CPU</text>
-        <g class="lit lit-c"><rect x="40" y="372" width="72" height="48" rx="5"/></g>
-        <text class="lbl" x="124" y="389">GDB REMOTE STUB · JTAG · SWD</text>
-        <text class="sub" x="124" y="414">QEMU, VirtualBox, or a hardware debugger</text>
-      </svg>
-      <figcaption class="figcap">One API at every level. Go in through a process, or through the kernel and reach them all.</figcaption>
-    </figure>
-  </div>
-</section>
-
-<section class="band" id="ways">
-  <div class="inner">
-    <p class="eyebrow">Where it runs</p>
-    <h2 class="h2">Three ways in.</h2>
-    <p class="lede">Pick the vantage point the target allows. Everything above it, from the scripting API to frida-trace and Luma, stays the same.</p>
-    <div class="ways">
-      <article class="way">
-        <h3>Injected</h3>
-        <p class="how">frida-core</p>
-        <p>Attach to a running process, or spawn one with your hooks in place before its first instruction. frida-core does the injecting, from inside your own tool on the machine you are on. On a remote device it runs headless as frida-server, so a frida-core elsewhere can reach it. frida-portal fronts a whole fleet the same way, exposing the processes that have joined it.</p>
-        <a class="more" href="{{ site.baseurl }}/docs/modes/#injected">How injection works</a>
-      </article>
-      <article class="way">
-        <h3>As a library</h3>
-        <p class="how">frida-gadget</p>
-        <p>No root or jailbreak? Frida injects Gadget into a debuggable iOS or Android app for you. Elsewhere, preload it with LD_PRELOAD or DYLD_INSERT_LIBRARIES, load it from your own test runner, or repackage an app with it when you want custom tweaks baked in. It waits for you to connect, or runs scripts on its own from the filesystem.</p>
-        <a class="more" href="{{ site.baseurl }}/docs/gadget/">About Gadget</a>
-      </article>
-      <article class="way hot">
-        <h3>In the kernel</h3>
-        <p class="how">frida-barebone-agent</p>
-        <p>Load the Barebone agent into the operating system kernel. Instrument the kernel itself and every process above it, from one session, with nothing left for the process to detect. No kernel to speak of? Barebone drives microcontrollers and custom kernels over a GDB remote stub, with no agent on the target at all.</p>
-        <a class="more" href="#kernel">Meet Barebone</a>
-      </article>
+    <div class="unit golden-small runs">
+      <dl>
+        <dt>User mode</dt>
+        <dd>Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, QNX, and PlayStation 5.</dd>
+        <dt>Kernel mode</dt>
+        <dd>Windows NT from XP through 11, Windows 9x/ME, XNU, and Linux, in virtual machines or on physical hardware.</dd>
+        <dt>Bare metal</dt>
+        <dd>Microcontrollers and custom kernels, over a debug stub.</dd>
+      </dl>
     </div>
   </div>
 </section>
 
-<section class="band kernel-band" id="kernel">
-  <div class="inner">
-    <p class="eyebrow">Barebone</p>
-    <h2 class="h2">An agent that lives in ring 0.</h2>
-    <p class="lede">Barebone is Frida's bare-metal backend. Its agent is written in Rust around the same GumJS engine that runs inside user processes, so the API you already know now works against a kernel. Where there is no kernel to host it, the same API works over a debug stub alone.</p>
-    <div class="kgrid">
-      <div class="kcol">
-        <h3>Getting it in</h3>
-        <dl>
-          <div>
-            <dt>Through a GDB remote stub</dt>
-            <dd>QEMU, VirtualBox, Parallels and the Android emulator all expose one. So does a hardware debugger, which puts a physical device's kernel in reach over JTAG or SWD.</dd>
-          </div>
-          <div>
-            <dt>As a driver</dt>
-            <dd>On Linux and Android, <code>insmod frida-agent.ko</code>. On macOS, load the agent as a kernel extension. Then ask frida-core for the <code>barebone</code> device, from the CLI or the API. <code>add_barebone_device()</code> on the DeviceManager takes options, and <code>FRIDA_BAREBONE_CONFIG</code> points the default device at a JSON config. Only tools on another machine need a <code>frida-server --device=barebone</code> in between.</dd>
-          </div>
-          <div>
-            <dt>Or with no kernel at all</dt>
-            <dd>A microcontroller, a bootloader, or a custom kernel with no room for an agent: point Barebone at its GDB remote stub and your script runs on the host instead. Memory access such as <code>readU32()</code> becomes a stub read, and Interceptor with JavaScript callbacks becomes a software or hardware breakpoint. Hand Interceptor a NativePointer instead and it places an inline hook in the target's memory, usually code you built with RustModule, the Barebone runtime's counterpart to CModule.</dd>
-          </div>
-        </dl>
-      </div>
-      <div class="kcol">
-        <h3>What you get</h3>
-        <dl>
-          <div>
-            <dt>Kernel and user mode, together</dt>
-            <dd>Enumerate processes, attach, spawn with instrumentation in place, hook functions, query the kernel's BTF types, and watch kernel modules come and go. From the kernel, the agent injects into user processes itself.</dd>
-          </div>
-          <div>
-            <dt>Invisible from inside the process</dt>
-            <dd>The kernel half cloaks the user-mode agent's threads and memory mappings. Runtime application self-protection looking from inside the process finds nothing to see.</dd>
-          </div>
-          <div>
-            <dt>Light on memory</dt>
-            <dd>User-mode agents map the same physical pages the kernel agent already uses. Each instrumented process allocates only its own writable portion.</dd>
-          </div>
-        </dl>
-      </div>
+<section class="features" id="ways">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Four ways <em>in</em>.</h4>
     </div>
-    <div class="payloads">
-      <p>Agents shipped with every <a href="{{ site.repository }}/releases">release</a>, as <span class="mono">frida-barebone-agent-*</span>:</p>
-      <div class="chips">
-        <span class="chip">linux-arm64</span><span class="chip">linux-arm</span><span class="chip">linux-x86_64</span><span class="chip">linux-x86</span>
-        <span class="chip">xnu-arm64</span><span class="chip k">xnu-kext-arm64e</span>
-        <span class="chip">winnt-x86_64</span><span class="chip">winnt-x86</span><span class="chip">winnt-arm64</span>
-        <span class="chip">win9x-x86</span>
-      </div>
-      <p class="chips-legend"><i aria-hidden="true"></i>Loadable as a driver. The Linux module is built against your exact kernel from the GumJS devkit, so it is not a prebuilt download.</p>
+    <div class="unit golden-large">
+      <p class="lede">Pick the vantage point the target allows. Everything above it, from the scripting API to frida-trace and Luma, stays the same.</p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="unit one-quarter">
+      <h2>Injected</h2>
+      <p class="kicker">frida-core</p>
+      <p>
+        Attach to a running process, or spawn one with your hooks in place
+        before its first instruction. frida-core does the injecting, from
+        inside your own tool on the machine you are on. On a remote device it
+        runs headless as frida-server, and frida-portal fronts a whole fleet
+        the same way.
+        <a href="{{ site.baseurl }}/docs/modes/#injected">How injection works</a>.
+      </p>
+    </div>
+    <div class="unit one-quarter">
+      <h2>As a library</h2>
+      <p class="kicker">frida-gadget</p>
+      <p>
+        No root or jailbreak? Frida injects Gadget into a debuggable iOS or
+        Android app for you. Elsewhere, preload it, load it from your own test
+        runner, or repackage an app with it when you want custom tweaks baked
+        in. It waits for you to connect, or runs scripts on its own.
+        <a href="{{ site.baseurl }}/docs/gadget/">About Gadget</a>.
+      </p>
+    </div>
+    <div class="unit one-quarter">
+      <h2>In the kernel</h2>
+      <p class="kicker">frida-barebone-agent</p>
+      <p>
+        Load the Barebone agent into the operating system kernel, as a driver
+        or through a debugger. Instrument the kernel itself and every process
+        above it, from one session, with nothing left for the process to
+        detect.
+        <a href="#kernel">Meet Barebone</a>.
+      </p>
+    </div>
+    <div class="unit one-quarter">
+      <h2>On bare metal</h2>
+      <p class="kicker">GDB remote stub</p>
+      <p>
+        A microcontroller, a bootloader, or a kernel with no room for an
+        agent: point Barebone at its GDB remote stub and your script runs on
+        the host instead. Memory reads become stub reads, and Interceptor
+        callbacks become breakpoints. Hand it a NativePointer and it places an
+        inline hook in the target's memory, usually code you built with
+        RustModule.
+      </p>
     </div>
   </div>
 </section>
 
-<section class="band" id="languages">
-  <div class="inner">
-    <p class="eyebrow">Languages</p>
-    <h2 class="h2">JavaScript is the fast path, not the only path.</h2>
-    <p class="lede">Most people start with a few lines of JavaScript because the edit, save, see loop takes seconds. The rest of the stack speaks whatever you do, on the host and inside the target.</p>
-
-    <div class="tabs" role="tablist" aria-label="Language examples">
-      <button class="tab" role="tab" id="tab-js" aria-selected="true" aria-controls="panel-js">JavaScript</button>
-      <button class="tab" role="tab" id="tab-py" aria-selected="false" aria-controls="panel-py">Python</button>
-      <button class="tab" role="tab" id="tab-node" aria-selected="false" aria-controls="panel-node">Node.js</button>
-      <button class="tab" role="tab" id="tab-rs" aria-selected="false" aria-controls="panel-rs">Rust</button>
-      <button class="tab" role="tab" id="tab-gum" aria-selected="false" aria-controls="panel-gum">Rust, in-process</button>
+<section class="quickstart" id="quickstart">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Get up and running <em>in&nbsp;seconds</em>.</h4>
+      <p class="blurb">
+        One pip install gives you frida-trace, the REPL, frida-ps and friends.
+        Here frida-trace spawns curl, hooks SSL_write, and a two-line edit to
+        the generated handler shows each request before it is encrypted.
+      </p>
+      <p class="caption">Frida 17.25.2 on Linux x86_64. A few status lines are trimmed; nothing else is edited.</p>
+      <p class="blurb">
+        <a href="{{ site.baseurl }}/docs/quickstart/">Quick-start guide</a>
+      </p>
     </div>
+    <div class="unit golden-large code">
+      <p class="title">Terminal</p>
+<pre class="shell"><span class="path">~</span> <span class="prompt">$</span> <span class="command">pip install frida-tools</span>
+<span class="path">~</span> <span class="prompt">$</span> <span class="command">frida-trace -f /usr/bin/curl -i SSL_write -- --http1.1 -s -o /dev/null https://frida.re</span>
+<span class="output">Instrumenting...
+SSL_write: Auto-generated handler at "&hellip;/__handlers__/libssl.so.3/SSL_write.js"
+Started tracing 1 function. Web UI available at http://localhost:38595/
+           /* TID 0xb43a5 */</span>
+<span class="event">   126 ms  SSL_write(ssl=0x55d7c85d5220, buf=0x55d7c85de900, num=0x48)</span>
+<span class="output">Process terminated</span>
+<span class="comment"># Edit SSL_write.js so onEnter logs the plaintext instead:
+#   const n = args[2].toInt32();
+#   log(JSON.stringify(args[1].readUtf8String(n)));</span>
+<span class="path">~</span> <span class="prompt">$</span> <span class="command">frida-trace -f /usr/bin/curl -i SSL_write -- --http1.1 -s -o /dev/null https://frida.re</span>
+<span class="output">SSL_write: Loaded handler at "&hellip;/__handlers__/libssl.so.3/SSL_write.js"
+Started tracing 1 function. Web UI available at http://localhost:41553/
+           /* TID 0xb4408 */</span>
+<span class="event">    39 ms  "GET / HTTP/1.1\r\nHost: frida.re\r\nUser-Agent: curl/8.23.0\r\nAccept: */*\r\n\r\n"</span>
+<span class="output">Process terminated</span></pre>
+    </div>
+  </div>
+</section>
 
-    <div class="panel" role="tabpanel" id="panel-js" aria-labelledby="tab-js">
-<pre><code><span class="fn">Interceptor</span>.<span class="fn">attach</span>(<span class="fn">Module</span>.<span class="fn">getGlobalExportByName</span>(<span class="str">'recvfrom'</span>), {
+<section class="kernel" id="kernel">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Down to <em>the kernel</em>.</h4>
+    </div>
+    <div class="unit golden-large">
+      <p class="lede">
+        Barebone is Frida's bare-metal backend. Its agent is written in Rust
+        around the same GumJS engine that runs inside user processes, so the
+        API you already know now works against a kernel. Where there is no
+        kernel to host it, the same API works over a debug stub alone.
+      </p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="unit half">
+      <h2>Getting it in</h2>
+      <dl>
+        <dt>Through a GDB remote stub</dt>
+        <dd>QEMU, VirtualBox, Parallels, and the Android emulator all expose one. So does a hardware debugger, which puts a physical device's kernel in reach over JTAG or SWD.</dd>
+        <dt>As a driver</dt>
+        <dd>On Linux and Android, <code>insmod frida-agent.ko</code>. On macOS, load the agent as a kernel extension. Then ask frida-core for the <code>barebone</code> device, from the CLI or the API: <code>add_barebone_device()</code> on the DeviceManager takes options, and <code>FRIDA_BAREBONE_CONFIG</code> points the default device at a JSON config. Only tools on another machine need a <code>frida-server --device=barebone</code> in between.</dd>
+        <dt>Or with no kernel at all</dt>
+        <dd>Point Barebone at the target's GDB remote stub and your script runs on the host. <code>readU32()</code> becomes a stub read, Interceptor with JavaScript callbacks becomes a software or hardware breakpoint, and Interceptor with a NativePointer becomes an inline hook in the target's memory, typically code built with RustModule, the Barebone runtime's counterpart to CModule.</dd>
+      </dl>
+    </div>
+    <div class="unit half">
+      <h2>What you get</h2>
+      <dl>
+        <dt>Kernel and user mode, together</dt>
+        <dd>Enumerate processes, attach, spawn with instrumentation in place, hook functions, query the kernel's BTF types, and watch kernel modules come and go. From the kernel, the agent injects into user processes itself.</dd>
+        <dt>Invisible from inside the process</dt>
+        <dd>The kernel half cloaks the user-mode agent's threads and memory mappings. Runtime application self-protection looking from inside the process finds nothing to see.</dd>
+        <dt>Light on memory</dt>
+        <dd>User-mode agents map the same physical pages the kernel agent already uses. Each instrumented process allocates only its own writable portion.</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h5>From the command line</h5>
+      <p class="blurb">The same tools, pointed at a kernel instead of a process.</p>
+    </div>
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="comment"># Kernel running under QEMU with its GDB stub on? That is the default: 127.0.0.1:3333.</span>
+<span class="path">~</span> <span class="prompt">$</span> <span class="command">frida-ps -D barebone</span>
+<span class="comment"># Loaded frida-agent.ko or the kext instead? Point the default device at it.</span>
+<span class="path">~</span> <span class="prompt">$</span> <span class="command">FRIDA_BAREBONE_CONFIG=barebone.json frida-ps -D barebone</span>
+<span class="comment"># Attach to the kernel, or to any process, with frida, frida-trace, or Luma.
+# Scripts see kernel modules, kallsyms, and BTF types alongside the usual Gum APIs.
+# Tools on another machine? Run frida-server --device=barebone there and connect as usual.</span></pre>
+      <p class="payloads">
+        Agents shipped with every <a href="{{ site.repository }}/releases">release</a>:
+        <code>frida-barebone-agent-{linux-arm64, linux-arm, linux-x86_64, linux-x86, xnu-arm64, xnu-kext-arm64e, winnt-x86_64, winnt-x86, winnt-arm64, win9x-x86}</code>.
+        The kext is the loadable kernel extension for macOS. The Linux kernel
+        module is built against your exact kernel from the GumJS devkit, so it
+        is not a prebuilt download.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="languages" id="languages">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>JavaScript first, <em>not JavaScript only</em>.</h4>
+    </div>
+    <div class="unit golden-large">
+      <p class="lede">
+        Most people start with a few lines of JavaScript because the edit,
+        save, see loop takes seconds. The rest of the stack speaks whatever
+        you do, on the host and inside the target.
+      </p>
+      <div class="tabs" role="tablist" aria-label="Language examples">
+        <button role="tab" id="tab-js" aria-selected="true" aria-controls="panel-js">JavaScript</button>
+        <button role="tab" id="tab-py" aria-selected="false" aria-controls="panel-py">Python</button>
+        <button role="tab" id="tab-node" aria-selected="false" aria-controls="panel-node">Node.js</button>
+        <button role="tab" id="tab-rs" aria-selected="false" aria-controls="panel-rs">Rust</button>
+        <button role="tab" id="tab-gum" aria-selected="false" aria-controls="panel-gum">Rust, in-process</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid panel" role="tabpanel" id="panel-js" aria-labelledby="tab-js">
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="ty">Interceptor</span>.<span class="fn">attach</span>(<span class="ty">Module</span>.<span class="fn">getGlobalExportByName</span>(<span class="str">'recvfrom'</span>), {
   <span class="fn">onEnter</span>(args) {
-    <span class="kw">this</span>.fd = args[<span class="str">0</span>].<span class="fn">toInt32</span>();
+    <span class="kw">this</span>.fd = args[0].<span class="fn">toInt32</span>();
   },
   <span class="fn">onLeave</span>(retval) {
-    console.<span class="fn">log</span>(<span class="str">`recvfrom(fd=${</span><span class="kw">this</span>.fd<span class="str">}) => ${</span>retval.<span class="fn">toInt32</span>()<span class="str">} bytes`</span>);
+    console.<span class="fn">log</span>(<span class="str">`recvfrom(fd=${</span><span class="kw">this</span>.fd<span class="str">}) => ${</span>retval.<span class="fn">toInt32</span>()<span class="str">}`</span>);
   }
-});</code></pre>
-      <div class="lang-note">
-        <h3>The agent side</h3>
-        <p>This runs inside the target, in a process or in a kernel, on QuickJS or V8. Write it in TypeScript if you like, with autocompletion from the bundled type definitions. Hot paths can drop into C with CModule.</p>
-        <p><a href="{{ site.baseurl }}/docs/javascript-api/">JavaScript API reference</a></p>
-      </div>
+});</pre>
     </div>
+    <div class="unit golden-small">
+      <h3>The agent side</h3>
+      <p>This runs inside the target, in a process or in a kernel, on QuickJS or V8. Write it in TypeScript if you like, with autocompletion from the bundled type definitions. Hot paths can drop into C with CModule.</p>
+      <p><a href="{{ site.baseurl }}/docs/javascript-api/">JavaScript API reference</a></p>
+    </div>
+  </div>
 
-    <div class="panel" role="tabpanel" id="panel-py" aria-labelledby="tab-py" hidden>
-<pre><code><span class="kw">import</span> frida
+  <div class="grid panel" role="tabpanel" id="panel-py" aria-labelledby="tab-py" hidden>
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="kw">import</span> frida
 
 device = frida.<span class="fn">get_usb_device</span>()
 session = device.<span class="fn">attach</span>(<span class="str">"Twitter"</span>)
 script = session.<span class="fn">create_script</span>(<span class="fn">open</span>(<span class="str">"agent.js"</span>).<span class="fn">read</span>())
 script.<span class="fn">on</span>(<span class="str">"message"</span>, <span class="kw">lambda</span> msg, data: <span class="fn">print</span>(msg[<span class="str">"payload"</span>]))
-script.<span class="fn">load</span>()</code></pre>
-      <div class="lang-note">
-        <h3>The host side</h3>
-        <p>Device discovery, spawning, attaching and messaging. The same API that frida-tools is built on, so anything the CLI does, your script can do.</p>
-        <p><code>pip install frida</code></p>
-      </div>
+script.<span class="fn">load</span>()</pre>
     </div>
+    <div class="unit golden-small">
+      <h3>The host side</h3>
+      <p>Device discovery, spawning, attaching and messaging. The same API that frida-tools is built on, so anything the CLI does, your script can do.</p>
+      <p><code>pip install frida</code></p>
+    </div>
+  </div>
 
-    <div class="panel" role="tabpanel" id="panel-node" aria-labelledby="tab-node" hidden>
-<pre><code><span class="kw">import</span> frida <span class="kw">from</span> <span class="str">'frida'</span>;
+  <div class="grid panel" role="tabpanel" id="panel-node" aria-labelledby="tab-node" hidden>
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="kw">import</span> frida <span class="kw">from</span> <span class="str">'frida'</span>;
 
 <span class="kw">const</span> device = <span class="kw">await</span> frida.<span class="fn">getUsbDevice</span>();
 <span class="kw">const</span> session = <span class="kw">await</span> device.<span class="fn">attach</span>(<span class="str">'Twitter'</span>);
 <span class="kw">const</span> script = <span class="kw">await</span> session.<span class="fn">createScript</span>(source);
 script.message.<span class="fn">connect</span>(msg =&gt; console.<span class="fn">log</span>(msg.payload));
-<span class="kw">await</span> script.<span class="fn">load</span>();</code></pre>
-      <div class="lang-note">
-        <h3>Same model, async by default</h3>
-        <p>Typed bindings with Promises and signals, suited to tooling that talks to many devices at once, or to a desktop app built on Electron.</p>
-        <p><code>npm install frida</code></p>
-      </div>
+<span class="kw">await</span> script.<span class="fn">load</span>();</pre>
     </div>
+    <div class="unit golden-small">
+      <h3>Same model, async by default</h3>
+      <p>Typed bindings with Promises and signals, suited to tooling that talks to many devices at once, or to a desktop app built on Electron.</p>
+      <p><code>npm install frida</code></p>
+    </div>
+  </div>
 
-    <div class="panel" role="tabpanel" id="panel-rs" aria-labelledby="tab-rs" hidden>
-<pre><code><span class="kw">use</span> frida::{Frida, DeviceManager, ScriptOption};
+  <div class="grid panel" role="tabpanel" id="panel-rs" aria-labelledby="tab-rs" hidden>
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="kw">use</span> frida::{<span class="ty">Frida</span>, <span class="ty">DeviceManager</span>, <span class="ty">ScriptOption</span>};
 
-<span class="kw">let</span> frida = <span class="kw">unsafe</span> { Frida::<span class="fn">obtain</span>() };
-<span class="kw">let</span> manager = DeviceManager::<span class="fn">obtain</span>(&amp;frida);
+<span class="kw">let</span> frida = <span class="kw">unsafe</span> { <span class="ty">Frida</span>::<span class="fn">obtain</span>() };
+<span class="kw">let</span> manager = <span class="ty">DeviceManager</span>::<span class="fn">obtain</span>(&amp;frida);
 <span class="kw">let</span> device = manager.<span class="fn">get_local_device</span>()?;
 <span class="kw">let</span> session = device.<span class="fn">attach</span>(pid)?;
-<span class="kw">let</span> <span class="kw">mut</span> script = session.<span class="fn">create_script</span>(AGENT, &amp;<span class="kw">mut</span> ScriptOption::<span class="fn">default</span>())?;
+<span class="kw">let</span> <span class="kw">mut</span> script =
+    session.<span class="fn">create_script</span>(AGENT, &amp;<span class="kw">mut</span> <span class="ty">ScriptOption</span>::<span class="fn">default</span>())?;
 script.<span class="fn">handle_message</span>(Handler)?;
-script.<span class="fn">load</span>()?;</code></pre>
-      <div class="lang-note">
-        <h3>No JavaScript required</h3>
-        <p>The <code>frida</code> crate wraps frida-core for the host side. Build a static binary that drives devices and sessions without a Python or Node runtime anywhere near it.</p>
-        <p><a href="https://github.com/frida/frida-rust">frida-rust on GitHub</a></p>
-      </div>
+script.<span class="fn">load</span>()?;</pre>
     </div>
+    <div class="unit golden-small">
+      <h3>No JavaScript required</h3>
+      <p>The <code>frida</code> crate wraps frida-core for the host side. Build a static binary that drives devices and sessions without a Python or Node runtime anywhere near it.</p>
+      <p><a href="https://github.com/frida/frida-rust">frida-rust on GitHub</a></p>
+    </div>
+  </div>
 
-    <div class="panel" role="tabpanel" id="panel-gum" aria-labelledby="tab-gum" hidden>
-<pre><code><span class="kw">use</span> frida_gum::{Gum, Module, interceptor::*};
+  <div class="grid panel" role="tabpanel" id="panel-gum" aria-labelledby="tab-gum" hidden>
+    <div class="unit golden-large">
+<pre class="shell plain"><span class="kw">use</span> frida_gum::{<span class="ty">Gum</span>, <span class="ty">Module</span>, interceptor::*};
 
-<span class="kw">struct</span> Log;
-<span class="kw">impl</span> InvocationListener <span class="kw">for</span> Log {
-    <span class="kw">fn</span> <span class="fn">on_enter</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, ctx: InvocationContext) {
-        <span class="fn">println!</span>(<span class="str">"recvfrom(fd={})"</span>, ctx.<span class="fn">arg</span>(<span class="str">0</span>));
+<span class="kw">struct</span> <span class="ty">Log</span>;
+<span class="kw">impl</span> <span class="ty">InvocationListener</span> <span class="kw">for</span> <span class="ty">Log</span> {
+    <span class="kw">fn</span> <span class="fn">on_enter</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, ctx: <span class="ty">InvocationContext</span>) {
+        <span class="fn">println!</span>(<span class="str">"recvfrom(fd={})"</span>, ctx.<span class="fn">arg</span>(0));
     }
-    <span class="kw">fn</span> <span class="fn">on_leave</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, _ctx: InvocationContext) {}
+    <span class="kw">fn</span> <span class="fn">on_leave</span>(&amp;<span class="kw">mut</span> <span class="kw">self</span>, _ctx: <span class="ty">InvocationContext</span>) {}
 }
 
-<span class="kw">let</span> gum = Gum::<span class="fn">obtain</span>();
-<span class="kw">let</span> <span class="kw">mut</span> interceptor = Interceptor::<span class="fn">obtain</span>(&amp;gum);
-<span class="kw">let</span> recvfrom = Module::<span class="fn">find_global_export_by_name</span>(<span class="str">"recvfrom"</span>).<span class="fn">unwrap</span>();
-interceptor.<span class="fn">attach</span>(recvfrom, &amp;<span class="kw">mut</span> Log).<span class="fn">unwrap</span>();</code></pre>
-      <div class="lang-note">
-        <h3>The hooks themselves, in Rust</h3>
-        <p>The <code>frida-gum</code> crate exposes Interceptor, Stalker and the rest of Gum directly. Compile your instrumentation into a shared library and inject it, link it into your own program, or run it inside Gadget. No script engine in the loop.</p>
-        <p><a href="https://github.com/frida/frida-rust/tree/main/frida-gum">frida-gum crate</a></p>
-      </div>
+<span class="kw">let</span> gum = <span class="ty">Gum</span>::<span class="fn">obtain</span>();
+<span class="kw">let</span> <span class="kw">mut</span> interceptor = <span class="ty">Interceptor</span>::<span class="fn">obtain</span>(&amp;gum);
+<span class="kw">let</span> recvfrom =
+    <span class="ty">Module</span>::<span class="fn">find_global_export_by_name</span>(<span class="str">"recvfrom"</span>).<span class="fn">unwrap</span>();
+interceptor.<span class="fn">attach</span>(recvfrom, &amp;<span class="kw">mut</span> <span class="ty">Log</span>).<span class="fn">unwrap</span>();</pre>
     </div>
+    <div class="unit golden-small">
+      <h3>The hooks themselves, in Rust</h3>
+      <p>The <code>frida-gum</code> crate exposes Interceptor, Stalker and the rest of Gum directly. Compile your instrumentation into a shared library and inject it, link it into your own program, or run it inside Gadget. No script engine in the loop.</p>
+      <p><a href="https://github.com/frida/frida-rust/tree/main/frida-gum">frida-gum crate</a></p>
+    </div>
+  </div>
 
-    <div class="bindings">
-      <span class="label">Bindings</span>
-      <a href="https://pypi.org/project/frida/">Python</a>
-      <a href="https://www.npmjs.com/package/frida">Node.js</a>
-      <a href="https://github.com/frida/frida-rust">Rust</a>
-      <a href="https://github.com/frida/frida-swift">Swift</a>
-      <a href="https://github.com/frida/frida-clr">.NET</a>
-      <a href="https://github.com/frida/frida-go">Go</a>
-      <a href="https://github.com/frida/frida-qml">Qt/Qml</a>
-      <a href="{{ site.baseurl }}/docs/c-api/">C</a>
+  <div class="grid">
+    <div class="unit whole bindings">
+      <p>
+        <span class="kicker">Bindings</span>
+        <a href="https://pypi.org/project/frida/">Python</a>
+        <a href="https://www.npmjs.com/package/frida">Node.js</a>
+        <a href="https://github.com/frida/frida-rust">Rust</a>
+        <a href="https://github.com/frida/frida-swift">Swift</a>
+        <a href="https://github.com/frida/frida-clr">.NET</a>
+        <a href="https://github.com/frida/frida-go">Go</a>
+        <a href="https://github.com/frida/frida-qml">Qt/Qml</a>
+        <a href="{{ site.baseurl }}/docs/c-api/">C</a>
+      </p>
     </div>
   </div>
 </section>
 
-<section class="band" id="developers">
-  <div class="inner">
-    <p class="eyebrow">For developers</p>
-    <h2 class="h2">Debug the build you already shipped.</h2>
-    <p class="lede">Logging has blind spots, and you find them in the field. Instead of redeploying a special build just to see more, build a tool on Frida that attaches to the software your customers are already running.</p>
-    <div class="ways">
-      <article class="way">
-        <h3>Look anywhere, after the fact</h3>
-        <p>Hook the function that the logs do not cover, inspect its arguments, and change what it returns, on the process that is misbehaving right now. No new build, no restart, no lost state.</p>
-      </article>
-      <article class="way">
-        <h3>One tool, every version</h3>
-        <p>Resolve symbols, offsets and types at runtime, so a single product-specific tool supports the versions out in the field. That is more elegant than a tracing feature per release, and it ages better.</p>
-      </article>
-      <article class="way">
-        <h3>In-house or in-product</h3>
-        <p>Keep the tool external and leave the product untouched, or ship Gadget inside your own software as a first-party inspector. Build it in Python, Rust, Swift or Node.js, or as a Luma workspace your whole team shares.</p>
-      </article>
+<section class="developers" id="developers">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Debug the build you <em>already shipped</em>.</h4>
+    </div>
+    <div class="unit golden-large">
+      <p class="lede">
+        Logging has blind spots, and you find them in the field. Instead of
+        redeploying a special build just to see more, build a tool on Frida
+        that attaches to the software your customers are already running.
+      </p>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="unit one-third">
+      <h2>Look anywhere, after the fact</h2>
+      <p>Hook the function that the logs do not cover, inspect its arguments, and change what it returns, on the process that is misbehaving right now. No new build, no restart, no lost state.</p>
+    </div>
+    <div class="unit one-third">
+      <h2>One tool, every version</h2>
+      <p>Resolve symbols, offsets and types at runtime, so a single product-specific tool supports the versions out in the field. That is more elegant than a tracing feature per release, and it ages better.</p>
+    </div>
+    <div class="unit one-third">
+      <h2>In-house or in-product</h2>
+      <p>Keep the tool external and leave the product untouched, or ship Gadget inside your own software as a first-party inspector. Build it in Python, Rust, Swift or Node.js, or as a Luma workspace your whole team shares.</p>
     </div>
   </div>
 </section>
 
-<section class="band" id="quickstart">
-  <div class="inner qs">
-    <div>
-      <p class="eyebrow">Quick start</p>
-      <h2 class="h2">Up and running <em>in seconds.</em></h2>
-      <p class="qs-aside">One pip install gives you frida-trace, the REPL, frida-ps and friends. Point them at a local process, a phone over USB, or a kernel. <a href="{{ site.baseurl }}/docs/quickstart/">Full quick-start guide</a></p>
+<section class="luma">
+  <div class="grid">
+    <div class="unit golden-small center-on-mobiles">
+      <h4>Prefer a <em>GUI</em>?</h4>
+      <p class="blurb">
+        <a href="https://luma.frida.re/">Luma</a> is the official Frida app:
+        a native workspace with persistent sessions, a live REPL,
+        frida-trace with a built-in handler editor, and real-time
+        collaboration.
+      </p>
+      <p class="cta">
+        <a href="https://luma.frida.re/">Explore Luma &rarr;</a>
+      </p>
     </div>
-    <div class="term">
-      <div class="bar" role="tablist" aria-label="Quick start targets">
-        <button role="tab" id="qs-proc" aria-selected="true" aria-controls="qs-panel-proc">a process</button>
-        <button role="tab" id="qs-kern" aria-selected="false" aria-controls="qs-panel-kern">a kernel</button>
-      </div>
-<pre role="tabpanel" id="qs-panel-proc" aria-labelledby="qs-proc"><span class="p">$</span> <span class="c">pip install frida-tools</span>
-<span class="p">$</span> <span class="c">frida-trace -i "recv*" Twitter</span>
-<span class="o">recvfrom: Auto-generated handler: …/recvfrom.js
-Started tracing 21 functions.
-1442 ms  recvfrom()
-# Live-edit recvfrom.js and watch the magic!
-5374 ms  recvfrom(socket=67, buffer=0x252a618, length=65536, flags=0, address=0xb0420bd8, address_len=16)</span></pre>
-<pre role="tabpanel" id="qs-panel-kern" aria-labelledby="qs-kern" hidden><span class="o"># Kernel running under QEMU with its GDB stub on? That is the default: 127.0.0.1:3333.</span>
-<span class="p">$</span> <span class="c">frida-ps -D barebone</span>
-<span class="o"># Loaded frida-agent.ko or the kext instead? Point the default device at it.</span>
-<span class="p">$</span> <span class="c">FRIDA_BAREBONE_CONFIG=barebone.json frida-ps -D barebone</span>
-<span class="o"># Attach to the kernel, or to any process, with frida, frida-trace, or Luma.
-# Scripts see kernel modules, kallsyms, and BTF types alongside the usual Gum APIs.
-# Tools on another machine? Run frida-server --device=barebone there and connect as usual.</span></pre>
+    <div class="unit golden-large shot">
+      <img src="{{ site.baseurl_root }}/img/luma-tracer.webp" width="1530" height="993" alt="Luma's Tracer: a handler for open() in the built-in editor, the hook list beside it, and the event stream of traced calls from Telegram below" loading="lazy">
     </div>
   </div>
 </section>
 
-<section class="band luma-band">
-  <div class="inner">
-    <figure class="luma-fig">
-      <img src="{{ site.baseurl_root }}/img/luma-tracer.webp" width="1600" height="1063" alt="Luma's Tracer: a handler for open() in the built-in editor, the hook list beside it, and the event stream of traced calls from Telegram below" loading="lazy">
-      <figcaption>Tracer in Luma: edit the handler, see the calls stream in.</figcaption>
-    </figure>
-    <div>
-      <p class="eyebrow">Prefer a GUI?</p>
-      <h2 class="h2">Luma is the official Frida app.</h2>
-      <p class="lede">A native workspace for everything above, with the sessions and handlers kept between runs.</p>
-      <ul>
-        <li>Persistent sessions that re-attach when the target comes back</li>
-        <li>A live REPL with type-aware autocompletion, and frida-trace with the editor built in</li>
-        <li>Real-time collaboration on the same target, with chat and a shared notebook</li>
-      </ul>
-      <div class="ctas"><a class="btn ghost" href="https://luma.frida.re/">Explore Luma</a></div>
+<section class="features trust">
+  <div class="grid">
+    <div class="unit one-quarter">
+      <h2>Free</h2>
+      <p>
+        Frida is and will always be <a href="https://www.gnu.org/philosophy/free-sw.en.html">free software</a>
+        (free as in freedom). We want to empower the next generation of
+        developer tools, and help other free software developers achieve
+        interoperability through reverse engineering.
+      </p>
     </div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="inner trust">
-    <div>
-      <h3>Free software</h3>
-      <p>Frida is and will always be <a href="https://www.gnu.org/philosophy/free-sw.en.html">free as in freedom</a>, so the next generation of developer tools can build on it.</p>
+    <div class="unit one-quarter">
+      <h2>Battle-tested</h2>
+      <p>
+        <a href="https://www.nowsecure.com/">NowSecure</a> uses Frida to do
+        fast, deep analysis of mobile apps
+        <a href="https://www.nowsecure.com/solutions/mobile-app-vetting/">at scale</a>,
+        and a comprehensive test suite runs on every change.
+      </p>
     </div>
-    <div>
-      <h3>Battle-tested</h3>
-      <p><a href="https://www.nowsecure.com/">NowSecure</a> uses Frida to analyze mobile apps at scale, and a comprehensive test suite runs on every change.</p>
+    <div class="unit one-quarter">
+      <h2>Scales down</h2>
+      <p>
+        Build only what you need. The same core fits embedded systems, with a
+        <a href="{{ site.baseurl }}/docs/footprint/">footprint</a> you control
+        feature by feature.
+      </p>
     </div>
-    <div>
-      <h3>Scales down</h3>
-      <p>Build only what you need. The same core fits embedded systems, with a <a href="{{ site.baseurl }}/docs/footprint/">footprint</a> you control feature by feature.</p>
-    </div>
-    <div>
-      <h3>Built in the open</h3>
-      <p>Over a decade of releases, with <a href="{{ site.baseurl }}/news/">detailed notes</a> for every one, and a community that ships fixes upstream.</p>
+    <div class="unit one-quarter">
+      <h2>In the open</h2>
+      <p>
+        Over a decade of releases, with
+        <a href="{{ site.baseurl }}/news/">detailed notes</a> for every one,
+        and a community that ships fixes upstream.
+      </p>
     </div>
   </div>
 </section>
