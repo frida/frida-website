@@ -17,7 +17,8 @@ overview: true
       </div>
       <p class="platforms">
         <strong>User mode:</strong> Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, QNX, PlayStation 5.<br>
-        <strong>Kernel mode:</strong> Windows NT from XP through 11, Windows 9x/ME, XNU, and Linux, in virtual machines or on physical hardware.
+        <strong>Kernel mode:</strong> Windows NT from XP through 11, Windows 9x/ME, XNU, and Linux, in virtual machines or on physical hardware.<br>
+        <strong>Bare metal:</strong> microcontrollers and custom kernels over a debug stub.
       </p>
     </div>
     <figure class="section-fig" aria-label="Frida's reach across privilege levels">
@@ -120,7 +121,7 @@ overview: true
       <article class="way hot">
         <h3>In the kernel</h3>
         <p class="how">frida-barebone-agent</p>
-        <p>Load the Barebone agent into the operating system kernel. Instrument the kernel itself and every process above it, from one session, with nothing left for the process to detect.</p>
+        <p>Load the Barebone agent into the operating system kernel. Instrument the kernel itself and every process above it, from one session, with nothing left for the process to detect. No kernel to speak of? Barebone drives microcontrollers and custom kernels over a GDB remote stub, with no agent on the target at all.</p>
         <a class="more" href="#kernel">Meet Barebone</a>
       </article>
     </div>
@@ -131,7 +132,7 @@ overview: true
   <div class="inner">
     <p class="eyebrow">Barebone</p>
     <h2 class="h2">An agent that lives in ring 0.</h2>
-    <p class="lede">Barebone is Frida's bare-metal backend. Its agent is written in Rust around the same GumJS engine that runs inside user processes, so the API you already know now works against a kernel.</p>
+    <p class="lede">Barebone is Frida's bare-metal backend. Its agent is written in Rust around the same GumJS engine that runs inside user processes, so the API you already know now works against a kernel. Where there is no kernel to host it, the same API works over a debug stub alone.</p>
     <div class="kgrid">
       <div class="kcol">
         <h3>Getting it in</h3>
@@ -143,6 +144,10 @@ overview: true
           <div>
             <dt>As a driver</dt>
             <dd>On Linux and Android, <code>insmod frida-agent.ko</code>. On macOS, load the agent as a kernel extension. Then ask frida-core for the <code>barebone</code> device, from the CLI or the API. <code>add_barebone_device()</code> on the DeviceManager takes options, and <code>FRIDA_BAREBONE_CONFIG</code> points the default device at a JSON config. Only tools on another machine need a <code>frida-server --device=barebone</code> in between.</dd>
+          </div>
+          <div>
+            <dt>Or with no kernel at all</dt>
+            <dd>A microcontroller, a bootloader, or a custom kernel with no room for an agent: point Barebone at its GDB remote stub and your script runs on the host instead. Memory access such as <code>readU32()</code> becomes a stub read, and Interceptor with JavaScript callbacks becomes a software or hardware breakpoint. Hand Interceptor a NativePointer instead and it places an inline hook in the target's memory, usually code you built with RustModule, the Barebone runtime's counterpart to CModule.</dd>
           </div>
         </dl>
       </div>
