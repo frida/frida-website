@@ -23,6 +23,10 @@
 \*                */
 {% include css/style.css %}
 /*                *\
+ * $landing.css   *
+\*                */
+{% include css/landing.css %}
+/*                *\
  * $pygments.css  *
 \*                */
 {% include css/pygments.css %}

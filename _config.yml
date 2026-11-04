@@ -15,13 +15,13 @@ collections:
     output: true
 
 name: Frida • A world-class dynamic instrumentation toolkit
-description: Observe and reprogram running programs on Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, and QNX
+description: Observe and reprogram running programs, from user-mode apps down to the OS kernel, on Windows, macOS, GNU/Linux, iOS, watchOS, tvOS, Android, FreeBSD, QNX, and PlayStation 5
 url: https://frida.re
 
 twitter:
   username: fridadotre
 
-languages: ["en", "ja"]
+languages: ["en"]
 
 exclude: ["COPYING", "Gemfile", "Gemfile.lock", "README.md"]
 exclude_from_localizations: ["fonts", "img", "js", "news", "slides", "favicon.ico", "keybase.txt"]
