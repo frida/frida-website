@@ -3843,6 +3843,10 @@ for (const block of cfg.blocks) {
     now `true`.
     {: #x86relocator-readone}
 
+-   `setScratchSpillSlot(slot)`: set the memory location used to spill the
+    scratch register when relocating RIP-relative memory operands, instead of
+    pushing it onto the stack. PUSH instructions still push it
+
 -   `peekNextWriteInsn()`: peek at the next **[Instruction](#instruction)** to be
     written or skipped
 
@@ -4506,6 +4510,8 @@ for (const block of cfg.blocks) {
 
 -   `putPaciaRegReg(dstReg, modReg)`: put a PACIA instruction
 
+-   `putPacizaReg(reg)`: put a PACIZA instruction
+
 -   `putSvcImm(imm)`: put a SVC instruction
 
 -   `putNop()`: put a NOP instruction
@@ -4554,6 +4560,9 @@ for (const block of cfg.blocks) {
     Returns zero when end-of-input is reached, which means the `eoi` property is
     now `true`.
     {: #arm64relocator-readone}
+
+-   `isIpRegLiveAt(pc)`: determine whether either of the IP registers, X16 and
+    X17, is live at `pc`
 
 -   `setScratchReg(reg)`: set the register that exits from the relocated code
     may use when it is still untouched by the relocated instructions
@@ -4682,6 +4691,8 @@ for (const block of cfg.blocks) {
 -   `putLdRegRegOffset(dstReg, srcReg, srcOffset)`: put an LD instruction
 
 -   `putLwRegRegOffset(dstReg, srcReg, srcOffset)`: put a LW instruction
+
+-   `putLw32RegRegOffset(dstReg, srcReg, srcOffset)`: put a LW32 instruction
 
 -   `putSwRegRegOffset(srcReg, dstReg, dstOffset)`: put a SW instruction
 
