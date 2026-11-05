@@ -2610,6 +2610,32 @@ Stalker.follow(mainThread.id, {
     [`Stalker.flush()`](#stalker-flush) when you would like the queue to be drained.
     {: #stalker-queuedraininterval}
 
+The `iterator` passed to a `transform` callback supports the writer methods of
+its architecture, i.e. **[X86Writer](#x86writer)**, **[ArmWriter](#armwriter)**,
+**[ThumbWriter](#thumbwriter)** or **[Arm64Writer](#arm64writer)**, plus the
+following:
+
+-   `next()`: advance to the next **[Instruction](#instruction)** of the block
+    being compiled, or return `null` when there are no more.
+
+-   `keep()`: emit the current instruction unchanged. Not calling it drops the
+    instruction, which lets a transform replace it.
+
+-   `putCallout(callout[, data])`: emit a synchronous callout to `callout`,
+    which is either a function that receives the thread's CPU context, which it
+    may read and modify, or a native function. `data` is an optional pointer
+    passed along to the callout.
+
+-   `putChainingReturn()`: emit an early return from the block being executed.
+
+-   `getUserDataReg()`: return the name of a register that has been loaded with
+    the `data` value given to [`Stalker.follow()`](#stalker-follow), chosen so
+    that it does not clash with the instruction being transformed.
+
+-   `memoryAccess`: `'open'` normally, or `'exclusive'` when the block contains
+    exclusive load and store instructions, in which case the transform must
+    avoid disturbing them.
+
 
 ### ObjC
 
