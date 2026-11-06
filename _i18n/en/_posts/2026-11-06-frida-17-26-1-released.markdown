@@ -1,0 +1,30 @@
+---
+layout: news_item
+title: 'Frida 17.26.1 Released'
+date: 2026-11-06 13:15:25 +0100
+author: oleavr
+version: 17.26.1
+categories: [release]
+---
+
+A quick one with a single QuickJS fix from [@mrmacete][].
+
+Since the rebase onto current QuickJS, the runtime marks "no exception
+pending" with an uninitialized value rather than *null*. Three spots in our
+own patches still reset the pending exception to *null* after temporarily
+stashing it: when suspending the runtime so another thread can use it,
+while running *Error.prepareStackTrace()*, and while calling the hook that
+provides lazily created globals. Current QuickJS reads that *null* as an
+exception still pending, with *null* as its value. Francesco found it and
+fixed all three. Thanks!
+
+Enjoy!
+
+### Changelog
+
+- quickjs: Use the uninitialized value as the no-exception sentinel when
+  suspending the runtime, preparing stack traces, and resolving globals
+  through the access hook. Thanks [@mrmacete][]!
+
+
+[@mrmacete]: https://twitter.com/bezjaje
