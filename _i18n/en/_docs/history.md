@@ -37,7 +37,7 @@ also possible to use Frida from C.
 [Node.js]: https://github.com/frida/frida-node
 [Python]: https://github.com/frida/frida-python
 [Swift]: https://github.com/frida/frida-swift
-[.NET]: https://github.com/frida/frida-clr
+[.NET]: https://github.com/frida/frida-net
 [Qt/Qml]: https://github.com/frida/frida-qml
 [Go]: https://github.com/frida/frida-go
 [oSpy]: https://github.com/oleavr/ospy
