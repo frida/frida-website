@@ -1,0 +1,212 @@
+---
+layout: news_item
+title: 'Frida 17.26.4 Released'
+date: 2026-11-16 22:59:15 +0100
+author: oleavr
+version: 17.26.4
+categories: [release]
+---
+
+Barebone again. Its agents are now tested in live guests on every change,
+from Windows 95 to Windows 10 on arm64, which shook out a long list of
+bugs, and Windows XP works again. The XNU agent learned to talk over a
+UART and to run on an iOS 26.1 restore ramdisk. Outside of Barebone,
+[@kkuehl][] fixed a deadlock and a race in the module registry on Windows,
+[@Cassian433][] fixed *hexdump()* offsets, [@tubibibo][] brought back
+*tsconfig.json* path aliases in the compiler, and a broken app icon on
+Android no longer takes the whole enumeration down with it.
+
+## Barebone
+
+### Live guests
+
+Until now the agents were only built by CI. They are now also run, in
+eight QEMU guests: Windows 95, Windows XP, Windows XP x64, Windows 10 on
+arm64, and Linux on x86, x86_64, Arm and arm64. Each guest is booted once
+until it reports ready and snapshotted, and every test then resumes a
+fresh QEMU from that snapshot. Most of what follows fell out of getting
+those green. XNU is next, more on that below.
+
+### Windows
+
+Windows XP works again, on x86 and x64. Later work on the NT agent had
+come to rely on APIs that arrived with Vista, so each of those now has a
+fallback. On Windows 9x, injection hung intermittently: VMM reuses the
+handle of an expired time-out, so cancelling one that had already fired
+could cancel another waiter's. The changelog has the rest for both.
+
+Two fixes apply to every NT version. Gum changes the protection of what it
+allocates a page at a time, but the pool shares a page between
+allocations, so a CModule made its neighbors read-only; Gum now gets whole
+pages. And a kernel thread without a user-mode part now reports where it
+waits, from the stack pointer saved in its thread object.
+
+On arm64:
+
+- Kernel code is patched while the other processors wait in an IPI, so
+  none runs a half-written instruction.
+- ACPI only gives a line's vector to the driver it started, so the agent
+  takes a vector of its own and routes the line there.
+- Windows 10 1709 has neither the vector array nor *ExAllocatePool2()*
+  that the agent relied on.
+- Threads are watched through *BaseThreadInitThunk()*, as newer 64-bit
+  Windows lacks *BaseThreadStart()*, and spawns are held with a branch to
+  self.
+
+### Lost wakeups
+
+The agents injected into Windows processes, on both NT and 9x, could sleep
+through a wake. A waiter could join a slot just as its last sleeper let
+go, and sleep where no wake would look. Each slot is now guarded, every
+slot a token holds is woken, and wakes are counted with a semaphore so
+that none coalesce. The main loop also armed its wakeup after checking
+it, missing a signal that landed in between. And on Arm, retaking a held
+recursive mutex used a weak compare-exchange, which may fail spuriously,
+leaving the owner waiting on itself.
+
+### Linux
+
+Kernels without BTF were the theme here. On Alpine's x86 kernel the agent
+panicked on its first read of the current task, and elsewhere a spawn
+never learned its pid, and reading another thread's registers failed. The
+agent now falls back to fixed offsets for the leading *pcpu_hot* members,
+and discovers the task layout on its own.
+
+On arm64 kernels built with patchable function entries, the prologue of
+*fixup_exception()* starts with what ftrace patches, so our fault hook was
+never installed, and a faulting read in the agent took the kernel down. On
+32-bit Arm, removing that hook restored the address before the jump, so a
+fault taken in between recursed until the kernel stack overflowed. Also on
+32-bit Arm, per-CPU symbol detection put *swapper_pg_dir* out of reach, so
+writes to executable memory faulted, and *kernel_write()* was called with
+a junk position, so the agent in a process was never woken.
+
+### XNU
+
+The XNU agent can now use a UART that the guest kernel leaves alone, such
+as UART1 on t8030, as its transport: it receives on the UART's interrupt,
+and waits for room to transmit on its threshold interrupt. Interrupt
+controllers are found by phandle, and a line can be hooked without
+enabling it, so a driver can mask and unmask it.
+
+It also runs on an iOS 26.1 restore ramdisk under [Inferno][], ChefKiss'
+QEMU derivative with Apple ARM device guest support, which is what our
+example config for XNU now targets. That took a few changes. iOS 26.1
+inlines *thread_set_state()* everywhere, so we fall back to
+*thread_set_state_internal()*. A restore ramdisk has no shared cache, so
+the agent injected into a process looks libraries up in dyld's image list.
+Its code is mapped executable up front, as under a code-signing monitor,
+anonymous memory that only later becomes executable is taken to be a
+debugger patching code, and loses execute unless the process is being
+debugged. And it can spawn threads from the bare thread the kernel starts
+it on, through *pthread_create_from_mach_thread()*, shuts GLib down when
+it stops, and no longer leaks a pthread per thread.
+
+This is the groundwork for running the XNU agent live on CI too, alongside
+the guests above. The tests already run against the ramdisk locally, and
+hooking them up is what we are about to do next.
+
+## Windows
+
+[@kkuehl][] ran Gum from several threads on Windows and found two bugs in
+the module registry. Looking up a global export enumerated the modules
+with the registry's lock held, asking the loader about each. The loader
+makes such a query wait while a module is being loaded, and it notifies
+the registry of the module it is loading, which takes the registry's lock.
+A lookup on one thread and a load on another could thus wait for each
+other forever. The modules are now collected first, and the loader asked
+with the registry unlocked. The heap API lookup had the same pattern and
+got the same fix.
+
+The other was a race: the registry was made available to other threads
+before the thread that created it had activated it, so a thread obtaining
+it in between found no modules. With 32 threads racing to be first, that
+happened in 87 of 400 processes. Thanks for the thorough work!
+
+On the USB side, a device that re-enumerates under the same instance ID,
+such as an iPhone switching USB configuration, was seen as unchanged by
+our libusb's hotplug scan, so no events were emitted and the stale device
+remained, with outdated descriptors and interface paths.
+
+## GumJS
+
+[@Cassian433][] fixed *hexdump()* when given an offset, closing an issue
+[@chrisdmc][] opened back in 2021. The row loop counted from zero while
+the bytes were read from the offset, so an offset left empty rows at the
+end, and one past the length made the loop run off the end of the buffer.
+The length now counts from the offset, as documented. Thanks!
+
+## Compiler
+
+[@marsrcm][] reported that path aliases in *tsconfig.json* stopped
+resolving. The parsed config is handed to esbuild as JSON, and its *paths*
+option is a type that only knows how to serialize itself through Go's
+newer JSON package, so our toolchain emitted it as an empty object.
+[@tubibibo][] tracked it down and fixed it. Thanks, both!
+
+## Android
+
+Enumerating applications or processes with icons failed altogether if a
+single icon failed to load, as [@YSaxon][] reported. Such icons are now
+left out.
+
+Enjoy!
+
+### Changelog
+
+- barebone: Run the agents in live guests in CI.
+- barebone: Support Windows XP again: run the worker on its own stack,
+  read hal.dll exports, copy across processes by attaching, list threads
+  with Toolhelp, place an agent in csrss, follow forwarded exports, and
+  report faults.
+- barebone: Only widen a large page's rights on Windows.
+- barebone: Give Gum whole pages on Windows.
+- barebone: Tell where a Windows kernel thread waits.
+- barebone: Size the Windows wakeup token by pointer.
+- barebone: On Windows arm64, patch kernel code with other processors
+  held, route interrupts by hand, find vectors without the array, skip
+  tables the kernel can't view, hold spawns with a branch to self, and
+  watch threads via *BaseThreadInitThunk()*.
+- barebone: On Windows 9x, cancel only pending time-outs, start the agent
+  from a new thread, park on *Wait_Semaphore*, give the process agent's
+  TIB its stack, start it via its frame, and take module bases from PE
+  headers.
+- barebone: Stop losing wakes in agents injected into Windows processes,
+  and arm the wakeup before checking it.
+- barebone: Retake a held recursive mutex reliably.
+- barebone: Drop the registry lock to unregister.
+- barebone: On Linux without BTF, find *pcpu_hot* members, where tasks
+  keep their stack, and task ids.
+- barebone: Hook arm64 *fixup_exception()* under ftrace, and unpatch the
+  Arm fault hook jump first.
+- barebone: Tell Linux per-CPU symbols by section, and pass
+  *kernel_write()* a null position on Arm.
+- barebone: Add a UART transport for XNU, and find IRQ controllers by
+  phandle.
+- barebone: Fall back to *thread_set_state_internal()* on XNU.
+- barebone: Find XNU images without a shared cache, map process agent code
+  executable up front, spawn threads from bare threads, start them
+  detached, and shut GLib down when the agent stops.
+- barebone: Update the example configs, with the XNU one targeting an iOS
+  26.1 restore ramdisk under [Inferno][].
+- windows: Fix a deadlock in global export lookup. Thanks [@kkuehl][]!
+- module-registry: Fix a race in *obtain()*. Thanks [@kkuehl][]!
+- heap-api: Fix a deadlock in CRT lookup on Windows. Thanks [@kkuehl][]!
+- gumjs: Fix *hexdump()* offset handling. Thanks [@Cassian433][] and
+  [@chrisdmc][]!
+- compiler: Preserve *tsconfig.json* paths when serializing. Thanks
+  [@tubibibo][] and [@marsrcm][]!
+- android: Omit icons that fail to load. Thanks [@YSaxon][]!
+- libusb: Detect hotplug re-enumeration on Windows.
+- efni: Define *GLIB_2_84* from the GLib found.
+- idun: Define *GLIB_2_84* from the GLib found.
+- vala: Avoid two warnings in generated C.
+
+
+[@kkuehl]: https://github.com/kkuehl
+[@Cassian433]: https://github.com/Cassian433
+[@tubibibo]: https://github.com/tubibibo
+[@chrisdmc]: https://github.com/chrisdmc
+[@marsrcm]: https://github.com/marsrcm
+[@YSaxon]: https://github.com/YSaxon
+[Inferno]: https://chefkiss.dev/applehax/inferno/
