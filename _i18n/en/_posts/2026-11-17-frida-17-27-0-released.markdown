@@ -1,0 +1,146 @@
+---
+layout: news_item
+title: 'Frida 17.27.0 Released'
+date: 2026-11-17 18:52:40 +0100
+author: oleavr
+version: 17.27.0
+categories: [release]
+---
+
+Attaching to apps that are already running now works on non-rooted Android,
+Gadget carries its version so tools can tell which one they have, and
+*idund* comes to macOS, where it can make a short-lived client some
+fifteen times faster to reach an iOS device. iOS 27.2 users also get a fix
+for tunnels being torn down. And as promised last time, the XNU agent now
+runs live on CI.
+
+## Jailed Android
+
+On a device without root, we get into a debuggable app by injecting Gadget
+over JDWP. That used to require spawning the app. *attach()* now works for
+an app that is already running: we break on *Binder.execTransact()*,
+trigger it with a *dumpsys meminfo* call into the app, load Gadget on that
+binder thread, then clean up and detach from JDWP.
+
+Each process gets its own Gadget files and socket, so another process of
+the same package can't have its mapped Gadget overwritten, and a later
+*attach()* reuses a Gadget that is already loaded.
+
+## Picking a Gadget when attaching
+
+Backends that attach by injecting Gadget, on jailed iOS and non-rooted Android,
+let you pick a custom one. Until now that was only possible through
+*spawn()*. There is now a *gadget_path* session option:
+
+{% highlight python %}
+import frida
+
+device = frida.get_usb_device()
+session = device.attach(pid, gadget_path="/path/to/frida-gadget.so")
+{% endhighlight %}
+
+## Which Gadget is this?
+
+Gadget now embeds its name, version and architectures, in the same JSON
+payload our Barebone agents carry: a *.package* section on PE, a
+*__TEXT,__package* section on Mach-O, and a package note on ELF. PE also
+gets a *VERSIONINFO* resource, and Mach-O a *current_version*, so the
+version shows up in the platform's own tools.
+
+The new *BinaryMetadata.from_file()* reads it back, from PE, Mach-O,
+including universal ones, and ELF, without loading the binary:
+
+{% highlight python %}
+import frida
+
+metadata = frida.BinaryMetadata.from_file("frida-gadget.dylib")
+print(metadata.name, metadata.version, metadata.architectures)
+{% endhighlight %}
+
+## Idun
+
+*idund*, the per-user daemon that shares the tunnel to an iOS device
+between processes, now also runs on macOS. Without it, each process holds
+its own assertion with the system's pairing daemon, and interrupts the
+system's own connection to the device's service discovery with its
+handshake. It also pays for tunnel setup, unless another app on the system
+is already using the device. With *idund* holding the tunnel, a
+short-lived client that would have paid for it goes from about 0.5 s down
+to 30 ms, and the system is interrupted once per tunnel rather than once
+per process.
+
+Two fixes came out of this, both about the device keeping one discovery
+connection per source address. On iOS 27.2, the device remembers the UUID
+of its last discovery peer, and when a different one handshakes, it
+re-attaches and closes every service listener it advertised. We used a
+random UUID per handshake, so each new discovery connection tore down the
+services of the previous one, resetting connections inside the tunnel and
+refusing new tunnels until the device was replugged. We now present a
+stable UUID, the one that also backs the pairing identity, and on macOS
+the system's own. And clients of *idund* no longer open a discovery
+connection of their own, which evicted the daemon's; it hands them the
+service directory from its handshake, and refreshes it on their behalf.
+
+## Barebone
+
+The XNU agent's tests now run on CI, booting the iOS 26.1 restore ramdisk
+under [Inferno][], fresh for each test. Two hooking tests are skipped
+there for now, as they pass on a fast host but lose a wake under the
+timing of the slow CI runner.
+
+## Bindings
+
+- python: Named constructors such as *from_file()* are now always static
+  factories, matching frida-node, and are reachable from the public types
+  rather than only through *_frida*. This fixes *ControlService()* raising
+  *NotImplementedError*, and turns *XnuKernelcache* and *Gio.InetAddress*
+  construction into *from_blob()* and *new_any()*.
+- python: Wrapping a returned handle no longer runs the type's
+  *\_\_init\_\_()*, which crashed for types only constructible through
+  factories, and leaked a second object for others.
+- node: Only *new* maps to the JavaScript constructor. Named constructors
+  are static factories, like *BinaryMetadata.fromFile()*, and so are the
+  kernel image types' *fromBlob()* and *Gio.InetAddress.newAny()*.
+- net: The native library's exports are now generated from frida-core's
+  public header. The hand-maintained list had drifted, and on macOS and
+  Linux the library exported only what frida-core happened to reference,
+  leaving out the Compiler among others.
+- swift: Regenerated for the new APIs.
+
+Enjoy!
+
+### Changelog
+
+- droidy: Support attaching to running apps.
+- droidy: Wait for Gadget to start listening, as connecting right after
+  injecting could fail with "closed" when configured to resume on load.
+- droidy: Give JDWP enum properties valid defaults, fixing a crash when
+  creating a breakpoint event.
+- api: Add *SessionOptions.gadget_path*, honored by the jailed iOS and
+  non-rooted Android backends.
+- api: Add *BinaryMetadata.from_file()*.
+- gadget: Embed version metadata.
+- idun: Support macOS in the daemon.
+- idun: Present a stable host UUID to the device's service discovery, and
+  the system's own on macOS, fixing tunnels being torn down on iOS 27.2.
+- idun: Share the service directory with daemon clients.
+- pe-module: Let *get_data_at_rva()* report the size, and use it to bound
+  the mapper's copies.
+- macho-module: Validate load commands and slices, check command sizes and
+  strings, bound the *__LINKEDIT* tables, export trie, and rebase and bind
+  repeats, skip out-of-range section and linkedit data, reject segments
+  whose VM range wraps, and bound the header-only loader. Thanks for reporting,
+  [@smoke-wolf][]!
+- elf-module: Skip sections with out-of-range data.
+- leb: Don't read past the end when skipping.
+- barebone: Run the XNU live tests on CI.
+- python: Map only *new* to *\_\_init\_\_()*, expose factory constructors
+  in the public types, and skip *\_\_init\_\_()* when wrapping a handle.
+- node: Keep named constructors out of *new*.
+- net: Generate the native exports from frida-core's public header, and
+  wrap static factories and string array properties.
+- swift: Regenerate bindings for the latest FridaCore.
+
+
+[@smoke-wolf]: https://github.com/smoke-wolf
+[Inferno]: https://chefkiss.dev/applehax/inferno/
