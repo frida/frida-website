@@ -1,0 +1,128 @@
+---
+layout: news_item
+title: 'Frida 17.27.3 Released'
+date: 2026-11-19 22:51:50 +0100
+author: oleavr
+version: 17.27.3
+categories: [release]
+---
+
+Second release of the day. QuickJS no longer needs much native stack,
+which matters everywhere: a hook can now run on a thread with very little
+stack to spare. That came out of our Barebone agent in the Linux kernel,
+where a mistake in a script now also becomes a JavaScript exception rather
+than a kernel oops, and where the agent injected into a process gained
+*File*. Decoded patterns also keep the attributes of their root type.
+
+## QuickJS
+
+QuickJS has been stack-hungry. Every call from one JavaScript function to
+another recursed on the native stack, and so did the parser for every
+level of nesting in the source. On a thread with little stack to spare,
+that meant a hook couldn't run. A RASP could exploit this to sabotage
+Frida, by calling the function it wants to keep you away from on a thread
+with a very small stack.
+
+Both are now gone. Calls from one bytecode function to another keep the
+caller's interpreter state in a frame on the heap, so call depth is
+bounded by memory rather than by the native stack. The parser got the same
+treatment: its mutually recursive functions keep their state in heap
+frames and return to a driver loop, so how deeply a source nests costs
+memory rather than stack. This is in our QuickJS fork, so it ships on
+every platform.
+
+## Barebone
+
+### Faults
+
+A script running in the kernel will sooner or later read a bad pointer, or
+call a *NativeFunction* at a bad address. That should end in a JavaScript
+exception, and on Linux it didn't always:
+
+- A fault on the agent's JS thread is now treated as the agent's own even
+  when the program counter is outside the agent, as when a
+  *NativeFunction* jumps to a bad address. The kernel's exception tables
+  still get the first say.
+- On x86 and x86_64, faults were recovered from a die notifier, which runs
+  after the kernel has printed the oops and tainted itself, so every bad
+  pointer read logged a full oops. We now take over *fixup_exception()*,
+  as on arm and arm64. On x86_64, a kernel-mode instruction fetch from
+  user memory skips that and goes straight to *page_fault_oops()*, so that
+  is covered too.
+- arm64 sends an instruction abort straight to *die_kernel_fault()*
+  without asking *fixup_exception()*, so we take over
+  *__do_kernel_fault()* and recover such aborts on the agent's own thread,
+  leaving every other fault to the kernel.
+- On 32-bit ARM, the kernel returns from an abort with the processor state
+  it saved on entry, so when the fault struck ARM code, the agent's Thumb
+  code was resumed as ARM. Such a fault now resumes through a stub that
+  switches state.
+
+What Gum can't turn into an exception is recorded, and the thread parked,
+rather than taking the kernel down. The agent tells the host before it
+parks, and the host then names the fault, fails what is outstanding, and
+detaches the sessions as terminated, instead of leaving you waiting on an
+agent that will never answer.
+
+### A tiny stack
+
+The kernel is where this hurt the most. Scripts there run on a kernel
+thread's stack, which is 16 KiB or 8 KiB depending on the architecture.
+That left QuickJS too little to parse a minified module, so sending a
+pattern to the REPL failed with a stack overflow.
+
+My first attempt was to run scripts on a larger stack of our own. That was
+a failed experiment: arm and arm64 kernels check on every exception that
+the stack pointer lies within the stack they handed out, and panic
+otherwise. The QuickJS surgery above was the solution, and scripts now run
+on the thread's own stack on every architecture.
+
+On 32-bit ARM, two 4 KiB buffers that only the agent in a process needs
+were also claimed on the kernel half's stack, and the kernel panicked on
+loading a script that observes threads.
+
+### In a process
+
+The agent injected into a Linux process now supports *File*, by routing
+libc's file calls through syscalls. Where there is no backing for them,
+they now fail with *ENOSYS*, as a failed *File.readAllText()* used to say
+"Success".
+
+Two fixes for 32-bit targets. The kernel there takes a *timespec* of two
+longs, and we passed two 64-bit fields, so the clock read nanoseconds into
+the seconds, and every timeout was misread. And on ARM, the agent flushed
+caches with operations only the kernel may run, so it took *SIGILL* when
+its first script loaded. It now asks the kernel.
+
+## Patterns
+
+Yesterday's fix kept the presentation attributes of a field cut short.
+Today's covers the root: a type's attributes were only applied inside an
+enclosing scope, so the type a value was decoded as lost its visualizer,
+name and format. That includes a root without a frame of its own, such as
+an enum decoded directly.
+
+Enjoy!
+
+### Changelog
+
+- quickjs: Run bytecode-to-bytecode calls on heap frames.
+- quickjs: Parse on heap frames.
+- barebone: Recover faults on the Linux JS thread, including those with
+  the program counter outside the agent.
+- barebone: Recover x86 Linux faults before the kernel oopses.
+- barebone: Recover arm64 instruction aborts.
+- barebone: Resume ARM faults in Thumb via a stub.
+- barebone: Tell the host when its agent is lost.
+- barebone: Run Linux kernel scripts on the thread's stack.
+- barebone: Keep the Linux process agent's read buffers off the stack.
+- barebone: Support *File* in Linux process agents, and report
+  unsupported libc calls as *ENOSYS*.
+- barebone: Size timespecs for the Linux process agent's kernel.
+- barebone: Flush code through the kernel in ARM process agents.
+- barebone: Set page protections on i386 Linux.
+- barebone: Hold the Interceptor while hooking, and revert the rename hook
+  when the process agents stop.
+- barebone: Fix the 32-bit ARM Linux build.
+- glib: Truncate files on OS none.
+- patterns: Apply a root type's own attributes, on frameless roots too.
