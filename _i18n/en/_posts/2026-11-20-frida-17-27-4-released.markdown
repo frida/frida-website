@@ -1,0 +1,72 @@
+---
+layout: news_item
+title: 'Frida 17.27.4 Released'
+date: 2026-11-20 11:03:10 +0100
+author: oleavr
+version: 17.27.4
+categories: [release]
+---
+
+A compiler release: a much more complete *fs* module for agents, thanks to
+[@std-microblock][] and [@ChiChou][], two fixes for patterns compiled into
+agents, and a hang on entrypoints with a colon in their name.
+
+## frida-fs
+
+Frida.Compiler bundles [frida-fs][], our implementation of Node.js' *fs*
+module for GumJS, and this release moves it from 7.1.1 to 8.1.2. That
+brings:
+
+- *mkdir()*, *rename()*, *copyFile()*, *appendFile()*, *chmod()*,
+  *chown()*, *utimes()*, *realpath()*, *symlink()*, *truncate()*,
+  *access()* and *existsSync()*, contributed by [@std-microblock][].
+- The *start*, *end* and *highWaterMark* options of *createReadStream()*,
+  contributed by [@ChiChou][].
+- A fix for read streams without an end yielding no data on Windows, where
+  QuickJS evaluates *Infinity* to *NaN*.
+- A fix for *readlink()* on procfs links such as */proc/self*, which
+  failed with "invalid size". The buffer was sized from what *lstat()*
+  reports, and procfs reports zero for its links.
+
+Field reads also got cheaper, by passing offsets to pointer reads rather
+than allocating a *NativePointer* per field. That means an agent using
+*fs* built with this compiler needs Frida 17.20 or newer at runtime.
+
+Thanks, both!
+
+## Patterns
+
+A pattern can describe both the on-disk and the in-memory form of a
+format, and pick between them by whether *__MEMORY__* is defined. A
+pattern compiled into an agent decodes live memory, so it is now defined
+there, as pattern queries already assumed.
+
+Addresses past 2^53, such as a kernel's, went through *parseInt()* on
+their way into the compiled pattern and lost their low bits, so
+*std::mem::base_address()* and *addressof()* were off by up to 2 KiB
+there. They are now parsed as a *BigInt*, and only narrowed when that is
+lossless.
+
+## Entrypoints with a colon
+
+Compiling an entrypoint whose name holds a colon hung. esbuild renames
+such an output, so our bundler couldn't find it and panicked inside
+esbuild's end-of-build callback, where the panic deadlocked on the very
+build it was ending. We now tell esbuild what to name the output, and
+report a failure there as an error.
+
+Enjoy!
+
+### Changelog
+
+- compiler: Bump frida-fs to 8.1.2. Thanks [@std-microblock][] and
+  [@ChiChou][]!
+- compiler: Define *__MEMORY__* for patterns in agents.
+- compiler: Keep wide pattern offsets exact.
+- compiler: Name the entrypoint's output explicitly, fixing a hang on
+  entrypoints with a colon in their name.
+
+
+[@std-microblock]: https://github.com/std-microblock
+[@ChiChou]: https://github.com/ChiChou
+[frida-fs]: https://github.com/nowsecure/frida-fs
