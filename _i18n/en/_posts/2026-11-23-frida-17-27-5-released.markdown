@@ -1,0 +1,132 @@
+---
+layout: news_item
+title: 'Frida 17.27.5 Released'
+date: 2026-11-23 23:34:19 +0100
+author: oleavr
+version: 17.27.5
+categories: [release]
+---
+
+A bug-fix release, with [@kkuehl][] behind most of it: a leak of thread
+handles in every Windows process we attach to, an attach that never
+returned, a crash on Android when opening a second local session, and a
+rare hang on teardown. Windows 11 26H1 on ARM64 works with our mapper,
+our mapped dbghelp can reach symbol servers thanks to [@mochaaP][], and
+[@mrmacete][] fixed iOS devices that stayed unreachable after booting.
+
+## Windows
+
+Since 17.25.0 our agent is mapped into the target rather than loaded by
+the system's loader. Kirby found that every attach then left seven to
+eight thread handles open in the target, each to a thread that had already
+exited. GLib only cleaned up a thread on the thread-detach notification,
+which the loader never sends to an image it doesn't know about. A thread
+GLib started now cleans up on its own way out. Threads GLib didn't start
+had the same problem with their private data, which stayed allocated and
+fragmented the heap of a long-lived agent in a process that keeps creating
+threads. Those are now cleaned up through a fiber-local storage slot,
+which is how the POSIX backend has always done it with a pthread key.
+
+Kirby also fixed two issues around attaching:
+
+- When the mapper couldn't map the agent, *attach()* never returned. The
+  error arrived in a domain that wasn't propagated, so the task was
+  dropped without being completed.
+- A process that has exited can still be opened by PID for as long as
+  anyone holds a handle to it. Attaching to one failed with "Unable to
+  allocate target memory". It is now reported the same way as a PID that
+  no longer exists, with and without the mapper.
+
+On ARM64, mapping an image with static TLS aborted on Windows 11 26H1, as
+[@januwA][] reported. The heuristics for finding the loader's TLS routines
+expected fixed registers and a flags check, and the compiler had laid
+them out differently. They are now recognized by what they do, as on x86
+since 17.26.0, with the same decoder used for native and emulated
+processes. This was validated against ntdll from Windows 10 19041 and
+Windows 11 22000, 22621, 26100, 26200 and 28000, in their native, ARM64EC
+and CHPE flavors.
+
+And [@mochaaP][] noticed that our mapped dbghelp never got as far as
+loading symsrv.dll. Being unknown to the loader, it failed to look up its
+own path. We now answer with the main executable's path, so the path it
+derives still hits our redirects. Thanks, all three!
+
+## macOS
+
+Gadget and frida-inject can watch scripts and reload them when they
+change. In a watched directory on macOS, a write to an existing file went
+unnoticed, as GLib's kqueue backend only diffs directory listings. Our
+*FileMonitor*, which both now use, watches directories through FSEvents
+there.
+
+## iOS
+
+Francesco fixed devices staying unreachable until *idund* was restarted.
+When a device didn't reveal its IPv6 address within two seconds, as while
+still booting after an erase or after enabling developer mode, the NCM
+driver was left running. Every retry opened another one, and with several
+of them consuming frames from the device, the datagram carrying the
+address almost always ended up in an abandoned one. Abandoned drivers are
+now closed. Thanks!
+
+## Android
+
+Kirby found that closing the local session and opening another crashed.
+The local backend runs its helper in a Java VM that it creates inside the
+host process, and destroyed it when the session closed, but ART can't
+create a second VM in the same process. frida-server never sees this, as
+it keeps one session for its whole life, but an embedder does. The helper
+is now started once per process and shared between sessions.
+
+Process enumeration also failed altogether when a process ran as a uid
+without a passwd entry. The user is now left out for such a process, and
+the uid is always provided, as on Linux.
+
+## Teardown
+
+Kirby also tracked down a rare hang when closing a *DeviceManager*, seen
+on macOS. A reply queued just before the peer vanished could pass through
+the agent's message filter after the connection had closed, wrapping its
+count of pending calls below zero. Unload then waited forever for calls
+that would never complete. Thanks for all of these, Kirby!
+
+## CModule
+
+With the external toolchain, compile errors read "Linking failed:
+Compilation failed: ...", as that toolchain compiles while linking. Each
+backend now picks its own prefix.
+
+Enjoy!
+
+### Changelog
+
+- glib: Clean up threads without relying on thread-detach on Windows,
+  fixing leaked thread handles and private data in mapped agents. Thanks
+  [@kkuehl][]!
+- glib: Don't wait forever when a D-Bus client rejects the server's
+  authentication data. Thanks [@DJm00n][]!
+- windows: Fix *attach()* hanging when mapping fails. Thanks [@kkuehl][]!
+- windows: Report exited processes as not found, with and without the
+  mapper. Thanks [@kkuehl][]!
+- pe-mapper: Find the ARM64 loader TLS routines robustly, fixing Windows
+  11 26H1. Thanks [@januwA][]!
+- dbghelp: Redirect *GetModuleFileNameW()*, so symsrv.dll gets loaded.
+  Thanks [@mochaaP][]!
+- file-monitor: Use FSEvents for macOS directories.
+- gadget: Watch scripts with *FileMonitor*.
+- inject: Watch the script with *FileMonitor*.
+- agent: Fix a pending-call underflow on disconnect, which could hang
+  teardown. Thanks [@kkuehl][]!
+- idun: Close abandoned NCM drivers. Thanks [@mrmacete][]!
+- android: Share the in-process helper between sessions. Thanks
+  [@kkuehl][]!
+- android: Omit the user when a uid has no passwd entry. Thanks
+  [@kkuehl][]!
+- cmodule: Don't wrap compile errors as link errors.
+
+
+[@kkuehl]: https://github.com/kkuehl
+[@mochaaP]: https://github.com/mochaaP
+[@mrmacete]: https://twitter.com/bezjaje
+[@januwA]: https://github.com/januwA
+[@DJm00n]: https://github.com/DJm00n
