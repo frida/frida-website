@@ -1,0 +1,91 @@
+---
+layout: news_item
+title: 'Frida 17.27.6 Released'
+date: 2026-11-25 23:02:59 +0100
+author: oleavr
+version: 17.27.6
+categories: [release]
+---
+
+Frida cleans up after itself in the temporary directory, even after a
+crash, and stops extracting the same helpers over and over. On macOS,
+patching code no longer leaves pages briefly non-executable, which fixes
+crashes on attach and detach in busy processes, and local sessions no
+longer write the agent to disk. CModule on Apple systems and the Swift
+bindings got a few fixes too.
+
+## Temporary files
+
+Frida can be built in two ways. With *--with-assets=installed*, typically
+used for distro packaging, its helpers are expected to already be on the
+filesystem, relative to where frida-core is, and nothing is written out.
+With *--with-assets=embedded*, as in the binaries we ship, Frida carries
+them inside itself and extracts them when needed: the helper process on
+Windows, macOS and Linux, the agent where it isn't mapped from memory, and
+*idund*. Each process extracted its own copies into a fresh directory, and
+a process that died before cleaning up left them behind. Anyone running
+Frida a lot has seen those pile up.
+
+For embedded builds there are now two kinds of directories. Build
+resources are shared per build and user, under a stable name, so a second
+process reuses what the first one extracted. Each file is verified against
+its SHA-256 before it is reused, and repaired if it doesn't match. The
+resource compiler emits the digests at build time, so nothing is hashed at
+startup. Session directories are locked while in use, so whatever a dead
+process left behind can be told apart from what is live, and is reclaimed
+by the next process to come along.
+
+## macOS
+
+### Patching code
+
+Where pages can't be writable and executable at once, patching code meant
+suspending the other threads and flipping the pages to writable and back.
+The pages were briefly not executable, and threads created while the
+others were suspended ran straight into them. Busy processes that use
+Grand Central Dispatch crashed on attach and detach as a result.
+
+On arm64 we now write the patched copy elsewhere and remap it over each
+run of pages, which replaces the run atomically and needs no thread
+suspended. Only pages that can't be swapped take the old path.
+
+### Agent from memory
+
+The out-of-process helper now gets the agent through an unlinked shared
+memory object, so local sessions no longer write *frida-agent.dylib* to
+disk.
+
+### CModule
+
+TinyCC looks up the SDK's library path through libxcselect when linking.
+Inside frida-agent, the string it got back was released through our own
+*free()* rather than the allocator that made it, corrupting the heap. It
+is now freed through its zone. The lookup is also skipped altogether for
+an embedder that resolves its own symbols, as we do, which keeps
+libxcselect out of the target, and it only happens on macOS, as other
+Apple systems have no libxcselect and the lookup went on to *dlsym()* a
+null handle there.
+
+## Swift
+
+*DateTime* and the other GLib wrappers that start from nothing crashed
+when used before any other API, and so did the JSON ones. They now
+initialize the runtime first.
+
+Enjoy!
+
+### Changelog
+
+- system: Add self-reclaiming resource directories, shared per build and
+  user and verified before reuse.
+- windows: Keep helpers in a resource directory.
+- darwin: Keep the helper and agent in resource directories.
+- linux: Keep helpers in a resource directory.
+- fruity: Keep *idund* in a resource directory.
+- resource-compiler: Emit each blob's SHA-256.
+- darwin: Map the agent into the helper from memory.
+- memory: Swap patched code pages in on Darwin, fixing crashes on attach
+  and detach in busy processes.
+- tinycc: Free the SDK path through its zone, skip the SDK lookup under
+  *-nostdlib*, and only look it up on macOS.
+- swift: Initialize the runtime first in the GLib and JSON-GLib wrappers.
