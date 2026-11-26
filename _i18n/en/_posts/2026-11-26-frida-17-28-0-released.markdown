@@ -1,0 +1,132 @@
+---
+layout: news_item
+title: 'Frida 17.28.0 Released'
+date: 2026-11-26 20:06:01 +0100
+author: oleavr
+version: 17.28.0
+categories: [release]
+---
+
+A Gum release about hooks arriving on time and threads not getting in each
+other's way. A hook is now live when *attach()* returns no matter what
+other threads are doing, module observers no longer deadlock against
+hooks, and libraries we looked an export up in can unload again. On macOS
+and iOS, in-process crash reporters no longer mistake a guarded memory
+read for a crash. And [@BoringApp][] fixed a crash on startup on iOS 15.0.
+
+## Interceptor
+
+A hook attached on one thread was not live when *attach()* returned if any
+other thread was inside an Interceptor transaction at that moment, and
+every GumJS scope is such a transaction. You would meet this as
+instrumentation that arrives too late. The typical case is an *onAdded*
+handler that hooks a library as it loads, and then misses that library's
+first calls.
+
+The nesting level of a transaction was global to the Interceptor. It is
+now per thread: when a thread's own outermost transaction ends, everything
+pending is committed, including what other threads have queued inside
+transactions they still have open. While a commit patches code, hooks are
+bypassed on the committing thread, so it never waits for a lock that a
+replacement of, say, *thread_suspend()* might take.
+
+There are a few things a caller can observe differently:
+
+- A batch can be split. A transaction no longer holds back other threads,
+  so your pending changes may be applied when another thread commits.
+  Hooks can become live earlier than your own *end_transaction()*, never
+  later.
+- A detach followed by a re-attach inside one transaction may find that
+  the old context was already torn down by another thread's commit. It
+  then creates a fresh one, which costs an extra patch.
+- *flush()* no longer waits on other threads. It commits unless the
+  calling thread has a transaction open, so unloading a script completes
+  even while other threads are inside scopes.
+- A thread that exits with a transaction open no longer blocks every later
+  commit in the process.
+
+## Module observers
+
+*Process.attachModuleObserver()* called *onAdded* for every loaded module
+while holding the module registry's lock. A hook on another thread that
+needed the registry at that moment deadlocked against it, in two ways.
+Through the Interceptor, on arm64 since 17.19.0: a hook's *onEnter* calls
+*Interceptor.attach()*, which looks up the module of its target. And
+through the JS lock, on any architecture: a hook's *onEnter* calls
+*Process.enumerateModules()* or *Process.findModuleByName()*. Once either
+happened, every other hooked thread and every new thread piled up behind
+them.
+
+The replay no longer runs under the lock. The registry instead tracks that
+a replay is in progress. A module loaded or unloaded on another thread
+meanwhile is registered at once, but its notification waits for the replay
+to end, and is then delivered on the loading thread before the loader
+returns. So *onAdded* still completes before the application can call into
+the library. Enumeration and lookups never wait for a replay, which is
+what closes both cycles.
+
+## Unloading
+
+Two fixes for libraries that go away. On Linux, FreeBSD and QNX, looking
+an export up through a *Module*, or calling *ensureInitialized()*, took a
+loader handle and kept it until the module object was disposed. The
+registry keeps that object until the loader reports the unload, and the
+handle prevented the unload, so such a library could never unload.
+*ensureInitialized()* pinned the same way on Apple systems. The handle is
+now released after each use, and a module object that outlives its library
+finds no exports, rather than touching the loader or reading unmapped
+memory.
+
+The registry also decided whether to announce a removal by asking, at
+unload time, whether the module's range was cloaked. By then our own
+allocator could have mapped, and cloaked, new memory over the base the
+library just left, and the removal was swallowed. This was seen on 32-bit
+x86 Linux, where the hole a library leaves is the first address reused.
+The decision is now made when the module is registered.
+
+## Crash reporters on macOS and iOS
+
+On Apple systems a fault is offered to Mach exception ports before it
+becomes a signal: the thread's, then the task's. We catch faults as
+signals, so the task-level port that every in-process crash reporter
+installs, be it Crashpad, Sentry, Crashlytics or KSCrash, saw a fault
+inside one of our guarded scopes first, and treated it as the process
+crashing. Depending on the reporter, a *NativePointer* read of a bad
+address or a memory scan would then hang, or take the process down,
+rather than throw.
+
+Each thread now gets a thread-level port the first time it enters such a
+scope, which takes precedence over the task's. Faults inside a scope are
+caught there, and all others are declined, so they reach the task port and
+the signal handler as before. Threads that already have a port of their
+own are left alone. This is done for arm64 and arm64e. Other targets keep
+to signals.
+
+## iOS
+
+[@BoringApp][] found that Frida exited with *SIGBUS* during startup on an
+iPhone 13 running iOS 15.0. Overwriting an executable mapping on that
+kernel can leave the target inaccessible, which our probe didn't detect,
+as it only maps a scratch page. Code is no longer remapped from that
+kernel on, and the page swap introduced in 17.27.6 is only attempted on
+macOS, so in-place patching runs everywhere else. Thanks!
+
+Enjoy!
+
+### Changelog
+
+- interceptor: Make transactions per thread, so a hook is live when
+  *attach()* returns regardless of other threads.
+- gumjs: Replay modules outside the registry lock, fixing deadlocks
+  between *attachModuleObserver()* and hooks on other threads.
+- module: Release the loader handle after each use, so libraries can
+  unload.
+- module-registry: Decide cloaking at registration, fixing lost removal
+  notifications.
+- exceptor: Catch faults in guarded scopes before task-level exception
+  ports on macOS and iOS.
+- darwin: Avoid remapping code on iOS 15.0 and newer, and only swap
+  patched pages in on macOS. Thanks [@BoringApp][]!
+
+
+[@BoringApp]: https://github.com/BoringApp
