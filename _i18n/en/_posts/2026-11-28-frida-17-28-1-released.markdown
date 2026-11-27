@@ -1,0 +1,83 @@
+---
+layout: news_item
+title: 'Frida 17.28.1 Released'
+date: 2026-11-28 00:00:37 +0100
+author: oleavr
+version: 17.28.1
+categories: [release]
+---
+
+Fixes for those embedding Frida, with [@kkuehl][] tracking down a crash
+when creating a second *DeviceManager* and a hang on deinit. Also in this
+one: [@Cassian433][] made thread enumeration work in a spawned process
+that hasn't been resumed yet, and [@hsorbo][] taught our XPC client about
+messages that want a reply.
+
+## Embedders
+
+Kirby found that creating a *DeviceManager* after another one had attached
+to the system session and been closed crashed. This is a regression from
+17.27.6, where the agent moved into a shared resource directory. Its image
+then outlived the session that had shut its GLib down, so loading it into
+our own process a second time ran its environment init against a type
+system that was already gone. There is now one agent container per
+process, created on first use and torn down by *frida_shutdown()* or
+*frida_deinit()*, and a host session only closes its own sessions in it.
+
+He also found that *frida_deinit()* hung whenever *idund* was running.
+Stopping Idun's device monitor left its backends in place, and the daemon
+backend's client kept a D-Bus connection alive, which kept GLib's D-Bus
+worker alive, so shutting GIO down waited forever. Thanks, Kirby!
+
+## Linux
+
+[@Cassian433][] fixed *Process.enumerateThreads()* returning an empty
+array in a process that was spawned and not yet resumed, which
+[@JingMatrix][] reported last year. Reading a thread's registers means
+attaching to it with *ptrace()*, which fails when another process is
+already tracing it, as our helper is with the main thread of a process it
+has paused. Such a thread is now kept, just without its CPU context.
+Thanks!
+
+On musl, the agent stays loaded across injections. Threads stopped during
+unload could report garbage after the agent's runner was gone, leaving a
+flag set with nothing scheduled, which disabled thread garbage collection
+in every later session.
+
+## iOS
+
+Håvard noticed that CoreDevice's streaming actions, such as
+*streamapplist*, never delivered anything. They push their results as
+messages flagged as wanting a reply, which Idun's XPC connection silently
+dropped unless they were replies themselves. Those are now forwarded, and
+our Fruity backend acknowledges each one, as *devicectl* does. Thanks!
+
+## GLib
+
+A leak in our GLib is gone. If code on a new thread asks for the current
+thread before GLib's own thread entrypoint runs, as an Interceptor hook on
+libc's thread entrypoint may, GLib creates a placeholder and queues
+cleanups on it. The placeholder was then replaced without being destroyed,
+along with everything it was meant to clean up.
+
+Enjoy!
+
+### Changelog
+
+- agent-container: Share one container across host sessions, fixing a
+  crash when creating a second *DeviceManager*. Thanks [@kkuehl][]!
+- idun: Release the device monitor's backends on stop, fixing
+  *frida_deinit()* hanging while *idund* is running. Thanks [@kkuehl][]!
+- linux: Keep threads whose registers can't be read. Thanks
+  [@Cassian433][] and [@JingMatrix][]!
+- agent: Don't wedge thread garbage collection on garbage reported during
+  teardown.
+- glib: Adopt the placeholder thread in the thread proxy, fixing a leak.
+- idun: Forward XPC messages that want a reply. Thanks [@hsorbo][]!
+- fruity: Acknowledge XPC messages that want a reply. Thanks [@hsorbo][]!
+
+
+[@kkuehl]: https://github.com/kkuehl
+[@Cassian433]: https://github.com/Cassian433
+[@hsorbo]: https://twitter.com/hsorbo
+[@JingMatrix]: https://github.com/JingMatrix
